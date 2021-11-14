@@ -1,7 +1,7 @@
 <template>
     <div id="app">
         <h1>bookmarkit</h1>
-        <Bookmarks />
+        <bookmarks :bookmarks="bookmarks" />
     </div>
 </template>
 
@@ -30,7 +30,7 @@ const app = {
             bookmarks: [],
         };
     },
-    beforeCreate() {
+    created() {
         api.getAll()
             .then((response) => {
                 this.$log.debug('Data loaded: ', response.data);

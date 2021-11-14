@@ -3,7 +3,7 @@ package dev.renegade.bookmarkit;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;
 import org.springframework.stereotype.Component;
-
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 /**
  * IDs are not returned by RestRepository by default. I like them exposed so that the client can easily find
@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class RestRepositoryConfigurator implements RepositoryRestConfigurer {
 
-  public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config) {
-      config.exposeIdsFor(Bookmark.class);
-    }
-
+  @Override
+  public void configureRepositoryRestConfiguration(RepositoryRestConfiguration config,  CorsRegistry cors ) {
+    config.exposeIdsFor(Bookmark.class);
+  }
 }
