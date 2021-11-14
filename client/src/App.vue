@@ -1,13 +1,13 @@
 <template>
     <div id="app">
         <h1>bookmarkit</h1>
-        <BookMarks />
+        <Bookmarks />
     </div>
 </template>
 
 <script>
-import BookMarks from './components/Bookmarks'
-import axios from 'axios'
+import Bookmarks from './components/Bookmarks';
+import api from './Api';
 
 /*
   const SERVER_URL = 'http://localhost:9000';  
@@ -21,29 +21,30 @@ import axios from 'axios'
 const app = {
     name: 'app',
     components: {
-        BookMarks,
+        Bookmarks,
     },
     // app initial state
     data: () => {
         return {
             response: [],
-        }
+            bookmarks: [],
+        };
     },
     beforeCreate() {
-        axios
-            .get(`http://localhost:9000/bookmarks`)
+        api.getAll()
             .then((response) => {
-                this.response = response.data
-                this.$log.debug(response)
+                this.$log.debug('Data loaded: ', response.data);
+                this.bookmarks = response.data;
             })
-            .catch((e) => {
-                this.errors.push(e)
+            .catch((error) => {
+                this.$log.debug(error);
+                this.error = 'Failed to load bookmarks';
             })
-        this.$log.debug('test', this.response)
+            .finally(() => (this.loading = false));
     },
-}
+};
 
-export default app
+export default app;
 </script>
 
 <style>
