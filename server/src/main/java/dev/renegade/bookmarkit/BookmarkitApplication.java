@@ -10,6 +10,7 @@ import org.springframework.core.Ordered;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Stream;
 
@@ -42,8 +43,8 @@ public class BookmarkitApplication {
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
 		// *** URL below needs to match the Vue client URL and port ***
-		config.setAllowedOrigins(Collections.singletonList("http://localhost:8080"));
-		config.setAllowedOrigins(Collections.singletonList("http://127.0.0.1:8080"));
+		// Local host and 127.0.0.1 are the same 
+		config.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://127.0.0.1:8080")); 
 		config.setAllowedMethods(Collections.singletonList("*"));
 		config.setAllowedHeaders(Collections.singletonList("*"));
 		source.registerCorsConfiguration("/**", config);

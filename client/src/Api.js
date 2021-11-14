@@ -13,7 +13,8 @@ export default {
     return instance({  
       method:method,  
       url: resource,  
-      data, config
+      data,  
+      ...config  
     })  
   },  
   
