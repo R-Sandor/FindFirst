@@ -7,6 +7,7 @@ have and combine and rethink those features into a easy UI/UX experience for use
 # Features 
 <details>
   <summary>Click to expand!</summary>
+  
 ## Easy Searching
 For example when the user arrives to the page they will have a search bar that is right at the top ready for user to immediately begin doing
 full context page searches. 
