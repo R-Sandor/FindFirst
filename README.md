@@ -4,6 +4,9 @@ Vue.js and Spring Boot bookmarking app
 This application sets out to simplify and enrich many of the features that other applications 
 have and combine and rethink those features into a easy UI/UX experience for users.
 
+# Features 
+<details>
+  <summary>Click to expand!</summary>
 ## Easy Searching
 For example when the user arrives to the page they will have a search bar that is right at the top ready for user to immediately begin doing
 full context page searches. 
@@ -21,3 +24,4 @@ Many of the sites a user bookmarks they may also want an RSS feed from, this sol
 A hit list of read laters. 
 
 ## And more to come!
+</details>
