@@ -31,10 +31,17 @@ A hit list of read laters.
 <details>
   <summary>Click to expand!</summary>
 
-On linux: 
+On the commandline: 
 ````
 cd client; npm run serve
 # create a new tab/terminal
 cd server; ./gradlew bootRun
 ````
+</details>
+
+# Design
+<details>
+  <summary>Click to expand!</summary>
+
+![Design](client/public/BookMarkItDesign.png "Design")
 </details>
