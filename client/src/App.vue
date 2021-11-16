@@ -9,14 +9,6 @@
 import Bookmarks from './components/Bookmarks';
 import api from './Api';
 
-/*
-  const SERVER_URL = 'http://localhost:9000';  
-  
-  const instance = axios.create({  
-    baseURL: SERVER_URL,  
-    timeout: 1000  
-  });  
-*/
 // app Vue instance
 const app = {
     name: 'app',
@@ -51,4 +43,6 @@ export default app;
 [v-cloak] {
     display: none;
 }
+@import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
+
 </style>

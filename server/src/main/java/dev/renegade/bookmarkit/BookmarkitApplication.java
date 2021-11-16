@@ -25,7 +25,7 @@ public class BookmarkitApplication {
 	@Bean
 	ApplicationRunner init(BookmarkRepository repository) {
 		return args -> {
-			Stream.of("Buy milk", "Eat pizza", "Write tutorial", "Study Vue.js", "Go kayaking")
+			Stream.of("Buy milk", "Eat pizza", "Write tutorial", "Study Vue.js", "Go kayaking", "dancing", "snowboarding")
 					.forEach(name -> {
 						Bookmark bookMark = new Bookmark(name, name);
 						System.out.println(bookMark);
