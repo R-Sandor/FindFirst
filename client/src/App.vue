@@ -1,12 +1,26 @@
 <template>
     <div id="app">
-        <h1>bookmarkit</h1>
-        <bookmarks :bookmarks="bookmarks" />
+            <Navbar/>
+        <div class="container-fluid">
+            <div class="row flex-xl-nowrap">
+                <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+                    <Sidebar />
+                </div>
+                <div
+                    class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content"
+                >
+                    <Bookmarks :bookmarks="bookmarks" />
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 
 <script>
 import Bookmarks from './components/Bookmarks';
+import Navbar from './components/Navbar';
+import Sidebar from './components/Sidebar';
+
 import api from './Api';
 
 // app Vue instance
@@ -14,6 +28,8 @@ const app = {
     name: 'app',
     components: {
         Bookmarks,
+        Navbar,
+        Sidebar,
     },
     // app initial state
     data: () => {
@@ -39,10 +55,4 @@ const app = {
 export default app;
 </script>
 
-<style>
-[v-cloak] {
-    display: none;
-}
-@import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
-
-</style>
+<style></style>

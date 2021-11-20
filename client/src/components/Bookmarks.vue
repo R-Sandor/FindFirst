@@ -1,21 +1,25 @@
 <template>
-    <div>
-  <b-card
-    title="Card Title"
-    img-src="https://picsum.photos/600/300/?image=25"
-    img-alt="Image"
-    img-top
-    tag="article"
-    style="max-width: 20rem;"
-    class="mb-2"
-  >
-    <b-card-text>
-      Some quick example text to build on the card title and make up the bulk of the card's content.
-    </b-card-text>
+    <b-row>
+        <b-card-group flat v-for="(row, index) in arrangedData" :key="index">
+            <b-card
+                v-for="bookmark in row"
+                :key="bookmark.id"
+                title="bookmark.title"
+                img-src="https://picsum.photos/600/300/?image=25"
+                img-alt="Image"
+                img-top
+                tag="article"
+                style="max-width: 20rem"
+                class="mb-2"
+            >
+                <b-card-text>
+                    {{ bookmark.title }}
+                </b-card-text>
 
-    <b-button href="#" variant="primary">Go somewhere</b-button>
-  </b-card>
-</div>
+                <b-button href="#" variant="primary">Go somewhere</b-button>
+            </b-card>
+        </b-card-group>
+    </b-row>
 </template>
 
 <script>
