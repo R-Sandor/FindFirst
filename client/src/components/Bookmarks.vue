@@ -1,39 +1,27 @@
 <template>
+    <!-- Bookmark pane. -->
     <b-row>
         <b-card-group flat v-for="(row, index) in arrangedData" :key="index">
-            <b-card
-                v-for="bookmark in row"
-                :key="bookmark.id"
-                title="bookmark.title"
-                img-src="https://picsum.photos/600/300/?image=25"
-                img-alt="Image"
-                img-top
-                tag="article"
-                style="max-width: 20rem"
-                class="mb-2"
-            >
-                <b-card-text>
-                    {{ bookmark.title }}
-                </b-card-text>
-
-                <b-button href="#" variant="primary">Go somewhere</b-button>
-            </b-card>
+            <Bookmark v-for="item in row" :key="item.id" :bookmark="item" />
         </b-card-group>
     </b-row>
 </template>
 
 <script>
+import Bookmark from './Bookmark';
+
+
 export default {
     props: ['bookmarks'],
     data: function () {
         return {
-            numCols: 3,
+            numCols: 4,
         };
     },
     //emits: ['addItem'],
-    /*components: {
-    Curr
-  }*/
+    components: {
+        Bookmark
+    },
     computed: {
         arrangedData() {
             const arrangedData = [];
@@ -51,6 +39,4 @@ export default {
 };
 </script>
 
-<style>
-
-</style>
+<style></style>

@@ -3,11 +3,11 @@
             <Navbar/>
         <div class="container-fluid">
             <div class="row flex-xl-nowrap">
-                <div class="col-12 col-md-3 col-xl-2 bd-sidebar">
+                <div class="col-12 col-md-3 bd-sidebar">
                     <Sidebar />
                 </div>
                 <div
-                    class="col-12 col-md-9 col-xl-8 py-md-3 pl-md-5 bd-content"
+                    class="col-12 col-md-9 pl-md-5 bd-content"
                 >
                     <Bookmarks :bookmarks="bookmarks" />
                 </div>
