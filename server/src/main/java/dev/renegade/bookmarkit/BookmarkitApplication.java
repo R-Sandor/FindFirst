@@ -10,6 +10,7 @@ import org.springframework.core.Ordered;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import dev.renegade.bookmarkit.model.Bookmark;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Stream;
@@ -21,24 +22,11 @@ public class BookmarkitApplication {
 		SpringApplication.run(BookmarkitApplication.class, args);
 	}
 
-	// Bootstrap some test data into the in-memory database
-	@Bean
-	ApplicationRunner init(BookmarkRepository repository) {
-		return args -> {
-			Stream.of("Buy milk", "Eat pizza", "Write tutorial", "Study Vue.js", "Go kayaking", "dancing", "snowboarding")
-					.forEach(name -> {
-						Bookmark bookMark = new Bookmark(name, name);
-						System.out.println(bookMark);
-						repository.save(bookMark);
-					});
-			repository.findAll().forEach(System.out::println);
-		};
 
-	}
 
 	// Fix the CORS errors
 	@Bean
-	public FilterRegistrationBean simpleCorsFilter() {
+	public FilterRegistrationBean<CorsFilter> simpleCorsFilter() {
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
@@ -48,7 +36,7 @@ public class BookmarkitApplication {
 		config.setAllowedMethods(Collections.singletonList("*"));
 		config.setAllowedHeaders(Collections.singletonList("*"));
 		source.registerCorsConfiguration("/**", config);
-		FilterRegistrationBean bean = new FilterRegistrationBean<>(new CorsFilter(source));
+		FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
 		bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
 		return bean;
 	}

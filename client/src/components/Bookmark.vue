@@ -20,7 +20,7 @@
 
 export default {
     props: ["bookmark"],
-    data: function () {},
+   // data: function () {},
 };
 </script>
 <style>
