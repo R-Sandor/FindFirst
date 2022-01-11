@@ -1,10 +1,16 @@
 package dev.renegade.bookmarkit.model;
 
-import lombok.*;
 
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
 import javax.persistence.GeneratedValue;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 
@@ -15,12 +21,9 @@ import javax.persistence.Entity;
 public class Bookmark {
 
     public Bookmark(){
-        System.out.println("HEREEEEEEE!!!!!!");
-
     }
 
     public Bookmark(String title, String url) {
-        System.out.println("HEREEEEEEE");
         this.title = title;
         this.url = url;
     }
@@ -38,6 +41,7 @@ public class Bookmark {
     private String url;
 
     //@ElementCollection
-    //private List<String> tags = new ArrayList<>();
+    @OneToMany(mappedBy = "bookmark")
+    private Set<Tag> tags;
 
 }

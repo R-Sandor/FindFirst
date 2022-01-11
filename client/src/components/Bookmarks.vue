@@ -18,7 +18,6 @@ export default {
             numCols: 4,
         };
     },
-    //emits: ['addItem'],
     components: {
         Bookmark
     },
