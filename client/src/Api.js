@@ -26,7 +26,7 @@ export default {
   getAll() {  
     return this.execute('GET','bookmarks', null, {  
       transformResponse: [function (data) {  
-        return data? JSON.parse(data)._embedded.bookmarks : data;  
+        return data? JSON.parse(data) : data;  
       }]  
     })  
   },  
