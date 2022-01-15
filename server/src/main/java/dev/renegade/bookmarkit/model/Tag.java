@@ -14,7 +14,7 @@ import lombok.NonNull;
 import lombok.Setter;
 
 @Entity
-@Table(name = "bookmark_tag")
+@Table(name = "tag")
 @Getter
 @Setter
 public class Tag {
@@ -26,14 +26,13 @@ public class Tag {
     @NonNull
     private String tag_title;
 
-    @ManyToMany
-    @JoinColumn(name = "bookmark_id", nullable = false)
-    Set<Bookmark> bookmark;
+    @ManyToMany(mappedBy = "tags")
+    Set<Bookmark> bookmarks;
 
     public Tag(long id, String tagVal, Set<Bookmark> bookmarks){
         this.id = id;
         this.tag_title = tagVal;
-        this.bookmark = bookmarks;
+        this.bookmarks = bookmarks;
     }
     public Tag(){
     }

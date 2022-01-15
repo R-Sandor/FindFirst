@@ -2,6 +2,9 @@ package dev.renegade.bookmarkit.model;
 
 
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.Getter;
@@ -41,7 +44,11 @@ public class Bookmark {
     private String url;
 
     //@ElementCollection
-    @OneToMany(mappedBy = "bookmark")
+    @ManyToMany
+    @JoinTable(
+        name = "bookmark_tag", 
+        joinColumns = @JoinColumn(name = "bookmark_id"), 
+        inverseJoinColumns = @JoinColumn(name = "tag_id"))
     private Set<Tag> tags;
 
 }

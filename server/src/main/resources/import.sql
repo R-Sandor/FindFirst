@@ -3,4 +3,6 @@ insert into bookmark values(2, 'test', 'test.com');
 --insert into bookmark values(3, "test", "test.com");
 --insert into bookmark values(4, "test", "test.com");
 
-insert into bookmark_tag(id, tag_title, bookmark_id) values(1, 'TESTING', 1);
+insert into tag(id, tag_title) values(1, 'TESTING');
+
+insert into bookmark_tag values(1,1);
