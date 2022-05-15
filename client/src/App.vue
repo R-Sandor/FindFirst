@@ -1,15 +1,15 @@
 <template>
     <div id="app">
-            <Navbar/>
+            <navbar/>
         <div class="container-fluid">
             <div class="row flex-xl-nowrap">
                 <div class="col-12 col-md-3 bd-sidebar">
-                    <Sidebar />
+                    <sidebar />
                 </div>
                 <div
                     class="col-12 col-md-9 pl-md-5 bd-content"
                 >
-                    <Bookmarks :bookmarks="bookmarks" />
+                    <bookmarks :bookmarks="bookmarks" />
                 </div>
             </div>
         </div>
