@@ -1,20 +1,21 @@
 package dev.renegade.bookmarkit.controller;
 
 import java.util.List;
+
+import javax.websocket.server.PathParam;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.ResourceNotFoundException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import dev.renegade.bookmarkit.model.Bookmark;
-import dev.renegade.bookmarkit.model.Tag;
-import dev.renegade.bookmarkit.repository.BookmarkRepository;
-import dev.renegade.bookmarkit.repository.TagRepository;
 import dev.renegade.bookmarkit.service.BookmarkService;
 
 @RestController
@@ -24,9 +25,34 @@ public class BookmarkController {
     
     @RequestMapping(value ="/bookmarks", method=RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
     public List<Bookmark> getAllBookmarks() {
-        List<Bookmark> bList =  bookmarkService.list();
-        return bList;
+        return  bookmarkService.list();
     }
+
+    @RequestMapping(value="/bookmark/{id}", method=RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Bookmark getBookmarkById(@RequestParam Long id) {
+        return bookmarkService.getById(id);
+    }
+
+    @PostMapping(value ="/addBookmark")
+    public void addBookmarks(@RequestBody Bookmark bookmark) {
+        bookmarkService.addBookmark(bookmark);
+    }
+
+    @PostMapping(value="/addBookMarks")
+    public void postMethodName(@RequestBody List<Bookmark> bookmarks) {
+        bookmarkService.addBookmarks(bookmarks);
+    }
+
+    @PostMapping(value = "/deleteAll")
+    public void deleteAll() {
+        bookmarkService.deleteAllBookmarks();
+    }
+
+    @PostMapping(value = "/delete/{id}")
+    public void deleteById(@PathVariable Long id){
+        bookmarkService.deleteById(id);
+    }
+
 }
 
 // @Autowired

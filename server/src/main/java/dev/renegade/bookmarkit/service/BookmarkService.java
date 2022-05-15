@@ -14,7 +14,32 @@ public class BookmarkService {
     private BookmarkRepository bookmarkRepository;
 
     public List<Bookmark> list() {
-        System.out.println("list");
         return bookmarkRepository.findAll();
     }
+
+    public Bookmark getById(Long id) {
+        return bookmarkRepository.getById(id);
+    }
+
+    public void addBookmark(Bookmark bookmark){
+        bookmarkRepository.saveAndFlush(bookmark);
+    }
+
+    public void addBookmarks(List<Bookmark> bookmarks){
+        bookmarkRepository.saveAllAndFlush(bookmarks);
+    }
+
+    public void deleteBookmark(Bookmark bookmark) {
+        bookmarkRepository.delete(bookmark);
+    }
+
+    public void deleteAllBookmarks(){
+        bookmarkRepository.deleteAll();
+    }
+
+    public void deleteById(Long id){
+        bookmarkRepository.deleteById(id);
+    }
+
+
 }
