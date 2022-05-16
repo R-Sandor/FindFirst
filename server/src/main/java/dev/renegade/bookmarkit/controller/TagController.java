@@ -24,9 +24,9 @@ public class TagController {
         tagService.addAll(tags);
     }
 
-    @PostMapping(value = "/deleteAll")
-    public void deleteAll(){
-        tagService.deleteAll();
+    @PostMapping(value = "tags/deleteAll")
+    public void deleteAllTags(){
+        tagService.deleteAllTags();
     }
 
     @GetMapping(value = "/tags") 

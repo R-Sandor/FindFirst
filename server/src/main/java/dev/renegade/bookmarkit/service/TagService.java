@@ -2,9 +2,11 @@ package dev.renegade.bookmarkit.service;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import dev.renegade.bookmarkit.model.Tag;
 import dev.renegade.bookmarkit.repository.TagRepository;
 
+@Service
 public class TagService {
 
     @Autowired TagRepository tagRepository;
@@ -17,7 +19,7 @@ public class TagService {
         tagRepository.saveAllAndFlush(tags);
     }
 
-    public void deleteAll(){
+    public void deleteAllTags(){
         tagRepository.deleteAll();
     }
 
