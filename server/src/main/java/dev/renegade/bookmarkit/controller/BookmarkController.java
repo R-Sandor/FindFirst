@@ -30,22 +30,22 @@ public class BookmarkController {
         return bookmarkService.getById(id);
     }
 
-    @PostMapping(value ="/addBookmark")
+    @PostMapping(value ="/bookmark/add")
     public void addBookmarks(@RequestBody Bookmark bookmark) {
         bookmarkService.addBookmark(bookmark);
     }
 
-    @PostMapping(value="/addBookMarks")
+    @PostMapping(value="/bookmark/addBookmarks")
     public void postMethodName(@RequestBody List<Bookmark> bookmarks) {
         bookmarkService.addBookmarks(bookmarks);
     }
 
-    @PostMapping(value = "/deleteAll")
+    @PostMapping(value = "/bookmark/deleteAll")
     public void deleteAll() {
         bookmarkService.deleteAllBookmarks();
     }
 
-    @PostMapping(value = "/delete/{id}")
+    @PostMapping(value = "/bookmark/delete/{id}")
     public void deleteById(@PathVariable Long id){
         bookmarkService.deleteById(id);
     }

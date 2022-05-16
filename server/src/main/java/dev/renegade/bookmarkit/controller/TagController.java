@@ -14,17 +14,17 @@ public class TagController {
 
     @Autowired TagService tagService;
 
-    @PostMapping(value = "/addTag/{tag}")
+    @PostMapping(value = "/tag/addTag/{tag}")
     public void addTag(@PathVariable Tag tag){
         tagService.addTag(tag);   
     }
     
-    @PostMapping(value =  "/addTags/{tags}")
+    @PostMapping(value =  "/tag/addTags/{tags}")
     public void addTags(List<Tag> tags){
         tagService.addAll(tags);
     }
 
-    @PostMapping(value = "tags/deleteAll")
+    @PostMapping(value = "/tag/deleteAll")
     public void deleteAllTags(){
         tagService.deleteAllTags();
     }
