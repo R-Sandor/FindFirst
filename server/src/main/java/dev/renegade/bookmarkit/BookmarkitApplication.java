@@ -29,7 +29,7 @@ public class BookmarkitApplication {
 		config.setAllowCredentials(true);
 		// *** URL below needs to match the Vue client URL and port ***
 		// Local host and 127.0.0.1 are the same 
-		config.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://127.0.0.1:8080")); 
+		config.setAllowedOrigins(Arrays.asList("http://localhost:8080", "http://127.0.0.1:8080", "http://localhost", "http://127.0.0.1")); 
 		config.setAllowedMethods(Collections.singletonList("*"));
 		config.setAllowedHeaders(Collections.singletonList("*"));
 		source.registerCorsConfiguration("/**", config);
