@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
@@ -26,7 +27,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Tag {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column
@@ -51,6 +52,15 @@ public class Tag {
     }
 
     public Tag(){
+    }
+
+    @Override
+    public boolean equals(Object obj){
+        if (obj instanceof Tag){
+            Tag t = (Tag) obj;
+            return t.tag_title.equals(this.tag_title);
+        } else
+        return false;
     }
 
 }

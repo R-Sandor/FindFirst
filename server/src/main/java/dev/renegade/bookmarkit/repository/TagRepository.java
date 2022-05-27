@@ -7,4 +7,6 @@ import dev.renegade.bookmarkit.model.Tag;
 
 @RepositoryRestResource
 public interface TagRepository extends JpaRepository<Tag, Long>{
+
+    Tag findByTitle(String title);
 }
