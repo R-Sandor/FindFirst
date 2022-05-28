@@ -63,6 +63,14 @@ public class BookmarkController {
     return bookmarkService.addTag(bookmarkId, tagRequest);
   }
 
+  @PostMapping("/bookmark/addTag/{bookmarkId}/{tagId}")
+  public ResponseEntity<Tag> addTag(
+    @PathVariable(value = "bookmarkId") Long bookmarkId,
+    @PathVariable(value = "tagId") Long tagId
+  ) {
+    return bookmarkService.addTag(bookmarkId, tagId);
+  }
+
   @PostMapping(value = "/bookmark/delete/{id}")
   public void deleteById(@PathVariable Long id) {
     bookmarkService.deleteById(id);

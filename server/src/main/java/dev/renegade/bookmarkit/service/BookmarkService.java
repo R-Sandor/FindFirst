@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Query;
@@ -16,6 +18,7 @@ import dev.renegade.bookmarkit.model.Bookmark;
 import dev.renegade.bookmarkit.model.Tag;
 import dev.renegade.bookmarkit.repository.BookmarkRepository;
 import dev.renegade.bookmarkit.repository.TagRepository;
+import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
 
 @Service
 public class BookmarkService {
@@ -50,8 +53,17 @@ public class BookmarkService {
     bookmarkRepository.deleteAll();
   }
 
+  private BiConsumer<List<Bookmark>, Tag > lConsumer = (list, tag) -> {
+    if (list.size() == 1){
+      tagRepository.deleteById(tag.getId());
+    }
+  };
+
   public void deleteById(Long id) {
-    bookmarkRepository.deleteById(id);
+    Set<Tag> tags = bookmarkRepository.getById(id).getTags();
+    for (var tag: tags){
+      lConsumer.accept(bookmarkRepository.findByTag(tag), tag);
+    }
   }
 
   public ResponseEntity<Tag> addTag(Long bookmarkId, Tag tagRequest) {
@@ -72,6 +84,14 @@ public class BookmarkService {
       tagRepository.save(tagRequest);
       return new ResponseEntity<>(tagRequest, HttpStatus.CREATED);
     }
+    return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+  }
+
+  public ResponseEntity<Tag> addTag(Long bookmarkId, Long tagId) {
+    Bookmark bkmk = bookmarkRepository.findById(bookmarkId).get();
+    Tag tag = tagRepository.findById(tagId).get();
+    if (bkmk != null && tag != null  && addExistingTag(bkmk, tag))
+      return new ResponseEntity<>(tag, HttpStatus.CREATED);
     return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
   }
 

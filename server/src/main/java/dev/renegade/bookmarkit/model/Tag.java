@@ -36,8 +36,7 @@ public class Tag {
 
       @ManyToMany(fetch = FetchType.EAGER,
       cascade = {
-          CascadeType.PERSIST,
-          CascadeType.MERGE
+          CascadeType.ALL
       },
       mappedBy = "tags")
     @JsonIgnore
@@ -61,6 +60,11 @@ public class Tag {
             return t.title.equals(this.title);
         } else
         return false;
+    }
+
+    @Override 
+    public int hashCode(){
+        return title.hashCode();
     }
 
 }
