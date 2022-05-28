@@ -30,9 +30,9 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column
+    @Column(name = "tag_title")
     @NonNull
-    private String tag_title;
+    private String title;
 
       @ManyToMany(fetch = FetchType.EAGER,
       cascade = {
@@ -44,7 +44,7 @@ public class Tag {
     Set<Bookmark> bookmarks;
 
     public Tag(String tagVal){
-        this.tag_title = tagVal;
+        this.title = tagVal;
     }
 
     public Set<Bookmark> getBookmarks(){
@@ -58,7 +58,7 @@ public class Tag {
     public boolean equals(Object obj){
         if (obj instanceof Tag){
             Tag t = (Tag) obj;
-            return t.tag_title.equals(this.tag_title);
+            return t.title.equals(this.title);
         } else
         return false;
     }

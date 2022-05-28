@@ -1,19 +1,21 @@
 package dev.renegade.bookmarkit.service;
 
-import dev.renegade.bookmarkit.model.Bookmark;
-import dev.renegade.bookmarkit.model.Tag;
-import dev.renegade.bookmarkit.repository.BookmarkRepository;
-import dev.renegade.bookmarkit.repository.TagRepository;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import dev.renegade.bookmarkit.model.Bookmark;
+import dev.renegade.bookmarkit.model.Tag;
+import dev.renegade.bookmarkit.repository.BookmarkRepository;
+import dev.renegade.bookmarkit.repository.TagRepository;
 
 @Service
 public class BookmarkService {
@@ -53,32 +55,48 @@ public class BookmarkService {
   }
 
   public ResponseEntity<Tag> addTag(Long bookmarkId, Tag tagRequest) {
-    // TODO: CHECK if the tag already exists
-
     Optional<Bookmark> bkmkOpt = bookmarkRepository.findById(bookmarkId);
     if (bkmkOpt.isPresent()) {
       Bookmark bookmark = bkmkOpt.get();
-      long tagId = tagRequest.getId();
 
-      // tag is existed
-      if (tagId != 0L) {
-        Tag _tag = tagRepository
-          .findById(tagId)
-          .orElseThrow(
-            () ->
-              new ResourceNotFoundException("Not found Tag with id = " + tagId)
-          );
-        bookmark.addTag(_tag);
-        bookmarkRepository.save(bookmark);
-        return new ResponseEntity<>(_tag, HttpStatus.CREATED);
+      // Find if tag exists and adds the record.
+      if (addExistingTag(bookmark, tagRequest)){
+        return new ResponseEntity<>(tagRequest, HttpStatus.CREATED);
       }
-      Long id = tagRepository.findByTitle(tagRequest.getTag_title()).getId();
 
+      // Create a new tag record and add it to join table
       tagRequest.setBookmarks(new HashSet<>(Arrays.asList(bookmark)));
-      // add and create new Tag
+
+      // Create the new Tag.
       bookmark.addTag(tagRequest);
       tagRepository.save(tagRequest);
+      return new ResponseEntity<>(tagRequest, HttpStatus.CREATED);
     }
-    return new ResponseEntity<>(null, HttpStatus.CREATED);
+    return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
   }
+
+  private void addTagToBookmarkRecord(Bookmark bookmark, Long id) {
+    Tag tag = tagRepository
+      .findById(id)
+      .orElseThrow(
+        () -> new ResourceNotFoundException("Not found Tag with id = " + id)
+      );
+    bookmark.addTag(tag);
+    bookmarkRepository.save(bookmark);
+  }
+
+  private boolean addExistingTag(Bookmark bookmark, Tag tagRequest) {
+    if (tagRequest.getId() == 0L) {
+        Tag tag = tagRepository.findByTitle(tagRequest.getTitle());
+        if (tag != null) {
+          addTagToBookmarkRecord(bookmark, tag.getId());
+          return true;
+        }
+      } else {
+          addTagToBookmarkRecord(bookmark, tagRequest.getId());
+          return true;
+      }
+      return false;
+  }
+
 }
