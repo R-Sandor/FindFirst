@@ -7,7 +7,7 @@ default:
 	$(MAKE) build_server
 
 build_server: 
-	docker build -t findfirst/server docker/server
+	docker build -t findfirst/server -f ./docker/server/Dockerfile ./server/build/libs/
 
 build_client: 
 	docker build -t findfirst/client -f ./docker/client/Dockerfile ./client
