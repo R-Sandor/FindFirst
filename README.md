@@ -4,6 +4,9 @@ Vue.js and Spring Boot bookmarking app
 This application sets out to simplify and enrich many of the features that other applications 
 have and combine and rethink those features into a easy UI/UX experience for users.
 
+# Discord
+Join the discord: https://discord.gg/mYrN9Mph
+
 # Features 
 <details>
   <summary>Click to expand!</summary>
