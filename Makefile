@@ -3,7 +3,6 @@
 
 default: 
 	cd server; ./gradlew clean build
-	cp server/build/libs/bookmarkit-1.0.0.jar docker/server/
 	$(MAKE) build_server
 
 build_server: 
