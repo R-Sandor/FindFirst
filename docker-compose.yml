@@ -1,0 +1,14 @@
+version: '3'
+services: 
+  client:
+    build: 
+      dockerfile: ../docker/client/Dockerfile
+      context: ./client
+    ports: 
+     - "8080:8080"
+  backend:
+    build: 
+      dockerfile: ./docker/server/Dockerfile
+      context: ./
+    ports: 
+     - "9000:9000"
