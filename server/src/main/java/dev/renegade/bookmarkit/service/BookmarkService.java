@@ -1,40 +1,34 @@
 package dev.renegade.bookmarkit.service;
 
+import dev.renegade.bookmarkit.model.Bookmark;
+import dev.renegade.bookmarkit.model.Tag;
+import dev.renegade.bookmarkit.repository.BookmarkRepository;
+import dev.renegade.bookmarkit.repository.TagRepository;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import dev.renegade.bookmarkit.model.Bookmark;
-import dev.renegade.bookmarkit.model.Tag;
-import dev.renegade.bookmarkit.repository.BookmarkRepository;
-import dev.renegade.bookmarkit.repository.TagRepository;
-import io.netty.util.internal.shaded.org.jctools.queues.MessagePassingQueue.Consumer;
-
 @Service
 public class BookmarkService {
 
-  @Autowired
-  private BookmarkRepository bookmarkRepository;
+  @Autowired private BookmarkRepository bookmarkRepository;
 
-  @Autowired
-  private TagRepository tagRepository;
+  @Autowired private TagRepository tagRepository;
 
   public List<Bookmark> list() {
     return bookmarkRepository.findAll();
   }
 
   public Bookmark getById(Long id) {
-    return bookmarkRepository.getById(id);
+    return bookmarkRepository.getReferenceById(id);
   }
 
   public void addBookmark(Bookmark bookmark) {
@@ -53,15 +47,16 @@ public class BookmarkService {
     bookmarkRepository.deleteAll();
   }
 
-  private BiConsumer<List<Bookmark>, Tag > lConsumer = (list, tag) -> {
-    if (list.size() == 1){
-      tagRepository.deleteById(tag.getId());
-    }
-  };
+  private BiConsumer<List<Bookmark>, Tag> lConsumer =
+      (list, tag) -> {
+        if (list.size() == 1) {
+          tagRepository.deleteById(tag.getId());
+        }
+      };
 
   public void deleteById(Long id) {
-    Set<Tag> tags = bookmarkRepository.getById(id).getTags();
-    for (var tag: tags){
+    Set<Tag> tags = bookmarkRepository.getReferenceById(id).getTags();
+    for (var tag : tags) {
       lConsumer.accept(bookmarkRepository.findByTag(tag), tag);
     }
   }
@@ -72,7 +67,7 @@ public class BookmarkService {
       Bookmark bookmark = bkmkOpt.get();
 
       // Find if tag exists and adds the record.
-      if (addExistingTag(bookmark, tagRequest)){
+      if (addExistingTag(bookmark, tagRequest)) {
         return new ResponseEntity<>(tagRequest, HttpStatus.CREATED);
       }
 
@@ -90,33 +85,31 @@ public class BookmarkService {
   public ResponseEntity<Tag> addTag(Long bookmarkId, Long tagId) {
     Bookmark bkmk = bookmarkRepository.findById(bookmarkId).get();
     Tag tag = tagRepository.findById(tagId).get();
-    if (bkmk != null && tag != null  && addExistingTag(bkmk, tag))
+    if (bkmk != null && tag != null && addExistingTag(bkmk, tag))
       return new ResponseEntity<>(tag, HttpStatus.CREATED);
     return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
   }
 
   private void addTagToBookmarkRecord(Bookmark bookmark, Long id) {
-    Tag tag = tagRepository
-      .findById(id)
-      .orElseThrow(
-        () -> new ResourceNotFoundException("Not found Tag with id = " + id)
-      );
+    Tag tag =
+        tagRepository
+            .findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Not found Tag with id = " + id));
     bookmark.addTag(tag);
     bookmarkRepository.save(bookmark);
   }
 
   private boolean addExistingTag(Bookmark bookmark, Tag tagRequest) {
     if (tagRequest.getId() == 0L) {
-        Tag tag = tagRepository.findByTitle(tagRequest.getTitle());
-        if (tag != null) {
-          addTagToBookmarkRecord(bookmark, tag.getId());
-          return true;
-        }
-      } else {
-          addTagToBookmarkRecord(bookmark, tagRequest.getId());
-          return true;
+      Tag tag = tagRepository.findByTitle(tagRequest.getTitle());
+      if (tag != null) {
+        addTagToBookmarkRecord(bookmark, tag.getId());
+        return true;
       }
-      return false;
+    } else {
+      addTagToBookmarkRecord(bookmark, tagRequest.getId());
+      return true;
+    }
+    return false;
   }
-
 }
