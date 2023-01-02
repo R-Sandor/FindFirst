@@ -1,3 +1,19 @@
+spring:
+  mail:
+    host: smtp.mail.yahoo.com
+    port: 587
+    username: ########
+    password: ########
+    protocol: smtp
+    properties.mail.smtp:
+      auth: true
+      starttls.enable: true
 
-server:  
+server:
   port: 9000
+
+jwt:
+  # In production set these values from the commandline
+  # or do something like https://medium.com/developervisits/hiding-encrypting-database-password-in-the-application-properties-34d59fe104eb
+  private.key: classpath:app.key
+  public.key: classpath:app.pub
