@@ -34,12 +34,21 @@ A hit list of read laters.
 <details>
   <summary>Click to expand!</summary>
 
+Docker: 
+```
+docker compose up
+```
+
 On the commandline: 
 ````
 cd client; npm run serve
 # create a new tab/terminal
 cd server; ./gradlew bootRun
 ````
+
+default user: 
+`user:user password:password`
+
 </details>
 
 # Design
