@@ -1,14 +1,20 @@
 import axios from 'axios'  
-  
-const SERVER_URL = 'http://localhost:9000';  
+import authHeader from './services/auth-header';
+const SERVER_URL = 'http://localhost:9000/api';  
   
 const instance = axios.create({  
   baseURL: SERVER_URL,  
   timeout: 1000  
 });  
-  
+
+ const config = {headers: {
+   Authorization: 'Bearer ' + authHeader().Authorization
+ } }
+  // const headers = [];
+  // const config  = { headers}
+ 
+
 export default {  
-  
   async execute(method, resource, data, config) {  
     return instance({  
       method:method,  
@@ -24,9 +30,9 @@ export default {
   },  
   // (R)ead  
   getAll() {  
-    return this.execute('GET','bookmarks', null, {  
+    return this.execute('GET','bookmarks', null, { 
+      ...config,
       transformResponse: [function (data) {  
-        console.log(JSON.parse(data));
         return data? JSON.parse(data) : data;  
       }]  
     })  

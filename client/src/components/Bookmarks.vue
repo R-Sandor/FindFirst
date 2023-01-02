@@ -1,10 +1,10 @@
 <template>
     <!-- Bookmark pane. -->
-    <b-row>
-        <b-card-group flat v-for="(row, index) in arrangedData" :key="index">
+    <div class="row">
+        <div class="card-group" flat v-for="(row, index) in arrangedData" :key="index">
             <Bookmark v-for="item in row" :key="item.id" :bookmark="item" />
-        </b-card-group>
-    </b-row>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -28,10 +28,8 @@ export default {
                 if (index % this.numCols === 0) {
                     arrangedData.push([]);
                 }
-                console.log(arrangedData.length, item);
                 arrangedData[arrangedData.length - 1].push(item);
             });
-            console.log(arrangedData);
             return arrangedData;
         },
     },

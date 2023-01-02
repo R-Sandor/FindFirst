@@ -1,13 +1,11 @@
 <template>
-<b-list-group>
-  <b-list-group-item href="#">Default list group item</b-list-group-item>
-  <b-list-group-item href="#" variant="primary">Primary list group item</b-list-group-item>
-  <b-list-group-item href="#" variant="secondary">Secondary list group item</b-list-group-item>
-  <b-list-group-item href="#" variant="success">Success list group item</b-list-group-item>
-  <b-list-group-item href="#" variant="danger">Danger list group item</b-list-group-item>
-  <b-list-group-item href="#" variant="warning">Warning list group item</b-list-group-item>
-  <b-list-group-item href="#" variant="info">Info list group item</b-list-group-item>
-  <b-list-group-item href="#" variant="light">Light list group item</b-list-group-item>
-  <b-list-group-item href="#" variant="dark">Dark list group item</b-list-group-item>
-</b-list-group>
+<div class="list-group">
+  <div class="list-group-item" href="#">BookmarkTag 1</div>
+  <div class="list-group-item" href="#">BookmarkTag 2</div>
+  <div class="list-group-item" href="#">BookmarkTag 3</div>
+  <div class="list-group-item" href="#">BookmarkTag 4</div>
+  <div class="list-group-item" href="#">BookmarkTag 5</div>
+  <div class="list-group-item" href="#">BookmarkTag 6</div>
+  <div class="list-group-item" href="#">BookmarkTag 7</div>
+</div>
 </template>

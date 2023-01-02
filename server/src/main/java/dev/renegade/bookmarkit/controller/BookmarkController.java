@@ -16,25 +16,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api")
 public class BookmarkController {
 
-  @Autowired
-  private BookmarkService bookmarkService;
+  @Autowired private BookmarkService bookmarkService;
 
   @RequestMapping(
-    value = "/bookmarks",
-    method = RequestMethod.GET,
-    produces = MediaType.APPLICATION_JSON_VALUE
-  )
+      value = "/bookmarks",
+      method = RequestMethod.GET,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public List<Bookmark> getAllBookmarks() {
     return bookmarkService.list();
   }
 
   @RequestMapping(
-    value = "/bookmark/{id}",
-    method = RequestMethod.GET,
-    produces = MediaType.APPLICATION_JSON_VALUE
-  )
+      value = "/bookmark/{id}",
+      method = RequestMethod.GET,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   public Bookmark getBookmarkById(@RequestParam Long id) {
     return bookmarkService.getById(id);
   }
@@ -57,17 +55,14 @@ public class BookmarkController {
 
   @PostMapping("/bookmark/{bookmarkId}/addTag")
   public ResponseEntity<Tag> addTag(
-    @PathVariable(value = "bookmarkId") Long bookmarkId,
-    @RequestBody Tag tagRequest
-  ) {
+      @PathVariable(value = "bookmarkId") Long bookmarkId, @RequestBody Tag tagRequest) {
     return bookmarkService.addTag(bookmarkId, tagRequest);
   }
 
   @PostMapping("/bookmark/addTag/{bookmarkId}/{tagId}")
   public ResponseEntity<Tag> addTag(
-    @PathVariable(value = "bookmarkId") Long bookmarkId,
-    @PathVariable(value = "tagId") Long tagId
-  ) {
+      @PathVariable(value = "bookmarkId") Long bookmarkId,
+      @PathVariable(value = "tagId") Long tagId) {
     return bookmarkService.addTag(bookmarkId, tagId);
   }
 
