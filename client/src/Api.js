@@ -1,6 +1,6 @@
 import axios from 'axios'  
 import authHeader from './services/auth-header';
-const SERVER_URL = 'http://localhost:9000/api';  
+const SERVER_URL = 'api';  
   
 const instance = axios.create({  
   baseURL: SERVER_URL,  

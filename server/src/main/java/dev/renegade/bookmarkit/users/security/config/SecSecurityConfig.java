@@ -29,7 +29,7 @@ import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthen
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.expression.WebExpressionAuthorizationManager;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -42,6 +42,11 @@ public class SecSecurityConfig {
   @Value("${jwt.public.key}") private RSAPublicKey key;
 
   @Value("${jwt.private.key}") private RSAPrivateKey priv;
+
+  @Bean
+  public CookieAuthenticationFilter authenticationJwtTokenFilter() {
+    return new CookieAuthenticationFilter();
+  }
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -58,6 +63,8 @@ public class SecSecurityConfig {
                     .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
                     .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
     // @formatter:on
+    http.addFilterBefore(
+        authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 

@@ -16,8 +16,8 @@ class AuthService {
             )
             .then((response) => {
                 if (response.data) {
-                    let myuser = user.accessToken = JSON.stringify(response.data)
-                    localStorage.setItem('user', myuser);
+                    let token = user.accessToken = JSON.stringify(response.data)
+                    localStorage.setItem('token', token);
                 }
 
                 return response.data;
@@ -25,7 +25,7 @@ class AuthService {
     }
 
     logout() {
-        localStorage.removeItem('user');
+        localStorage.removeItem('token');
     }
 
     // register(user) {

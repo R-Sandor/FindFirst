@@ -3,17 +3,15 @@ package dev.renegade.bookmarkit.users.security.controller;
 import java.time.Instant;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +30,7 @@ public class TokenController {
         authentication.getAuthorities().stream()
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.joining(" "));
+
     JwtClaimsSet claims =
         JwtClaimsSet.builder()
             .issuer("self")
@@ -40,11 +39,15 @@ public class TokenController {
             .subject(authentication.getName())
             .claim("scope", scope)
             .build();
-    // @formatter:on
-    return new ResponseEntity<String>(this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue(), HttpStatus.OK);
+    ResponseCookie cookie =
+        ResponseCookie.from(
+                "bookmarkit", this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue())
+            .secure(false)
+            .path("/")
+            .domain("localhost")
+            .httpOnly(true)
+            .build();
+
+    return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
   }
-
-
-
-	
 }
