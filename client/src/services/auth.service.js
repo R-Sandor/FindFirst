@@ -2,30 +2,25 @@ import axios from 'axios';
 const API_URL = 'http://localhost:9000/api/auth/';
 
 class AuthService {
-    login(user) {
+    login() {
         return axios
             .post(
                 API_URL + 'signin',
                 {},
                 {
+                      withCredentials: true,
                     auth: {
                         username: 'user',
                         password: 'password',
                     },
                 }
-            )
-            .then((response) => {
-                if (response.data) {
-                    let token = user.accessToken = JSON.stringify(response.data)
-                    localStorage.setItem('token', token);
-                }
-
-                return response.data;
+            ).then(res => { res.data
+                console.log("here")
             });
     }
 
     logout() {
-        localStorage.removeItem('token');
+        console.log("loggingout")
     }
 
     // register(user) {

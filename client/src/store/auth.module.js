@@ -1,22 +1,29 @@
 import AuthService from '../services/auth.service';
 
-const token = JSON.parse(localStorage.getItem('token'));
-const initialState = token
-  ? { status: { loggedIn: true }, token }
-  : { status: { loggedIn: false }, user: null };
+const initialState = { 
+  user: {},
+  loggedIn: false
+};
+const getters = {
+  isLoggedIn: state => state.isLoggedIn,
+  user: state => state.user
+};
 
-export const auth =  {
+
+const auth =  {
   namespaced: true,
   state: initialState,
   actions: {
-    login({ commit }, token) {
-      console.info("Auth user:", token)
-      return AuthService.login(token).then(
+    login({ commit }, user) {
+      console.info("Auth user:"  + user)
+      return AuthService.login().then(
         user => {
+          console.log("here")
           commit('loginSuccess', user);
           return Promise.resolve(user);
         },
         error => {
+          console.log("here")
           commit('loginFailure');
           return Promise.reject(error);
         }
@@ -40,23 +47,28 @@ export const auth =  {
     // }
   },
   mutations: {
-    loginSuccess(state, token) {
-      state.status.loggedIn = true;
-      state.user = token;
+    loginSuccess(state, user) {
+      state.loggedIn = true;
+      state.user = user;
     },
     loginFailure(state) {
-      state.status.loggedIn = false;
+      state.loggedIn = false;
       state.user = null;
     },
     logout(state) {
-      state.status.loggedIn = false;
+      state.loggedIn = false;
       state.user = null;
     },
     registerSuccess(state) {
-      state.status.loggedIn = false;
+      state.loggedIn = false;
     },
     registerFailure(state) {
-      state.status.loggedIn = false;
+      state.loggedIn = false;
     }
   }
 };
+
+export { 
+  auth,
+  getters
+}

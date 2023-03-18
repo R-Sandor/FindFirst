@@ -1,12 +1,11 @@
 module.exports = {
-  runtimeCompiler: true,
-  transpileDependencies: true,
   devServer: {
     proxy: {
       '^/api': {
         target: 'http://localhost:9000',
+        ws: true,
         changeOrigin: true
-      },
+      }
     }
   }
-};
+}

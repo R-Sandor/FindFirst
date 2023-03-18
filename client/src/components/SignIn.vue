@@ -36,7 +36,6 @@
   <script>
   import { Form, Field, ErrorMessage } from "vee-validate";
   import * as yup from "yup";
-  
   export default {
     name: "signin",
     components: {
@@ -58,7 +57,7 @@
     },
     computed: {
       loggedIn() {
-        return this.$store.state.auth.status.loggedIn;
+        return this.$store.state.auth.loggedIn;
       },
     },
     created() {
