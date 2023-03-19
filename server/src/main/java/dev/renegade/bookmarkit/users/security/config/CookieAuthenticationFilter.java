@@ -24,8 +24,7 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
   private static final Logger logger = LoggerFactory.getLogger(CookieAuthenticationFilter.class);
 
   private String parseJwt(HttpServletRequest request) {
-    String jwt = jwtUtils.getJwtFromCookies(request);
-    return jwt;
+    return jwtUtils.getJwtFromCookies(request);
   }
 
   @Override

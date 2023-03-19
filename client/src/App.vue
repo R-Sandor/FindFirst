@@ -42,7 +42,7 @@
 export default {
     computed: {
         currentUser() {
-            return this.$store.state.auth.token;
+            return this.$store.state.auth.loggedIn;
         },
     },
     methods: {

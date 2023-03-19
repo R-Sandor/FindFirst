@@ -6,7 +6,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import dev.renegade.bookmarkit.users.repo.UserRepo;
+import dev.renegade.bookmarkit.users.model.UserRole;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +37,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecSecurityConfig {
 
-  private final UserRepo userRepo;
-
   @Value("${jwt.public.key}") private RSAPublicKey key;
 
   @Value("${jwt.private.key}") private RSAPrivateKey priv;
@@ -50,7 +48,6 @@ public class SecSecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    // @formatter:off
     http.authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
         .csrf((csrf) -> csrf.ignoringRequestMatchers("/api/auth/signin"))
         .httpBasic(Customizer.withDefaults())
@@ -62,7 +59,7 @@ public class SecSecurityConfig {
                 exceptions
                     .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
                     .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
-    // @formatter:on
+
     http.addFilterBefore(
         authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     return http.build();
@@ -72,7 +69,10 @@ public class SecSecurityConfig {
   UserDetailsService users() {
     // @formatter:off
     return new InMemoryUserDetailsManager(
-        User.withUsername("user").password("{noop}password").authorities("app").build());
+        User.withUsername("user")
+            .password("{noop}password")
+            .authorities(UserRole.USER.toString())
+            .build());
     // @formatter:on
   }
 
