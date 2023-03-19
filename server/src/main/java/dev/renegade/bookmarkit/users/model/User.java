@@ -1,9 +1,12 @@
 package dev.renegade.bookmarkit.users.model;
 
+import jakarta.annotation.Nonnull;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Size;
+
 import java.util.Collection;
 import java.util.Collections;
 import lombok.AllArgsConstructor;
@@ -25,7 +28,7 @@ public class User implements UserDetails {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NotBlank
+  @Nonnull
 	@Size(max = 20)
 	private String username;
 
