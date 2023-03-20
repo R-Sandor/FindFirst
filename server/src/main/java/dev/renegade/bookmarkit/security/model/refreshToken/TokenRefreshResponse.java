@@ -1,4 +1,4 @@
-package dev.renegade.bookmarkit.users.security.model.refreshToken;
+package dev.renegade.bookmarkit.security.model.refreshToken;
 
 public record TokenRefreshResponse(String tokenType, String refreshToken) {
   public TokenRefreshResponse(String refreshToken) {

@@ -1,4 +1,4 @@
-package dev.renegade.bookmarkit.users.security.model.refreshToken;
+package dev.renegade.bookmarkit.security.model.refreshToken;
 
 import dev.renegade.bookmarkit.users.model.User;
 import jakarta.persistence.Column;

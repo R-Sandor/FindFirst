@@ -1,4 +1,4 @@
-package dev.renegade.bookmarkit.users.security.jwt;
+package dev.renegade.bookmarkit.security.jwt;
 
 import dev.renegade.bookmarkit.users.model.User;
 import dev.renegade.bookmarkit.users.service.UserService;

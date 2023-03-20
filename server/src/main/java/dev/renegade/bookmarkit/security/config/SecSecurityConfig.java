@@ -1,4 +1,4 @@
-package dev.renegade.bookmarkit.users.security.config;
+package dev.renegade.bookmarkit.security.config;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;

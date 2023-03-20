@@ -1,6 +1,5 @@
-package dev.renegade.bookmarkit.users.security.config;
+package dev.renegade.bookmarkit.security.config;
 
-import dev.renegade.bookmarkit.users.security.jwt.JwtUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +14,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import dev.renegade.bookmarkit.security.jwt.JwtUtils;
 
 public class CookieAuthenticationFilter extends OncePerRequestFilter {
   @Autowired private JwtUtils jwtUtils;

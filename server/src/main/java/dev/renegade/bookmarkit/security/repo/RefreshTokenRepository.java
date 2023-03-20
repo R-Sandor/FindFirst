@@ -1,7 +1,8 @@
-package dev.renegade.bookmarkit.users.security.repo;
+package dev.renegade.bookmarkit.security.repo;
 
+import dev.renegade.bookmarkit.security.model.refreshToken.RefreshToken;
 import dev.renegade.bookmarkit.users.model.User;
-import dev.renegade.bookmarkit.users.security.model.refreshToken.RefreshToken;
+
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

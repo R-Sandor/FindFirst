@@ -1,12 +1,12 @@
-package dev.renegade.bookmarkit.users.security.controller;
+package dev.renegade.bookmarkit.security.controller;
 
+import dev.renegade.bookmarkit.security.execeptions.TokenRefreshException;
+import dev.renegade.bookmarkit.security.jwt.JwtUtils;
+import dev.renegade.bookmarkit.security.model.refreshToken.RefreshToken;
+import dev.renegade.bookmarkit.security.model.refreshToken.TokenRefreshRequest;
+import dev.renegade.bookmarkit.security.model.refreshToken.TokenRefreshResponse;
+import dev.renegade.bookmarkit.security.service.RefreshTokenService;
 import dev.renegade.bookmarkit.users.model.User;
-import dev.renegade.bookmarkit.users.security.execeptions.TokenRefreshException;
-import dev.renegade.bookmarkit.users.security.jwt.JwtUtils;
-import dev.renegade.bookmarkit.users.security.model.refreshToken.RefreshToken;
-import dev.renegade.bookmarkit.users.security.model.refreshToken.TokenRefreshRequest;
-import dev.renegade.bookmarkit.users.security.model.refreshToken.TokenRefreshResponse;
-import dev.renegade.bookmarkit.users.security.service.RefreshTokenService;
 import dev.renegade.bookmarkit.users.service.UserService;
 
 import java.time.Instant;
@@ -48,9 +48,9 @@ public class TokenController {
             .map(GrantedAuthority::getAuthority)
             .collect(Collectors.joining(" "));
 
-    Optional<User> user = userService.getUserByEmail(authentication.getName());
-    if(user.isPresent()) {
-    RefreshToken refreshToken = refreshTokenService.createRefreshToken((user.get().getId()));
+    // Optional<User> user = userService.getUserByEmail(authentication.getName());
+    // if(user.isPresent()) {
+    // RefreshToken refreshToken = refreshTokenService.createRefreshToken((user.get().getId()));
     JwtClaimsSet claims =
         JwtClaimsSet.builder()
             .issuer("self")
@@ -70,9 +70,9 @@ public class TokenController {
             .build();
               return ResponseEntity.ok()
               .header(HttpHeaders.SET_COOKIE, cookie.toString())
-              .body(refreshToken.getToken());
-    }
-    return ResponseEntity.badRequest().body("User does not exist.");
+              .body("TEST");
+    // }
+    // return ResponseEntity.badRequest().body("User does not exist.");
     
   }
 

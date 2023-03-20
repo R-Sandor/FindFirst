@@ -7,4 +7,4 @@ insert into tag(id, tag_title) values(1, 'TESTING');
 
 insert into bookmark_tag values(1,1);
 
-insert into 
+insert into users("JSmith", "John Smith", "jsmith@google.com", "test")

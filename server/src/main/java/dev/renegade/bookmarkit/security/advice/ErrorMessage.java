@@ -1,4 +1,4 @@
-package dev.renegade.bookmarkit.users.security.advice;
+package dev.renegade.bookmarkit.security.advice;
 
 import java.util.Date;
 

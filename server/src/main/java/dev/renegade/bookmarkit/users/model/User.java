@@ -1,14 +1,25 @@
 package dev.renegade.bookmarkit.users.model;
 
 import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.JoinColumns;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +29,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Data
-@Entity(name = "Users")
+@Entity(name = "users")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -32,12 +43,16 @@ public class User implements UserDetails {
 	@Size(max = 20)
 	private String username;
 
+  @Nonnull
   private String name;
 
-  private String surname;
-
+  @NotBlank
+  @Size(max=50)
+  @Email
   private String email;
 
+  @NotBlank
+  @Size(max = 25)
   private String password;
 
   @Builder.Default private UserRole userRole = UserRole.USER;
