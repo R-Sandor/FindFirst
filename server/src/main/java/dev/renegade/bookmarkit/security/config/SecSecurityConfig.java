@@ -6,28 +6,32 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-import dev.renegade.bookmarkit.users.model.UserRole;
+import dev.renegade.bookmarkit.security.jwt.AuthEntryPointJwt;
+import dev.renegade.bookmarkit.security.service.UserDetailsServiceImpl;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -41,15 +45,45 @@ public class SecSecurityConfig {
 
   @Value("${jwt.private.key}") private RSAPrivateKey priv;
 
+  @Autowired UserDetailsServiceImpl userDetailsService;
+
+  @Autowired private AuthEntryPointJwt unauthorizedHandler;
+
   @Bean
   public CookieAuthenticationFilter authenticationJwtTokenFilter() {
     return new CookieAuthenticationFilter();
   }
 
   @Bean
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig)
+      throws Exception {
+    return authConfig.getAuthenticationManager();
+  }
+
+  @Bean
+  public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+  }
+
+  @Bean
+  public DaoAuthenticationProvider authenticationProvider() {
+    DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+
+    authProvider.setUserDetailsService(userDetailsService);
+    authProvider.setPasswordEncoder(passwordEncoder());
+
+    return authProvider;
+  }
+
+  @Bean
+  public WebSecurityCustomizer webSecurityCustomizer() {
+    return (web) -> web.ignoring().requestMatchers("/api/auth/**", "/h2-console/**");
+  }
+
+  @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
-        .csrf((csrf) -> csrf.ignoringRequestMatchers("/api/auth/signin"))
+        .csrf((csrf) -> csrf.ignoringRequestMatchers("/api/auth/**"))
         .httpBasic(Customizer.withDefaults())
         .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
         .sessionManagement(
@@ -57,23 +91,14 @@ public class SecSecurityConfig {
         .exceptionHandling(
             (exceptions) ->
                 exceptions
-                    .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+                    .authenticationEntryPoint(unauthorizedHandler)
                     .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
-
+    // For development only.
+    http.headers().frameOptions().disable();
+    http.authenticationProvider(authenticationProvider());
     http.addFilterBefore(
         authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     return http.build();
-  }
-
-  @Bean
-  UserDetailsService users() {
-    // @formatter:off
-    return new InMemoryUserDetailsManager(
-        User.withUsername("user")
-            .password("{noop}password")
-            .authorities(UserRole.USER.toString())
-            .build());
-    // @formatter:on
   }
 
   @Bean

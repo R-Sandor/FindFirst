@@ -3,8 +3,7 @@ package dev.renegade.bookmarkit.security.service;
 import dev.renegade.bookmarkit.security.execeptions.TokenRefreshException;
 import dev.renegade.bookmarkit.security.model.refreshToken.RefreshToken;
 import dev.renegade.bookmarkit.security.repo.RefreshTokenRepository;
-import dev.renegade.bookmarkit.users.repo.UserRepo;
-
+import dev.renegade.bookmarkit.users.repository.UserRepo;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
