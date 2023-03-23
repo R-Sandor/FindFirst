@@ -113,15 +113,14 @@ public class TokenController {
                 user -> {
                   String token = jwtUtils.generateTokenFromUsername(user.getUsername());
 
-                   ResponseCookie cookie =
-        ResponseCookie.from(
-                "bookmarkit",
-               token)
-            .secure(false)
-            .path("/")
-            .domain("localhost")
-            .httpOnly(true)
-            .build();
+                  ResponseCookie cookie =
+                  ResponseCookie.from(
+                    "bookmarkit", token)
+                    .secure(false)
+                    .path("/")
+                    .domain("localhost")
+                    .httpOnly(true)
+                    .build();
                   return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(token);
                 })
             .orElseThrow(() -> new TokenRefreshException(jwt, "Refresh token is not in database!"));
