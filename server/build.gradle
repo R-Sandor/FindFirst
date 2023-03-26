@@ -5,7 +5,7 @@ plugins {
 	id 'java'
 }
 
-group = 'dev.renegade'
+group = 'dev.findfirst'
 version = '1.0.0'
 sourceCompatibility = '17'
 compileJava.dependsOn 'spotlessApply'
