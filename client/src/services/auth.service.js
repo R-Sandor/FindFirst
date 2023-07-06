@@ -10,8 +10,8 @@ class AuthService {
                 {
                       withCredentials: true,
                     auth: {
-                        username: 'user',
-                        password: 'password',
+                        username: "tman",
+                        password: '123456',
                     },
                 }
             ).then(res => { res.data

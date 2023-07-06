@@ -1,24 +1,19 @@
 <template>
-    <div class="row flex-xl-nowrap">
-        <div class="col-12 col-md-3 bd-sidebar">
-            <Sidebar />
-        </div>
-        <div class="col-12 col-md-9 pl-md-5 bd-content">
+    <div>
+        <div class="col-12 pl-md-12 bd-content">
             <Bookmarks :bookmarks="bookmarks" />
         </div>
     </div>
 </template>
 
 <script>
-import Bookmarks from './components/Bookmarks';
-import Sidebar from './components/Sidebar';
+import Bookmarks from './components/ListView/ListGroupBookmarks.vue';
 import api from './Api';
 
 export default {
     name: 'Home',
     components: {
         Bookmarks,
-        Sidebar,
     },
     data() {
         return {
