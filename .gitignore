@@ -2,6 +2,7 @@ HELP.md
 .gradle
 build/
 client/dist
+frontend/node_modules
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
