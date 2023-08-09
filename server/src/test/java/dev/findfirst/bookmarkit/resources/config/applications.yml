@@ -1,0 +1,4 @@
+# for testing, set default profile to 'test'
+spring.profiles.active: "test"
+# and import the 'main' properties
+spring.config.import: file:src/main/resources/application.yml
