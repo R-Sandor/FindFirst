@@ -7,13 +7,13 @@
 </template>
 
 <script>
-import Bookmarks from './components/ListView/ListGroupBookmarks.vue';
+// import Bookmarks from './components/ListView/ListGroupBookmarks.vue';
 import api from './Api';
 
 export default {
     name: 'Home',
     components: {
-        Bookmarks,
+        // Bookmarks,
     },
     data() {
         return {
