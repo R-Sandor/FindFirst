@@ -1,45 +1,24 @@
 "use client";
 import React, { useState } from "react";
 import axios from "axios";
-import { Formik, Field, Form, FormikHelpers } from "formik";
+import { Formik, Field, Form } from "formik";
 import styles from "./login-form.module.css";
+import { authService } from "@/services/auth.service";
+import { useRouter } from "next/navigation";
 
-interface Values {
+export interface credentials {
   username: string;
   password: string;
 }
-interface ServerState {
-  ok: boolean;
-  msg: String;
-}
-const SIGNIN_URL = "http://localhost:9000/api/auth/signin";
+const SIGNIN_URL = "/auth/signin";
 
-export default function LoginForm() {
-  const [serverState, setServerState] = useState<ServerState>();
-  const handleServerResponse = (ok: boolean, msg: String) => {
-    setServerState({ ok, msg });
-  };
-  const handleOnSubmit = (values: Values, actions: any) => {
-    console.log(values)
-    axios({
-      url: SIGNIN_URL,
-      method: "POST",
-      withCredentials: true,
-      auth: {
-        username: values.username,
-        password: values.password,
-      },
-    })
-      .then((response) => {
-        console.log(response);
-        actions.setSubmitting(false);
-        actions.resetForm();
-        handleServerResponse(true, "Thanks!");
-      })
-      .catch((error) => {
-        actions.setSubmitting(false);
-        handleServerResponse(false, error.response);
-      });
+export default function Page() {
+  const router = useRouter();
+  const handleOnSubmit = async (credentials: credentials, actions: any) => {
+    if (await authService.login(credentials)) {
+      console.log("successful auth");
+      router.push("/");
+    }
   };
 
   return (
