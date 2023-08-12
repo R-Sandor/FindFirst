@@ -1,9 +1,11 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import Navbar from "../componenets/Navbar"
+import Navbar from '@components/Navbar'
 import 'bootstrap/dist/css/bootstrap.css'
+import {NavigationEvents} from '@components/navigation-events'
 
 import { Inter } from 'next/font/google'
+import { Component } from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -21,6 +23,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Navbar />
+        <NavigationEvents/>
         {children}
       </body>
     </html>

@@ -1,9 +1,7 @@
 "use client";
-import React, { useState } from "react";
-import axios from "axios";
 import { Formik, Field, Form } from "formik";
 import styles from "./login-form.module.css";
-import { authService } from "@/services/auth.service";
+import  authService  from "@/services/auth.service";
 import { useRouter } from "next/navigation";
 
 export interface credentials {
@@ -16,10 +14,10 @@ export default function Page() {
   const router = useRouter();
   const handleOnSubmit = async (credentials: credentials, actions: any) => {
     if (await authService.login(credentials)) {
-      console.log("successful auth");
       router.push("/");
     }
   };
+
 
   return (
     <div className={styles.login_box + " p-3"}>

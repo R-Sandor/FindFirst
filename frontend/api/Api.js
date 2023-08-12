@@ -26,7 +26,6 @@ const api = {
   },  
   // (R)ead  
   getAll() {  
-    console.log("getall")
     return this.execute('GET','bookmarks', null, { 
       transformResponse: [function (data) {  
         return data? JSON.parse(data) : data;  
