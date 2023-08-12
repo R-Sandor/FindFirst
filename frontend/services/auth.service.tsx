@@ -10,6 +10,7 @@ export interface User {
 
 const SIGNIN_URL = "http://localhost:9000/api/auth/signin";
 
+// Used to declare if user is logged-in.
 export enum AuthStatus {
   Unauthorized,
   Authorized,
@@ -20,6 +21,7 @@ export type AuthObserver = (autherizedState: AuthStatus) => void;
 class AuthService  {
   private observers: AuthObserver[] = [];
 
+  private authorizedState: AuthStatus = AuthStatus.Unauthorized;
   
   public attach(observer: AuthObserver) {
     this.observers.push(observer);
@@ -29,7 +31,6 @@ class AuthService  {
     this.observers = this.observers.filter((obs) => obs !== observer);
   }
 
-  private authorizedState: AuthStatus = AuthStatus.Unauthorized;
   public getUser(): User | null {
      let user = localStorage.getItem("user");
      return user ? JSON.parse(user) : null;
@@ -37,6 +38,7 @@ class AuthService  {
   public setUser(user: User | null){ 
     localStorage.setItem("user", JSON.stringify(user)) 
   }
+
   public getAuthorized(): AuthStatus {
     return this.getUser() ? AuthStatus.Authorized : AuthStatus.Unauthorized;
   }
