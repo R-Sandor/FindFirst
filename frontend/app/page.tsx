@@ -1,39 +1,18 @@
 "use client";
-import LoginForm from "@/componenets/login-form";
-import router, { useParams, usePathname, useRouter } from "next/navigation";
+import  authService, { AuthStatus } from "@/services/auth.service";
 import { useEffect, useState } from "react";
 export default function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [authorized, setAuthorized] = useState(false);
+  const [authorized, setAuthorized] = useState<AuthStatus>();
 
-  const pathname = usePathname();
-  const router = useRouter();
-  const user = JSON.parse(localStorage.getItem("user")!);
   useEffect(() => {
-    if (user) {
-      setLoggedIn(true);
-      console.log(loggedIn)
-    }
-    authCheck(pathname)
-    console.log(pathname)
-  }, []);
+    setAuthorized(authService.getAuthorized())
+}, []); 
 
-  
-
-  function authCheck(url: string) {
-    // redirect to login page if accessing a private page and not logged in
-    const publicPaths = ["/account/login", "/account/register"];
-    const path = url.split("?")[0];
-    console.log(loggedIn)
-    if (!user && !publicPaths.includes(path)) {
-      console.log("not logged in")
-      setAuthorized(false);
-    console.log(loggedIn)
-      router.push("/account/login");
-    } else {
-      setAuthorized(true);
-    }
-  }
-
-  return( authorized ? <div> cool</div> : <div> not cool</div>);
+  /** 
+   * Ideally when the user visits the site they will actually have a cool landing page
+   * rather than redirecting them immediately to sign in. 
+   * Meaning that the '/' will eventually be added to the public route and not authenticated will be the 
+   * the regular landing. 
+  */
+  return(  authorized ? <div> My bookmarks and cool stuff. </div> : <div> Hello Welcome to BookmarkIt. </div>);
 }

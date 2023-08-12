@@ -1,25 +1,47 @@
 import axios from "axios";
 import { alertService } from "./alert.service";
 import { credentials } from "../app/account/login/page";
+import useStorage from '@components/useStorage'
+import React from "react";
 export interface User {
-  username: string
-  refreshToken: string
+  username: string;
+  refreshToken: string;
 }
 
 const SIGNIN_URL = "http://localhost:9000/api/auth/signin";
- 
+
 export enum AuthStatus {
-  Unauthorized, 
-  Authorized
+  Unauthorized,
+  Authorized,
 }
 
-class AuthService {
-  user(): User {
-    return JSON.parse(localStorage.getItem("user") || '{}');
+export type AuthObserver = (autherizedState: AuthStatus) => void;
+
+class AuthService  {
+  private observers: AuthObserver[] = [];
+
+  
+  public attach(observer: AuthObserver) {
+    this.observers.push(observer);
   }
-  async login(credentials: credentials): Promise<boolean> {
+
+  public detach(observer: AuthObserver) {
+    this.observers = this.observers.filter((obs) => obs !== observer);
+  }
+
+  private authorizedState: AuthStatus = AuthStatus.Unauthorized;
+  public getUser(): User | null {
+     let user = localStorage.getItem("user");
+     return user ? JSON.parse(user) : null;
+  }
+  public setUser(user: User | null){ 
+    localStorage.setItem("user", JSON.stringify(user)) 
+  }
+  public getAuthorized(): AuthStatus {
+    return this.getUser() ? AuthStatus.Authorized : AuthStatus.Unauthorized;
+  }
+  public async login(credentials: credentials): Promise<boolean> {
     let success = false;
-    console.log(credentials);
     await axios({
       url: SIGNIN_URL,
       method: "POST",
@@ -29,31 +51,35 @@ class AuthService {
         password: credentials.password,
       },
     }).then((response) => {
-      console.log(response);
-      if (response.status == 200) { 
-        console.log("valid login")
-        let signedinUser: User = { username: credentials.username, refreshToken: response.data.refreshToken}
+      if (response.status == 200) {
+        let signedinUser: User = {
+          username: credentials.username,
+          refreshToken: response.data.refreshToken,
+        };
+        this.notify(this.authorizedState = AuthStatus.Authorized);
         localStorage.setItem("user", JSON.stringify(signedinUser));
-        success = true;    
+        success = true;
       }
     });
+    // TODO: some error handling here.
     //   .catch((error) => {
     //     actions.setSubmitting(false);
     //     actions.resetForm();
     //     handleServerResponse(false, error.response);
     //   });
-    return success; 
+    return success;
   }
 
-  logout() {
-    console.log("loggingout");
-    alertService.clear();
+  public logout() {
+    // alertService.clear();
     // remove user from local storage, publish null to user subscribers and redirect to login page
     localStorage.removeItem("user");
-    // Router.push("/account/login");
+    this.authorizedState = AuthStatus.Unauthorized
+    this.notify(AuthStatus.Unauthorized);
   }
 
-  // register(user) {
+  // TODO: Handle user registration.
+  public register(user: User) {}
   //     return axios.post(API_URL + 'signup', {
   //         username: user.username,
   //         email: user.email,
@@ -61,15 +87,26 @@ class AuthService {
   //     });
   // }
 
-  authCheck(url: string): AuthStatus  {
+  // TODO: Stub to handle when the user has been logged out at some point.
+  handleAuth() {}
+
+  public authCheck(url: string): AuthStatus {
+    console.log("checking Path")
     // redirect to login page if accessing a private page and not logged in
     const publicPaths = ["/account/login", "/account/register"];
     const path = url.split("?")[0];
-    return (this.user() && !publicPaths.includes(path)) ?  
-       AuthStatus.Unauthorized : AuthStatus.Authorized
-      // setAuthorized(false);
-      // router.push("/account/login");
-      // setAuthorized(true);
+    return !this.getUser() && !publicPaths.includes(path)
+        ? AuthStatus.Unauthorized
+        : AuthStatus.Authorized;
   }
+
+  private notify(authorizedState: AuthStatus) {
+    this.observers.forEach((observer) => {
+      console.log("notifying! " + authorizedState)
+      observer(authorizedState);
+    });
+  }
+  
 }
-export const authService = new AuthService();
+const authService = new AuthService();
+export default authService;
