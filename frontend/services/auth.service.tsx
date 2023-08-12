@@ -1,18 +1,22 @@
 import axios from "axios";
 import { alertService } from "./alert.service";
 import { credentials } from "../app/account/login/page";
-import router, { useParams, usePathname, useRouter } from "next/navigation";
-import { withRouter } from "next/router";
-export interface user {
+export interface User {
   username: string
   refreshToken: string
 }
 
 const SIGNIN_URL = "http://localhost:9000/api/auth/signin";
-
+ 
+export enum AuthStatus {
+  Unauthorized, 
+  Authorized
+}
 
 class AuthService {
-  logginSuccess: boolean = false;
+  user(): User {
+    return JSON.parse(localStorage.getItem("user") || '{}');
+  }
   async login(credentials: credentials): Promise<boolean> {
     let success = false;
     console.log(credentials);
@@ -28,7 +32,7 @@ class AuthService {
       console.log(response);
       if (response.status == 200) { 
         console.log("valid login")
-        let signedinUser: user = { username: credentials.username, refreshToken: response.data.refreshToken}
+        let signedinUser: User = { username: credentials.username, refreshToken: response.data.refreshToken}
         localStorage.setItem("user", JSON.stringify(signedinUser));
         success = true;    
       }
@@ -39,7 +43,6 @@ class AuthService {
     //     handleServerResponse(false, error.response);
     //   });
     return success; 
-    // return this.logginSuccess
   }
 
   logout() {
@@ -57,5 +60,16 @@ class AuthService {
   //         password: user.password,
   //     });
   // }
+
+  authCheck(url: string): AuthStatus  {
+    // redirect to login page if accessing a private page and not logged in
+    const publicPaths = ["/account/login", "/account/register"];
+    const path = url.split("?")[0];
+    return (this.user() && !publicPaths.includes(path)) ?  
+       AuthStatus.Unauthorized : AuthStatus.Authorized
+      // setAuthorized(false);
+      // router.push("/account/login");
+      // setAuthorized(true);
+  }
 }
 export const authService = new AuthService();
