@@ -9,31 +9,17 @@ import {
   ButtonGroup,
 } from "react-bootstrap";
 import { useRouter } from "next/navigation";
-import authService, { AuthObserver, AuthStatus } from "@/services/auth.service";
+import authService, { AuthObserver, AuthStatus } from "@services/auth.service";
 import { useEffect, useState } from "react";
+import useAuth from '@components/UseAuth'
 
-const MENU_LIST = [
-  { text: "Home", href: "/" },
-  { text: "Guide", href: "/guide" },
-];
-export const GlobalNavbar: React.FC = () => {
-  const [authorized, setAuthorized] = useState<AuthStatus>();
-
-  const onAuthUpdated: AuthObserver = (authState: AuthStatus) => {
-    setAuthorized(authState);
-  }
-
-  useEffect(() => {
-    setAuthorized(authService.getAuthorized())
-    authService.attach(onAuthUpdated)
-
-    return () => authService.detach(onAuthUpdated)
-  }, [])
+const GlobalNavbar: React.FC = () => {
+  const userAuth = useAuth();
 
   const router = useRouter();
   function authButton() {
-    console.log(authorized)
-    if ( authorized == AuthStatus.Unauthorized) {
+    console.log("User loggedin " + userAuth)
+    if ( userAuth == AuthStatus.Unauthorized) {
       return (
         <ButtonGroup>
           <Button
