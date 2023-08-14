@@ -6,31 +6,44 @@ import Bookmark from "@components/Bookmarks/Bookmark";
 import Tag from "@components/Bookmarks/Tag";
 import api from "@api/Api";
 
+interface TagProp {
+  tags: Tag[]
+}
+
+
+const Tags = ({ tags }:TagProp) => {
+  return  (
+    <div>
+    <ListGroup>
+      {tags.map(tag =>
+        <ListGroup.Item key={tag.id}>
+           {tag.title}
+        </ListGroup.Item>
+      )}
+    </ListGroup>
+    </div>
+  )
+
+}
+
 const TagList: React.FC = () => {
-  const [bookmark, setBookmarks] = useState<Bookmark[] | null>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
 
   useEffect(() => {
-      let list: Bookmark [] = [];
-      api.getAll().then((response) => {
-      for (let bkmk of response.data) {
-        list.push(bkmk)
+      let list: Tag [] = [];
+      api.getAllTags().then((response) => {
+      for (let tag of response.data) {
+        list.push(tag)
       }
     });
+    setTags(list);
     console.log(list)
   }, []);
 
   return (
-    <ListGroup>
-      <ListGroup.Item>No style</ListGroup.Item>
-      <ListGroup.Item variant="primary">Primary</ListGroup.Item>
-      <ListGroup.Item variant="secondary">Secondary</ListGroup.Item>
-      <ListGroup.Item variant="success">Success</ListGroup.Item>
-      <ListGroup.Item variant="danger">Danger</ListGroup.Item>
-      <ListGroup.Item variant="warning">Warning</ListGroup.Item>
-      <ListGroup.Item variant="info">Info</ListGroup.Item>
-      <ListGroup.Item variant="light">Light</ListGroup.Item>
-      <ListGroup.Item variant="dark">Dark</ListGroup.Item>
-    </ListGroup>
+    <div>
+    {Tags({tags: tags})}
+    </div>
   );
 };
 
