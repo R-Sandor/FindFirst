@@ -25,13 +25,20 @@ const api = {
     return this.execute('POST', 'bookmarks', {title: text, completed: completed})  
   },  
   // (R)ead  
-  getAll() {  
+  getAllBookmarks() {  
     return this.execute('GET','bookmarks', null, { 
       transformResponse: [function (data) {  
         return data? JSON.parse(data) : data;  
       }]  
     })  
   },  
+  getAllTags() {  
+    return this.execute('GET','tags', null, { 
+      transformResponse: [function (data) {  
+        return data? JSON.parse(data) : data;  
+      }]  
+    })  
+  },
   // (U)pdate  
   updateForId(id, text, completed) {  
     return this.execute('PUT', 'bookmarks/' + id, { title: text, completed: completed })  
