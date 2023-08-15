@@ -8,16 +8,16 @@ import {
   ButtonGroup,
 } from "react-bootstrap";
 import { useRouter } from "next/navigation";
-import authService, {  AuthStatus } from "@services/auth.service";
-import useAuth from '@components/UseAuth'
+import authService, { AuthStatus } from "@services/auth.service";
+import useAuth from "@components/UseAuth";
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
 
   const router = useRouter();
   function authButton() {
-    console.log("User loggedin " + userAuth)
-    if ( userAuth == AuthStatus.Unauthorized) {
+    console.log("User loggedin " + userAuth);
+    if (userAuth == AuthStatus.Unauthorized) {
       return (
         <ButtonGroup>
           <Button
@@ -64,7 +64,7 @@ const GlobalNavbar: React.FC = () => {
           <Nav.Link onClick={() => router.push("/")}>Discover</Nav.Link>
           <NavDropdown title="Collection" id="collasible-nav-dropdown">
             <NavDropdown.Item onClick={() => router.push("/")}>
-              Tags 
+              Tags
             </NavDropdown.Item>
             <NavDropdown.Item onClick={() => router.push("/")}>
               Reading List
@@ -72,7 +72,7 @@ const GlobalNavbar: React.FC = () => {
           </NavDropdown>
         </Nav>
       </Navbar.Collapse>
-      <Form inline="true" className="mx-3">
+      <Form className="mx-3">
         {authButton()}
       </Form>
     </Navbar>

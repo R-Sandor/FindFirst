@@ -1,7 +1,7 @@
 import './globals.css'
 import type { Metadata } from 'next'
 import Navbar from '@components/Navbar'
-import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
 import {NavigationEvents} from '@components/navigation-events'
 
 import { Inter } from 'next/font/google'
