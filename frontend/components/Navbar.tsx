@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import {
   Navbar,
   Nav,
@@ -9,8 +8,7 @@ import {
   ButtonGroup,
 } from "react-bootstrap";
 import { useRouter } from "next/navigation";
-import authService, { AuthObserver, AuthStatus } from "@services/auth.service";
-import { useEffect, useState } from "react";
+import authService, {  AuthStatus } from "@services/auth.service";
 import useAuth from '@components/UseAuth'
 
 const GlobalNavbar: React.FC = () => {
