@@ -1,7 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Badge from "react-bootstrap/Badge";
-import ListGroup from "react-bootstrap/ListGroup";
+import { Badge, ListGroup } from "react-bootstrap";
 import Bookmark from "@/types/Bookmarks/Bookmark";
 import Tag from "@/types/Bookmarks/Tag";
 import api from "@api/Api";
@@ -15,7 +14,15 @@ const Tags = ({ tags }: TagProp) => {
     <div>
       <ListGroup>
         {tags.map((tag) => (
-          <ListGroup.Item key={tag.id}>{tag.title}</ListGroup.Item>
+          <ListGroup.Item
+            key={tag.id}
+            className="d-flex justify-content-between align-items-start"
+          >
+            {tag.title}
+            <Badge bg="primary" pill>
+              3
+            </Badge>
+          </ListGroup.Item>
         ))}
       </ListGroup>
     </div>
