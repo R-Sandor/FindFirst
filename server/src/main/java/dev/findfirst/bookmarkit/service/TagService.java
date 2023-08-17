@@ -1,6 +1,7 @@
 package dev.findfirst.bookmarkit.service;
 
 import dev.findfirst.bookmarkit.model.Tag;
+import dev.findfirst.bookmarkit.model.TagCntRecord;
 import dev.findfirst.bookmarkit.repository.TagRepository;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,5 +30,9 @@ public class TagService {
 
   public List<Tag> getTags() {
     return tagRepository.findAll();
+  }
+
+  public List<TagCntRecord>  getTagsWithCnt() { 
+    return tagRepository.customTagsWithCnt();
   }
 }
