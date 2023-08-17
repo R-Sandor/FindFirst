@@ -12,9 +12,11 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.Set;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "tag")
@@ -54,8 +56,9 @@ public class Tag {
     } else return false;
   }
 
-  @Override
-  public int hashCode() {
-    return title.hashCode();
+  @Override 
+  public String toString() {
+    return this.title + " " + this.id;
   }
+
 }

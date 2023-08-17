@@ -1,15 +1,17 @@
 insert into bookmark (id, title, url) values(1, 'Best Cheesecake Recipe', 'https://sugarspunrun.com/best-cheesecake-recipe/');
-insert into bookmark (id, title, url) values(3, 'Best Cheesecake Recipe', 'https://www.foodnetwork.com/recipes/bobby-flay/chicken-parmigiana-recipe-1952359');
+insert into bookmark (id, title, url) values(3, 'Chicken Parm', 'https://www.foodnetwork.com/recipes/bobby-flay/chicken-parmigiana-recipe-1952359');
 insert into bookmark values(2, 'Dark mode guide', 'https://blog.logrocket.com/dark-mode-react-in-depth-guide/');
 --insert into bookmark values(3, "test", "test.com");
 --insert into bookmark values(4, "test", "test.com");
 
 insert into tag(id, tag_title) values(1, 'Cooking');
 insert into tag(id, tag_title) values(2, 'web_dev');
+insert into tag(id, tag_title) values(3, 'deserts');
 
 -- Cooking related bookmark_tags
 insert into bookmark_tag values(1,1);
 insert into bookmark_tag values(1,3);
+insert into bookmark_tag values(3,1);
 -- tech related bookmark_tags
 insert into bookmark_tag values(2,2);
 
