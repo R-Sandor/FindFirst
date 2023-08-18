@@ -1,18 +1,22 @@
+DROP TABLE IF EXISTS public.bookmark_tag;
 DROP TABLE IF EXISTS public.bookmark;
 DROP TABLE IF EXISTS public.tag;
-DROP TABLE IF EXISTS public.bookmark_tag;
+DROP TABLE IF EXISTS public.users CASCADE;
+DROP TABLE IF EXISTS public.user_roles CASCADE;
+DROP TYPE  IF EXISTS urole CASCADE;
+DROP TABLE IF EXISTS roles;
 
+CREATE TYPE urole as ENUM ('ROLE_USER','ROLE_MODERATOR','ROLE_ADMIN');
 
 CREATE TABLE public.bookmark (
-    id INT AUTO_INCREMENT  PRIMARY KEY,
+    id serial not null PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
-    url VARCHAR(50) NOT NULL
+    url VARCHAR(255) NOT NULL
 );
-
 
 -- tag --
 CREATE TABLE public.tag (
-  id INT AUTO_INCREMENT  PRIMARY KEY,
+  id serial not null  PRIMARY KEY,
   tag_title VARCHAR(50) NOT NULL
 );
 -- ALTER TABLE public.bookmark_tag
@@ -22,4 +26,22 @@ CREATE TABLE public.tag (
 CREATE TABLE public.bookmark_tag (
     bookmark_id INT,
     tag_id INT
+);
+
+CREATE TABLE IF NOT EXISTS public.roles (
+  role_id INT NOT NULL PRIMARY key, 
+  name urole
+);
+
+CREATE TABLE IF NOT EXISTS public.user_roles (
+  user_id INT,
+  role_id INT
+);
+
+CREATE TABLE public.users (
+  user_id serial NOT NULL PRIMARY key,
+  username VARCHAR(20) NOT NULL,
+  name VARCHAR(50) NOT NULL, 
+  email VARCHAR(50) NOT NULL,
+  password VARCHAR(255) NOT NULL
 );
