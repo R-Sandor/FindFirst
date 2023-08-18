@@ -8,8 +8,8 @@ services:
      - "8080:8080"
   backend:
     build: 
-      dockerfile: ./docker/server/Dockerfile
-      context: ./
+      dockerfile: ../docker/server/Dockerfile
+      context: ./backend
     ports: 
      - "9000:9000"
   db: 
@@ -19,4 +19,4 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=admin
     ports:
-      - 5432:5432
+      - 5433:5433
