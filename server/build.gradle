@@ -56,7 +56,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-mail:3.0.1'
 
 	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'org.postgresql:postgresql'
+
 
 	annotationProcessor 'org.projectlombok:lombok'
 
