@@ -101,7 +101,7 @@ public class BookmarkService {
 
   private boolean addExistingTag(Bookmark bookmark, Tag tagRequest) {
     if (tagRequest.getId() == 0L) {
-      Tag tag = tagRepository.findByTitle(tagRequest.getTitle());
+      Tag tag = tagRepository.findByTagTitle(tagRequest.getTag_title());
       if (tag != null) {
         addTagToBookmarkRecord(bookmark, tag.getId());
         return true;
