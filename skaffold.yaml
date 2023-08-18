@@ -1,0 +1,18 @@
+apiVersion: skaffold/v4beta6
+kind: Config
+metadata:
+  name: bookmarkitapp
+build:
+  artifacts:
+    - image: backend
+      context: server
+      buildpacks:
+        builder: gcr.io/buildpacks/builder:v1
+    - image: frontend
+      context: frontend
+      buildpacks:
+        builder: gcr.io/buildpacks/builder:v1
+manifests:
+  rawYaml:
+    - frontend/k8s/deploy.yaml
+    - server/k8s/deploy.yaml
