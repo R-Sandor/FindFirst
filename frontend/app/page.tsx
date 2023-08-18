@@ -2,28 +2,38 @@
 import api from "@/api/Api";
 import authService, { AuthStatus } from "@/services/auth.service";
 import Tag from "@/types/Bookmarks/Tag";
+import Bookmark from "@/types/Bookmarks/Bookmark";
 import TagList from "@components/TagList";
 import { useEffect, useState } from "react";
 
 export default function App() {
   const [authorized, setAuthorized] = useState<AuthStatus>();
   const [tag, setTags] = useState<Tag[]>([]);
-  const [bookmarks, setBookmarks] = useState<Tag[]>([]);
+  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
 
   useEffect(() => {
     setAuthorized(authService.getAuthorized());
   }, []);
 
+  // Grab the data.
   useEffect(() => {
     if (authorized) {
-    let list: Tag[] = [];
-    api.getAllTags().then((response) => {
-      for (let tag of response.data) {
-        list.push(tag);
-      }
-    });
-    setTags(list);
-    console.log(list);
+      let tagList: Tag[] = [];
+      let bkmkList: Bookmark[] = [];
+      api.getAllTags().then((response) => {
+        for (let tag of response.data) {
+          tagList.push(tag);
+        }
+      });
+      setTags(tagList);
+      console.log(tagList);
+
+      api.getAllBookmarks().then((response) => {
+        for (let bkmk of response.data) {
+          bkmkList.push(bkmk);
+        }
+      });
+      console.log(bkmkList);
     }
   }, [authorized]);
 
@@ -36,7 +46,7 @@ export default function App() {
   return authorized ? (
     <div>
       <div className="w-1/4">
-        <TagList />
+        <TagList tagsCounted={[]} />
       </div>
     </div>
   ) : (

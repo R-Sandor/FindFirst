@@ -1,26 +1,26 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Badge, ListGroup } from "react-bootstrap";
-import Bookmark from "@/types/Bookmarks/Bookmark";
-import Tag from "@/types/Bookmarks/Tag";
-import api from "@api/Api";
+import TagWithCntList from "@/types/Bookmarks/TagWithCntList";
+import TagWithCnt  from "@/types/Bookmarks/TagWithCnt";
 
 interface TagProp {
-  tags: Tag[];
+  tags: TagWithCnt[];
 }
 
+// 
 const Tags = ({ tags }: TagProp) => {
   return (
     <div>
       <ListGroup>
         {tags.map((tag) => (
           <ListGroup.Item
-            key={tag.id}
+            key={tag.tag.id}
             className="d-flex justify-content-between align-items-start"
           >
-            {tag.title}
+            {tag.tag.title}
             <Badge bg="primary" pill>
-              3
+              { tag.cnt }
             </Badge>
           </ListGroup.Item>
         ))}
@@ -29,25 +29,9 @@ const Tags = ({ tags }: TagProp) => {
   );
 };
 
-const TagList: React.FC = () => {
-  const [tags, setTags] = useState<Tag[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let list: Tag[] = [];
-    api.getAllTags().then((response) => {
-      for (let tag of response.data) {
-        list.push(tag);
-      }
-      setLoading(false);
-    });
-    setTags(list);
-    console.log(list);
-  }, []);
-
-  if (loading) return <p> Loading Data</p>;
-
-  return <div>{Tags({ tags: tags })}</div>;
+// Pass in our TagsWithCnt[] i.e., the TagsWithCntList.
+function TagList({ tagsCounted }: TagWithCntList) { 
+  return <div>{Tags({ tags: tagsCounted })}</div>;
 };
 
 export default TagList;
