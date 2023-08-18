@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS public.bookmark;
 DROP TABLE IF EXISTS public.tag;
+DROP TABLE IF EXISTS public.bookmark_tag;
 
 
 CREATE TABLE public.bookmark (
