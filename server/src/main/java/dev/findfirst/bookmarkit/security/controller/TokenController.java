@@ -8,7 +8,7 @@ import dev.findfirst.bookmarkit.security.model.payload.request.TokenRefreshReque
 import dev.findfirst.bookmarkit.security.model.payload.response.MessageResponse;
 import dev.findfirst.bookmarkit.security.model.refreshToken.RefreshToken;
 import dev.findfirst.bookmarkit.security.service.RefreshTokenService;
-import dev.findfirst.bookmarkit.users.model.ERole;
+import dev.findfirst.bookmarkit.users.model.URole;
 import dev.findfirst.bookmarkit.users.model.User;
 import dev.findfirst.bookmarkit.users.repository.RoleRepository;
 import dev.findfirst.bookmarkit.users.repository.UserRepo;
@@ -79,7 +79,7 @@ public class TokenController {
         userService
             .getUserByUsername(values[0])
             .orElseThrow(() -> new RuntimeException("No such user"));
-    RefreshToken refreshToken = refreshTokenService.createRefreshToken((user.getId()));
+    RefreshToken refreshToken = refreshTokenService.createRefreshToken((user.getUserId()));
     JwtClaimsSet claims =
         JwtClaimsSet.builder()
             .issuer("self")
@@ -148,7 +148,7 @@ public class TokenController {
             signUpRequest.email(),
             pEncoder.encode(signUpRequest.password()));
 
-    user.setRoles(Set.of(roleRepository.findByName(ERole.ROLE_USER).get()));
+    user.setRoles(Set.of(roleRepository.findByName(URole.ROLE_USER).get()));
     userRepository.save(user);
 
     return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
