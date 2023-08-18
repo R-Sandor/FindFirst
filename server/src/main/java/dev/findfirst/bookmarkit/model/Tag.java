@@ -12,11 +12,9 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.Set;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "tag")
@@ -28,8 +26,8 @@ public class Tag {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;
 
-  @Column(name = "tag_title")
-  @NonNull private String title;
+  @Column(length = 50)
+  @NonNull private String tag_title;
 
   @ManyToMany(
       fetch = FetchType.EAGER,
@@ -39,7 +37,7 @@ public class Tag {
   Set<Bookmark> bookmarks;
 
   public Tag(String tagVal) {
-    this.title = tagVal;
+    this.tag_title = tagVal;
   }
 
   public Set<Bookmark> getBookmarks() {
@@ -52,13 +50,12 @@ public class Tag {
   public boolean equals(Object obj) {
     if (obj instanceof Tag) {
       Tag t = (Tag) obj;
-      return t.title.equals(this.title);
+      return t.tag_title.equals(this.tag_title);
     } else return false;
   }
 
-  @Override 
+  @Override
   public String toString() {
-    return this.title + " " + this.id;
+    return this.tag_title + " " + this.id;
   }
-
 }
