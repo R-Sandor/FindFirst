@@ -11,6 +11,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import java.util.Set;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -19,6 +20,7 @@ import lombok.NonNull;
 @Table(name = "bookmark")
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Bookmark {
 
   public Bookmark(String title, String url) {
@@ -30,9 +32,11 @@ public class Bookmark {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @NonNull @Column private String title;
+  @NonNull @Column(length = 50)
+  private String title;
 
-  @NonNull @Column private String url;
+  @NonNull @Column(length = 255)
+  private String url;
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(
