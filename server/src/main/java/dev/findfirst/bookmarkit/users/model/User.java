@@ -1,6 +1,7 @@
 package dev.findfirst.bookmarkit.users.model;
 
 import jakarta.annotation.Nonnull;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -42,13 +43,16 @@ public class User {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
+  @Column(name = "user_id")
+  private Long userId;
 
   @Nonnull
   @Size(max = 20)
   private String username;
 
-  @Nonnull private String name;
+  @Nonnull
+  @Size(max = 50)
+  private String name;
 
   @NotBlank
   @Size(max = 50)
@@ -56,13 +60,13 @@ public class User {
   private String email;
 
   @NotBlank
-  @Size(max = 120)
+  @Size(max = 255)
   private String password;
 
   @ManyToMany(fetch = FetchType.LAZY)
   @JoinTable(
       name = "user_roles",
-      joinColumns = @JoinColumn(name = "user_id"),
-      inverseJoinColumns = @JoinColumn(name = "role_id"))
+      joinColumns = @JoinColumn(name = "role_id"),
+      inverseJoinColumns = @JoinColumn(name = "user_id"))
   private Set<Role> roles = new HashSet<>();
 }
