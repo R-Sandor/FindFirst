@@ -17,7 +17,7 @@ const GlobalNavbar: React.FC = () => {
   const router = useRouter();
   function authButton() {
     console.log("User loggedin " + userAuth);
-    if (userAuth == AuthStatus.Unauthorized) {
+    if (userAuth == AuthStatus.Unauthorized || userAuth === undefined) {
       return (
         <ButtonGroup>
           <Button
