@@ -1,6 +1,8 @@
 package dev.findfirst.bookmarkit.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import dev.findfirst.bookmarkit.security.model.Tenantable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,7 +23,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class Tag {
+public class Tag extends Tenantable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private long id;

@@ -1,6 +1,6 @@
 package dev.findfirst.bookmarkit.security.service;
 
-import dev.findfirst.bookmarkit.users.model.User;
+import dev.findfirst.bookmarkit.users.model.user.User;
 import dev.findfirst.bookmarkit.users.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

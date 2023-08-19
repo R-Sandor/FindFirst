@@ -1,7 +1,7 @@
 package dev.findfirst.bookmarkit.security.repo;
 
 import dev.findfirst.bookmarkit.security.model.refreshToken.RefreshToken;
-import dev.findfirst.bookmarkit.users.model.User;
+import dev.findfirst.bookmarkit.users.model.user.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

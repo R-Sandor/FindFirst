@@ -1,6 +1,6 @@
 package dev.findfirst.bookmarkit.security.model.refreshToken;
 
-import dev.findfirst.bookmarkit.users.model.User;
+import dev.findfirst.bookmarkit.users.model.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

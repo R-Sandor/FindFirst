@@ -25,7 +25,7 @@ public class TagRepoCustomImpl implements TagRepoCustom {
     CriteriaQuery<TagCntRecord> cq = qb.createQuery(TagCntRecord.class);
     Root<Bookmark> bkmk = cq.from(Bookmark.class);
     Join<Bookmark, Tag> tag_bookmark = bkmk.join("tags");
-    cq.multiselect(bkmk.get("tags"), qb.count(bkmk)).groupBy(tag_bookmark);
+    cq.multiselect(bkmk.get("tags"), qb.count(bkmk)).groupBy(tag_bookmark, bkmk.get("tags"));
     return em.createQuery(cq).getResultList();
   }
 

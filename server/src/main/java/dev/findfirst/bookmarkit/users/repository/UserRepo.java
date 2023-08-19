@@ -1,6 +1,6 @@
 package dev.findfirst.bookmarkit.users.repository;
 
-import dev.findfirst.bookmarkit.users.model.User;
+import dev.findfirst.bookmarkit.users.model.user.User;
 import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 
