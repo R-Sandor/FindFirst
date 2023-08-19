@@ -1,12 +1,14 @@
 package dev.findfirst.bookmarkit.repository;
 
 import dev.findfirst.bookmarkit.model.Tag;
+import dev.findfirst.bookmarkit.security.tenant.repository.TenantableRepository;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource
-public interface TagRepository extends JpaRepository<Tag, Long>, TagRepoCustom {
+public interface TagRepository extends TenantableRepository<Tag>, TagRepoCustom {
   @Query("SELECT t FROM Tag t WHERE t.tag_title =?1")
   Tag findByTagTitle(String title);
 

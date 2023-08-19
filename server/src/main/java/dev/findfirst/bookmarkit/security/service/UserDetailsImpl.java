@@ -1,11 +1,10 @@
 package dev.findfirst.bookmarkit.security.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.findfirst.bookmarkit.users.model.User;
+import dev.findfirst.bookmarkit.users.model.user.User;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,34 +20,27 @@ public class UserDetailsImpl implements UserDetails {
 
   @JsonIgnore private String password;
 
-  private Collection<? extends GrantedAuthority> authorities;
+  private GrantedAuthority authority;
 
   public UserDetailsImpl(
-      Long id,
-      String username,
-      String email,
-      String password,
-      Collection<? extends GrantedAuthority> authorities) {
+      Long id, String username, String email, String password, GrantedAuthority authority) {
     this.id = id;
     this.username = username;
     this.email = email;
     this.password = password;
-    this.authorities = authorities;
+    this.authority = authority;
   }
 
   public static UserDetailsImpl build(User user) {
-    List<GrantedAuthority> authorities =
-        user.getRoles().stream()
-            .map(role -> new SimpleGrantedAuthority(role.getName().name()))
-            .collect(Collectors.toList());
+    GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName().name());
 
     return new UserDetailsImpl(
-        user.getUserId(), user.getUsername(), user.getEmail(), user.getPassword(), authorities);
+        user.getUserId(), user.getUsername(), user.getEmail(), user.getPassword(), authority);
   }
 
   @Override
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return authorities;
+    return List.of(authority);
   }
 
   public Long getId() {

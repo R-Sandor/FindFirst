@@ -1,4 +1,4 @@
-package dev.findfirst.bookmarkit.users.model;
+package dev.findfirst.bookmarkit.users.model.user;
 
 public enum URole {
   ROLE_USER,

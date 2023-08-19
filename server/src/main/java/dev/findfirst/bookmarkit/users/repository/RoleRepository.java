@@ -1,7 +1,7 @@
 package dev.findfirst.bookmarkit.users.repository;
 
-import dev.findfirst.bookmarkit.users.model.Role;
-import dev.findfirst.bookmarkit.users.model.URole;
+import dev.findfirst.bookmarkit.users.model.user.Role;
+import dev.findfirst.bookmarkit.users.model.user.URole;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -1,5 +1,6 @@
 package dev.findfirst.bookmarkit.model;
 
+import dev.findfirst.bookmarkit.security.model.Tenantable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,7 +22,7 @@ import lombok.NonNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Bookmark {
+public class Bookmark extends Tenantable {
 
   public Bookmark(String title, String url) {
     this.title = title;

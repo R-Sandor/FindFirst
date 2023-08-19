@@ -3,6 +3,7 @@ package dev.findfirst.bookmarkit.security.service;
 import dev.findfirst.bookmarkit.security.execeptions.TokenRefreshException;
 import dev.findfirst.bookmarkit.security.model.refreshToken.RefreshToken;
 import dev.findfirst.bookmarkit.security.repo.RefreshTokenRepository;
+import dev.findfirst.bookmarkit.users.model.user.User;
 import dev.findfirst.bookmarkit.users.repository.UserRepo;
 import java.time.Instant;
 import java.util.Optional;
@@ -24,10 +25,10 @@ public class RefreshTokenService {
     return refreshTokenRepository.findByToken(token);
   }
 
-  public RefreshToken createRefreshToken(Long userId) {
+  public RefreshToken createRefreshToken(User user) {
     RefreshToken refreshToken = new RefreshToken();
 
-    refreshToken.setUser(userRepository.findById(userId).get());
+    refreshToken.setUser(user);
     refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
     refreshToken.setToken(UUID.randomUUID().toString());
 

@@ -6,6 +6,7 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
+import dev.findfirst.bookmarkit.security.filters.CookieAuthenticationFilter;
 import dev.findfirst.bookmarkit.security.jwt.AuthEntryPointJwt;
 import dev.findfirst.bookmarkit.security.service.UserDetailsServiceImpl;
 import java.security.interfaces.RSAPrivateKey;

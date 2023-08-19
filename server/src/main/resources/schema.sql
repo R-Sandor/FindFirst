@@ -11,13 +11,15 @@ CREATE TYPE urole as ENUM ('ROLE_USER','ROLE_MODERATOR','ROLE_ADMIN');
 CREATE TABLE public.bookmark (
     id serial not null PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
-    url VARCHAR(255) NOT NULL
+    url VARCHAR(255) NOT NULL,
+    tenant_id int NOT Null
 );
 
 -- tag --
 CREATE TABLE public.tag (
   id serial not null  PRIMARY KEY,
-  tag_title VARCHAR(50) NOT NULL
+  tag_title VARCHAR(50) NOT NULL,
+  tenant_id int NOT NULL
 );
 -- ALTER TABLE public.bookmark_tag
 --   ADD CONSTRAINT fk_tag_bookmark_id FOREIGN KEY (id) REFERENCES public.bookmark(id);
@@ -43,5 +45,7 @@ CREATE TABLE public.users (
   username VARCHAR(20) NOT NULL,
   name VARCHAR(50) NOT NULL, 
   email VARCHAR(50) NOT NULL,
-  password VARCHAR(255) NOT NULL
+  password VARCHAR(255) NOT NULL,
+  role_role_id INT NOT NULL,
+  tenant_id INT NOT NULL
 );
