@@ -1,6 +1,6 @@
 package dev.findfirst.bookmarkit.security.service;
 
-import dev.findfirst.bookmarkit.security.jwt.JwtUtils;
+import dev.findfirst.bookmarkit.security.jwt.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,7 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
-  @Autowired private JwtUtils jwtUtils;
+  @Autowired private JwtService jwtUtils;
 
   @Autowired private UserDetailsServiceImpl userDetailsService;
 

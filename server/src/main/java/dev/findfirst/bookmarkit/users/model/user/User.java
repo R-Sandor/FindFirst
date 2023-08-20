@@ -1,6 +1,7 @@
 package dev.findfirst.bookmarkit.users.model.user;
 
-import dev.findfirst.bookmarkit.security.model.Tenantable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import dev.findfirst.bookmarkit.security.model.payload.request.SignupRequest;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,16 +30,21 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User extends Tenantable {
+public class User {
 
-  public User(String username, String email, String encode) {
+  public User(String username, String email, String name, String encode) {
     this.username = username;
     this.email = email;
+    this.name = name;
     this.password = encode;
   }
 
+  public User(SignupRequest signup, String encodedPasswd) {
+    this(signup.username(), signup.email(), signup.name(), encodedPasswd);
+  }
+
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "user_id")
   private Long userId;
 
@@ -61,4 +67,8 @@ public class User extends Tenantable {
 
   @ManyToOne(optional = false)
   private Role role;
+
+  @JsonIgnore
+  @Column(nullable = false)
+  private Integer tenantId;
 }
