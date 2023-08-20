@@ -29,8 +29,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
 @Service
-public class JwtUtils {
-  private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
+public class JwtService {
+  private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
   @Value("${jwt.private.key}") private RSAPrivateKey priv;
 

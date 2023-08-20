@@ -8,9 +8,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
-
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -28,7 +26,4 @@ public class TagRepoCustomImpl implements TagRepoCustom {
     cq.multiselect(bkmk.get("tags"), qb.count(bkmk)).groupBy(tag_bookmark, bkmk.get("tags"));
     return em.createQuery(cq).getResultList();
   }
-
-
-  
 }

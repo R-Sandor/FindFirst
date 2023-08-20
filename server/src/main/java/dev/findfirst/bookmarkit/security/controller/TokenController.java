@@ -1,13 +1,14 @@
 package dev.findfirst.bookmarkit.security.controller;
 
 import dev.findfirst.bookmarkit.security.execeptions.TokenRefreshException;
-import dev.findfirst.bookmarkit.security.jwt.JwtUtils;
+import dev.findfirst.bookmarkit.security.jwt.JwtService;
 import dev.findfirst.bookmarkit.security.model.payload.TokenRefreshResponse;
 import dev.findfirst.bookmarkit.security.model.payload.request.SignupRequest;
 import dev.findfirst.bookmarkit.security.model.payload.request.TokenRefreshRequest;
 import dev.findfirst.bookmarkit.security.model.payload.response.MessageResponse;
 import dev.findfirst.bookmarkit.security.model.refreshToken.RefreshToken;
 import dev.findfirst.bookmarkit.security.service.RefreshTokenService;
+import dev.findfirst.bookmarkit.security.tenant.data.TenantService;
 import dev.findfirst.bookmarkit.users.model.user.URole;
 import dev.findfirst.bookmarkit.users.model.user.User;
 import dev.findfirst.bookmarkit.users.repository.RoleRepository;
@@ -16,6 +17,7 @@ import dev.findfirst.bookmarkit.users.service.UserService;
 import jakarta.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.NoSuchElementException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -35,7 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TokenController {
 
   @Autowired JwtEncoder encoder;
-  @Autowired private JwtUtils jwtUtils;
+  @Autowired private JwtService jwtService;
   @Autowired RefreshTokenService refreshTokenService;
   @Autowired AuthenticationManager authenticationManager;
 
@@ -43,9 +45,11 @@ public class TokenController {
 
   @Autowired UserRepo userRepository;
 
+  @Autowired TenantService tenantService;
+
   @Autowired RoleRepository roleRepository;
 
-  @Autowired PasswordEncoder pEncoder;
+  @Autowired PasswordEncoder passwdEncoder;
 
   @Autowired UserService userService;
 
@@ -60,7 +64,7 @@ public class TokenController {
     // This error should never occur, as authentication checks username and throws.
     User user = userService.getUserByUsername(values[0]);
     RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
-    String token = jwtUtils.generateTokenFromUser(user);
+    String token = jwtService.generateTokenFromUser(user);
 
     ResponseCookie cookie =
         ResponseCookie.from("bookmarkit", token)
@@ -85,7 +89,7 @@ public class TokenController {
             .map(RefreshToken::getUser)
             .map(
                 user -> {
-                  String token = jwtUtils.generateTokenFromUsername(user.getUsername());
+                  String token = jwtService.generateTokenFromUsername(user.getUsername());
 
                   ResponseCookie cookie =
                       ResponseCookie.from("bookmarkit", token)
@@ -114,15 +118,21 @@ public class TokenController {
     }
 
     // Create new user's account
-    User user =
-        new User(
-            signUpRequest.username(),
-            signUpRequest.email(),
-            pEncoder.encode(signUpRequest.password()));
-
-    user.setRole(roleRepository.findByName(URole.ROLE_USER).get());
-    userRepository.save(user);
-
+    User user = new User(signUpRequest, passwdEncoder.encode(signUpRequest.password()));
+    var role =
+        roleRepository.findById(URole.ROLE_USER.ordinal()).orElseThrow(NoSuchElementException::new);
+    user.setRole(role);
+    var t = tenantService.create(signUpRequest.username());
+    // create a new tenant
+    try {
+      user.setTenantId(t.getId());
+      userRepository.save(user);
+    } catch (Exception e) {
+      // If any exception occurs we should delete the records that were just made.
+      tenantService.deleteById(t.getId());
+      userRepository.delete(user);
+      return ResponseEntity.badRequest().body(new MessageResponse("Could not signup, try again."));
+    }
     return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
   }
 }

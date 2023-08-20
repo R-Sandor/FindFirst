@@ -78,7 +78,7 @@ public class SecSecurityConfig {
 
   @Bean
   public WebSecurityCustomizer webSecurityCustomizer() {
-    return (web) -> web.ignoring().requestMatchers("/api/auth/**", "/h2-console/**");
+    return (web) -> web.ignoring().requestMatchers("/api/auth/**");
   }
 
   @Bean
@@ -94,8 +94,6 @@ public class SecSecurityConfig {
                 exceptions
                     .authenticationEntryPoint(unauthorizedHandler)
                     .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
-    // For development only.
-    http.headers().frameOptions().disable();
     http.authenticationProvider(authenticationProvider());
     http.addFilterBefore(
         authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -35,10 +35,11 @@ CREATE TABLE IF NOT EXISTS public.roles (
   name urole
 );
 
-CREATE TABLE IF NOT EXISTS public.user_roles (
-  user_id INT,
-  role_id INT
-);
+-- Not need in a one to one relationship
+-- CREATE TABLE IF NOT EXISTS public.user_roles (
+--   user_id INT,
+--   role_id INT
+-- );
 
 CREATE TABLE public.users (
   user_id serial NOT NULL PRIMARY key,

@@ -1,6 +1,6 @@
 package dev.findfirst.bookmarkit.security.filters;
 
-import dev.findfirst.bookmarkit.security.jwt.JwtUtils;
+import dev.findfirst.bookmarkit.security.jwt.JwtService;
 import dev.findfirst.bookmarkit.security.jwt.TenantAuthenticationToken;
 import dev.findfirst.bookmarkit.security.utils.Constants;
 import io.jsonwebtoken.Claims;
@@ -30,7 +30,7 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
 
   @Autowired private UserDetailsService userDetailsService;
 
-  @Autowired private JwtUtils jwtUtils;
+  @Autowired private JwtService jwtUtils;
 
   private String parseJwt(HttpServletRequest request) {
     return jwtUtils.getJwtFromCookies(request);
