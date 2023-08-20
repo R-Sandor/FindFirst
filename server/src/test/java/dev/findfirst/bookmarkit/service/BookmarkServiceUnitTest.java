@@ -1,15 +1,19 @@
-package dev.findfirst.bookmarkit;
+package dev.findfirst.bookmarkit.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import dev.findfirst.bookmarkit.annotations.IntegrationTestConfig;
 import dev.findfirst.bookmarkit.model.Bookmark;
-import dev.findfirst.bookmarkit.service.BookmarkService;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.EnabledIf;
 
-@SpringBootTest
+// @DataJpaTest
+@IntegrationTestConfig
+@EnabledIf(
+    value = "#{{'test', 'prod'}.contains(environment.getActiveProfiles()[0])}",
+    loadContext = true)
 public class BookmarkServiceUnitTest {
 
   @Autowired private BookmarkService bookmarkService;
@@ -19,7 +23,4 @@ public class BookmarkServiceUnitTest {
     List<Bookmark> bookmarks = bookmarkService.list();
     assertEquals(bookmarks.size(), 2);
   }
-
-
-  
 }
