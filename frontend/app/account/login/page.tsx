@@ -20,7 +20,8 @@ export default function Page() {
 
 
   return (
-    <div className={styles.login_box + " p-3"}>
+    <div className="grid h-screen place-items-center">
+    <div className={ "content-center " + styles.login_box + " p-3"}>
       <h1 className="display-6 mb-3">Login</h1>
       <Formik
         initialValues={{
@@ -50,11 +51,12 @@ export default function Page() {
             />
           </div>
 
-          <button type="submit" className="btn btn-primary">
+          <button type="submit" className="btn bg-sky-500/75">
             Login
           </button>
         </Form>
       </Formik>
+    </div>
     </div>
   );
 }

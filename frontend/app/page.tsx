@@ -5,20 +5,20 @@ import Tag from "@/types/Bookmarks/Tag";
 import Bookmark from "@/types/Bookmarks/Bookmark";
 import TagList from "@components/TagList";
 import { useEffect, useState } from "react";
+import useAuth from "@components/UseAuth";
+import TagWithCnt from "@/types/Bookmarks/TagWithCnt";
 
 export default function App() {
-  const [authorized, setAuthorized] = useState<AuthStatus>();
-  const [tag, setTags] = useState<Tag[]>([]);
+  const userAuth = useAuth();
+  const [tags, setTags] = useState<TagWithCnt[]>([]);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+  const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    setAuthorized(authService.getAuthorized());
-  }, []);
 
   // Grab the data.
   useEffect(() => {
-    if (authorized) {
-      let tagList: Tag[] = [];
+    if (userAuth) {
+      let tagList: TagWithCnt[] = [];
       let bkmkList: Bookmark[] = [];
       api.getAllTags().then((response) => {
         for (let tag of response.data) {
@@ -32,10 +32,11 @@ export default function App() {
         for (let bkmk of response.data) {
           bkmkList.push(bkmk);
         }
+      setLoading(false);
       });
       console.log(bkmkList);
     }
-  }, [authorized]);
+  }, [userAuth]);
 
   /**
    * Ideally when the user visits the site they will actually have a cool landing page
@@ -43,13 +44,13 @@ export default function App() {
    * Meaning that the '/' will eventually be added to the public route and not authenticated will be the
    * the regular landing.
    */
-  return authorized ? (
-    <div>
+  return userAuth ? 
+   !loading ? (
       <div className="w-1/4">
-        <TagList tagsCounted={[]} />
+        <TagList tagsCounted={tags} />
       </div>
-    </div>
-  ) : (
+  ) : <p>loading</p>
+  : (
     <div> Hello Welcome to BookmarkIt. </div>
   );
 }

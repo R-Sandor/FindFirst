@@ -33,7 +33,7 @@ const api = {
     })  
   },  
   getAllTags() {  
-    return this.execute('GET','tags', null, { 
+    return this.execute('GET','tagscnt', null, { 
       transformResponse: [function (data) {  
         return data? JSON.parse(data) : data;  
       }]  

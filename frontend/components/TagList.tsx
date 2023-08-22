@@ -5,22 +5,23 @@ import TagWithCntList from "@/types/Bookmarks/TagWithCntList";
 import TagWithCnt  from "@/types/Bookmarks/TagWithCnt";
 
 interface TagProp {
-  tags: TagWithCnt[];
+  tagsWithCnt: TagWithCnt[];
 }
 
 // 
-const Tags = ({ tags }: TagProp) => {
+const Tags = ({ tagsWithCnt: tagsWithCnt }: TagProp) => {
+  console.log("tagsWithCnt " + tagsWithCnt)
   return (
     <div>
       <ListGroup>
-        {tags.map((tag) => (
+        {tagsWithCnt.map((tagCnt) => (
           <ListGroup.Item
-            key={tag.tag.id}
+            key={tagCnt.tag.id}
             className="d-flex justify-content-between align-items-start"
           >
-            {tag.tag.title}
+            {tagCnt.tag.tag_title}
             <Badge bg="primary" pill>
-              { tag.cnt }
+              { tagCnt.count }
             </Badge>
           </ListGroup.Item>
         ))}
@@ -31,7 +32,7 @@ const Tags = ({ tags }: TagProp) => {
 
 // Pass in our TagsWithCnt[] i.e., the TagsWithCntList.
 function TagList({ tagsCounted }: TagWithCntList) { 
-  return <div>{Tags({ tags: tagsCounted })}</div>;
+  return <div>{Tags({ tagsWithCnt: tagsCounted })}</div>;
 };
 
 export default TagList;
