@@ -1,4 +1,4 @@
-# docker-compose to spin up postgress for Spring. For the project docker-compose 
+# docker-compose to spin up postgres for Spring. For the project docker-compose 
 # use ../docker-compose.yaml, to run/build the entire stack.
 version: '3'
 services:
