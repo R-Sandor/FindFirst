@@ -1,5 +1,5 @@
-# docker-compose to spin up postgress for the project. For the project docker-compose. 
-# To build and run all images in the app stack refer to ../docker-compose.yaml.
+# docker-compose to spin up postgress for Spring. For the project docker-compose 
+# use ../docker-compose.yaml, to run/build the entire stack.
 version: '3'
 services:
   db: 
