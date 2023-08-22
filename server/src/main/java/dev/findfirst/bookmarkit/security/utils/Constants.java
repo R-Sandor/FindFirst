@@ -12,10 +12,8 @@ public class Constants {
   public static final String TENANT_PARAMETER_NAME = "tenantId";
   public static final String TENANT_COLUMN_NAME = "tenant_id";
 
-  public static final int SUPER_ADMIN_ROLE_ID = 0;
-  public static final String SUPER_ADMIN_ROLE_NAME = "ROLE_SUPER_ADMIN";
+  public static final String MODERATOR_ROLE = "ROLE_MODERATOR";
   public static final String ADMIN_ROLE_NAME = "ROLE_ADMIN";
   public static final String USER_ROLE_NAME = "ROLE_USER";
 
-  public static final int SUPER_TENANT_ADMINISTRATOR_ID = 0;
 }
