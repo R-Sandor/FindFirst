@@ -1,6 +1,7 @@
-package dev.findfirst.bookmarkit.security.service;
+package dev.findfirst.bookmarkit.security.filters;
 
 import dev.findfirst.bookmarkit.security.jwt.JwtService;
+import dev.findfirst.bookmarkit.security.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
