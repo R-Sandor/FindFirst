@@ -9,7 +9,8 @@ insert into bookmark (id, title, url, tenant_id) values(4, 'Favorite Chicken Par
 insert into tag(id, tag_title, tenant_id) values(1, 'Cooking', 1);
 insert into tag(id, tag_title, tenant_id) values(2, 'web_dev', 1);
 insert into tag(id, tag_title, tenant_id) values(3, 'deserts', 1);
-insert into tag(id, tag_title, tenant_id) values(5, 'wishlist', 2);
+insert into tag(id, tag_title, tenant_id) values(6, 'camping', 1);
+
 -- Cooking related bookmark_tags
 insert into bookmark_tag values(1,1);
 insert into bookmark_tag values(1,3);
@@ -20,6 +21,7 @@ insert into bookmark_tag values(2,2);
 
 -- rsandor's tags
 insert into tag(id, tag_title, tenant_id) values(4, 'Cooking', 2);
+insert into tag(id, tag_title, tenant_id) values(5, 'wishlist', 2);
 
 insert into bookmark_tag values(4,4);
 

@@ -3,6 +3,7 @@ import api from "@/api/Api";
 import authService, { AuthStatus } from "@/services/auth.service";
 import Tag from "@/types/Bookmarks/Tag";
 import Bookmark from "@/types/Bookmarks/Bookmark";
+import BookmarkCard from "@components/bookmark/BookmarkCard";
 import TagList from "@components/TagList";
 import { useEffect, useState } from "react";
 import useAuth from "@components/UseAuth";
@@ -12,8 +13,7 @@ export default function App() {
   const userAuth = useAuth();
   const [tags, setTags] = useState<TagWithCnt[]>([]);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
-  const [loading, setLoading] = useState(true)
-
+  const [loading, setLoading] = useState(true);
 
   // Grab the data.
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function App() {
         for (let bkmk of response.data) {
           bkmkList.push(bkmk);
         }
-      setLoading(false);
+        setLoading(false);
       });
       console.log(bkmkList);
     }
@@ -44,13 +44,26 @@ export default function App() {
    * Meaning that the '/' will eventually be added to the public route and not authenticated will be the
    * the regular landing.
    */
-  return userAuth ? 
-   !loading ? (
-      <div className="w-1/4">
-        <TagList tagsCounted={tags} />
+  return userAuth ? (
+    !loading ? (
+      <div className="row">
+        <div className="col-3">
+          <TagList tagsCounted={tags} />
+        </div>
+        <div className="col-3">
+          <BookmarkCard />
+        </div>
+        <div className="col-3">
+          <BookmarkCard />
+        </div>
+        <div className="col-3">
+          <BookmarkCard />
+        </div>
       </div>
-  ) : <p>loading</p>
-  : (
+    ) : (
+      <p>loading</p>
+    )
+  ) : (
     <div> Hello Welcome to BookmarkIt. </div>
   );
 }
