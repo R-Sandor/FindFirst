@@ -39,6 +39,9 @@ const api = {
       }]  
     })  
   },
+  getTagsForId(id) { 
+    return this.execute('GET', 'tags/id/' + id);
+  },
   // (U)pdate  
   updateForId(id, text, completed) {  
     return this.execute('PUT', 'bookmarks/' + id, { title: text, completed: completed })  
