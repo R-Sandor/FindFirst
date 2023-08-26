@@ -32,6 +32,10 @@ public class TagService {
     return tagRepository.findAll();
   }
 
+  public List<Tag> getTagsByBookmarkId(long id) {
+    return tagRepository.findTagsByBookmarkId(id);
+  }
+
   public List<TagCntRecord>  getTagsWithCnt() { 
     return tagRepository.customTagsWithCnt();
   }

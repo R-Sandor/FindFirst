@@ -1,0 +1,76 @@
+.pill-button {
+  background-color: #ddd;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  text-align: left;
+  text-decoration: none;
+  display: inline-block;
+//   margin: 1px 1px;
+
+    align-items: center;
+    margin: 7px 0;
+    margin-right: 5px;
+    border: 1px solid rgb(41, 181, 191);
+    background-color: rgb(41, 181, 191);
+    white-space: nowrap;
+    height:30px;
+  text-align: center;
+  border-radius: 40px;
+  &:hover {
+    background-color: rgb(81, 191, 291);
+    cursor: url("./x-journal.svg") 16 16, pointer;
+  }
+}
+
+.xtag {
+  text-align: right;
+  margin-left: 6px;
+//   font-size: 1em;
+  color: mintcream;
+  border-color: aliceblue;
+}
+.container {
+    align-items: center;
+    flex-wrap: wrap;
+    display: flex;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    padding-left: 14px;
+    border-radius: 5px;
+    color: black
+    
+  }
+  
+  .container input {
+    height: 25px;
+    width: 50%;
+    min-width: 20%;
+    text-align: center;
+    border-radius: 30px;
+    background-color: unset;
+  }
+  
+//   .tag {
+//     display: flex;
+//     align-items: center;
+//     margin: 7px 0;
+//     margin-right: 10px;
+//     padding: 0 10px;
+//     padding-right: 5px;
+//     border: 1px solid orange;
+//     border-radius: 5px;
+//     background-color: orange;
+//     white-space: nowrap;
+//     color: white;
+//   }
+  
+//   .tag button {
+//     display: flex;
+//     padding: 6px;
+//     border: none;
+//     background-color: unset;
+//     cursor: pointer;
+//     color: white;
+//   }

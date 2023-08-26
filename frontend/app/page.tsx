@@ -32,9 +32,9 @@ export default function App() {
         for (let bkmk of response.data) {
           bkmkList.push(bkmk);
         }
+        setBookmarks(bkmkList);
         setLoading(false);
       });
-      console.log(bkmkList);
     }
   }, [userAuth]);
 
@@ -51,13 +51,13 @@ export default function App() {
           <TagList tagsCounted={tags} />
         </div>
         <div className="col-3">
-          <BookmarkCard />
+          <BookmarkCard bookmark={bookmarks[0]}/>
         </div>
         <div className="col-3">
-          <BookmarkCard />
+          <BookmarkCard bookmark={bookmarks[1]} />
         </div>
         <div className="col-3">
-          <BookmarkCard />
+          <BookmarkCard bookmark={bookmarks[2]} />
         </div>
       </div>
     ) : (
