@@ -6,15 +6,17 @@
   text-align: left;
   text-decoration: none;
   display: inline-block;
-//   margin: 1px 1px;
-
-    align-items: center;
-    margin: 7px 0;
-    margin-right: 5px;
-    border: 1px solid rgb(41, 181, 191);
-    background-color: rgb(41, 181, 191);
-    white-space: nowrap;
-    height:30px;
+  //   margin: 1px 1px;
+  
+//   align-items: center;
+min-width: 20%; 
+max-width: 100%;
+  margin: 7px 0;
+  margin-right: 5px;
+  border: 1px solid rgb(41, 181, 191);
+  background-color: rgb(41, 181, 191);
+  white-space: nowrap;
+  height: 30px;
   text-align: center;
   border-radius: 40px;
   &:hover {
@@ -26,32 +28,30 @@
 .xtag {
   text-align: right;
   margin-left: 6px;
-//   font-size: 1em;
+  //   font-size: 1em;
   color: mintcream;
   border-color: aliceblue;
 }
 .container {
-    align-items: center;
-    flex-wrap: wrap;
-    display: flex;
-    overflow: hidden;
-    width: 100%;
-    max-width: 100%;
-    padding-left: 14px;
-    border-radius: 5px;
-    color: black
-    
-  }
-  
-  .container input {
-    height: 25px;
-    width: 50%;
-    min-width: 20%;
-    text-align: center;
-    border-radius: 30px;
-    background-color: unset;
-  }
-  
+  flex-wrap: wrap;
+  align-items: center;
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  padding-left: 14px;
+  border-radius: 5px;
+  color: black;
+}
+
+.container input {
+  height: 25px;
+  width: 50%;
+  min-width: 20%;
+  border: none;
+  background-color: unset;
+}
+
 //   .tag {
 //     display: flex;
 //     align-items: center;
@@ -65,7 +65,7 @@
 //     white-space: nowrap;
 //     color: white;
 //   }
-  
+
 //   .tag button {
 //     display: flex;
 //     padding: 6px;

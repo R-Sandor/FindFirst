@@ -24,6 +24,7 @@ export default function App() {
         for (let tag of response.data) {
           tagList.push(tag);
         }
+        setLoading(false);
       });
       setTags(tagList);
       console.log(tagList);

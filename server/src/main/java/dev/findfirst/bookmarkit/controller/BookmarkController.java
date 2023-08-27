@@ -8,10 +8,6 @@ import dev.findfirst.bookmarkit.service.TagService;
 import dev.findfirst.bookmarkit.utilies.Response;
 import java.util.List;
 import java.util.function.Consumer;
-
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,26 +29,22 @@ public class BookmarkController {
 
   @GetMapping("/bookmarks")
   public ResponseEntity<List<Bookmark>> getAllBookmarks() {
-    return new Response<List<Bookmark>>(bookmarkService.list(), HttpStatus.OK).getResp();
+    return new Response<List<Bookmark>>(bookmarkService.list(), HttpStatus.OK).get();
   }
 
   @GetMapping(value = "bookmark/{id}")
   public ResponseEntity<Bookmark> getBookmarkById(@RequestParam Long id) {
-    var resp = new Response<Bookmark>();
-    var b = bookmarkService.findById(id);
-    resp.prepareResponse(b);
-    return resp.getResp();
+    return new Response<Bookmark>(bookmarkService.findById(id)).get();
   }
 
   @PostMapping(value = "/bookmark/add")
   public ResponseEntity<Bookmark> addBookmarks(@RequestBody Bookmark bookmark) {
-    return new Response<Bookmark>((b) -> bookmarkService.addBookmark(bookmark), bookmark).getResp();
+    return new Response<Bookmark>((b) -> bookmarkService.addBookmark(bookmark), bookmark).get();
   }
 
   @PostMapping(value = "/bookmark/addBookmarks")
   public ResponseEntity<List<Bookmark>> postMethodName(@RequestBody List<Bookmark> bookmarks) {
-    return new Response<List<Bookmark>>((b) -> bookmarkService.addBookmarks(b), bookmarks)
-        .getResp();
+    return new Response<List<Bookmark>>((b) -> bookmarkService.addBookmarks(b), bookmarks).get();
   }
 
   @PostMapping(value = "/bookmark/deleteAll")
@@ -69,11 +61,11 @@ public class BookmarkController {
         (b) -> {
           bookmarkService.addTagToBookmark(b, tagRequest);
         };
-    return new Response<Bookmark>(action, bookmark).getResp();
+    return new Response<Bookmark>(action, bookmark).get();
   }
 
   @PostMapping("/bookmark/addTag/{bookmarkId}/{tagId}")
-  public ResponseEntity<Bookmark> addTag(
+  public ResponseEntity<PairWrapper<Bookmark, Tag>> addTag(
       @PathVariable(value = "bookmarkId") Long bookmarkId,
       @PathVariable(value = "tagId") Long tagId) {
 
@@ -88,6 +80,7 @@ public class BookmarkController {
     if (bookmark.isPresent() && tag.isPresent()) {
       var resp = new Response<PairWrapper<Bookmark, Tag>>();
       resp.prepareResponse(action, new PairWrapper<Bookmark, Tag>(bookmark.get(), tag.get()));
+      return resp.get();
     }
     return ResponseEntity.badRequest().build();
   }

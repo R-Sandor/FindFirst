@@ -24,6 +24,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
       e.preventDefault();
       setStrTags((prevState) => [...prevState, trimmedInput]);
       setInput("");
+      api.bookmarkAddTag(bookmark.id, trimmedInput);
     }
     if (keyCode === 8 && !input.length && bookmark.tags.length) {
       e.preventDefault();
@@ -33,6 +34,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   
       setStrTags(tagsCopy);
       setInput(poppedTag);
+      
     }
   }
 

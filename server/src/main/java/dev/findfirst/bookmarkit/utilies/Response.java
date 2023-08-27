@@ -44,6 +44,10 @@ public class Response<T> {
     setResponse(t, status);
   }
 
+  public Response(Optional<T> t) {
+    prepareResponse(t);
+  }
+
   /**
    * Easy prepare Response entity.
    *
@@ -83,7 +87,7 @@ public class Response<T> {
     this.resp = new ResponseEntity<T>(status);
   }
 
-  public ResponseEntity<T> getResp() {
+  public ResponseEntity<T> get() {
     return resp;
   }
 }

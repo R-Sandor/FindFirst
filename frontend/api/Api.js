@@ -9,7 +9,10 @@ const instance = axios.create({
 
   // const headers = [];
   // const config  = { headers}
- 
+
+function parseData(data) {
+  return data? JSON.parse(data) : data;  
+}
 
 const api = {  
   async execute(method, resource, data) {  
@@ -28,14 +31,17 @@ const api = {
   getAllBookmarks() {  
     return this.execute('GET','bookmarks', null, { 
       transformResponse: [function (data) {  
-        return data? JSON.parse(data) : data;  
+        return parseData(data)
       }]  
     })  
   },  
+  bookmarkAddTag (bookmarkId, tagTitle) {
+    return this.execute('POST', 'bookmarks/' + bookmarkId + '/tag/' + tag)
+  },
   getAllTags() {  
     return this.execute('GET','tagscnt', null, { 
       transformResponse: [function (data) {  
-        return data? JSON.parse(data) : data;  
+        return parseData(data)
       }]  
     })  
   },
