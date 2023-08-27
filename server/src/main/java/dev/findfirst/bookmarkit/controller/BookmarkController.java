@@ -1,17 +1,25 @@
 package dev.findfirst.bookmarkit.controller;
 
 import dev.findfirst.bookmarkit.model.Bookmark;
+import dev.findfirst.bookmarkit.model.PairWrapper;
 import dev.findfirst.bookmarkit.model.Tag;
 import dev.findfirst.bookmarkit.service.BookmarkService;
+import dev.findfirst.bookmarkit.service.TagService;
+import dev.findfirst.bookmarkit.utilies.Response;
 import java.util.List;
+import java.util.function.Consumer;
+
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,30 +29,30 @@ public class BookmarkController {
 
   @Autowired private BookmarkService bookmarkService;
 
-  @RequestMapping(
-      value = "/bookmarks",
-      method = RequestMethod.GET,
-      produces = MediaType.APPLICATION_JSON_VALUE)
-  public List<Bookmark> getAllBookmarks() {
-    return bookmarkService.list();
+  @Autowired private TagService tagService;
+
+  @GetMapping("/bookmarks")
+  public ResponseEntity<List<Bookmark>> getAllBookmarks() {
+    return new Response<List<Bookmark>>(bookmarkService.list(), HttpStatus.OK).getResp();
   }
 
-  @RequestMapping(
-      value = "/bookmark/{id}",
-      method = RequestMethod.GET,
-      produces = MediaType.APPLICATION_JSON_VALUE)
-  public Bookmark getBookmarkById(@RequestParam Long id) {
-    return bookmarkService.getById(id);
+  @GetMapping(value = "bookmark/{id}")
+  public ResponseEntity<Bookmark> getBookmarkById(@RequestParam Long id) {
+    var resp = new Response<Bookmark>();
+    var b = bookmarkService.findById(id);
+    resp.prepareResponse(b);
+    return resp.getResp();
   }
 
   @PostMapping(value = "/bookmark/add")
-  public void addBookmarks(@RequestBody Bookmark bookmark) {
-    bookmarkService.addBookmark(bookmark);
+  public ResponseEntity<Bookmark> addBookmarks(@RequestBody Bookmark bookmark) {
+    return new Response<Bookmark>((b) -> bookmarkService.addBookmark(bookmark), bookmark).getResp();
   }
 
   @PostMapping(value = "/bookmark/addBookmarks")
-  public void postMethodName(@RequestBody List<Bookmark> bookmarks) {
-    bookmarkService.addBookmarks(bookmarks);
+  public ResponseEntity<List<Bookmark>> postMethodName(@RequestBody List<Bookmark> bookmarks) {
+    return new Response<List<Bookmark>>((b) -> bookmarkService.addBookmarks(b), bookmarks)
+        .getResp();
   }
 
   @PostMapping(value = "/bookmark/deleteAll")
@@ -54,16 +62,34 @@ public class BookmarkController {
   }
 
   @PostMapping("/bookmark/{bookmarkId}/addTag")
-  public ResponseEntity<Tag> addTag(
+  public ResponseEntity<Bookmark> addTag(
       @PathVariable(value = "bookmarkId") Long bookmarkId, @RequestBody Tag tagRequest) {
-    return bookmarkService.addTag(bookmarkId, tagRequest);
+    final var bookmark = bookmarkService.findById(bookmarkId);
+    Consumer<Bookmark> action =
+        (b) -> {
+          bookmarkService.addTagToBookmark(b, tagRequest);
+        };
+    return new Response<Bookmark>(action, bookmark).getResp();
   }
 
   @PostMapping("/bookmark/addTag/{bookmarkId}/{tagId}")
-  public ResponseEntity<Tag> addTag(
+  public ResponseEntity<Bookmark> addTag(
       @PathVariable(value = "bookmarkId") Long bookmarkId,
       @PathVariable(value = "tagId") Long tagId) {
-    return bookmarkService.addTag(bookmarkId, tagId);
+
+    var bookmark = bookmarkService.findById(bookmarkId);
+    var tag = tagService.findById(tagId);
+
+    Consumer<PairWrapper<Bookmark, Tag>> action =
+        (PairWrapper<Bookmark, Tag> bt) -> {
+          bookmarkService.addTagToBookmark(bt.left(), bt.right());
+        };
+
+    if (bookmark.isPresent() && tag.isPresent()) {
+      var resp = new Response<PairWrapper<Bookmark, Tag>>();
+      resp.prepareResponse(action, new PairWrapper<Bookmark, Tag>(bookmark.get(), tag.get()));
+    }
+    return ResponseEntity.badRequest().build();
   }
 
   @PostMapping(value = "/bookmark/delete/{id}")

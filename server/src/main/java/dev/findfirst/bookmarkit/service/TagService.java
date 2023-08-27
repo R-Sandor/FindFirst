@@ -4,6 +4,8 @@ import dev.findfirst.bookmarkit.model.Tag;
 import dev.findfirst.bookmarkit.model.TagCntRecord;
 import dev.findfirst.bookmarkit.repository.TagRepository;
 import java.util.List;
+import java.util.Optional;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +38,19 @@ public class TagService {
     return tagRepository.findTagsByBookmarkId(id);
   }
 
-  public List<TagCntRecord>  getTagsWithCnt() { 
+  public List<TagCntRecord> getTagsWithCnt() {
     return tagRepository.customTagsWithCnt();
+  }
+
+  public Optional<Tag> getTagByTitle(String title) {
+    return tagRepository.findByTagTitle(title);
+  }
+
+  public Optional<Tag> findById(Long id) {
+    return tagRepository.findById(id);
+  }
+
+  public Optional<Tag> findByTagTitle(@NonNull String tag_title) {
+    return tagRepository.findByTagTitle(tag_title);
   }
 }
