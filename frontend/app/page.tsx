@@ -48,17 +48,21 @@ export default function App() {
   return userAuth ? (
     !loading ? (
       <div className="row">
-        <div className="col-3">
+        <div className="col-md-4 col-lg-3">
           <TagList tagsCounted={tags} />
         </div>
-        <div className="col-3">
-          <BookmarkCard bookmark={bookmarks[0]}/>
-        </div>
-        <div className="col-3">
-          <BookmarkCard bookmark={bookmarks[1]} />
-        </div>
-        <div className="col-3">
-          <BookmarkCard bookmark={bookmarks[2]} />
+        <div className="col-md-8 col-lg-9">
+          <div className="row no-pad">
+            <div className="col-6 col-md-12 col-lg-4">
+              <BookmarkCard bookmark={bookmarks[0]} />
+            </div>
+            <div className="col-6 col-md-12 col-lg-4">
+              <BookmarkCard bookmark={bookmarks[1]} />
+            </div>
+            <div className="col-6 col-md-12 col-lg-4">
+              <BookmarkCard bookmark={bookmarks[2]} />
+            </div>
+          </div>
         </div>
       </div>
     ) : (
