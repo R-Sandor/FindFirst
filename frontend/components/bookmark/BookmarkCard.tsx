@@ -51,15 +51,15 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   }
 
   return (
-    <div className="mr-2 ml-0">
+    <div className="px-1">
       <Card>
         <Card.Body>
           <Card.Title>{bookmark.title}</Card.Title>
-          <Card.Text>
+          <Card.Text className="title">
             {bookmark.url.toString()}
           </Card.Text>
         </Card.Body>
-        <Card.Footer>
+        <Card.Footer className="card-footer">
           <div className="container">
             {strTags.map((tag, index) => (
               <button key={index} onClick={() => deleteTag(index)} type="button" className="pill-button">

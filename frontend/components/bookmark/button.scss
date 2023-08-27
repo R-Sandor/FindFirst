@@ -2,23 +2,20 @@
   background-color: #ddd;
   border: none;
   color: white;
-  padding: 5px 10px;
-  text-align: left;
+  padding: 0px 5px;
   text-decoration: none;
   display: inline-block;
-  //   margin: 1px 1px;
-  
-//   align-items: center;
-min-width: 20%; 
-max-width: 100%;
-  margin: 7px 0;
-  margin-right: 5px;
-  border: 1px solid rgb(41, 181, 191);
+    // flex:auto;
+
+  min-width: 20%;
+  max-width: 100%;
+  margin: 3px 1px;
+//   margin-right: 2px;
   background-color: rgb(41, 181, 191);
   white-space: nowrap;
-  height: 30px;
+  height: 20px;
   text-align: center;
-  border-radius: 40px;
+  border-radius: 5px;
   &:hover {
     background-color: rgb(81, 191, 291);
     cursor: url("./x-journal.svg") 16 16, pointer;
@@ -26,8 +23,8 @@ max-width: 100%;
 }
 
 .xtag {
-  text-align: right;
-  margin-left: 6px;
+  float: right;
+  margin-left: 4px;
   //   font-size: 1em;
   color: mintcream;
   border-color: aliceblue;
@@ -46,10 +43,43 @@ max-width: 100%;
 
 .container input {
   height: 25px;
-  width: 50%;
-  min-width: 20%;
+  flex: content;
+  min-width: 100%;
+  width: 100%;
+  // border: 0px solid;
   border: none;
+  border-top: 1px solid;
   background-color: unset;
+}
+
+.card-footer {
+  padding: 0;
+  border-top: 0px;
+}
+
+.row.no-pad {
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.row.no-pad > [class*="col-"] {
+  padding-right: 0;
+  padding-left: 0;
+}
+
+@media screen and (max-width: 700px) {
+    .title {
+        font-size: 12px;
+    }
+    p {
+        font-size: 20px;
+    }
+    .card-title { 
+        font-size: 15px;
+    }
+    .card-footer { 
+        font-size: 12px;
+    }
 }
 
 //   .tag {
