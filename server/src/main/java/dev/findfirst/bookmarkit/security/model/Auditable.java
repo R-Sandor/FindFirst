@@ -1,5 +1,6 @@
 package dev.findfirst.bookmarkit.security.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
@@ -10,8 +11,6 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @MappedSuperclass
@@ -28,11 +27,7 @@ public class Auditable {
   @JsonIgnore
   private Date createdDate;
 
-  @LastModifiedBy 
-  @JsonIgnore
-  private String lastModifiedBy;
+  @LastModifiedBy @JsonIgnore private String lastModifiedBy;
 
-  @LastModifiedDate 
-  @JsonIgnore
-  private Date lastModifiedDate;
+  @LastModifiedDate @JsonIgnore private Date lastModifiedDate;
 }

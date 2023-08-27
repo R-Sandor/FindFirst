@@ -15,5 +15,4 @@ public class Constants {
   public static final String MODERATOR_ROLE = "ROLE_MODERATOR";
   public static final String ADMIN_ROLE_NAME = "ROLE_ADMIN";
   public static final String USER_ROLE_NAME = "ROLE_USER";
-
 }

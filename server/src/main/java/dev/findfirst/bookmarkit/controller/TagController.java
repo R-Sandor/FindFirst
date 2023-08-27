@@ -26,12 +26,13 @@ public class TagController {
 
   /**
    * Get all the tags associated to a Bookmark.
+   *
    * @param id of the bookmark to retrieve tags.
-   * @return 
+   * @return
    */
   @GetMapping("/tag/bkmk/{id}")
-  public ResponseEntity<Object> getTagByBookmarkId(@PathVariable Long id) { 
-    if (id == null) { 
+  public ResponseEntity<Object> getTagByBookmarkId(@PathVariable Long id) {
+    if (id == null) {
       return new ResponseEntity<>("Please provide an id", HttpStatus.INTERNAL_SERVER_ERROR);
     }
     var tags = tagService.getTagsByBookmarkId(id);
