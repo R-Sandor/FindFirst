@@ -1,5 +1,5 @@
-import { Card, Button } from "react-bootstrap";
-import "./button.scss";
+import { Card } from "react-bootstrap";
+import "./bookmarkCard.scss";
 import Tag from "@/types/Bookmarks/Tag";
 import { useEffect, useState } from "react";
 import api from "@/api/Api";
