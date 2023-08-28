@@ -1,1 +1,0 @@
-The app.key and app.pub are just for Testing, not used in production.
