@@ -2,20 +2,20 @@
   background-color: #ddd;
   border: none;
   color: white;
-  padding: 0px 5px;
+  padding: 0px 2px;
   text-decoration: none;
   display: inline-block;
     // flex:auto;
 
   min-width: 20%;
   max-width: 100%;
-  margin: 3px 1px;
+  margin: 2px 2px;
 //   margin-right: 2px;
   background-color: rgb(41, 181, 191);
   white-space: nowrap;
-  height: 20px;
+  height: 22px;
   text-align: center;
-  border-radius: 5px;
+  // border-radius: 15px;
   &:hover {
     background-color: rgb(81, 191, 291);
     cursor: url("./x-journal.svg") 16 16, pointer;

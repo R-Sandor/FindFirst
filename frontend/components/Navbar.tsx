@@ -6,20 +6,16 @@ import {
   Form,
   Button,
   ButtonGroup,
+  Container,
 } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import authService, { AuthStatus } from "@services/auth.service";
 import useAuth from "@components/UseAuth";
 import { useEffect, useState } from "react";
+import { cursorTo } from "readline";
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
-  const [authorized, setAuthorized] = useState<AuthStatus>();
-
-  useEffect(() => {
-    setAuthorized(authService.getAuthorized());
-  }, []);
-
 
   const router = useRouter();
   function authButton() {
@@ -55,33 +51,27 @@ const GlobalNavbar: React.FC = () => {
   };
 
   return (
-    <Navbar
-      collapseOnSelect
-      expand="sm"
-      bg="dark"
-      variant="dark"
-      className="mb-3"
-    >
-      <Navbar.Brand onClick={() => router.push("/")} className="mx-3">
-        FindFirst
-      </Navbar.Brand>
-      <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-      <Navbar.Collapse id="responsive-navbar-nav">
-        <Nav className="mr-auto">
-          <Nav.Link onClick={() => router.push("/")}>Discover</Nav.Link>
-          <NavDropdown title="Collection" id="collasible-nav-dropdown">
-            <NavDropdown.Item onClick={() => router.push("/")}>
-              Tags
-            </NavDropdown.Item>
-            <NavDropdown.Item onClick={() => router.push("/")}>
-              Reading List
-            </NavDropdown.Item>
-          </NavDropdown>
-        </Nav>
-      </Navbar.Collapse>
-      <Form className="mx-3">
-        {authButton()}
-      </Form>
+    <Navbar expand="lg" className="bg-body-tertiary">
+      <Container>
+        <Navbar.Brand onClick={() => router.push("/")} className="mx-3 cursor-pointer">
+          FindFirst
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="me-auto">
+            <Nav.Link onClick={() => router.push("/")}>Discover</Nav.Link>
+            <NavDropdown title="Collection" id="basic-nav-dropdown">
+              <NavDropdown.Item onClick={() => router.push("/")}>
+                Tags
+              </NavDropdown.Item>
+              <NavDropdown.Item onClick={() => router.push("/")}>
+                Reading List
+              </NavDropdown.Item>
+            </NavDropdown>
+          </Nav>
+        </Navbar.Collapse>
+        <Form className="mx-3">{authButton()}</Form>
+      </Container>
     </Navbar>
   );
 };
@@ -90,4 +80,3 @@ export default GlobalNavbar;
 function setAuthorized(arg0: AuthStatus) {
   throw new Error("Function not implemented.");
 }
-
