@@ -1,7 +1,8 @@
 HELP.md
 .gradle
-build/
-client/dist
+server/build/
+server/**/app.key
+server/**/app.pub
 frontend/node_modules
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
