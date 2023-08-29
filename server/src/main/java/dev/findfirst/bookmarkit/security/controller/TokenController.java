@@ -68,11 +68,11 @@ public class TokenController {
 
     ResponseCookie cookie =
         ResponseCookie.from("bookmarkit", token)
-            .secure(true)
-            .sameSite("strict")
+            .secure(false) // enable this when we are using https
+            // .sameSite("strict")
             .path("/")
             .domain("localhost")
-            .httpOnly(true)
+            .httpOnly(true) 
             .build();
     return ResponseEntity.ok()
         .header(HttpHeaders.SET_COOKIE, cookie.toString())
@@ -95,7 +95,7 @@ public class TokenController {
                   ResponseCookie cookie =
                       ResponseCookie.from("bookmarkit", token)
                           .secure(true)
-                          .sameSite("strict")
+                          // .sameSite("strict")
                           .path("/")
                           .domain("localhost")
                           .httpOnly(true)

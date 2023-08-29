@@ -36,7 +36,7 @@ const api = {
     })  
   },  
   bookmarkAddTag (bookmarkId, tagTitle) {
-    return this.execute('POST', 'bookmark/' + bookmarkId + '/addtag/', {id: null, tag_title: tagTitle})
+    return this.execute('POST', 'bookmark/' + bookmarkId + '/addTag', { tag_title: tagTitle})
   },
   getAllTags() {  
     return this.execute('GET','tagscnt', null, { 
