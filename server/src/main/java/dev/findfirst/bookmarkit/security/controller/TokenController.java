@@ -68,7 +68,8 @@ public class TokenController {
 
     ResponseCookie cookie =
         ResponseCookie.from("bookmarkit", token)
-            .secure(false)
+            .secure(true)
+            .sameSite("strict")
             .path("/")
             .domain("localhost")
             .httpOnly(true)
@@ -93,7 +94,8 @@ public class TokenController {
 
                   ResponseCookie cookie =
                       ResponseCookie.from("bookmarkit", token)
-                          .secure(false)
+                          .secure(true)
+                          .sameSite("strict")
                           .path("/")
                           .domain("localhost")
                           .httpOnly(true)

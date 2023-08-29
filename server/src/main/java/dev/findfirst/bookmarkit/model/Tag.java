@@ -11,6 +11,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+
+import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,8 +26,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Tag extends Tenantable {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
   @Column(length = 50)
   @NonNull private String tag_title;
@@ -35,7 +37,7 @@ public class Tag extends Tenantable {
       cascade = {CascadeType.ALL},
       mappedBy = "tags")
   @JsonIgnore
-  Set<Bookmark> bookmarks;
+  Set<Bookmark> bookmarks = new HashSet<>();
 
   public Tag(String tagVal) {
     this.tag_title = tagVal;

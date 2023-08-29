@@ -21,14 +21,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 public class CookieAuthenticationFilter extends OncePerRequestFilter {
 
   private static final Logger logger = LoggerFactory.getLogger(CookieAuthenticationFilter.class);
-
-  @Autowired private UserDetailsService userDetailsService;
 
   @Autowired private JwtService jwtUtils;
 
@@ -73,17 +70,8 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
     try {
       String jwt = parseJwt(request);
       if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-        String username = jwtUtils.getUserNameFromJwtToken(jwt);
-        // UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         TenantAuthenticationToken tenantAuthenticationToken = getTenantAuthenticationToken(jwt);
         SecurityContextHolder.getContext().setAuthentication(tenantAuthenticationToken);
-
-        // UsernamePasswordAuthenticationToken authentication =
-        //     new UsernamePasswordAuthenticationToken(
-        //         userDetails, null, userDetails.getAuthorities());
-        // authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-        // SecurityContextHolder.getContext().setAuthentication(authentication);
       }
     } catch (Exception e) {
       logger.error("Cannot set user authentication: {}", e);
