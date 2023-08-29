@@ -84,7 +84,7 @@ public class SecSecurityConfig {
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
-        .csrf((csrf) -> csrf.ignoringRequestMatchers("/api/auth/**"))
+        .csrf((csrf) -> csrf.disable())
         .httpBasic(Customizer.withDefaults())
         .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
         .sessionManagement(

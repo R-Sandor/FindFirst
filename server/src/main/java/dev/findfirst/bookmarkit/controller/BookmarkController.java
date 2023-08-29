@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,8 +33,8 @@ public class BookmarkController {
     return new Response<List<Bookmark>>(bookmarkService.list(), HttpStatus.OK).get();
   }
 
-  @GetMapping(value = "bookmark/{id}")
-  public ResponseEntity<Bookmark> getBookmarkById(@RequestParam Long id) {
+  @GetMapping(value = "/bookmark")
+  public ResponseEntity<Bookmark> getBookmarkById(@RequestParam long id) {
     return new Response<Bookmark>(bookmarkService.findById(id)).get();
   }
 
@@ -53,14 +54,32 @@ public class BookmarkController {
     bookmarkService.deleteAllBookmarks();
   }
 
-  @PostMapping("/bookmark/{bookmarkId}/addTag")
+  @PostMapping(
+      value = "/bookmark/{bookmarkId}/addTag",
+      consumes = "application/json",
+      produces = "application/json")
+  @ResponseBody
   public ResponseEntity<Bookmark> addTag(
       @PathVariable(value = "bookmarkId") Long bookmarkId, @RequestBody Tag tagRequest) {
-    final var bookmark = bookmarkService.findById(bookmarkId);
+    final var bkmkOpt = bookmarkService.findById(bookmarkId);
+    if (!bkmkOpt.isPresent()) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+    var bookmark = bkmkOpt.get();
+
     Consumer<Bookmark> action =
         (b) -> {
           bookmarkService.addTagToBookmark(b, tagRequest);
         };
+
+    if (tagRequest.getId() == null) {
+      // Check if there is a tag by the given title.
+      var optTag = tagService.findByTagTitle(tagRequest.getTag_title());
+      // If tag does not exist create one.
+      var tag = optTag.orElse(tagService.addTag(tagRequest));
+      action = (b) -> bookmarkService.addTagToBookmark(bookmark, tag) ;
+    }
+
     return new Response<Bookmark>(action, bookmark).get();
   }
 

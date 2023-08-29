@@ -14,8 +14,8 @@ public class TagService {
 
   @Autowired TagRepository tagRepository;
 
-  public void addTag(Tag tag) {
-    tagRepository.saveAndFlush(tag);
+  public Tag addTag(Tag tag) {
+    return tagRepository.saveAndFlush(tag);
   }
 
   public void addAll(List<Tag> tags) {
