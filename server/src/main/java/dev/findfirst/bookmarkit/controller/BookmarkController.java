@@ -65,7 +65,7 @@ public class BookmarkController {
       produces = "application/json")
   @ResponseBody
   public ResponseEntity<Bookmark> addTag(
-      @PathVariable(value = "bookmarkId") Long bookmarkId, @RequestBody Tag tagRequest) {
+      @PathVariable(value = "bookmarkId") Long bookmarkId, @RequestBody final Tag tagRequest) {
     final var bkmkOpt = bookmarkService.findById(bookmarkId);
     if (!bkmkOpt.isPresent()) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -81,7 +81,7 @@ public class BookmarkController {
       // Check if there is a tag by the given title.
       var optTag = tagService.findByTagTitle(tagRequest.getTag_title());
       // If tag does not exist create one.
-      var tag = optTag.orElse(tagService.addTag(tagRequest));
+      var tag = optTag.orElseGet(() -> tagService.addTag(tagRequest));
       action = (b) -> bookmarkService.addTagToBookmark(bookmark, tag);
     }
 
