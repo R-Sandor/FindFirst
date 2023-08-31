@@ -11,7 +11,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-
 import java.util.HashSet;
 import java.util.Set;
 import lombok.AllArgsConstructor;
@@ -46,7 +45,7 @@ public class Bookmark extends Tenantable {
       name = "bookmark_tag",
       joinColumns = @JoinColumn(name = "bookmark_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
-  private Set<Tag> tags =  new HashSet<>();
+  private Set<Tag> tags = new HashSet<>();
 
   public void addTag(Tag tag) {
     this.tags.add(tag);

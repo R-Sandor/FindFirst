@@ -6,11 +6,15 @@ import dev.findfirst.bookmarkit.model.Tag;
 import dev.findfirst.bookmarkit.service.BookmarkService;
 import dev.findfirst.bookmarkit.service.TagService;
 import dev.findfirst.bookmarkit.utilies.Response;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@Validated
 @RequestMapping("/api")
 public class BookmarkController {
 
@@ -77,10 +82,22 @@ public class BookmarkController {
       var optTag = tagService.findByTagTitle(tagRequest.getTag_title());
       // If tag does not exist create one.
       var tag = optTag.orElse(tagService.addTag(tagRequest));
-      action = (b) -> bookmarkService.addTagToBookmark(bookmark, tag) ;
+      action = (b) -> bookmarkService.addTagToBookmark(bookmark, tag);
     }
 
     return new Response<Bookmark>(action, bookmark).get();
+  }
+
+  @DeleteMapping(value = "bookmark/{bookmarkId}/tagTitle", produces = "application/json")
+  public ResponseEntity<Tag> deleteTagFromBookmark(
+      @Valid @PathVariable("bookmarkId") long id, @RequestParam("title") @NotBlank String title) {
+
+    var t = tagService.getTagByTitle(title);
+    var b = bookmarkService.findById(id);
+
+    return b.isPresent()
+        ? new Response<Tag>((tag) -> bookmarkService.deleteTag(id, tag), t).get()
+        : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 
   @PostMapping("/bookmark/addTag/{bookmarkId}/{tagId}")

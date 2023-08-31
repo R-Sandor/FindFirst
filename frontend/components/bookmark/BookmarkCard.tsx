@@ -30,7 +30,12 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
       e.preventDefault();
       setStrTags((prevState) => [...prevState, trimmedInput]);
       setInput("");
-      api.bookmarkAddTag(bookmark?.id, trimmedInput);
+      api.bookmarkAddTagByTitle(bookmark?.id, trimmedInput).then( 
+        (response) => {
+          // It will always be the last index since it was the last added.
+          let index = response.data.tags.length - 1;
+        }
+      );
     }
     if (keyCode === 8 && !input.length && bookmark?.tags.length) {
       e.preventDefault();
@@ -54,6 +59,9 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   }, [bookmark]);
 
   const deleteTag = (index: number) => {
+    let tagTitle =  strTags[index];
+    console.log(tagTitle)
+    api.bookmarkRemoveTagByTitle(bookmark?.id, tagTitle); 
     setStrTags((prevState) => prevState.filter((strTag, i) => i !== index));
   };
 

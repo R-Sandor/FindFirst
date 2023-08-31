@@ -3,6 +3,7 @@ package dev.findfirst.bookmarkit.service;
 import dev.findfirst.bookmarkit.model.Bookmark;
 import dev.findfirst.bookmarkit.model.Tag;
 import dev.findfirst.bookmarkit.repository.BookmarkRepository;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -77,5 +78,15 @@ public class BookmarkService {
     bookmark.addTag(tag);
     bookmarkRepository.save(bookmark);
     return new ResponseEntity<Bookmark>(bookmark, HttpStatus.OK);
+  }
+
+  public Tag deleteTag(long id, @NotNull Tag tag) {
+    final var bkmk = bookmarkRepository.findById(id);
+    bkmk.ifPresent(
+        (b) -> {
+          b.removeTag(tag);
+          bookmarkRepository.save(b);
+        });
+    return tag;
   }
 }

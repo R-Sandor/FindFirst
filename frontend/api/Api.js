@@ -1,62 +1,100 @@
-import axios from 'axios'  
-const SERVER_URL = "http://localhost:9000/api";  
-  
-const instance = axios.create({  
-  withCredentials:true,
-  baseURL: SERVER_URL,  
-  timeout: 1000  
-});  
+import axios from "axios";
+const SERVER_URL = "http://localhost:9000/api";
 
-  // const headers = [];
-  // const config  = { headers}
+const instance = axios.create({
+  withCredentials: true,
+  baseURL: SERVER_URL,
+  timeout: 3000,
+});
 
 function parseData(data) {
-  return data? JSON.parse(data) : data;  
+  return data ? JSON.parse(data) : data;
 }
 
-const api = {  
-  async execute(method, resource, data) {  
-    return instance({  
-      method:method,  
-      url: resource,  
-      data  
-    })  
-  },  
-  
-  // (C)reate  
-  createNew(text, completed) {  
-    return this.execute('POST', 'bookmarks', {title: text, completed: completed})  
-  },  
-  // (R)ead  
-  getAllBookmarks() {  
-    return this.execute('GET','bookmarks', null, { 
-      transformResponse: [function (data) {  
-        return parseData(data)
-      }]  
-    })  
-  },  
-  bookmarkAddTag (bookmarkId, tagTitle) {
-    return this.execute('POST', 'bookmark/' + bookmarkId + '/addTag', { tag_title: tagTitle})
+const api = {
+  async execute(method, resource, data, config) {
+    return instance({
+      method: method,
+      url: resource,
+      data,
+    });
   },
-  getAllTags() {  
-    return this.execute('GET','tagscnt', null, { 
-      transformResponse: [function (data) {  
-        return parseData(data)
-      }]  
-    })  
+
+  // (C)reate
+  createNew(text, completed) {
+    return this.execute("POST", "bookmarks", {
+      title: text,
+      completed: completed,
+    });
   },
-  getTagsForId(id) { 
-    return this.execute('GET', 'tags/id/' + id);
+  // (R)ead
+  getAllBookmarks() {
+    return this.execute("GET", "bookmarks", null, {
+      transformResponse: [
+        function (data) {
+          return parseData(data);
+        },
+      ],
+    });
   },
-  // (U)pdate  
-  updateForId(id, text, completed) {  
-    return this.execute('PUT', 'bookmarks/' + id, { title: text, completed: completed })  
-  },  
-  
-  // (D)elete  
-  removeForId(id) {  
-    return this.execute('DELETE', 'bookmarks/'+id)  
-  }  
-}
+  bookmarkAddTagByTitle(bookmarkId, tagTitle) {
+    return this.execute(
+      "POST",
+      "bookmark/" + bookmarkId + "/addTag",
+      { tag_title: tagTitle },
+      {
+        transformResponse: [
+          function (data) {
+            return parseData(data);
+          },
+        ],
+      }
+    );
+  },
+  bookmarkRemoveTagById(bookmarkId, tagId) {
+    return this.execute(
+      "DELETE",
+      "boomkmark/" + bookmarkId + "/tagID",
+      { id: tagId },
+      {
+        transformResponse: [
+          function (data) {
+            return parseData(data);
+          },
+        ],
+      }
+    );
+  },
+  bookmarkRemoveTagByTitle(bookmarkId, title) {
+    console.log(bookmarkId, title);
+    instance.delete("bookmark/" + bookmarkId + "/tagTitle", {
+      params: { title: title },
+    });
+  },
+  getAllTags() {
+    return this.execute("GET", "tagscnt", null, {
+      transformResponse: [
+        function (data) {
+          return parseData(data);
+        },
+      ],
+    });
+  },
+  getTagById(id) {
+    return this.execute("GET", "tags/id/" + id);
+  },
+  // (U)pdate
+  updateForId(id, text, completed) {
+    return this.execute("PUT", "bookmarks/" + id, {
+      title: text,
+      completed: completed,
+    });
+  },
+
+  // (D)elete
+  removeBookmarkById(id) {
+    return this.execute("DELETE", "bookmarks/" + id);
+  },
+};
 
 export default api;
