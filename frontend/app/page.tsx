@@ -20,22 +20,18 @@ export default function App() {
     if (userAuth) {
       let tagList: TagWithCnt[] = [];
       let bkmkList: Bookmark[] = [];
-      api.getAllTags().then((response) => {
-        for (let tag of response.data) {
+      Promise.all([api.getAllTags(), api.getAllBookmarks()]).then(results => {
+        for (let tag of results[0].data) {
           tagList.push(tag);
         }
-        setLoading(false);
-      });
-      setTags(tagList);
-      console.log(tagList);
+        setTags(tagList);
 
-      api.getAllBookmarks().then((response) => {
-        for (let bkmk of response.data) {
+        for (let bkmk of results[1].data) {
           bkmkList.push(bkmk);
         }
         setBookmarks(bkmkList);
         setLoading(false);
-      });
+     });
     }
   }, [userAuth]);
 
