@@ -1,38 +1,61 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Badge, ListGroup } from "react-bootstrap";
-import TagWithCntList from "@/types/Bookmarks/TagWithCntList";
-import TagWithCnt  from "@/types/Bookmarks/TagWithCnt";
+import TagWithCntMap from "@/types/Bookmarks/TagWithCntMap";
+import TagWithCnt from "@/types/Bookmarks/TagWithCnt";
+import { TagsCntContext, useTags, useTagsDispatch } from "@/contexts/TagContext";
+import useAuth from "@components/UseAuth";
+import api from "@/api/Api";
 
-interface TagProp {
-  tagsWithCnt: TagWithCnt[];
-}
+const TagList = () => {
+  const userAuth = useAuth();
+  const dispatch = useTagsDispatch();
+  const tagMap = useTags();
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    if (userAuth) {
+      let tagList: TagWithCnt[] = [];
+      Promise.all([api.getAllTags()]).then((results) => {
+        console.log(results[0])
+        for (let tagCnt of results[0].data) {
+          console.log(tagCnt.tag.tag_title);
+          tagList.push(tagCnt);
+          tagMap.set(tagCnt.tag.id, tagCnt);
+          // dispatch({type: "add", tagId: tagCnt.tag.id, tagTitle: tagCnt.tag.tag_title})
+        }
+        setLoading(false)
+      });
+    }
+    console.log(tagMap)
+  }, [userAuth]);
 
-// 
-const Tags = ({ tagsWithCnt: tagsWithCnt }: TagProp) => {
-  console.log("tagsWithCnt " + tagsWithCnt)
+
+  let groupItems: any = [];
+  console.log(tagMap);
+  tagMap.forEach((tagCnt, key) => {
+      console.log(tagCnt);
+      groupItems.push(
+        <ListGroup.Item
+          key={tagCnt.tag.id}
+          className="d-flex justify-content-between align-items-start"
+        >
+          {tagCnt.tag.tag_title}
+          <Badge bg="primary" pill>
+            {tagCnt.count}
+          </Badge>
+        </ListGroup.Item>
+      );
+  });
+ console.log(groupItems) 
+
   return (
     <div>
-      <ListGroup>
-        {tagsWithCnt.map((tagCnt) => (
-          <ListGroup.Item
-            key={tagCnt.tag.id}
-            className="d-flex justify-content-between align-items-start"
-          >
-            {tagCnt.tag.tag_title}
-            <Badge bg="primary" pill>
-              { tagCnt.count }
-            </Badge>
-          </ListGroup.Item>
-        ))}
-      </ListGroup>
+      {!loading ?  <ListGroup>{groupItems}</ListGroup> : <div> loading</div> }
     </div>
   );
 };
 
+
 // Pass in our TagsWithCnt[] i.e., the TagsWithCntList.
-function TagList({ tagsCounted }: TagWithCntList) { 
-  return <div>{Tags({ tagsWithCnt: tagsCounted })}</div>;
-};
 
 export default TagList;

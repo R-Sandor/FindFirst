@@ -1,15 +1,20 @@
 import { Card } from "react-bootstrap";
 import "./bookmarkCard.scss";
 import Tag from "@/types/Bookmarks/Tag";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import api from "@/api/Api";
 import Bookmark from "@/types/Bookmarks/Bookmark";
+import { TagsCntContext, TagsCntDispatchContext } from "@/contexts/TagContext";
+import Action from "@/types/Bookmarks/Action";
 
 interface BookmarkProp {
   bookmark: Bookmark;
 }
 
 export default function BookmarkCard(bookmarkProp: BookmarkProp) {
+  const tagsCntMap = useContext(TagsCntContext);
+  const dispatch = useContext(TagsCntDispatchContext);
+
   let bookmark: Bookmark | null = bookmarkProp ? bookmarkProp.bookmark : null;
   const [input, setInput] = useState("");
   const [strTags, setStrTags] = useState<string[]>([]);
@@ -30,12 +35,22 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
       e.preventDefault();
       setStrTags((prevState) => [...prevState, trimmedInput]);
       setInput("");
-      api.bookmarkAddTagByTitle(bookmark?.id, trimmedInput).then( 
-        (response) => {
-          // It will always be the last index since it was the last added.
-          let index = response.data.tags.length - 1;
-        }
-      );
+      api.bookmarkAddTagByTitle(bookmark?.id, trimmedInput).then((response) => {
+        // It will always be the last index since it was the last added.
+        let index = response.data.tags.length - 1;
+        let tResp = response.data.tags[index];
+        console.log(tResp)
+        console.log(response.data.tags[index]);
+        let action: Action = {
+          type: "add",
+          tagId: tResp.id,
+          tagTitle: tResp.tag_title,
+        };
+        console.log("action", action)
+        console.log(tResp.id);
+        bookmark?.tags.push({ id: tResp.id, tag_title: tResp.tag_title });
+        dispatch(action);
+      });
     }
     if (keyCode === 8 && !input.length && bookmark?.tags.length) {
       e.preventDefault();
@@ -59,10 +74,20 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   }, [bookmark]);
 
   const deleteTag = (index: number) => {
-    let tagTitle =  strTags[index];
-    console.log(tagTitle)
-    api.bookmarkRemoveTagByTitle(bookmark?.id, tagTitle); 
+    let tagTitle = strTags[index];
+    console.log(tagTitle);
+    console.log(bookmark?.tags[index]);
+    let t = bookmark?.tags[index];
+    let id = t ? t.id : -1111;
+    if (bookmark) {
+      bookmark.tags = bookmark?.tags.filter((t, i) => i !== index);
+    }
+    // TODO: SWITCH TO ID
+    api.bookmarkRemoveTagByTitle(bookmark?.id, tagTitle);
+
     setStrTags((prevState) => prevState.filter((strTag, i) => i !== index));
+    let action: Action = { type: "delete", tagId: id, tagTitle: tagTitle };
+    dispatch(action);
   };
 
   return bookmark ? (
@@ -74,14 +99,14 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
         </Card.Body>
         <Card.Footer className="card-footer">
           <div className="container">
-            {strTags.map((tag, index) => (
+            {bookmark.tags.map((tag, index) => (
               <button
-                key={index}
+                key={tag.id}
                 onClick={() => deleteTag(index)}
                 type="button"
                 className="pill-button"
               >
-                {tag}
+                {tag.tag_title}
                 <i className="xtag bi bi-journal-x"></i>
               </button>
             ))}

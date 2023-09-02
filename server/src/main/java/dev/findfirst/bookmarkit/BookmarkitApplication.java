@@ -28,8 +28,9 @@ public class BookmarkitApplication {
     // Local host and 127.0.0.1 are the same
     config.setAllowedOrigins(
         Arrays.asList(
+            "https://localhost:3000",
             "http://localhost:3000",
-            "http://127.0.0.1:3000",
+            "https://devfindfirst.dev:3000",
             "http://localhost:8080",
             "http://127.0.0.1:8080",
             "http://localhost",
