@@ -43,6 +43,8 @@ public class TokenController {
 
   @Value("${bookmarkit.app.jwtExpirationMs}") private int jwtExpirationMs;
 
+  @Value("${bookmarkit.app.domain}") private String domain;
+
   @Autowired UserRepo userRepository;
 
   @Autowired TenantService tenantService;
@@ -71,8 +73,8 @@ public class TokenController {
             .secure(false) // enable this when we are using https
             // .sameSite("strict")
             .path("/")
-            .domain("localhost")
-            .httpOnly(true)
+            .domain(domain)
+            .httpOnly(false)
             .build();
     return ResponseEntity.ok()
         .header(HttpHeaders.SET_COOKIE, cookie.toString())
@@ -94,10 +96,10 @@ public class TokenController {
 
                   ResponseCookie cookie =
                       ResponseCookie.from("bookmarkit", token)
-                          .secure(true)
+                          .secure(false)
                           // .sameSite("strict")
                           .path("/")
-                          .domain("localhost")
+                          .domain(domain)
                           .httpOnly(true)
                           .build();
                   return ResponseEntity.ok()
