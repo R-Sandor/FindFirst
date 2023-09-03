@@ -9,6 +9,7 @@ import {
   TagCntProvider,
 } from "contexts/TagContext";
 import { useEffect, useState } from "react";
+import BookmarkGroup from "@/components/bookmark/BookmarkGroup";
 
 export default function App() {
   const userAuth = useAuth();
@@ -44,17 +45,7 @@ export default function App() {
             <TagList />
           </div>
           <div className="col-md-8 col-lg-9">
-            <div className="row no-pad">
-              <div className="col-6 col-md-12 col-lg-4">
-                <BookmarkCard bookmark={bookmarks[0]} />
-              </div>
-              <div className="col-6 col-md-12 col-lg-4">
-                <BookmarkCard bookmark={bookmarks[1]} />
-              </div>
-              <div className="col-6 col-md-12 col-lg-4">
-                <BookmarkCard bookmark={bookmarks[2]} />
-              </div>
-            </div>
+              <BookmarkGroup bookmarks={bookmarks}/>
           </div>
         </div>
       </TagCntProvider>
