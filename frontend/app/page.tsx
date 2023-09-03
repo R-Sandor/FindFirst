@@ -1,47 +1,29 @@
 "use client";
 import api from "@/api/Api";
-import authService, { AuthStatus } from "@/services/auth.service";
-import Tag from "@/types/Bookmarks/Tag";
 import Bookmark from "@/types/Bookmarks/Bookmark";
 import BookmarkCard from "@components/bookmark/BookmarkCard";
 import TagList from "@components/TagList";
-import { useContext, useEffect, useReducer, useState } from "react";
 import useAuth from "@components/UseAuth";
 import TagWithCnt from "@/types/Bookmarks/TagWithCnt";
 import {
   TagCntProvider,
-  TagsCntContext,
-  TagsCntDispatchContext,
-  useTags,
-  useTagsDispatch,
 } from "contexts/TagContext";
-import Action from "@/types/Bookmarks/Action";
+import { useEffect, useState } from "react";
 
 export default function App() {
   const userAuth = useAuth();
-  const [tags, setTags] = useState<TagWithCnt[]>([]);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const tagMap = useTags();
-  const dispatch = useTagsDispatch();
   // Grab the data.
   useEffect(() => {
     if (userAuth) {
       let bkmkList: Bookmark[] = [];
       let tagList: TagWithCnt[] = [];
-      Promise.all([api.getAllTags(), api.getAllBookmarks()]).then((results) => {
-        console.log(results[0])
-        for (let tagCnt of results[0].data) {
-          console.log(tagCnt.tag.tag_title);
-          tagList.push(tagCnt);
-          // tagMap.set(tagCnt.tag.id, tagCnt);
-        }
-
-        for (let bkmk of results[1].data) {
+      api.getAllBookmarks().then((results) => {
+        for (let bkmk of results.data) {
           bkmkList.push(bkmk);
         }
-        setTags(tagList);
         setBookmarks(bkmkList);
         setLoading(false);
       });

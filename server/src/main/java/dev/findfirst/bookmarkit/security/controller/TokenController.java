@@ -74,7 +74,7 @@ public class TokenController {
             // .sameSite("strict")
             .path("/")
             .domain(domain)
-            .httpOnly(false)
+            .httpOnly(true)
             .build();
     return ResponseEntity.ok()
         .header(HttpHeaders.SET_COOKIE, cookie.toString())

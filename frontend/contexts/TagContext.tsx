@@ -58,8 +58,7 @@ function tagCntReducer(tagsWithCnt: Map<number, TagWithCnt>, action: Action) {
       } else {
         tagsWithCnt.delete(action.tagId);
       }
-      return tagsWithCnt;
-      // return tasks.filter(t => t.id !== action.id);
+      return new Map(tagsWithCnt);
     }
     default: {
       throw Error("Unknown action: " + action.type);
