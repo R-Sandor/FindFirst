@@ -52,22 +52,12 @@ const api = {
     );
   },
   bookmarkRemoveTagById(bookmarkId, tagId) {
-    return this.execute(
-      "DELETE",
-      "boomkmark/" + bookmarkId + "/tagID",
-      { id: tagId },
-      {
-        transformResponse: [
-          function (data) {
-            return parseData(data);
-          },
-        ],
-      }
-    );
+    return instance.delete("bookmark/" + bookmarkId + "/tagId", {
+      params: { id: tagId }
+    })
   },
   bookmarkRemoveTagByTitle(bookmarkId, title) {
-    console.log(bookmarkId, title);
-    instance.delete("bookmark/" + bookmarkId + "/tagTitle", {
+    return instance.delete("bookmark/" + bookmarkId + "/tagTitle", {
       params: { title: title },
     });
   },
