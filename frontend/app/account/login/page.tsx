@@ -8,7 +8,6 @@ export interface credentials {
   username: string;
   password: string;
 }
-const SIGNIN_URL = "/auth/signin";
 
 export default function Page() {
   const router = useRouter();
