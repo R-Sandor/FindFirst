@@ -12,7 +12,6 @@ interface BookmarkProp {
 }
 
 export default function BookmarkCard(bookmarkProp: BookmarkProp) {
-  const tagsCntMap = useContext(TagsCntContext);
   const dispatch = useContext(TagsCntDispatchContext);
 
   let bookmark: Bookmark | null = bookmarkProp ? bookmarkProp.bookmark : null;

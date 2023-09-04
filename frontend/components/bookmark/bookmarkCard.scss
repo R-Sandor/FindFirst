@@ -80,9 +80,14 @@
 }
 
 .journal-icon { 
-    flex: auto;
-    float: left;
-    text-align: left;
-    background-color: antiquewhite;
-    color:#29b5bf
+    display: block;
+    float: right;
+}
+
+.submit { 
+  float: right;
+}
+
+.reset { 
+  float: right;
 }
