@@ -1,5 +1,6 @@
 import Bookmark from "@/types/Bookmarks/Bookmark";
 import BookmarkCard from "./BookmarkCard";
+import NewBookmarkCard from "./NewBookmarkCard";
 
 // Bookmark group composed of Bookmarks.
 export default function BookmarkGroup({
@@ -19,6 +20,9 @@ export default function BookmarkGroup({
 
   return (
     <div className="row no-pad">
+     <div className="col-6 col-md-12 col-lg-4">
+        <NewBookmarkCard  />
+      </div>
         { bookmarkGroup } 
     </div>
   );

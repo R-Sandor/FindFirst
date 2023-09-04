@@ -9,7 +9,7 @@
   min-width: 20%;
   max-width: 100%;
   margin: 2px 2px;
-  background-color: rgb(41, 181, 191);
+  background-color: #29b5bf;
   white-space: nowrap;
   height: 22px;
   text-align: center;
@@ -77,4 +77,12 @@
   .card-footer {
     font-size: 12px;
   }
+}
+
+.journal-icon { 
+    flex: auto;
+    float: left;
+    text-align: left;
+    background-color: antiquewhite;
+    color:#29b5bf
 }
