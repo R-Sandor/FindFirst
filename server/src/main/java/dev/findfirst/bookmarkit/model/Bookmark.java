@@ -31,7 +31,7 @@ public class Bookmark extends Tenantable {
   }
 
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   @NonNull @Column(length = 50)

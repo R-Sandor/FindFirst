@@ -1,6 +1,7 @@
 package dev.findfirst.bookmarkit.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import dev.findfirst.bookmarkit.security.model.Tenantable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -35,7 +36,7 @@ public class Tag extends Tenantable {
       fetch = FetchType.EAGER,
       cascade = {CascadeType.ALL},
       mappedBy = "tags")
-  @JsonIgnore
+  @JsonIgnoreProperties("tags")
   Set<Bookmark> bookmarks = new HashSet<>();
 
   public Tag(String tagVal) {
