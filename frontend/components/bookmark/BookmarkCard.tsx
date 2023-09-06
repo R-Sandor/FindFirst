@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import api from "@/api/Api";
 import Bookmark from "@/types/Bookmarks/Bookmark";
 import { TagsCntContext, TagsCntDispatchContext } from "@/contexts/TagContext";
-import Action from "@/types/Bookmarks/Action";
+import TagAction from "@/types/Bookmarks/TagAction";
 
 interface BookmarkProp {
   bookmark: Bookmark;
@@ -40,7 +40,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
         let tResp = response.data.tags[index];
         console.log(tResp)
         console.log(response.data.tags[index]);
-        let action: Action = {
+        let action: TagAction = {
           type: "add",
           tagId: tResp.id,
           tagTitle: tResp.tag_title,
@@ -85,7 +85,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
     api.bookmarkRemoveTagByTitle(bookmark?.id, tagTitle);
 
     setStrTags((prevState) => prevState.filter((strTag, i) => i !== index));
-    let action: Action = { type: "delete", tagId: id, tagTitle: tagTitle };
+    let action: TagAction = { type: "delete", tagId: id, tagTitle: tagTitle };
     dispatch(action);
   };
 

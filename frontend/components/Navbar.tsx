@@ -11,8 +11,6 @@ import {
 import { useRouter } from "next/navigation";
 import authService, { AuthStatus } from "@services/auth.service";
 import useAuth from "@components/UseAuth";
-import { useEffect, useState } from "react";
-import { cursorTo } from "readline";
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();

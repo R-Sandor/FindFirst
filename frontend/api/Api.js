@@ -21,10 +21,12 @@ const api = {
   },
 
   // (C)reate
-  createNew(text, completed) {
-    return this.execute("POST", "bookmarks", {
-      title: text,
-      completed: completed,
+  addNewBookmark(bookmark) {
+      console.log(bookmark)
+    return this.execute("POST", "bookmark/add", {
+      title: bookmark.title,
+      url: bookmark.url,
+      tags: bookmark.tags 
     });
   },
   // (R)ead
