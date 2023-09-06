@@ -1,7 +1,6 @@
 package dev.findfirst.bookmarkit.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import dev.findfirst.bookmarkit.security.model.Tenantable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

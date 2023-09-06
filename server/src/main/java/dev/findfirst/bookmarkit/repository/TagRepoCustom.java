@@ -1,10 +1,8 @@
 package dev.findfirst.bookmarkit.repository;
 
+import dev.findfirst.bookmarkit.model.TagCntRecord;
 import java.util.List;
 
-import dev.findfirst.bookmarkit.model.TagCntRecord;
-
 public interface TagRepoCustom {
-//   List<TagCntRecord> getTagsWithCnt();
- List<TagCntRecord> customTagsWithCnt();
+  List<TagCntRecord> customTagsWithCnt();
 }
