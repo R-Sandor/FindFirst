@@ -4,6 +4,7 @@ import dev.findfirst.bookmarkit.model.Bookmark;
 import dev.findfirst.bookmarkit.model.Tag;
 import dev.findfirst.bookmarkit.repository.BookmarkRepository;
 import jakarta.validation.constraints.NotNull;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,8 +29,23 @@ public class BookmarkService {
     return bookmarkRepository.findById(id);
   }
 
-  public Bookmark addBookmark(Bookmark bookmark) {
-    return bookmarkRepository.saveAndFlush(bookmark);
+  public Bookmark addBookmark(Bookmark bookmark) throws Exception {
+    var tags = new HashSet<Tag>();
+
+    var bkmk = bookmarkRepository.findByUrl(bookmark.getUrl());
+    if (bkmk.isPresent()) {
+      throw new Exception("bookmark exists");
+    }
+
+    for (var t : bookmark.getTags()) {
+      tags.add(
+          tagService
+              .getTagByTitle(t.getTag_title())
+              .orElseGet(() -> tagService.addTag(new Tag(t.getTag_title()))));
+    }
+
+    var newBkmk = new Bookmark(null, bookmark.getTitle(), bookmark.getUrl(), tags);
+    return bookmarkRepository.save(newBkmk);
   }
 
   public void addBookmarks(List<Bookmark> bookmarks) {
