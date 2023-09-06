@@ -45,7 +45,17 @@ public class BookmarkController {
 
   @PostMapping(value = "/bookmark/add")
   public ResponseEntity<Bookmark> addBookmarks(@RequestBody Bookmark bookmark) {
-    return new Response<Bookmark>((b) -> bookmarkService.addBookmark(bookmark), bookmark).get();
+    return new Response<Bookmark>(
+            (b) -> {
+              try {
+                bookmarkService.addBookmark(bookmark);
+              } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
+            },
+            bookmark)
+        .get();
   }
 
   @PostMapping(value = "/bookmark/addBookmarks")
