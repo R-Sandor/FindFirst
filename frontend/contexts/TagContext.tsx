@@ -1,15 +1,15 @@
 import { Dispatch, createContext, useContext, useReducer} from "react";
 import TagWithCnt from '@type/Bookmarks/TagWithCnt';
 // import { Action } from "rxjs/internal/scheduler/Action";
-import Action from "@/types/Bookmarks/Action";
+import TagAction from "@/types/Bookmarks/TagAction";
 
 export interface disapatchInterface { 
  tagsWithCnt: Map<number, TagWithCnt>
- action: Action
+ action: TagAction
 }
 
 export const TagsCntContext = createContext<Map<number, TagWithCnt>>(new Map<number, TagWithCnt>());
-export const TagsCntDispatchContext = createContext<Dispatch<Action>>(() => {
+export const TagsCntDispatchContext = createContext<Dispatch<TagAction>>(() => {
 });
 
 
@@ -30,13 +30,11 @@ export function TagCntProvider({ children }: {
   );
 }
 
-function tagCntReducer(tagsWithCnt: Map<number, TagWithCnt>, action: Action) {
+function tagCntReducer(tagsWithCnt: Map<number, TagWithCnt>, action: TagAction) {
   switch (action.type) {
     case "add": {
-      console.log("add");
       let tagCnt: TagWithCnt | undefined = tagsWithCnt.get(action.tagId);
       if (tagCnt) {
-        console.log("THERE IS A COUNT")
         console.log(tagCnt)
         tagCnt.count = tagCnt.count + 1;
         tagsWithCnt.set(action.tagId, tagCnt)

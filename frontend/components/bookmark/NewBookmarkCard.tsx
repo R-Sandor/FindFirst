@@ -1,8 +1,10 @@
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, FormikHelpers } from "formik";
 import { useState } from "react";
 import Image from "next/image";
 import { Button, Card } from "react-bootstrap";
 import "./bookmarkCard.scss";
+import api from "@/api/Api";
+import Bookmark from "@/types/Bookmarks/Bookmark";
 
 export interface NewBookmark {
   title: string;
@@ -30,9 +32,16 @@ export default function NewBookmarkCard() {
     newbookmark.tags = strTags;
     newbookmark.title = newbookmark.url;
     actions.resetForm({ newcard }, setStrTags([]));
-
+    api.addNewBookmark(newbookmark)
     console.log(newbookmark);
   };
+
+  const handleOnReset = async(newbookmark: NewBookmark, formikHelpers: FormikHelpers<NewBookmark>) => {
+    setStrTags([]); 
+    newbookmark.tags = [];
+    newbookmark.title = "";
+    newbookmark.url = "";
+  }
 
   function onKeyDown(e: any) {
     const { keyCode } = e;
@@ -62,12 +71,11 @@ export default function NewBookmarkCard() {
     console.log(tagTitle);
     console.log(strTags[index]);
     setStrTags(strTags.filter((t, i) => i !== index));
-    // TODO: SWITCH TO ID
   };
 
   return (
     <div className="px-1">
-      <Formik initialValues={newcard} onSubmit={handleOnSubmit}>
+      <Formik initialValues={newcard} onSubmit={handleOnSubmit} onReset={handleOnReset}>
         <Form>
           <Card>
             <Card.Body>
