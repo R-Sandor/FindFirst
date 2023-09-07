@@ -13,8 +13,7 @@ interface BookmarkProp {
 
 export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   const dispatch = useContext(TagsCntDispatchContext);
-
-  let bookmark: Bookmark | null = bookmarkProp ? bookmarkProp.bookmark : null;
+  let bookmark: Bookmark = bookmarkProp.bookmark;
   const [input, setInput] = useState("");
   const [strTags, setStrTags] = useState<string[]>([]);
 
@@ -27,6 +26,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
     const { keyCode } = e;
     const trimmedInput = input.trim();
     if (
+      // Enter or space
       (keyCode === 32 || keyCode == 13) &&
       trimmedInput.length &&
       !strTags.includes(trimmedInput)
@@ -38,26 +38,26 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
         // It will always be the last index since it was the last added.
         let index = response.data.tags.length - 1;
         let tResp = response.data.tags[index];
-        console.log(tResp)
-        console.log(response.data.tags[index]);
         let action: TagAction = {
           type: "add",
           tagId: tResp.id,
           tagTitle: tResp.tag_title,
         };
-        console.log("action", action)
-        console.log(tResp.id);
-        bookmark?.tags.push({ id: tResp.id, tag_title: tResp.tag_title });
+        bookmark.tags.push({ id: tResp.id, tag_title: tResp.tag_title });
+        let cp = [...strTags, trimmedInput];
+        setStrTags(cp);
         dispatch(action);
       });
     }
+    // backspace delete
     if (keyCode === 8 && !input.length && bookmark?.tags.length) {
       e.preventDefault();
-      const tagsCopy = [...strTags];
+      let tagsCopy = [...strTags];
       let poppedTag = tagsCopy.pop();
+      if (poppedTag) deleteTag(tagsCopy.length);
+      console.log(poppedTag)
       if (!poppedTag) poppedTag = "";
-
-      setStrTags(tagsCopy);
+      console.log(tagsCopy.length)
       setInput(poppedTag);
     }
   }
@@ -74,18 +74,17 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
 
   const deleteTag = (index: number) => {
     let tagTitle = strTags[index];
+    console.log("deleteTag")
     console.log(tagTitle);
-    console.log(bookmark?.tags[index]);
-    let t = bookmark?.tags[index];
-    let id = t ? t.id : -1111;
+    console.log(bookmark.tags[index]);
+    let t = bookmark.tags[index];
     if (bookmark) {
-      bookmark.tags = bookmark?.tags.filter((t, i) => i !== index);
+      bookmark.tags = bookmark.tags.filter((t, i) => i !== index);
     }
-    // TODO: SWITCH TO ID
-    api.bookmarkRemoveTagByTitle(bookmark?.id, tagTitle);
+    api.bookmarkRemoveTagById(bookmark.id, t.id);
 
     setStrTags((prevState) => prevState.filter((strTag, i) => i !== index));
-    let action: TagAction = { type: "delete", tagId: id, tagTitle: tagTitle };
+    let action: TagAction = { type: "delete", tagId: t.id, tagTitle: tagTitle };
     dispatch(action);
   };
 
