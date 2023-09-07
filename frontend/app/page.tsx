@@ -10,26 +10,29 @@ import {
 } from "contexts/TagContext";
 import { useEffect, useState } from "react";
 import BookmarkGroup from "@/components/bookmark/BookmarkGroup";
+import { useBookmarks } from "@/contexts/BookmarkContext";
 
 export default function App() {
   const userAuth = useAuth();
-  const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+  // const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+  const bookmarks = useBookmarks();
   const [loading, setLoading] = useState(true);
 
   // Grab the data.
   useEffect(() => {
     if (userAuth) {
-      let bkmkList: Bookmark[] = [];
-      let tagList: TagWithCnt[] = [];
       api.getAllBookmarks().then((results) => {
         for (let bkmk of results.data) {
-          bkmkList.push(bkmk);
+          bookmarks.push(bkmk);
         }
-        setBookmarks(bkmkList);
         setLoading(false);
       });
     }
   }, [userAuth]);
+
+  useEffect(() => {
+    console.log(bookmarks)
+  }, [bookmarks])
 
   /**
    * Ideally when the user visits the site they will actually have a cool landing page

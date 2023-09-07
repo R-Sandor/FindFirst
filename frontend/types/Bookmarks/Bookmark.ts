@@ -1,8 +1,8 @@
 import Tag from "./Tag";
 
 export default interface Bookmark {
-  id: string;
+  id: number;
   title: string;
-  url: URL;
+  url: string;
   tags: Tag[];
 }

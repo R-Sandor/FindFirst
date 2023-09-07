@@ -6,6 +6,7 @@ import dev.findfirst.bookmarkit.model.Tag;
 import dev.findfirst.bookmarkit.service.BookmarkService;
 import dev.findfirst.bookmarkit.service.TagService;
 import dev.findfirst.bookmarkit.utilies.Response;
+import io.micrometer.common.lang.NonNull;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
@@ -103,6 +104,19 @@ public class BookmarkController {
       @Valid @PathVariable("bookmarkId") long id, @RequestParam("title") @NotBlank String title) {
 
     var t = tagService.getTagByTitle(title);
+    var b = bookmarkService.findById(id);
+
+    return b.isPresent()
+        ? new Response<Tag>((tag) -> bookmarkService.deleteTag(id, tag), t).get()
+        : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+  }
+
+
+ @DeleteMapping(value = "bookmark/{bookmarkId}/tagId", produces = "application/json")
+  public ResponseEntity<Tag> deleteTagFromBookmarkById(
+      @Valid @PathVariable("bookmarkId") long id, @RequestParam("id") @Valid long tagId) {
+
+    var t = tagService.findById(id);
     var b = bookmarkService.findById(id);
 
     return b.isPresent()
