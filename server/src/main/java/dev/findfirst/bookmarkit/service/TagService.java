@@ -3,10 +3,14 @@ package dev.findfirst.bookmarkit.service;
 import dev.findfirst.bookmarkit.model.Tag;
 import dev.findfirst.bookmarkit.model.TagCntRecord;
 import dev.findfirst.bookmarkit.repository.TagRepository;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,8 +22,28 @@ public class TagService {
     return tagRepository.saveAndFlush(tag);
   }
 
-  public void addAll(List<Tag> tags) {
-    tagRepository.saveAllAndFlush(tags);
+  /**
+   * Simple checks if there is a tag with given tag title
+   * if not creates one and returns the Tag. 
+   * @param title
+   * @return Tag existing tag with ID or a new Tag with the given title.
+   */
+  public Tag findOrCreateTag(String title) {
+    return findByTagTitle(title).orElseGet(() -> addTag(new Tag(title)));
+  }
+
+  public List<Tag> addAll(List<Tag> tags) {
+    return tagRepository.saveAllAndFlush(tags);
+  }
+
+  /**
+   * Create List of tags by titles. Creating a new tags
+   * for ones that do not exist and returning list of existing tags.
+   *
+   * @param titles List of strings
+   */
+  public List<Tag> addAll(String ...titles) {
+    return Arrays.stream(titles).map(t ->  findOrCreateTag(t)).toList();
   }
 
   public void deleteAllTags() {

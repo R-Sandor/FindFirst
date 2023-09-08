@@ -90,9 +90,7 @@ public class BookmarkController {
 
     if (tagRequest.getId() == null) {
       // Check if there is a tag by the given title.
-      var optTag = tagService.findByTagTitle(tagRequest.getTag_title());
-      // If tag does not exist create one.
-      var tag = optTag.orElseGet(() -> tagService.addTag(tagRequest));
+      var tag = tagService.findOrCreateTag(tagRequest.getTag_title());
       action = (b) -> bookmarkService.addTagToBookmark(bookmark, tag);
     }
 
