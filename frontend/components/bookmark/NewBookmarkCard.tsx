@@ -8,6 +8,8 @@ import Bookmark from "@/types/Bookmarks/Bookmark";
 import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 import Tag from "@/types/Bookmarks/Tag";
+import { useTagsDispatch } from "@/contexts/TagContext";
+import TagAction from "@/types/Bookmarks/TagAction";
 
 export interface NewBookmark {
   id?: string;
@@ -29,6 +31,7 @@ const newcard: NewBookmark = {
   tags: [],
 };
 
+// TODO error handling, tag list limits
 async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
   let newBkmkRequest: NewBookmarkRequest;
   newBkmkRequest = {
@@ -46,7 +49,8 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
       newBkmkRequest.tagIds.push(rt.id);
     });
   });
-  api.addNewBookmark(newBkmkRequest).then((response) => {
+  console.log(newBkmkRequest)
+  await api.addNewBookmark(newBkmkRequest).then((response) => {
     console.log(response.data);
     createBmk.id = response.data.id;
     createBmk.tags = response.data.tags;
@@ -58,6 +62,7 @@ export default function NewBookmarkCard() {
   const [input, setInput] = useState("");
   const [strTags, setStrTags] = useState<string[]>([]);
   const bkmkDispatch = useBookmarkDispatch();
+  const tagDispatch = useTagsDispatch();
   const onChange = (e: any) => {
     const { value } = e.target;
     setInput(value);
@@ -76,12 +81,23 @@ export default function NewBookmarkCard() {
       url: submittedBmk.url,
       tags: tags,
     };
-    makeNewBookmark(newBkmk);
+    let retBkmk = await makeNewBookmark(newBkmk);
+    console.log("newBkmk", newBkmk)
     let action: BookmarkAction = {
       type: "add",
-      bookmarkId: newBkmk.id,
-      bookmark: newBkmk,
+      bookmarkId: retBkmk.id,
+      bookmark: retBkmk,
     };
+    retBkmk.tags.forEach((t, i) => {
+      let tAct: TagAction = {
+        type: "add",
+        tagId: t.id,
+        tagTitle: t.tag_title,
+      };
+      console.log(newBkmk)
+      tagDispatch(tAct)
+    });
+
     bkmkDispatch(action);
     actions.resetForm({ newcard }, setStrTags([]));
   };

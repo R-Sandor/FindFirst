@@ -2,7 +2,7 @@ import Bookmark from "@/types/Bookmarks/Bookmark";
 import BookmarkCard from "./BookmarkCard";
 import NewBookmarkCard from "./NewBookmarkCard";
 import { useBookmarks } from "@/contexts/BookmarkContext";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import UseAuth from "@/components/UseAuth";
 import api from "@/api/Api";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
@@ -11,6 +11,7 @@ import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 export default function BookmarkGroup() {
   const bookmarks = useBookmarks();
   const userAuth = UseAuth();
+  const [loading, setLoading] = useState(true);
 
   // Grab the data.
   useEffect(() => {
@@ -25,10 +26,11 @@ export default function BookmarkGroup() {
             bookmark: bkmk,
           };
           bookmarks.push(bkmk)
+          setLoading(false)
         }
       });
     }
-  }, [userAuth,  bookmarks]);
+  }, [userAuth]);
 
   let bookmarkGroup: any = [];
   bookmarks.map((b, i) => {
@@ -40,11 +42,12 @@ export default function BookmarkGroup() {
   });
 
   return (
+    !loading ?
     <div className="row no-pad">
       <div className="col-6 col-md-12 col-lg-4">
         <NewBookmarkCard />
       </div>
       {bookmarkGroup}
-    </div>
+    </div>: <p>loading</p>
   );
 }
