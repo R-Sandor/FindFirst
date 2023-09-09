@@ -1,5 +1,6 @@
 package dev.findfirst.bookmarkit.controller;
 
+import dev.findfirst.bookmarkit.model.AddBkmkReq;
 import dev.findfirst.bookmarkit.model.Bookmark;
 import dev.findfirst.bookmarkit.model.PairWrapper;
 import dev.findfirst.bookmarkit.model.Tag;
@@ -45,18 +46,16 @@ public class BookmarkController {
   }
 
   @PostMapping(value = "/bookmark/add")
-  public ResponseEntity<Bookmark> addBookmarks(@RequestBody Bookmark bookmark) {
-    return new Response<Bookmark>(
-            (b) -> {
-              try {
-                bookmarkService.addBookmark(bookmark);
-              } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-              }
-            },
-            bookmark)
-        .get();
+  public ResponseEntity<Bookmark> addBookmarks(@RequestBody AddBkmkReq req) {
+    Bookmark createdBookmark; 
+    var response = new Response<Bookmark>();
+    try {
+      createdBookmark = bookmarkService.addBookmark(req);
+      return response.setResponse(createdBookmark, HttpStatus.OK);
+    } catch (Exception e) {
+      e.printStackTrace();
+        return response.setResponse(HttpStatus.BAD_REQUEST);
+    } 
   }
 
   @PostMapping(value = "/bookmark/addBookmarks")

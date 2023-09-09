@@ -5,11 +5,21 @@ import { Button, Card } from "react-bootstrap";
 import "./bookmarkCard.scss";
 import api from "@/api/Api";
 import Bookmark from "@/types/Bookmarks/Bookmark";
+import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
+import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
+import Tag from "@/types/Bookmarks/Tag";
 
 export interface NewBookmark {
+  id?: string;
   title: string;
   url: string;
   tags: string[];
+}
+
+export interface NewBookmarkRequest {
+  title: string;
+  url: string;
+  tagIds: number[];
 }
 
 // function testSubmit(requestParams.id, ticket)
@@ -22,7 +32,7 @@ const newcard: NewBookmark = {
 export default function NewBookmarkCard() {
   const [input, setInput] = useState("");
   const [strTags, setStrTags] = useState<string[]>([]);
-
+  const bkmkDispatch = useBookmarkDispatch();
   const onChange = (e: any) => {
     const { value } = e.target;
     setInput(value);
@@ -30,23 +40,41 @@ export default function NewBookmarkCard() {
 
   const handleOnSubmit = async (newbookmark: NewBookmark, actions: any) => {
     newbookmark.tags = strTags;
+    let tags: Tag[] = strTags.map((t, i) => {
+      return { tag_title: t, id: -1 };
+    });
     newbookmark.title = newbookmark.url;
+    console.log("handleOnSubmit");
+    let action: BookmarkAction = {
+      type: "add",
+      bookmarkId: -1,
+      bookmark: {
+        id: -1,
+        title: newbookmark.title,
+        url: newbookmark.url,
+        tags: tags,
+      },
+    };
+    bkmkDispatch(action);
     actions.resetForm({ newcard }, setStrTags([]));
-    api.addNewBookmark(newbookmark)
     console.log(newbookmark);
   };
 
-  const handleOnReset = async(newbookmark: NewBookmark, formikHelpers: FormikHelpers<NewBookmark>) => {
-    setStrTags([]); 
+  const handleOnReset = async (
+    newbookmark: NewBookmark,
+    formikHelpers: FormikHelpers<NewBookmark>
+  ) => {
+    setStrTags([]);
     newbookmark.tags = [];
     newbookmark.title = "";
     newbookmark.url = "";
-  }
+  };
 
   function onKeyDown(e: any) {
     const { keyCode } = e;
     const trimmedInput = input.trim();
     if (
+      // add tag via space bar or enter
       (keyCode === 32 || keyCode == 13) &&
       trimmedInput.length &&
       !strTags.includes(trimmedInput)
@@ -68,14 +96,16 @@ export default function NewBookmarkCard() {
 
   const deleteTag = (index: number) => {
     let tagTitle = strTags[index];
-    console.log(tagTitle);
-    console.log(strTags[index]);
     setStrTags(strTags.filter((t, i) => i !== index));
   };
 
   return (
     <div className="px-1">
-      <Formik initialValues={newcard} onSubmit={handleOnSubmit} onReset={handleOnReset}>
+      <Formik
+        initialValues={newcard}
+        onSubmit={handleOnSubmit}
+        onReset={handleOnReset}
+      >
         <Form>
           <Card>
             <Card.Body>

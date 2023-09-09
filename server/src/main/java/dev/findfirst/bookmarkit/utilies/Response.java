@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-@Data
 @NoArgsConstructor
 public class Response<T> {
 
@@ -54,9 +53,10 @@ public class Response<T> {
    * @param action caller defined action.
    * @param t parameter to consumer.
    */
-  public void prepareResponse(Consumer<T> action, T t) {
+  public ResponseEntity<T> prepareResponse(Consumer<T> action, T t) {
     this.setResponse(t, HttpStatus.OK);
     action.accept(t);
+    return resp;
   }
 
   /**
@@ -65,8 +65,9 @@ public class Response<T> {
    * @param action
    * @param t
    */
-  public void prepareResponse(Consumer<T> action, Optional<T> t) {
+  public ResponseEntity<T> prepareResponse(Consumer<T> action, Optional<T> t) {
     t.ifPresentOrElse(action, () -> setResponse(HttpStatus.BAD_REQUEST));
+    return resp;
   }
 
   /**
@@ -74,17 +75,18 @@ public class Response<T> {
    *
    * @param t
    */
-  public void prepareResponse(Optional<T> t) {
-    t.ifPresentOrElse(
+  public ResponseEntity<T> prepareResponse(Optional<T> t) {
+      t.ifPresentOrElse(
         (T lt) -> setResponse(lt, HttpStatus.OK), () -> setResponse(HttpStatus.BAD_REQUEST));
+        return this.resp;
   }
 
-  private void setResponse(T t, HttpStatus status) {
-    this.resp = new ResponseEntity<T>(t, status);
+  public ResponseEntity<T> setResponse(T t, HttpStatus status) {
+    return this.resp = new ResponseEntity<T>(t, status);
   }
 
-  private void setResponse(HttpStatus status) {
-    this.resp = new ResponseEntity<T>(status);
+  public ResponseEntity<T> setResponse(HttpStatus status) {
+    return this.resp = new ResponseEntity<T>(status);
   }
 
   public ResponseEntity<T> get() {

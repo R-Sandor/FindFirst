@@ -1,5 +1,6 @@
 package dev.findfirst.bookmarkit.service;
 
+import dev.findfirst.bookmarkit.model.AddBkmkReq;
 import dev.findfirst.bookmarkit.model.Bookmark;
 import dev.findfirst.bookmarkit.model.Tag;
 import dev.findfirst.bookmarkit.repository.BookmarkRepository;
@@ -29,22 +30,20 @@ public class BookmarkService {
     return bookmarkRepository.findById(id);
   }
 
-  public Bookmark addBookmark(Bookmark bookmark) throws Exception {
+  public Bookmark addBookmark(AddBkmkReq reqBkmk) throws Exception {
     var tags = new HashSet<Tag>();
 
-    var bkmk = bookmarkRepository.findByUrl(bookmark.getUrl());
-    if (bkmk.isPresent()) {
+    if (bookmarkRepository.findByUrl(reqBkmk.url()).isPresent()) {
       throw new Exception("bookmark exists");
     }
 
-    for (var t : bookmark.getTags()) {
+    for (var t : reqBkmk.tagIds()) {
       tags.add(
           tagService
-              .getTagByTitle(t.getTag_title())
-              .orElseGet(() -> tagService.addTag(new Tag(t.getTag_title()))));
+              .findById(t).orElseThrow(() -> new Exception("No such tag exists")));
     }
 
-    var newBkmk = new Bookmark(null, bookmark.getTitle(), bookmark.getUrl(), tags);
+    var newBkmk = new Bookmark(null, reqBkmk.title(), reqBkmk.url(), tags);
     return bookmarkRepository.save(newBkmk);
   }
 

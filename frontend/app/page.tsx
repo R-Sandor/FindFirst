@@ -10,7 +10,7 @@ import {
 } from "contexts/TagContext";
 import { useEffect, useState } from "react";
 import BookmarkGroup from "@/components/bookmark/BookmarkGroup";
-import { useBookmarks } from "@/contexts/BookmarkContext";
+import { BookmarkProvider, useBookmarks } from "@/contexts/BookmarkContext";
 
 export default function App() {
   const userAuth = useAuth();
@@ -42,6 +42,7 @@ export default function App() {
    */
   return userAuth ? (
     !loading ? (
+    <BookmarkProvider>
       <TagCntProvider>
         <div className="row">
           <div className="col-md-4 col-lg-3">
@@ -52,6 +53,7 @@ export default function App() {
           </div>
         </div>
       </TagCntProvider>
+    </BookmarkProvider>
     ) : (
       <p>loading</p>
     )
