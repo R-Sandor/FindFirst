@@ -4,8 +4,6 @@ import dev.findfirst.bookmarkit.model.Tag;
 import dev.findfirst.bookmarkit.model.TagCntRecord;
 import dev.findfirst.bookmarkit.service.TagService;
 import dev.findfirst.bookmarkit.utilies.Response;
-
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,9 +41,9 @@ public class TagController {
     return new ResponseEntity<Object>(tags, null, HttpStatus.OK);
   }
 
-  @PostMapping(value = "/tags/addTags",  consumes = "application/json")
+  @PostMapping(value = "/tags/addTags", consumes = "application/json")
   public ResponseEntity<List<Tag>> addTags(@RequestBody List<String> tagTitles) {
-    var titles = tagTitles.toArray(new String[0]);  // convert to String []
+    var titles = tagTitles.toArray(new String[0]); // convert to String []
     return new Response<List<Tag>>(tagService.addAll(titles), HttpStatus.OK).get();
   }
 

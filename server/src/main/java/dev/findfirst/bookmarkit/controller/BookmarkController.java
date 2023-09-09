@@ -7,7 +7,6 @@ import dev.findfirst.bookmarkit.model.Tag;
 import dev.findfirst.bookmarkit.service.BookmarkService;
 import dev.findfirst.bookmarkit.service.TagService;
 import dev.findfirst.bookmarkit.utilies.Response;
-import io.micrometer.common.lang.NonNull;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import java.util.List;
@@ -47,15 +46,15 @@ public class BookmarkController {
 
   @PostMapping(value = "/bookmark/add")
   public ResponseEntity<Bookmark> addBookmarks(@RequestBody AddBkmkReq req) {
-    Bookmark createdBookmark; 
+    Bookmark createdBookmark;
     var response = new Response<Bookmark>();
     try {
       createdBookmark = bookmarkService.addBookmark(req);
       return response.setResponse(createdBookmark, HttpStatus.OK);
     } catch (Exception e) {
       e.printStackTrace();
-        return response.setResponse(HttpStatus.BAD_REQUEST);
-    } 
+      return response.setResponse(HttpStatus.BAD_REQUEST);
+    }
   }
 
   @PostMapping(value = "/bookmark/addBookmarks")
@@ -108,8 +107,7 @@ public class BookmarkController {
         : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 
-
- @DeleteMapping(value = "bookmark/{bookmarkId}/tagId", produces = "application/json")
+  @DeleteMapping(value = "bookmark/{bookmarkId}/tagId", produces = "application/json")
   public ResponseEntity<Tag> deleteTagFromBookmarkById(
       @Valid @PathVariable("bookmarkId") long id, @RequestParam("id") @Valid long tagId) {
 

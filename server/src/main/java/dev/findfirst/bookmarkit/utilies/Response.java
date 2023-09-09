@@ -2,7 +2,6 @@ package dev.findfirst.bookmarkit.utilies;
 
 import java.util.Optional;
 import java.util.function.Consumer;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -76,9 +75,9 @@ public class Response<T> {
    * @param t
    */
   public ResponseEntity<T> prepareResponse(Optional<T> t) {
-      t.ifPresentOrElse(
+    t.ifPresentOrElse(
         (T lt) -> setResponse(lt, HttpStatus.OK), () -> setResponse(HttpStatus.BAD_REQUEST));
-        return this.resp;
+    return this.resp;
   }
 
   public ResponseEntity<T> setResponse(T t, HttpStatus status) {

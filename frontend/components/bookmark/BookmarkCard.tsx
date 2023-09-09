@@ -4,7 +4,7 @@ import Tag from "@/types/Bookmarks/Tag";
 import { useContext, useEffect, useState } from "react";
 import api from "@/api/Api";
 import Bookmark from "@/types/Bookmarks/Bookmark";
-import { TagsCntContext, TagsCntDispatchContext } from "@/contexts/TagContext";
+import { TagsCntContext, TagsCntDispatchContext, useTagsDispatch } from "@/contexts/TagContext";
 import TagAction from "@/types/Bookmarks/TagAction";
 
 interface BookmarkProp {
@@ -12,7 +12,7 @@ interface BookmarkProp {
 }
 
 export default function BookmarkCard(bookmarkProp: BookmarkProp) {
-  const dispatch = useContext(TagsCntDispatchContext);
+  const dispatch = useTagsDispatch();
   let bookmark: Bookmark = bookmarkProp.bookmark;
   const [input, setInput] = useState("");
   const [strTags, setStrTags] = useState<string[]>([]);

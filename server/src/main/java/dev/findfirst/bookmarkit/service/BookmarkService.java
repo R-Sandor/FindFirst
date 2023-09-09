@@ -38,9 +38,7 @@ public class BookmarkService {
     }
 
     for (var t : reqBkmk.tagIds()) {
-      tags.add(
-          tagService
-              .findById(t).orElseThrow(() -> new Exception("No such tag exists")));
+      tags.add(tagService.findById(t).orElseThrow(() -> new Exception("No such tag exists")));
     }
 
     var newBkmk = new Bookmark(null, reqBkmk.title(), reqBkmk.url(), tags);
