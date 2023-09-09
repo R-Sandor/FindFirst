@@ -4,35 +4,22 @@ import Bookmark from "@/types/Bookmarks/Bookmark";
 import BookmarkCard from "@components/bookmark/BookmarkCard";
 import TagList from "@components/TagList";
 import useAuth from "@components/UseAuth";
+import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 import TagWithCnt from "@/types/Bookmarks/TagWithCnt";
 import {
   TagCntProvider,
 } from "contexts/TagContext";
 import { useEffect, useState } from "react";
 import BookmarkGroup from "@/components/bookmark/BookmarkGroup";
-import { BookmarkProvider, useBookmarks } from "@/contexts/BookmarkContext";
+import { BookmarkProvider, useBookmarkDispatch, useBookmarks } from "@/contexts/BookmarkContext";
+import UseAuth from "@components/UseAuth";
 
 export default function App() {
-  const userAuth = useAuth();
-  // const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+  const bookmarkDispatch = useBookmarkDispatch();
   const bookmarks = useBookmarks();
   const [loading, setLoading] = useState(true);
+  const userAuth = UseAuth();
 
-  // Grab the data.
-  useEffect(() => {
-    if (userAuth) {
-      api.getAllBookmarks().then((results) => {
-        for (let bkmk of results.data) {
-          bookmarks.push(bkmk);
-        }
-        setLoading(false);
-      });
-    }
-  }, [userAuth]);
-
-  useEffect(() => {
-    console.log(bookmarks)
-  }, [bookmarks])
 
   /**
    * Ideally when the user visits the site they will actually have a cool landing page
@@ -41,7 +28,6 @@ export default function App() {
    * the regular landing.
    */
   return userAuth ? (
-    !loading ? (
     <BookmarkProvider>
       <TagCntProvider>
         <div className="row">
@@ -49,14 +35,11 @@ export default function App() {
             <TagList />
           </div>
           <div className="col-md-8 col-lg-9">
-              <BookmarkGroup bookmarks={bookmarks}/>
+              <BookmarkGroup />
           </div>
         </div>
       </TagCntProvider>
     </BookmarkProvider>
-    ) : (
-      <p>loading</p>
-    )
   ) : (
     <div> Hello Welcome to BookmarkIt. </div>
   );

@@ -29,6 +29,31 @@ const newcard: NewBookmark = {
   tags: [],
 };
 
+async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
+  let newBkmkRequest: NewBookmarkRequest;
+  newBkmkRequest = {
+    title: createBmk.title,
+    url: createBmk.url,
+    tagIds: [],
+  };
+  let tagTitles: string[] = createBmk.tags.map((t, i) => {
+    return t.tag_title;
+  });
+  await api.addAllTag(tagTitles).then((response) => {
+    let respTags: Tag[] = response.data;
+    respTags.forEach((rt) => {
+      console.log(rt);
+      newBkmkRequest.tagIds.push(rt.id);
+    });
+  });
+  api.addNewBookmark(newBkmkRequest).then((response) => {
+    console.log(response.data);
+    createBmk.id = response.data.id;
+    createBmk.tags = response.data.tags;
+  });
+  return createBmk;
+}
+
 export default function NewBookmarkCard() {
   const [input, setInput] = useState("");
   const [strTags, setStrTags] = useState<string[]>([]);
@@ -38,26 +63,27 @@ export default function NewBookmarkCard() {
     setInput(value);
   };
 
-  const handleOnSubmit = async (newbookmark: NewBookmark, actions: any) => {
-    newbookmark.tags = strTags;
+  const handleOnSubmit = async (submittedBmk: NewBookmark, actions: any) => {
+    submittedBmk.tags = strTags;
     let tags: Tag[] = strTags.map((t, i) => {
       return { tag_title: t, id: -1 };
     });
-    newbookmark.title = newbookmark.url;
+    submittedBmk.title = submittedBmk.url;
     console.log("handleOnSubmit");
+    let newBkmk: Bookmark = {
+      id: -1,
+      title: submittedBmk.title,
+      url: submittedBmk.url,
+      tags: tags,
+    };
+    makeNewBookmark(newBkmk);
     let action: BookmarkAction = {
       type: "add",
-      bookmarkId: -1,
-      bookmark: {
-        id: -1,
-        title: newbookmark.title,
-        url: newbookmark.url,
-        tags: tags,
-      },
+      bookmarkId: newBkmk.id,
+      bookmark: newBkmk,
     };
     bkmkDispatch(action);
     actions.resetForm({ newcard }, setStrTags([]));
-    console.log(newbookmark);
   };
 
   const handleOnReset = async (

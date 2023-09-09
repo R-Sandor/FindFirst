@@ -3,6 +3,6 @@ import Bookmark from "./Bookmark";
 
 export default interface BookmarkAction {
     type: string;
-    bookmarkId: number;
+    bookmarkId?: number;
     bookmark: Bookmark;
 }
