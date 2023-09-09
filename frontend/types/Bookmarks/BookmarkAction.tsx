@@ -4,5 +4,5 @@ import Bookmark from "./Bookmark";
 export default interface BookmarkAction {
     type: string;
     bookmarkId: number;
-    bookmark: NewBookmark;
+    bookmark: Bookmark;
 }

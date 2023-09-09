@@ -5,6 +5,11 @@ const instance = axios.create({
   withCredentials: true,
   baseURL: SERVER_URL,
   timeout: 3000,
+  transformResponse: [
+        function (data) {
+          return parseData(data);
+        },
+      ],
 });
 
 function parseData(data) {
@@ -21,22 +26,13 @@ const api = {
   },
 
   // (C)reate
-  addNewBookmark(bookmark) {
-      console.log(bookmark)
-    return this.execute("POST", "bookmark/add", {
-      title: bookmark.title,
-      url: bookmark.url,
-      tags: bookmark.tags 
-    });
+  addNewBookmark(newBkmkReq) {
+    return this.execute("POST", "bookmark/add", newBkmkReq)
   },
   // (R)ead
   getAllBookmarks() {
     return this.execute("GET", "bookmarks", null, {
-      transformResponse: [
-        function (data) {
-          return parseData(data);
-        },
-      ],
+  
     });
   },
   bookmarkAddTagByTitle(bookmarkId, tagTitle) {
@@ -44,13 +40,6 @@ const api = {
       "POST",
       "bookmark/" + bookmarkId + "/addTag",
       { tag_title: tagTitle },
-      {
-        transformResponse: [
-          function (data) {
-            return parseData(data);
-          },
-        ],
-      }
     );
   },
   bookmarkRemoveTagById(bookmarkId, tagId) {
@@ -65,12 +54,13 @@ const api = {
   },
   getAllTags() {
     return this.execute("GET", "tagscnt", null, {
-      transformResponse: [
-        function (data) {
-          return parseData(data);
-        },
-      ],
+     
     });
+  },
+  addAllTag(strTags){
+    let t = JSON.stringify(strTags);
+    console.log(t)
+    return this.execute("POST", "tags/addTags", strTags)
   },
   getTagById(id) {
     return this.execute("GET", "tags/id/" + id);
