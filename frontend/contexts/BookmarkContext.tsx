@@ -11,10 +11,10 @@ export const BookmarkDispatchContext = createContext<Dispatch<BookmarkAction>>(
 );
 
 export function BookmarkProvider({ children }: { children: React.ReactNode }) {
-  const [tags, dispatch] = useReducer(bookmarkReducer, initialBookmarks);
+  const [bookmarks, dispatch] = useReducer(bookmarkReducer, initialBookmarks);
 
   return (
-    <BookmarkContext.Provider value={tags}>
+    <BookmarkContext.Provider value={bookmarks}>
       <BookmarkDispatchContext.Provider value={dispatch}>
         {children}
       </BookmarkDispatchContext.Provider>
@@ -24,34 +24,16 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
 
 function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
   console.log("reducer");
-  let newBkmk = action.bookmark;
   let newBkmkRequest: NewBookmarkRequest;
   switch (action.type) {
     case "add": {
       console.log("add event");
-      newBkmkRequest = {
-        title: newBkmk.title,
-        url: newBkmk.url,
-        tagIds: [],
-      };
-      console.log(newBkmk)
-      console.log(newBkmk.tags)
-      let tagTitles: string[] = newBkmk.tags.map((t, i) => { return t.tag_title});
-      api.addAllTag(tagTitles).then((response) => {
-        let respTags: Tag[] = response.data;
-        respTags.forEach((rt) => {
-          console.log(rt)
-          newBkmkRequest.tagIds.push(rt.id);
-        });
-
-      api.addNewBookmark(newBkmkRequest).then((response) => {
-        console.log(response.data);
-        newBkmk.id = response.data.id;
-        newBkmk.tags = response.data.tags;
-        bookmarkList.push(newBkmk);
-      });
-      });
-      return bookmarkList;
+      bookmarkList.push(action.bookmark) 
+      return [...bookmarkList];
+    }
+    case "set": {
+      bookmarkList = [action.bookmark]
+      return [...bookmarkList]
     }
     case "delete": {
       bookmarkList.filter((b, i) => b.id !== action.bookmarkId);
@@ -63,7 +45,6 @@ function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
 }
 
 // function
-
 export function useBookmarks() {
   return useContext(BookmarkContext);
 }
