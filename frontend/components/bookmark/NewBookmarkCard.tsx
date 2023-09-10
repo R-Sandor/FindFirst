@@ -45,13 +45,10 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
   await api.addAllTag(tagTitles).then((response) => {
     let respTags: Tag[] = response.data;
     respTags.forEach((rt) => {
-      console.log(rt);
       newBkmkRequest.tagIds.push(rt.id);
     });
   });
-  console.log(newBkmkRequest)
   await api.addNewBookmark(newBkmkRequest).then((response) => {
-    console.log(response.data);
     createBmk.id = response.data.id;
     createBmk.tags = response.data.tags;
   });
@@ -74,7 +71,6 @@ export default function NewBookmarkCard() {
       return { tag_title: t, id: -1 };
     });
     submittedBmk.title = submittedBmk.url;
-    console.log("handleOnSubmit");
     let newBkmk: Bookmark = {
       id: -1,
       title: submittedBmk.title,
@@ -82,7 +78,6 @@ export default function NewBookmarkCard() {
       tags: tags,
     };
     let retBkmk = await makeNewBookmark(newBkmk);
-    console.log("newBkmk", newBkmk)
     let action: BookmarkAction = {
       type: "add",
       bookmarkId: retBkmk.id,
@@ -94,7 +89,6 @@ export default function NewBookmarkCard() {
         tagId: t.id,
         tagTitle: t.tag_title,
       };
-      console.log(newBkmk)
       tagDispatch(tAct)
     });
 

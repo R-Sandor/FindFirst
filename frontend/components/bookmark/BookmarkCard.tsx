@@ -55,9 +55,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
       let tagsCopy = [...strTags];
       let poppedTag = tagsCopy.pop();
       if (poppedTag) deleteTag(tagsCopy.length);
-      console.log(poppedTag)
       if (!poppedTag) poppedTag = "";
-      console.log(tagsCopy.length)
       setInput(poppedTag);
     }
   }
@@ -74,9 +72,6 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
 
   const deleteTag = (index: number) => {
     let tagTitle = strTags[index];
-    console.log("deleteTag")
-    console.log(tagTitle);
-    console.log(bookmark.tags[index]);
     let t = bookmark.tags[index];
     if (bookmark) {
       bookmark.tags = bookmark.tags.filter((t, i) => i !== index);
