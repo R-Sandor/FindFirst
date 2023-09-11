@@ -11,24 +11,32 @@ import Tag from "@/types/Bookmarks/Tag";
 import { useTagsDispatch } from "@/contexts/TagContext";
 import TagAction from "@/types/Bookmarks/TagAction";
 
-export interface NewBookmark {
+/**
+ * Bookmark representation from the NewBookmarkCard card form.. 
+ */
+export interface NewBookmarkForm {
   id?: string;
   title: string;
   url: string;
-  tags: string[];
+  tagTitles: string[];
 }
 
+/**
+ * The actual request made to server.
+ */
 export interface NewBookmarkRequest {
   title: string;
   url: string;
   tagIds: number[];
 }
 
-// function testSubmit(requestParams.id, ticket)
-const newcard: NewBookmark = {
+/**
+ * NewCard form.
+ */
+const newcard: NewBookmarkForm = {
   title: "",
   url: "",
-  tags: [],
+  tagTitles: [],
 };
 
 // TODO error handling, tag list limits
@@ -65,8 +73,8 @@ export default function NewBookmarkCard() {
     setInput(value);
   };
 
-  const handleOnSubmit = async (submittedBmk: NewBookmark, actions: any) => {
-    submittedBmk.tags = strTags;
+  const handleOnSubmit = async (submittedBmk: NewBookmarkForm, actions: any) => {
+    submittedBmk.tagTitles = strTags;
     let tags: Tag[] = strTags.map((t, i) => {
       return { tag_title: t, id: -1 };
     });
@@ -97,11 +105,11 @@ export default function NewBookmarkCard() {
   };
 
   const handleOnReset = async (
-    newbookmark: NewBookmark,
-    formikHelpers: FormikHelpers<NewBookmark>
+    newbookmark: NewBookmarkForm,
+    formikHelpers: FormikHelpers<NewBookmarkForm>
   ) => {
     setStrTags([]);
-    newbookmark.tags = [];
+    newbookmark.tagTitles = [];
     newbookmark.title = "";
     newbookmark.url = "";
   };

@@ -1,4 +1,4 @@
-import { NewBookmark } from "@/components/bookmark/NewBookmarkCard";
+import { NewBookmarkForm } from "@/components/bookmark/NewBookmarkCard";
 import Bookmark from "./Bookmark";
 
 export default interface BookmarkAction {
