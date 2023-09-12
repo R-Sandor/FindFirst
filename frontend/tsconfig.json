@@ -28,6 +28,6 @@
       "@type/*": ["types/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/login-form.js", "api/Api.js", "contexts/TagContext.ts", "contexts/TagContext.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/login-form.js", "api/Api.tsx", "contexts/TagContext.ts", "contexts/TagContext.tsx"],
   "exclude": ["node_modules"]
 }
