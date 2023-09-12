@@ -1,21 +1,44 @@
-import { Card } from "react-bootstrap";
-import "./bookmarkCard.scss";
-import Tag from "@/types/Bookmarks/Tag";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { Card, CloseButton } from "react-bootstrap";
 import api from "@/api/Api";
+import { useTagsDispatch } from "@/contexts/TagContext";
 import Bookmark from "@/types/Bookmarks/Bookmark";
-import { TagsCntContext, TagsCntDispatchContext, useTagsDispatch } from "@/contexts/TagContext";
+import Tag from "@/types/Bookmarks/Tag";
 import TagAction from "@/types/Bookmarks/TagAction";
+import DeleteModal from "./DeleteModal";
+import "./bookmarkCard.scss";
 
 interface BookmarkProp {
   bookmark: Bookmark;
 }
 
+async function addTagToBookmark(bookmark: Bookmark, trimmedInput: string) {
+  let action: TagAction = {
+    type: "add",
+    tagId: -1,
+    tagTitle: "",
+  };
+  await api
+    .bookmarkAddTagByTitle(bookmark?.id, trimmedInput)
+    .then((response) => {
+      // It will always be the last index since it was the last added.
+      let index = response.data.tags.length - 1;
+      let responseTag = response.data.tags[index];
+      action.tagId = responseTag.id;
+      action.tagTitle = responseTag.tag_title;
+      bookmark.tags.push({ id: action.tagId, tag_title: action.tagTitle });
+    });
+  return action;
+}
+
 export default function BookmarkCard(bookmarkProp: BookmarkProp) {
+  const bookmark: Bookmark = bookmarkProp.bookmark;
   const dispatch = useTagsDispatch();
-  let bookmark: Bookmark = bookmarkProp.bookmark;
   const [input, setInput] = useState("");
   const [strTags, setStrTags] = useState<string[]>([]);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const onChange = (e: any) => {
     const { value } = e.target;
@@ -34,20 +57,15 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
       e.preventDefault();
       setStrTags((prevState) => [...prevState, trimmedInput]);
       setInput("");
-      api.bookmarkAddTagByTitle(bookmark?.id, trimmedInput).then((response) => {
-        // It will always be the last index since it was the last added.
-        let index = response.data.tags.length - 1;
-        let tResp = response.data.tags[index];
-        let action: TagAction = {
-          type: "add",
-          tagId: tResp.id,
-          tagTitle: tResp.tag_title,
-        };
-        bookmark.tags.push({ id: tResp.id, tag_title: tResp.tag_title });
-        let cp = [...strTags, trimmedInput];
-        setStrTags(cp);
-        dispatch(action);
-      });
+
+      strTags.push(trimmedInput)
+      console.log(strTags)
+      setStrTags([...strTags]);
+
+      // addTagToBookmark(bookmark, trimmedInput).then((action) => {
+      //   dispatch(action)
+      // }
+      // );
     }
     // backspace delete
     if (keyCode === 8 && !input.length && bookmark?.tags.length) {
@@ -86,6 +104,8 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   return bookmark ? (
     <div className="px-1">
       <Card>
+        <CloseButton onClick={handleShow} />
+        {/* <DeleteModal show={show} onHide={handleClose} /> */}
         <Card.Body>
           <Card.Title>{bookmark.title}</Card.Title>
           <Card.Text className="title">{bookmark.url.toString()}</Card.Text>
