@@ -88,16 +88,14 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
     }
   }, [bookmark]);
 
-  const deleteTag = (index: number) => {
-    let tagTitle = strTags[index];
-    let t = bookmark.tags[index];
+  const deleteTag = (id: number) => {
     if (bookmark) {
-      bookmark.tags = bookmark.tags.filter((t, i) => i !== index);
+      bookmark.tags = bookmark.tags.filter((t, i) => t.id !== id);
     }
-    api.bookmarkRemoveTagById(bookmark.id, t.id);
-
-    setStrTags((prevState) => prevState.filter((strTag, i) => i !== index));
-    let action: TagAction = { type: "delete", tagId: t.id, tagTitle: tagTitle };
+    api.bookmarkRemoveTagById(bookmark.id, id);
+    let titles =  bookmark.tags.map((t, i ) => t.tag_title)
+    setStrTags(titles);
+    let action: TagAction = { type: "delete", tagId: id, tagTitle: "" };
     dispatch(action);
   };
 
@@ -115,7 +113,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
             {bookmark.tags.map((tag, index) => (
               <button
                 key={tag.id}
-                onClick={() => deleteTag(index)}
+                onClick={() => deleteTag(tag.id)}
                 type="button"
                 className="pill-button"
               >
