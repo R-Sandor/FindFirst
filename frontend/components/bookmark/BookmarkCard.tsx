@@ -58,14 +58,13 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
       setStrTags((prevState) => [...prevState, trimmedInput]);
       setInput("");
 
-      strTags.push(trimmedInput)
-      console.log(strTags)
+      strTags.push(trimmedInput);
+      console.log(strTags);
       setStrTags([...strTags]);
 
-      // addTagToBookmark(bookmark, trimmedInput).then((action) => {
-      //   dispatch(action)
-      // }
-      // );
+      addTagToBookmark(bookmark, trimmedInput).then((action) => {
+        dispatch(action);
+      });
     }
     // backspace delete
     if (keyCode === 8 && !input.length && bookmark?.tags.length) {
@@ -93,7 +92,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
       bookmark.tags = bookmark.tags.filter((t, i) => t.id !== id);
     }
     api.bookmarkRemoveTagById(bookmark.id, id);
-    let titles =  bookmark.tags.map((t, i ) => t.tag_title)
+    let titles = bookmark.tags.map((t, i) => t.tag_title);
     setStrTags(titles);
     let action: TagAction = { type: "delete", tagId: id, tagTitle: "" };
     dispatch(action);
@@ -103,7 +102,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
     <div className="px-1">
       <Card>
         <CloseButton onClick={handleShow} />
-        {/* <DeleteModal show={show} onHide={handleClose} /> */}
+        <DeleteModal show={show} handleClose={handleClose} />
         <Card.Body>
           <Card.Title>{bookmark.title}</Card.Title>
           <Card.Text className="title">{bookmark.url.toString()}</Card.Text>
