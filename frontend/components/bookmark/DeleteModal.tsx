@@ -1,16 +1,17 @@
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
 
 export interface modalProps {
-  show: boolean, 
-  handleClose: () => void
+  show: boolean;
+  handleClose: () => void;
+  deleteBkmk: () => void;
 }
 
-function DeleteModal({show, handleClose}: modalProps) {
+function DeleteModal({ show, handleClose, deleteBkmk }: modalProps) {
   return (
     <div
       className="modal show"
-      style={{ display: 'block', position: 'initial' }}
+      style={{ display: "block", position: "initial" }}
     >
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
@@ -22,8 +23,19 @@ function DeleteModal({show, handleClose}: modalProps) {
         </Modal.Body>
 
         <Modal.Footer>
-          <Button variant="secondary">No</Button>
-          <Button variant="primary">Yes</Button>
+          <Button onClick={handleClose} variant="secondary">
+            No
+          </Button>
+          <Button
+            // Delete the bookmark and close the modal.
+            onClick={() => {
+              deleteBkmk();
+              handleClose();
+            }}
+            variant="primary"
+          >
+            Yes
+          </Button>
         </Modal.Footer>
       </Modal>
     </div>

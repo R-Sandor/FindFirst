@@ -31,13 +31,28 @@ async function addTagToBookmark(bookmark: Bookmark, trimmedInput: string) {
   return action;
 }
 
+/**
+ * Decrement all the tags associated to this bookmark 
+ * then remove the bookmark itself. 
+ * Remove this from the inverse list of tags -> bookmarks when that map is created
+ * 
+ * Consider creating a typescript class to act a handler for 
+ * the state of bookmarks. 
+ */
+function deleteBkmk() { 
+  console.log("delete this bookmark")
+
+}
+
 export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   const bookmark: Bookmark = bookmarkProp.bookmark;
   const dispatch = useTagsDispatch();
   const [input, setInput] = useState("");
   const [strTags, setStrTags] = useState<string[]>([]);
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const handleClose = () =>{ setShow(false)
+    console.log("handle close")
+  };
   const handleShow = () => setShow(true);
 
   const onChange = (e: any) => {
@@ -102,7 +117,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
     <div className="px-1">
       <Card>
         <CloseButton onClick={handleShow} />
-        <DeleteModal show={show} handleClose={handleClose} />
+        <DeleteModal show={show} handleClose={handleClose} deleteBkmk={deleteBkmk} />
         <Card.Body>
           <Card.Title>{bookmark.title}</Card.Title>
           <Card.Text className="title">{bookmark.url.toString()}</Card.Text>
