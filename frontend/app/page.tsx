@@ -1,25 +1,12 @@
 "use client";
-import api from "@/api/Api";
-import Bookmark from "@/types/Bookmarks/Bookmark";
-import BookmarkCard from "@components/bookmark/BookmarkCard";
 import TagList from "@components/TagList";
-import useAuth from "@components/UseAuth";
-import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
-import TagWithCnt from "@/types/Bookmarks/TagWithCnt";
-import {
-  TagCntProvider,
-} from "contexts/TagContext";
-import { useEffect, useState } from "react";
+import { TagCntProvider } from "contexts/TagContext";
 import BookmarkGroup from "@/components/bookmark/BookmarkGroup";
-import { BookmarkProvider, useBookmarkDispatch, useBookmarks } from "@/contexts/BookmarkContext";
+import { BookmarkProvider } from "@/contexts/BookmarkContext";
 import UseAuth from "@components/UseAuth";
 
 export default function App() {
-  const bookmarkDispatch = useBookmarkDispatch();
-  const bookmarks = useBookmarks();
-  const [loading, setLoading] = useState(true);
   const userAuth = UseAuth();
-
 
   /**
    * Ideally when the user visits the site they will actually have a cool landing page
@@ -35,7 +22,7 @@ export default function App() {
             <TagList />
           </div>
           <div className="col-md-8 col-lg-9">
-              <BookmarkGroup />
+            <BookmarkGroup />
           </div>
         </div>
       </TagCntProvider>

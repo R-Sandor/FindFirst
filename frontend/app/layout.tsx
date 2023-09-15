@@ -5,11 +5,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.min.css'
 import {NavigationEvents} from '@components/navigation-events'
 
-import { Inter } from 'next/font/google'
-import { Component } from 'react'
-
-const inter = Inter({ subsets: ['latin'] })
-
 export const metadata: Metadata = {
   title: 'FindFirst',
   description: 'Helping you find it first!',

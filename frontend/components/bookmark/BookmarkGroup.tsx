@@ -7,6 +7,7 @@ import UseAuth from "@/components/UseAuth";
 import api from "@/api/Api";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 
+
 // Bookmark group composed of Bookmarks.
 export default function BookmarkGroup() {
   const bookmarks = useBookmarks();
@@ -25,8 +26,8 @@ export default function BookmarkGroup() {
             type: "add",
             bookmark: bkmk,
           };
-          bookmarks.push(bkmk)
-          setLoading(false)
+          bookmarks.push(bkmk);
+          setLoading(false);
         }
       });
     }
@@ -41,13 +42,29 @@ export default function BookmarkGroup() {
     );
   });
 
-  return (
-    !loading ?
-    <div className="row no-pad">
-      <div className="col-6 col-md-12 col-lg-4">
-        <NewBookmarkCard />
+  return !loading ? (
+    <div>
+      <div className="input-group">
+        <input
+          type="search"
+          className="form-control rounded"
+          placeholder="Search"
+          aria-label="Search"
+          aria-describedby="search-addon"
+        />
+        <button type="button" className="btn btn-outline-primary">
+          search
+        </button>
       </div>
-      {bookmarkGroup}
-    </div>: <p>loading</p>
+
+      <div className="row">
+        <div className="col-6 col-md-12 col-lg-4">
+          <NewBookmarkCard />
+        </div>
+        {bookmarkGroup}
+      </div>
+    </div>
+  ) : (
+    <p>loading</p>
   );
 }

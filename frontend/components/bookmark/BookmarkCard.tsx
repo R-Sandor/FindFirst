@@ -12,7 +12,13 @@ interface BookmarkProp {
   bookmark: Bookmark;
 }
 
-async function addTagToBookmark(bookmark: Bookmark, trimmedInput: string) {
+/**
+ *  function to add a Tag to a Bookmark 
+ * @param bookmark bookmark
+ * @param trimmedInput string title of tag
+ * @returns Promise<TagAction> populates bookmark with the tags.
+ */
+async function addTagToBookmark(bookmark: Bookmark, trimmedInput: string): Promise<TagAction> {
   let action: TagAction = {
     type: "add",
     tagId: -1,

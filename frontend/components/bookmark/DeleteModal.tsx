@@ -13,12 +13,12 @@ function DeleteModal({ show, handleClose, deleteBkmk }: modalProps) {
       className="modal show"
       style={{ display: "block", position: "initial" }}
     >
-      <Modal show={show} onHide={handleClose}>
+      <Modal className="" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Delete</Modal.Title>
         </Modal.Header>
 
-        <Modal.Body>
+        <Modal.Body className="">
           <p>Are you sure you would like to delete this bookmark?</p>
         </Modal.Body>
 
