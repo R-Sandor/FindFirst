@@ -44,7 +44,7 @@ export default function BookmarkGroup() {
 
   return !loading ? (
     <div>
-      <div className="input-group">
+      <div className="pt-3 pb-10 input-group">
         <input
           type="search"
           className="form-control rounded"
