@@ -49,8 +49,8 @@ const GlobalNavbar: React.FC = () => {
   };
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
-      <Container>
+    <Navbar expand="lg" className="w-full bg-body-tertiary">
+      <div className="container-fluid">
         <Navbar.Brand onClick={() => router.push("/")} className="mx-3 cursor-pointer">
           FindFirst
         </Navbar.Brand>
@@ -69,7 +69,7 @@ const GlobalNavbar: React.FC = () => {
           </Nav>
         </Navbar.Collapse>
         <Form className="mx-3">{authButton()}</Form>
-      </Container>
+      </div>
     </Navbar>
   );
 };
