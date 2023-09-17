@@ -4,3 +4,26 @@
   margin-right: auto;
   width: 80%;
 }
+
+.features {
+  background-color: ghostwhite;
+  width: 210px;
+  border-radius: 8px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+.cstyle { 
+  width: 30%;
+  height: 500px;
+  margin-bottom: 12px;
+}
+
+
+.card-img {
+   background-size: cover;
+   background-repeat: no-repeat;
+   background-position: center center;
+   height: 100%;
+   width: 100%;
+}
