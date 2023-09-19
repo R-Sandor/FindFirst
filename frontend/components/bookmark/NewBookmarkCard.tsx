@@ -12,7 +12,7 @@ import { useTagsDispatch } from "@/contexts/TagContext";
 import TagAction from "@/types/Bookmarks/TagAction";
 
 /**
- * Bookmark representation from the NewBookmarkCard card form.. 
+ * Bookmark representation from the NewBookmarkCard card form..
  */
 export interface NewBookmarkForm {
   id?: string;
@@ -73,7 +73,15 @@ export default function NewBookmarkCard() {
     setInput(value);
   };
 
-  const handleOnSubmit = async (submittedBmk: NewBookmarkForm, actions: any) => {
+  /**
+   * Handles the creation of new bookmarks.
+   * @param submittedBmk bookmark being requested to create
+   * @param actions provided to dispatch, in this case a create action.
+   */
+  const handleOnSubmit = async (
+    submittedBmk: NewBookmarkForm,
+    actions: any
+  ) => {
     submittedBmk.tagTitles = strTags;
     let tags: Tag[] = strTags.map((t, i) => {
       return { tag_title: t, id: -1 };
@@ -97,7 +105,7 @@ export default function NewBookmarkCard() {
         tagId: t.id,
         tagTitle: t.tag_title,
       };
-      tagDispatch(tAct)
+      tagDispatch(tAct);
     });
 
     bkmkDispatch(action);
