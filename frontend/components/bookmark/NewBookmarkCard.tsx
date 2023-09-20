@@ -112,9 +112,12 @@ export default function NewBookmarkCard() {
     actions.resetForm({ newcard }, setStrTags([]));
   };
 
+  /**
+   * On reset the newBookmark needs to be returned to empty state.
+   * @param newbookmark the reference to the newBookmark to reset.
+   */
   const handleOnReset = async (
     newbookmark: NewBookmarkForm,
-    formikHelpers: FormikHelpers<NewBookmarkForm>
   ) => {
     setStrTags([]);
     newbookmark.tagTitles = [];
