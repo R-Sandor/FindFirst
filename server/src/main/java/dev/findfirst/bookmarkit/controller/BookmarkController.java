@@ -73,26 +73,27 @@ public class BookmarkController {
       consumes = "application/json",
       produces = "application/json")
   @ResponseBody
-  public ResponseEntity<Bookmark> addTag(
+  public ResponseEntity<Tag> addTag(
       @PathVariable(value = "bookmarkId") Long bookmarkId, @RequestBody final Tag tagRequest) {
     final var bkmkOpt = bookmarkService.findById(bookmarkId);
+
     if (!bkmkOpt.isPresent()) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     var bookmark = bkmkOpt.get();
+    Tag tag = tagRequest;
 
-    Consumer<Bookmark> action =
-        (b) -> {
-          bookmarkService.addTagToBookmark(b, tagRequest);
+    Consumer<Tag> action =
+        (t) -> {
+          bookmarkService.addTagToBookmark(bookmark, t);
         };
 
     if (tagRequest.getId() == null) {
       // Check if there is a tag by the given title.
-      var tag = tagService.findOrCreateTag(tagRequest.getTag_title());
-      action = (b) -> bookmarkService.addTagToBookmark(bookmark, tag);
+      tag = tagService.findOrCreateTag(tagRequest.getTag_title());
     }
 
-    return new Response<Bookmark>(action, bookmark).get();
+    return new Response<Tag>(action, tag).get();
   }
 
   @DeleteMapping(value = "bookmark/{bookmarkId}/tagTitle", produces = "application/json")

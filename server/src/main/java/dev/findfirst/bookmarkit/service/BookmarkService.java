@@ -86,11 +86,11 @@ public class BookmarkService {
     return resp.resp;
   }
 
-  public ResponseEntity<Bookmark> addTagToBookmark(Bookmark bookmark, Tag tag) {
-    if (bookmark == null || tag == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+  public Tag addTagToBookmark(Bookmark bookmark, Tag tag) {
+    if (bookmark == null || tag == null) throw new NoSuchFieldError();
     bookmark.addTag(tag);
     bookmarkRepository.save(bookmark);
-    return new ResponseEntity<Bookmark>(bookmark, HttpStatus.OK);
+    return tag;
   }
 
   public Tag deleteTag(long id, @NotNull Tag tag) {
