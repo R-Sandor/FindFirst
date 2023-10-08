@@ -13,12 +13,16 @@ interface BookmarkProp {
 }
 
 /**
- *  function to add a Tag to a Bookmark 
+ *  function to add a Tag to a Bookmark
  * @param bookmark bookmark
  * @param trimmedInput string title of tag
  * @returns Promise<TagAction> populates bookmark with the tags.
  */
-async function addTagToBookmark(bookmark: Bookmark, trimmedInput: string): Promise<TagAction> {
+async function addTagToBookmark(
+  bookmark: Bookmark,
+  trimmedInput: string
+): Promise<TagAction> {
+  console.log("trimmedInput", trimmedInput);
   let action: TagAction = {
     type: "add",
     tagId: -1,
@@ -28,26 +32,25 @@ async function addTagToBookmark(bookmark: Bookmark, trimmedInput: string): Promi
     .bookmarkAddTagByTitle(bookmark?.id, trimmedInput)
     .then((response) => {
       // It will always be the last index since it was the last added.
-      let index = response.data.tags.length - 1;
-      let responseTag = response.data.tags[index];
-      action.tagId = responseTag.id;
-      action.tagTitle = responseTag.tag_title;
+      // let index = response.data.length - 1;
+      console.log("response", response);
+      action.tagId = response.data.id;
+      action.tagTitle = response.data.tag_title;
       bookmark.tags.push({ id: action.tagId, tag_title: action.tagTitle });
     });
   return action;
 }
 
 /**
- * Decrement all the tags associated to this bookmark 
- * then remove the bookmark itself. 
+ * Decrement all the tags associated to this bookmark
+ * then remove the bookmark itself.
  * Remove this from the inverse list of tags -> bookmarks when that map is created
- * 
- * Consider creating a typescript class to act a handler for 
- * the state of bookmarks. 
+ *
+ * Consider creating a typescript class to act a handler for
+ * the state of bookmarks.
  */
-function deleteBkmk() { 
-  console.log("delete this bookmark")
-
+function deleteBkmk() {
+  console.log("delete this bookmark");
 }
 
 export default function BookmarkCard(bookmarkProp: BookmarkProp) {
@@ -56,10 +59,39 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   const [input, setInput] = useState("");
   const [strTags, setStrTags] = useState<string[]>([]);
   const [show, setShow] = useState(false);
-  const handleClose = () =>{ setShow(false)
-    console.log("handle close")
+  const handleClose = () => {
+    setShow(false);
+    console.log("handle close");
   };
   const handleShow = () => setShow(true);
+
+  useEffect(() => {
+    if (bookmark) {
+      console.log("bookmark update??");
+      const tagList: string[] = [];
+      bookmark.tags.map((tag: Tag) => {
+        tagList.push(tag.tag_title);
+      });
+      setStrTags(tagList);
+    }
+  }, [bookmark]);
+
+  const deleteTag = (tag_title:string) => {
+    const idx = getIdxFromTitle(tag_title);
+    const tagId = bookmark.tags[idx].id;
+    if (bookmark) {
+      bookmark.tags = bookmark.tags.filter((t,i) => i !== idx);
+    }
+    api.bookmarkRemoveTagById(bookmark.id, tagId);
+    let titles = bookmark.tags.map((t, i) => t.tag_title);
+    setStrTags(titles);
+    let action: TagAction = { type: "delete", tagId: tagId, tagTitle: "" };
+    dispatch(action);
+  };
+
+  function getIdxFromTitle(tag_title:string): number { 
+    return bookmark.tags.findIndex(t => t.tag_title == tag_title );
+  }
 
   const onChange = (e: any) => {
     const { value } = e.target;
@@ -69,6 +101,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   function onKeyDown(e: any) {
     const { keyCode } = e;
     const trimmedInput = input.trim();
+    console.log(trimmedInput);
     if (
       // Enter or space
       (keyCode === 32 || keyCode == 13) &&
@@ -77,67 +110,52 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
     ) {
       e.preventDefault();
       setStrTags((prevState) => [...prevState, trimmedInput]);
-      setInput("");
 
       strTags.push(trimmedInput);
       console.log(strTags);
       setStrTags([...strTags]);
-
+      console.log("input :", input);
+      let ltag: Tag;
       addTagToBookmark(bookmark, trimmedInput).then((action) => {
         dispatch(action);
       });
+
+      setInput("");
     }
     // backspace delete
     if (keyCode === 8 && !input.length && bookmark?.tags.length) {
       e.preventDefault();
       let tagsCopy = [...strTags];
       let poppedTag = tagsCopy.pop();
-      if (poppedTag) deleteTag(tagsCopy.length);
+      if (poppedTag) deleteTag(poppedTag);
       if (!poppedTag) poppedTag = "";
       setInput(poppedTag);
     }
   }
 
-  useEffect(() => {
-    if (bookmark) {
-      const tagList: string[] = [];
-      bookmark.tags.map((tag: Tag) => {
-        tagList.push(tag.tag_title);
-      });
-      setStrTags(tagList);
-    }
-  }, [bookmark]);
-
-  const deleteTag = (id: number) => {
-    if (bookmark) {
-      bookmark.tags = bookmark.tags.filter((t, i) => t.id !== id);
-    }
-    api.bookmarkRemoveTagById(bookmark.id, id);
-    let titles = bookmark.tags.map((t, i) => t.tag_title);
-    setStrTags(titles);
-    let action: TagAction = { type: "delete", tagId: id, tagTitle: "" };
-    dispatch(action);
-  };
-
   return bookmark ? (
     <div className="px-1">
       <Card>
         <CloseButton onClick={handleShow} />
-        <DeleteModal show={show} handleClose={handleClose} deleteBkmk={deleteBkmk} />
+        <DeleteModal
+          show={show}
+          handleClose={handleClose}
+          deleteBkmk={deleteBkmk}
+        />
         <Card.Body>
           <Card.Title>{bookmark.title}</Card.Title>
           <Card.Text className="title">{bookmark.url.toString()}</Card.Text>
         </Card.Body>
         <Card.Footer className="card-footer">
           <div className="container">
-            {bookmark.tags.map((tag, index) => (
+            {strTags.map((tag, id) => (
               <button
-                key={tag.id}
-                onClick={() => deleteTag(tag.id)}
+                key={id}
+                onClick={() => deleteTag(tag)}
                 type="button"
                 className="pill-button"
               >
-                {tag.tag_title}
+                {tag}
                 <i className="xtag bi bi-journal-x"></i>
               </button>
             ))}
