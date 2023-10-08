@@ -33,7 +33,7 @@ export function TagCntProvider({ children }: {
 function tagCntReducer(tagsWithCnt: Map<number, TagWithCnt>, action: TagAction) {
   switch (action.type) {
     case "add": {
-      console.log("adTag")
+      console.log("add Tag")
       console.log(action)
       let tagCnt: TagWithCnt | undefined = tagsWithCnt.get(action.tagId);
       if (tagCnt) {
@@ -43,7 +43,6 @@ function tagCntReducer(tagsWithCnt: Map<number, TagWithCnt>, action: TagAction) 
       } else {
         let tId = action.tagId ? action.tagId : -1;
         tagsWithCnt.set(action.tagId, {
-          // TODO: use ids!
           tag: { id: tId, tag_title: action.tagTitle },
           count: 1,
         });
