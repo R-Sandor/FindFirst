@@ -7,6 +7,8 @@ import Tag from "@/types/Bookmarks/Tag";
 import TagAction from "@/types/Bookmarks/TagAction";
 import DeleteModal from "./DeleteModal";
 import "./bookmarkCard.scss";
+import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
+import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 
 interface BookmarkProp {
   bookmark: Bookmark;
@@ -41,21 +43,10 @@ async function addTagToBookmark(
   return action;
 }
 
-/**
- * Decrement all the tags associated to this bookmark
- * then remove the bookmark itself.
- * Remove this from the inverse list of tags -> bookmarks when that map is created
- *
- * Consider creating a typescript class to act a handler for
- * the state of bookmarks.
- */
-function deleteBkmk() {
-  console.log("delete this bookmark");
-}
-
 export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   const bookmark: Bookmark = bookmarkProp.bookmark;
   const dispatch = useTagsDispatch();
+  const bkmkDispatch = useBookmarkDispatch();
   const [input, setInput] = useState("");
   const [strTags, setStrTags] = useState<string[]>([]);
   const [show, setShow] = useState(false);
@@ -67,7 +58,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
 
   useEffect(() => {
     if (bookmark) {
-      console.log("bookmark update??");
+      console.log("bookmark update??", bookmark.id);
       const tagList: string[] = [];
       bookmark.tags.map((tag: Tag) => {
         tagList.push(tag.tag_title);
@@ -76,21 +67,44 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
     }
   }, [bookmark]);
 
-  const deleteTag = (tag_title:string) => {
+  /**
+   * Decrement all the tags associated to this bookmark
+   * then remove the bookmark itself.
+   * Remove this from the inverse list of tags -> bookmarks when that map is created
+   *
+   * Consider creating a typescript class to act a handler for
+   * the state of bookmarks.
+   */
+  function deleteBkmk() {
+    console.log("delete this bookmark");
+    // bookmark.tags.forEach((tag)=> {
+    //     deleteTag(tag.tag_title);
+        
+    // })
+    let action: BookmarkAction = {
+      type: "delete",
+      bookmarkId: bookmark.id
+    };
+    bkmkDispatch(action);
+  }
+
+  const deleteTag = (tag_title: string) => {
     const idx = getIdxFromTitle(tag_title);
     const tagId = bookmark.tags[idx].id;
     if (bookmark) {
-      bookmark.tags = bookmark.tags.filter((t,i) => i !== idx);
+      bookmark.tags = bookmark.tags.filter((t, i) => i !== idx);
     }
     api.bookmarkRemoveTagById(bookmark.id, tagId);
-    let titles = bookmark.tags.map((t, i) => t.tag_title);
+    let titles = bookmark.tags.map((t) => t.tag_title); // just the titles display
     setStrTags(titles);
+
+    // update the sidebar. 
     let action: TagAction = { type: "delete", tagId: tagId, tagTitle: "" };
     dispatch(action);
   };
 
-  function getIdxFromTitle(tag_title:string): number { 
-    return bookmark.tags.findIndex(t => t.tag_title == tag_title );
+  function getIdxFromTitle(tag_title: string): number {
+    return bookmark.tags.findIndex((t) => t.tag_title == tag_title);
   }
 
   const onChange = (e: any) => {

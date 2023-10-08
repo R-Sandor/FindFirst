@@ -7,6 +7,7 @@ import dev.findfirst.bookmarkit.repository.BookmarkRepository;
 import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -49,15 +50,17 @@ public class BookmarkService {
     bookmarkRepository.saveAllAndFlush(bookmarks);
   }
 
-  public void deleteBookmark(Bookmark bookmark) {
-    bookmarkRepository.delete(bookmark);
+  public void deleteBookmark(Long bookmarkId) { 
+    // final var bkmk = bookmarkRepository.findById(bookmarkId).orElseThrow(NoSuchElementException::new);
+    bookmarkRepository.deleteById(bookmarkId);
+    // bookmarkRepository.deleteAllByIdInBatch(List.of(bookmarkId));
   }
 
   public void deleteAllBookmarks() {
     bookmarkRepository.deleteAll();
   }
 
-  private BiConsumer<List<Bookmark>, Tag> lConsumer =
+  private BiConsumer<List<Bookmark>, Tag> tagDelete =
       (list, tag) -> {
         if (list.size() == 1) {
           tagService.deleteTag(tag);
@@ -67,7 +70,7 @@ public class BookmarkService {
   public void deleteById(Long id) {
     Set<Tag> tags = bookmarkRepository.getReferenceById(id).getTags();
     for (var tag : tags) {
-      lConsumer.accept(bookmarkRepository.findByTag(tag), tag);
+      tagDelete.accept(bookmarkRepository.findByTag(tag), tag);
     }
   }
 

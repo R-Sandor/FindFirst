@@ -11,7 +11,7 @@ services:
       dockerfile: ../docker/server/Dockerfile
       context: ./server
     ports: 
-     - "9000:9000"
+     - "9001:9001"
   db: 
     image: postgres:15.4
     environment:
