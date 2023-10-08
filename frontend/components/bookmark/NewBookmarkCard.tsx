@@ -160,7 +160,7 @@ export default function NewBookmarkCard() {
                 width={50}
                 alt="Add New Bookmark"
               />
-              <Card.Title>Add New Bookmark</Card.Title>
+              <Card.Title>Add Bookmark <i className="bi bi-bookmarks-fill"></i> </Card.Title>
               <Card.Text className="title">
                 <Field
                   className="form-control"

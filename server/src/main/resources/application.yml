@@ -10,7 +10,7 @@ spring:
       starttls.enable: true
 
 server:
-  port: 9000
+  port: 9001
 
 jwt:
   # In production set these values from the commandline

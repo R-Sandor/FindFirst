@@ -28,15 +28,19 @@ function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
   switch (action.type) {
     case "add": {
       console.log("add event");
-      bookmarkList.push(action.bookmark) 
+      if (action.bookmark) {
+        bookmarkList.push(action.bookmark) 
+      }
       return [...bookmarkList];
     }
-    case "set": {
-      bookmarkList = [action.bookmark]
-      return [...bookmarkList]
-    }
     case "delete": {
-      bookmarkList.filter((b, i) => b.id !== action.bookmarkId);
+      console.log("deleting")
+      bookmarkList =  bookmarkList.filter((b, i) => b.id !== action.bookmarkId);
+      let id: number = -1;
+      if (action.bookmarkId)
+        id = parseInt(action.bookmarkId.toString())
+      api.removeBookmarkById(id);
+      return bookmarkList
     }
     default: {
       throw Error("Unknown action: " + action.type);

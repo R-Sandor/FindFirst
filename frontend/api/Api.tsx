@@ -45,6 +45,7 @@ const api = {
     }, {});
   },
   bookmarkRemoveTagById(bookmarkId: string | number, tagId: number) {
+    console.log("removing bookmark-tag", bookmarkId, tagId)
     return instance.delete("bookmark/" + bookmarkId + "/tagId", {
       params: { id: tagId },
     });
@@ -74,8 +75,8 @@ const api = {
   },
 
   // (D)elete
-  removeBookmarkById(id: string) {
-    return this.execute("DELETE", "bookmarks/" + id, null, {});
+  removeBookmarkById(bookmarkId: number) {
+    return instance.delete("bookmark/" + bookmarkId);
   },
 };
 

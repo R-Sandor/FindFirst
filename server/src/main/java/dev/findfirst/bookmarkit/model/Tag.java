@@ -10,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class Tag extends Tenantable {
   @NonNull private String tag_title;
 
   @ManyToMany(
-      fetch = FetchType.EAGER,
+      fetch = FetchType.LAZY,
       cascade = {CascadeType.ALL},
       mappedBy = "tags")
   @JsonIgnoreProperties("tags")

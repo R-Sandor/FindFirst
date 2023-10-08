@@ -112,7 +112,7 @@ public class BookmarkController {
   public ResponseEntity<Tag> deleteTagFromBookmarkById(
       @Valid @PathVariable("bookmarkId") long id, @RequestParam("id") @Valid long tagId) {
 
-    var t = tagService.findById(id);
+    var t = tagService.findById(tagId);
     var b = bookmarkService.findById(id);
 
     return b.isPresent()
@@ -141,8 +141,9 @@ public class BookmarkController {
     return ResponseEntity.badRequest().build();
   }
 
-  @PostMapping(value = "/bookmark/delete/{id}")
-  public void deleteById(@PathVariable Long id) {
-    bookmarkService.deleteById(id);
+  @DeleteMapping(value = "/bookmark/{id}")
+  public ResponseEntity<HttpStatus> deleteById(@PathVariable Long id) {
+    bookmarkService.deleteBookmark(id);
+    return new ResponseEntity<>(HttpStatus.OK);
   }
 }
