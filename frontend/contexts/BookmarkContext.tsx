@@ -2,7 +2,6 @@ import api from "@/api/Api";
 import { NewBookmarkRequest } from "@/components/bookmark/NewBookmarkCard";
 import Bookmark from "@/types/Bookmarks/Bookmark";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
-import Tag from "@/types/Bookmarks/Tag";
 import { Dispatch, createContext, useContext, useReducer } from "react";
 
 export const BookmarkContext = createContext<Bookmark[]>([]);
@@ -23,23 +22,19 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
 }
 
 function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
-  console.log("reducer");
-  let newBkmkRequest: NewBookmarkRequest;
   switch (action.type) {
     case "add": {
-      console.log("add event");
       if (action.bookmark) {
         bookmarkList.push(action.bookmark) 
       }
-      return [...bookmarkList];
+      return bookmarkList;
     }
     case "delete": {
-      console.log("deleting")
       bookmarkList =  bookmarkList.filter((b, i) => b.id !== action.bookmarkId);
-      let id: number = -1;
-      if (action.bookmarkId)
-        id = parseInt(action.bookmarkId.toString())
-      api.removeBookmarkById(id);
+      if (action.bookmarkId) {
+        const id = parseInt(action.bookmarkId.toString())
+        api.removeBookmarkById(id);
+      }
       return bookmarkList
     }
     default: {
