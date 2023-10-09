@@ -51,9 +51,7 @@ public class BookmarkService {
   }
 
   public void deleteBookmark(Long bookmarkId) { 
-    // final var bkmk = bookmarkRepository.findById(bookmarkId).orElseThrow(NoSuchElementException::new);
     bookmarkRepository.deleteById(bookmarkId);
-    // bookmarkRepository.deleteAllByIdInBatch(List.of(bookmarkId));
   }
 
   public void deleteAllBookmarks() {
