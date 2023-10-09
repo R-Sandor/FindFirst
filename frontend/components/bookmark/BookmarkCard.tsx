@@ -58,7 +58,6 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
 
   useEffect(() => {
     if (bookmark) {
-      console.log("bookmark update??", bookmark.id);
       const tagList: string[] = [];
       bookmark.tags.map((tag: Tag) => {
         tagList.push(tag.tag_title);
@@ -77,15 +76,21 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
    */
   function deleteBkmk() {
     console.log("delete this bookmark");
-    // bookmark.tags.forEach((tag)=> {
-    //     deleteTag(tag.tag_title);
-        
-    // })
     let action: BookmarkAction = {
       type: "delete",
       bookmarkId: bookmark.id
     };
+    // delete the bookmark.
     bkmkDispatch(action);
+
+    // decrement the bookmark counters
+    bookmark.tags.forEach((tag)=> {
+    const idx = getIdxFromTitle(tag.tag_title);
+    const tagId = bookmark.tags[idx].id;
+    // update the sidebar. 
+    let action: TagAction = { type: "delete", tagId: tagId, tagTitle: "" };
+    dispatch(action);
+  });
   }
 
   const deleteTag = (tag_title: string) => {
