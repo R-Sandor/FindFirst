@@ -3,7 +3,8 @@ package dev.findfirst.bookmarkit.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import dev.findfirst.bookmarkit.annotations.IntegrationTestConfig;
-import dev.findfirst.bookmarkit.model.Bookmark;
+import dev.findfirst.core.model.Bookmark;
+import dev.findfirst.core.service.BookmarkService;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

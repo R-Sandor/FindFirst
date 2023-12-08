@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS public.roles (
 
 CREATE TABLE public.users (
   user_id serial NOT NULL PRIMARY key,
+  enabled Boolean, 
   username VARCHAR(20) NOT NULL,
   name VARCHAR(50) NOT NULL, 
   email VARCHAR(50) NOT NULL,

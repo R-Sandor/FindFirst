@@ -27,5 +27,5 @@ insert into bookmark_tag values(4,4);
 
 insert into roles(role_id, name) values(0, 'ROLE_USER');
 -- login is jsmith/test
-insert into users(user_id, username, name, email, password, role_role_id, tenant_id) values(1, 'jsmith', 'John Smith', 'jsmith@google.com', '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', 0, 1);
-insert into users(user_id, username, name, email, password, role_role_id, tenant_id) values(2, 'rsandor', 'Raphael Sandor', 'rsandor@google.com', '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', 0, 2);
+insert into users(user_id, enabled, username, name, email, password, role_role_id, tenant_id) values(1, TRUE, 'jsmith', 'John Smith', 'jsmith@google.com', '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', 0, 1);
+insert into users(user_id, enabled, username, name, email, password, role_role_id, tenant_id) values(2, TRUE, 'rsandor', 'Raphael Sandor', 'rsandor@google.com', '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', 0, 2);
