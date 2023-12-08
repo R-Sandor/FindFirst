@@ -32,21 +32,25 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class User {
 
-  public User(String username, String email, String name, String encode) {
+  public User(String username, String email, String name, String encodedPasswd, boolean enabled) {
     this.username = username;
     this.email = email;
     this.name = name;
-    this.password = encode;
+    this.password = encodedPasswd;
+    this.enabled = enabled;
   }
 
   public User(SignupRequest signup, String encodedPasswd) {
-    this(signup.username(), signup.email(), signup.name(), encodedPasswd);
+    this(signup.username(), signup.email(), signup.name(), encodedPasswd, false);
   }
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   @Column(name = "user_id")
   private Long userId;
+
+  @Column(name = "enabled")
+  private boolean enabled;
 
   @Nonnull
   @Size(max = 20)

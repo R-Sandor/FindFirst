@@ -7,7 +7,6 @@ import dev.findfirst.bookmarkit.repository.BookmarkRepository;
 import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
@@ -50,7 +49,7 @@ public class BookmarkService {
     bookmarkRepository.saveAllAndFlush(bookmarks);
   }
 
-  public void deleteBookmark(Long bookmarkId) { 
+  public void deleteBookmark(Long bookmarkId) {
     bookmarkRepository.deleteById(bookmarkId);
   }
 
