@@ -1,18 +1,18 @@
-package dev.findfirst.security.controller;
+package dev.findfirst.security.jwt.controller;
 
 import dev.findfirst.users.model.user.URole;
 import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.repository.RoleRepository;
 import dev.findfirst.users.repository.UserRepo;
 import dev.findfirst.users.service.UserService;
-import dev.findfirst.security.execeptions.TokenRefreshException;
 import dev.findfirst.security.jwt.JwtService;
-import dev.findfirst.security.model.payload.TokenRefreshResponse;
-import dev.findfirst.security.model.payload.request.SignupRequest;
-import dev.findfirst.security.model.payload.request.TokenRefreshRequest;
-import dev.findfirst.security.model.payload.response.MessageResponse;
-import dev.findfirst.security.model.refreshToken.RefreshToken;
-import dev.findfirst.security.service.RefreshTokenService;
+import dev.findfirst.security.jwt.exceptions.TokenRefreshException;
+import dev.findfirst.security.jwt.service.RefreshTokenService;
+import dev.findfirst.security.userAuth.models.RefreshToken;
+import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
+import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
+import dev.findfirst.security.userAuth.models.payload.request.TokenRefreshRequest;
+import dev.findfirst.security.userAuth.models.payload.response.MessageResponse;
 import dev.findfirst.security.userAuth.tenant.data.TenantService;
 import jakarta.validation.Valid;
 import java.nio.charset.StandardCharsets;

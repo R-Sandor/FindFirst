@@ -1,8 +1,8 @@
-package dev.findfirst.security.aspects;
+package dev.findfirst.security.userAuth.tenant.aspects;
 
 import dev.findfirst.core.annotations.DisableTenantFilter;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
-import dev.findfirst.security.utils.Constants;
+import dev.findfirst.security.userAuth.utils.Constants;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import org.aspectj.lang.JoinPoint;

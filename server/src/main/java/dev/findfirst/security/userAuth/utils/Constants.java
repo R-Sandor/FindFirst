@@ -1,4 +1,4 @@
-package dev.findfirst.security.utils;
+package dev.findfirst.security.userAuth.utils;
 
 public class Constants {
 

@@ -1,7 +1,7 @@
-package dev.findfirst.security.filters;
+package dev.findfirst.security.jwt.fiilters;
 
 import dev.findfirst.security.jwt.JwtService;
-import dev.findfirst.security.service.UserDetailsServiceImpl;
+import dev.findfirst.security.userAuth.service.UserDetailsServiceImpl;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

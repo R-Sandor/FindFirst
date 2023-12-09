@@ -1,6 +1,5 @@
 package dev.findfirst.security.userAuth.tenant.model;
 
-import dev.findfirst.security.model.Auditable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

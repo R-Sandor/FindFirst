@@ -1,4 +1,4 @@
-package dev.findfirst.security.service;
+package dev.findfirst.security.userAuth.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.findfirst.users.model.user.User;

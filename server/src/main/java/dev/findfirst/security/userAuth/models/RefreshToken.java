@@ -1,4 +1,4 @@
-package dev.findfirst.security.model.refreshToken;
+package dev.findfirst.security.userAuth.models;
 
 import dev.findfirst.users.model.user.User;
 import jakarta.persistence.Column;

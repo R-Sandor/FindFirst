@@ -1,8 +1,8 @@
 package dev.findfirst.security.jwt;
 
+import dev.findfirst.security.userAuth.utils.Constants;
 import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.service.UserService;
-import dev.findfirst.security.utils.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;

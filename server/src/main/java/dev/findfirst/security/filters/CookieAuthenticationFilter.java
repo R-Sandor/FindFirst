@@ -2,7 +2,7 @@ package dev.findfirst.security.filters;
 
 import dev.findfirst.security.jwt.JwtService;
 import dev.findfirst.security.jwt.TenantAuthenticationToken;
-import dev.findfirst.security.utils.Constants;
+import dev.findfirst.security.userAuth.utils.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;

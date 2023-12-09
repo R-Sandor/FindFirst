@@ -2,9 +2,8 @@ package dev.findfirst.security.userAuth.tenant.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import dev.findfirst.security.model.Auditable;
 import dev.findfirst.security.userAuth.tenant.listeners.TenantEntityListener;
-import dev.findfirst.security.utils.Constants;
+import dev.findfirst.security.userAuth.utils.Constants;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;

@@ -1,4 +1,4 @@
-package dev.findfirst.security.model.payload.response;
+package dev.findfirst.security.userAuth.models.payload.response;
 
 public class MessageResponse {
   private String message;

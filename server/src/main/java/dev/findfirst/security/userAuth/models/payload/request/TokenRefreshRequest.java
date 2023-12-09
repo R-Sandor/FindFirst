@@ -1,4 +1,4 @@
-package dev.findfirst.security.model.payload.request;
+package dev.findfirst.security.userAuth.models.payload.request;
 
 public record TokenRefreshRequest(String refreshToken) {
   public TokenRefreshRequest {

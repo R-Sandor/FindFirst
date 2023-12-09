@@ -1,4 +1,4 @@
-package dev.findfirst.security.service;
+package dev.findfirst.security.userAuth.service;
 
 import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.repository.UserRepo;

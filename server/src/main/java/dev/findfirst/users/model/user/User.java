@@ -1,7 +1,8 @@
 package dev.findfirst.users.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.findfirst.security.model.payload.request.SignupRequest;
+
+import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

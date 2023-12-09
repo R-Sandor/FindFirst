@@ -1,10 +1,11 @@
-package dev.findfirst.security.service;
+package dev.findfirst.security.jwt.service;
 
 import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.repository.UserRepo;
-import dev.findfirst.security.execeptions.TokenRefreshException;
-import dev.findfirst.security.model.refreshToken.RefreshToken;
-import dev.findfirst.security.repo.RefreshTokenRepository;
+import dev.findfirst.security.jwt.exceptions.TokenRefreshException;
+import dev.findfirst.security.jwt.repo.RefreshTokenRepository;
+import dev.findfirst.security.userAuth.models.RefreshToken;
+
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;

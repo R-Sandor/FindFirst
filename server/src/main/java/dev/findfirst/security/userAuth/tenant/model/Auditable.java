@@ -1,4 +1,4 @@
-package dev.findfirst.security.model;
+package dev.findfirst.security.userAuth.tenant.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;

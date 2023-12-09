@@ -8,7 +8,8 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import dev.findfirst.security.filters.CookieAuthenticationFilter;
 import dev.findfirst.security.jwt.AuthEntryPointJwt;
-import dev.findfirst.security.service.UserDetailsServiceImpl;
+import dev.findfirst.security.userAuth.service.UserDetailsServiceImpl;
+
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import lombok.RequiredArgsConstructor;
