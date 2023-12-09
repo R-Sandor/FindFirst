@@ -64,7 +64,6 @@ public class BookmarkController {
 
   @PostMapping(value = "/bookmark/deleteAll")
   public void deleteAll() {
-    // TODO: handle deleting the associated bookmark_tag
     bookmarkService.deleteAllBookmarks();
   }
 

@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '3.1.2'
+	id 'org.springframework.boot' version '3.2.0'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id "com.diffplug.spotless" version "6.11.0"
 	id 'java'
@@ -25,7 +25,7 @@ spotless {
 	java {
 		// optional: you can specify import groups directly
 		// note: you can use an empty string for all the imports you didn't specify explicitly, and '\\#` prefix for static imports
-		importOrder('java', 'jakarta', 'com.acme', '', '\\#com.acme', '\\#')
+		importOrder('java', 'jakarta', 'dev.findfirst')
 		// optional: instead of specifying import groups directly you can specify a config file
 		// export config file: https://github.com/diffplug/spotless/blob/main/ECLIPSE_SCREENSHOTS.md#creating-spotlessimportorder
 
@@ -51,7 +51,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.security:spring-security-config:6.0.1'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	implementation 'org.springframework.boot:spring-boot-starter-mail:3.0.1'
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'

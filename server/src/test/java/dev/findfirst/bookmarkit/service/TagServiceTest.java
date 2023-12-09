@@ -11,7 +11,6 @@ public class TagServiceTest {
 
   @Test
   void getNumberOfBookmarksThatBelongToEachTag() {
-    // TODO: test our results
     tagService.getTagsWithCnt();
   }
 }

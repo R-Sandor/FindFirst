@@ -25,9 +25,13 @@ public class RegistrationController {
     VerificationToken verificationToken = service.getVerificationToken(token);
     if (verificationToken == null) {
       message = "auth.message.invalidToken";
+      return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
     User user = verificationToken.getUser();
+    if(user == null) {
+      return new ResponseEntity<>("ERROR token does not exist", HttpStatus.BAD_REQUEST);
+    }
     Calendar cal = Calendar.getInstance();
     if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
       message = "auth.message.expired";

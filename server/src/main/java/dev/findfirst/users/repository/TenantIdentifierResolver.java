@@ -26,7 +26,6 @@ class TenantIdentifierResolver
 
   @Override
   public boolean validateExistingCurrentSessions() {
-    // TODO Auto-generated method stub
     throw new UnsupportedOperationException(
         "Unimplemented method 'validateExistingCurrentSessions'");
   }
