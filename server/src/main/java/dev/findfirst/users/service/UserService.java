@@ -1,9 +1,9 @@
-package dev.findfirst.core.users.service;
+package dev.findfirst.users.service;
 
 import dev.findfirst.core.model.VerificationToken;
-import dev.findfirst.core.users.model.user.User;
-import dev.findfirst.core.users.repository.UserRepo;
-import dev.findfirst.core.users.repository.VerificationTokenRepository;
+import dev.findfirst.users.model.user.User;
+import dev.findfirst.users.repository.UserRepo;
+import dev.findfirst.users.repository.VerificationTokenRepository;
 import dev.findfirst.security.execeptions.NoUserFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

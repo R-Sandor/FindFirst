@@ -1,7 +1,7 @@
 package dev.findfirst.security.service;
 
-import dev.findfirst.core.users.model.user.User;
-import dev.findfirst.core.users.repository.UserRepo;
+import dev.findfirst.users.model.user.User;
+import dev.findfirst.users.repository.UserRepo;
 import dev.findfirst.security.execeptions.TokenRefreshException;
 import dev.findfirst.security.model.refreshToken.RefreshToken;
 import dev.findfirst.security.repo.RefreshTokenRepository;

@@ -1,4 +1,4 @@
-package dev.findfirst.core.users.model.user;
+package dev.findfirst.users.model.user;
 
 public enum URole {
   ROLE_USER,

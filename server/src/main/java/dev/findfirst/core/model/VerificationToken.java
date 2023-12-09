@@ -1,6 +1,6 @@
 package dev.findfirst.core.model;
 
-import dev.findfirst.core.users.model.user.User;
+import dev.findfirst.users.model.user.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;

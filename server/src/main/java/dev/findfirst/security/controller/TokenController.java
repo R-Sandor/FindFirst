@@ -1,10 +1,10 @@
 package dev.findfirst.security.controller;
 
-import dev.findfirst.core.users.model.user.URole;
-import dev.findfirst.core.users.model.user.User;
-import dev.findfirst.core.users.repository.RoleRepository;
-import dev.findfirst.core.users.repository.UserRepo;
-import dev.findfirst.core.users.service.UserService;
+import dev.findfirst.users.model.user.URole;
+import dev.findfirst.users.model.user.User;
+import dev.findfirst.users.repository.RoleRepository;
+import dev.findfirst.users.repository.UserRepo;
+import dev.findfirst.users.service.UserService;
 import dev.findfirst.security.execeptions.TokenRefreshException;
 import dev.findfirst.security.jwt.JwtService;
 import dev.findfirst.security.model.payload.TokenRefreshResponse;
@@ -65,7 +65,7 @@ public class TokenController {
 
     // This error should never occur, as authentication checks username and throws.
     User user = userService.getUserByUsername(values[0]);
-    RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+    final RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
     String token = jwtService.generateTokenFromUser(user);
 
     ResponseCookie cookie =

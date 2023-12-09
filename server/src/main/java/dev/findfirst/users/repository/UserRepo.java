@@ -1,6 +1,6 @@
-package dev.findfirst.core.users.repository;
+package dev.findfirst.users.repository;
 
-import dev.findfirst.core.users.model.user.User;
+import dev.findfirst.users.model.user.User;
 import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 

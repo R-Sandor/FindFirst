@@ -1,4 +1,4 @@
-package dev.findfirst.core.users.repository;
+package dev.findfirst.users.repository;
 
 import java.util.Map;
 import org.hibernate.cfg.AvailableSettings;

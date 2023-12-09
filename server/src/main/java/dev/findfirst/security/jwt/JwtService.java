@@ -1,7 +1,7 @@
 package dev.findfirst.security.jwt;
 
-import dev.findfirst.core.users.model.user.User;
-import dev.findfirst.core.users.service.UserService;
+import dev.findfirst.users.model.user.User;
+import dev.findfirst.users.service.UserService;
 import dev.findfirst.security.utils.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -17,8 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.security.interfaces.RSAPrivateKey;
 import java.time.Instant;
 import java.util.Map;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -30,7 +28,6 @@ import org.springframework.web.util.WebUtils;
 
 @Service
 public class JwtService {
-  private static final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
   @Value("${jwt.private.key}") private RSAPrivateKey priv;
 

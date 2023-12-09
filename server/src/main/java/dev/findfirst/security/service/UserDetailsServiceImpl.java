@@ -1,7 +1,7 @@
 package dev.findfirst.security.service;
 
-import dev.findfirst.core.users.model.user.User;
-import dev.findfirst.core.users.repository.UserRepo;
+import dev.findfirst.users.model.user.User;
+import dev.findfirst.users.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

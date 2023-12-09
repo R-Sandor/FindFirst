@@ -1,4 +1,4 @@
-package dev.findfirst.core.users.model.user;
+package dev.findfirst.users.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.findfirst.security.model.payload.request.SignupRequest;

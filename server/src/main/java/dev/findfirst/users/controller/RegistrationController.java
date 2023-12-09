@@ -1,8 +1,8 @@
-package dev.findfirst.security.controller;
+package dev.findfirst.users.controller;
 
 import dev.findfirst.core.model.VerificationToken;
-import dev.findfirst.core.users.model.user.User;
-import dev.findfirst.core.users.service.UserService;
+import dev.findfirst.users.model.user.User;
+import dev.findfirst.users.service.UserService;
 import java.util.Calendar;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
 package dev.findfirst.security.repo;
 
-import dev.findfirst.core.users.model.user.User;
+import dev.findfirst.users.model.user.User;
 import dev.findfirst.security.model.refreshToken.RefreshToken;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

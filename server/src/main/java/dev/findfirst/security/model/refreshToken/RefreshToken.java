@@ -1,6 +1,6 @@
 package dev.findfirst.security.model.refreshToken;
 
-import dev.findfirst.core.users.model.user.User;
+import dev.findfirst.users.model.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

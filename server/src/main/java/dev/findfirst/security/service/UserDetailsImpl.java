@@ -1,7 +1,7 @@
 package dev.findfirst.security.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.findfirst.core.users.model.user.User;
+import dev.findfirst.users.model.user.User;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
