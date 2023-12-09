@@ -1,8 +1,8 @@
 package dev.findfirst.users.service;
 
-import dev.findfirst.core.model.VerificationToken;
 import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
 import dev.findfirst.users.model.user.User;
+import dev.findfirst.users.model.user.VerificationToken;
 import dev.findfirst.users.repository.UserRepo;
 import dev.findfirst.users.repository.VerificationTokenRepository;
 import lombok.RequiredArgsConstructor;

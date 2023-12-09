@@ -1,4 +1,4 @@
-package dev.findfirst.core;
+package dev.findfirst;
 
 import java.util.Arrays;
 import java.util.Collections;

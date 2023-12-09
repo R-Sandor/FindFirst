@@ -1,7 +1,7 @@
 package dev.findfirst.users.controller;
 
-import dev.findfirst.core.model.VerificationToken;
 import dev.findfirst.users.model.user.User;
+import dev.findfirst.users.model.user.VerificationToken;
 import dev.findfirst.users.service.UserService;
 import java.util.Calendar;
 import lombok.RequiredArgsConstructor;

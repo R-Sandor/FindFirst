@@ -22,7 +22,8 @@ public class TenantAspect {
 
   @PersistenceContext private EntityManager entityManager;
 
-  @Before("execution(* dev.findfirst.security.tenant.repository.TenantableRepository+.find*(..))")
+  @Before(
+      "execution(* dev.findfirst.security.userAuth.tenant.repository.TenantableRepository+.find*(..))")
   public void beforeFindOfTenantableRepository(JoinPoint joinPoint) {
     entityManager.unwrap(Session.class).disableFilter(Constants.TENANT_FILTER_NAME);
     MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
