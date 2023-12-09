@@ -2,7 +2,7 @@ package dev.findfirst.core.repository;
 
 import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.TagCntRecord;
-import dev.findfirst.security.contexts.TenantContext;
+import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;

@@ -1,4 +1,4 @@
-package dev.findfirst.security.contexts;
+package dev.findfirst.security.userAuth.tenant.contexts;
 
 import dev.findfirst.security.jwt.TenantAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

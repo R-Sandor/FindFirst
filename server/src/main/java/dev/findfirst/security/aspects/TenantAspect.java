@@ -1,7 +1,7 @@
 package dev.findfirst.security.aspects;
 
 import dev.findfirst.core.annotations.DisableTenantFilter;
-import dev.findfirst.security.contexts.TenantContext;
+import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 import dev.findfirst.security.utils.Constants;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

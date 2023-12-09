@@ -1,6 +1,7 @@
-package dev.findfirst.security.tenant.data;
+package dev.findfirst.security.userAuth.tenant.data;
 
-import dev.findfirst.security.tenant.model.Tenant;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import dev.findfirst.security.userAuth.tenant.model.Tenant;
 
 interface TenantRepository extends JpaRepository<Tenant, Integer> {}

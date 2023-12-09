@@ -1,4 +1,4 @@
-package dev.findfirst.security.tenant.repository;
+package dev.findfirst.security.userAuth.tenant.repository;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,6 +1,5 @@
 package dev.findfirst.core.model;
 
-import dev.findfirst.security.model.Tenantable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,6 +14,8 @@ import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
+
+import dev.findfirst.security.userAuth.tenant.model.Tenantable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

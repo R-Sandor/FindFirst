@@ -1,7 +1,7 @@
-package dev.findfirst.security.listeners;
+package dev.findfirst.security.userAuth.tenant.listeners;
 
-import dev.findfirst.security.contexts.TenantContext;
-import dev.findfirst.security.model.Tenantable;
+import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
+import dev.findfirst.security.userAuth.tenant.model.Tenantable;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;

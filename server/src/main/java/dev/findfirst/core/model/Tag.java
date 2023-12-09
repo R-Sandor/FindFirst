@@ -1,7 +1,8 @@
 package dev.findfirst.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import dev.findfirst.security.model.Tenantable;
+
+import dev.findfirst.security.userAuth.tenant.model.Tenantable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

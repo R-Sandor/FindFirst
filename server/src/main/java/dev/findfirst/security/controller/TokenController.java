@@ -13,7 +13,7 @@ import dev.findfirst.security.model.payload.request.TokenRefreshRequest;
 import dev.findfirst.security.model.payload.response.MessageResponse;
 import dev.findfirst.security.model.refreshToken.RefreshToken;
 import dev.findfirst.security.service.RefreshTokenService;
-import dev.findfirst.security.tenant.data.TenantService;
+import dev.findfirst.security.userAuth.tenant.data.TenantService;
 import jakarta.validation.Valid;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;

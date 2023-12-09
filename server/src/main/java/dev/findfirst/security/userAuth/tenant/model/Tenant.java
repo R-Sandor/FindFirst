@@ -1,4 +1,4 @@
-package dev.findfirst.security.tenant.model;
+package dev.findfirst.security.userAuth.tenant.model;
 
 import dev.findfirst.security.model.Auditable;
 import jakarta.persistence.Column;

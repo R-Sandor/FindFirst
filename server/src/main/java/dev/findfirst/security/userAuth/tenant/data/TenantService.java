@@ -1,11 +1,12 @@
-package dev.findfirst.security.tenant.data;
+package dev.findfirst.security.userAuth.tenant.data;
 
-import dev.findfirst.security.tenant.model.Tenant;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import dev.findfirst.security.userAuth.tenant.model.Tenant;
 
 @Service
 public class TenantService {
