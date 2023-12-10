@@ -34,7 +34,7 @@ public class TokenController {
 
   @Value("${bookmarkit.app.jwtExpirationMs}") private int jwtExpirationMs;
 
-  @Value("${bookmarkit.app.domain}") private String domain;
+  @Value("${bookmarkit.app.domain:localhost}") private String domain;
 
   @Autowired UserService userService;
 

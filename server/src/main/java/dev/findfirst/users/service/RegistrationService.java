@@ -29,7 +29,7 @@ public class RegistrationService {
 
     String message =
         """
-            Please finish registring your account at with the given url: 
+            Please finish registring your account with the given url: 
             %s
 
             Sincerly,
