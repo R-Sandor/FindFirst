@@ -43,7 +43,7 @@ public class RegistrationController {
   @Value("${bookmarkit.app.frontend-url:http://localhost:3000/}") 
   private String frontendUrl;
 
-  @PostMapping("api/regitrationConfirm")
+  @GetMapping("api/regitrationConfirm")
   public ResponseEntity<String> confirmRegistration(@RequestParam("token") String token) throws URISyntaxException {
 
     HttpHeaders httpHeaders = new HttpHeaders();
