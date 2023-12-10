@@ -1,4 +1,4 @@
-package dev.findfirst.core.service;
+package dev.findfirst.users.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

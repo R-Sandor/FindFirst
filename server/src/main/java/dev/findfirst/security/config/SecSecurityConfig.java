@@ -9,7 +9,6 @@ import com.nimbusds.jose.proc.SecurityContext;
 import dev.findfirst.security.filters.CookieAuthenticationFilter;
 import dev.findfirst.security.jwt.AuthEntryPointJwt;
 import dev.findfirst.security.userAuth.service.UserDetailsServiceImpl;
-
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -87,7 +85,7 @@ public class SecSecurityConfig {
     http.authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
         .csrf((csrf) -> csrf.disable())
         .httpBasic(Customizer.withDefaults())
-        .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+        .oauth2ResourceServer((rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder())))
         .sessionManagement(
             (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .exceptionHandling(

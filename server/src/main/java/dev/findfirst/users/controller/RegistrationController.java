@@ -1,44 +1,79 @@
 package dev.findfirst.users.controller;
 
+import dev.findfirst.security.userAuth.execeptions.NoVerificationTokenFoundException;
+import dev.findfirst.security.userAuth.execeptions.TokenExpiredException;
+import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
+import dev.findfirst.security.userAuth.models.payload.response.MessageResponse;
+import dev.findfirst.security.userAuth.tenant.data.TenantService;
+import dev.findfirst.users.model.user.URole;
 import dev.findfirst.users.model.user.User;
-import dev.findfirst.users.model.user.VerificationToken;
+import dev.findfirst.users.repository.RoleRepository;
+import dev.findfirst.users.service.RegistrationService;
 import dev.findfirst.users.service.UserService;
-import java.util.Calendar;
+import jakarta.validation.Valid;
+import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.WebRequest;
 
 @RestController
 @RequiredArgsConstructor
 public class RegistrationController {
-  private final UserService service;
+  private final UserService userService;
 
-  @GetMapping("/regitrationConfirm")
-  public ResponseEntity<String> confirmRegistration(
-      WebRequest request, Model model, @RequestParam("token") String token) {
-    String message;
-    VerificationToken verificationToken = service.getVerificationToken(token);
-    if (verificationToken == null) {
-      message = "auth.message.invalidToken";
-      return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
+  private final PasswordEncoder passwdEncoder;
+
+  private final RoleRepository roleRepository;
+
+  private final TenantService tenantService;
+
+  private final RegistrationService regService;
+
+  @PostMapping("api/regitrationConfirm")
+  public ResponseEntity<String> confirmRegistration(@RequestParam("token") String token) {
+
+    try {
+      regService.registrationComplete(token);
+    } catch (NoVerificationTokenFoundException | TokenExpiredException e) {
+      return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
+    }
+    return new ResponseEntity<>("Registration Complete", HttpStatus.OK);
+  }
+
+  @PostMapping("api/auth/signup")
+  public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    if (userService.getUserExistByUsername(signUpRequest.username())) {
+      return ResponseEntity.badRequest()
+          .body(new MessageResponse("Error: Username is already taken!"));
     }
 
-    User user = verificationToken.getUser();
-    if(user == null) {
-      return new ResponseEntity<>("ERROR token does not exist", HttpStatus.BAD_REQUEST);
+    if (userService.getUserExistEmail(signUpRequest.email())) {
+      return ResponseEntity.badRequest()
+          .body(new MessageResponse("Error: Email is already in use!"));
     }
-    Calendar cal = Calendar.getInstance();
-    if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-      message = "auth.message.expired";
+
+    // Create new user's account
+    User user = new User(signUpRequest, passwdEncoder.encode(signUpRequest.password()));
+    var role =
+        roleRepository.findById(URole.ROLE_USER.ordinal()).orElseThrow(NoSuchElementException::new);
+    user.setRole(role);
+    var t = tenantService.create(signUpRequest.username());
+    // create a new tenant
+    try {
+      user.setTenantId(t.getId());
+      userService.saveUser(user);
+    } catch (Exception e) {
+      // If any exception occurs we should delete the records that were just made.
+      tenantService.deleteById(t.getId());
+      userService.deleteUser(user);
+      return ResponseEntity.badRequest().body(new MessageResponse("Could not signup, try again."));
     }
-    message = "Successful registration";
-    user.setEnabled(true);
-    service.saveUser(user);
-    return new ResponseEntity<>(message, HttpStatus.OK);
+    regService.sendRegistration(user);
+    return ResponseEntity.ok(new MessageResponse("User Account Created, Complete Registration!"));
   }
 }

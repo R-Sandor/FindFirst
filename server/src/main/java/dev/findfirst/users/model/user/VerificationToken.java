@@ -11,9 +11,11 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
+@NoArgsConstructor
 public class VerificationToken {
 
   private static final int EXPIRATION = 60 * 24;
@@ -29,6 +31,12 @@ public class VerificationToken {
   private User user;
 
   private Date expiryDate;
+
+  public VerificationToken(User user, String token) {
+    this.user = user;
+    this.token = token;
+    this.expiryDate = calculateExpiryDate(EXPIRATION);
+  }
 
   private Date calculateExpiryDate(int expiryTimeInMinutes) {
     Calendar cal = Calendar.getInstance();

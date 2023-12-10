@@ -23,8 +23,25 @@ public class UserService {
     return userRepo.findByUsername(username).orElseThrow(NoUserFoundException::new);
   }
 
+  public boolean getUserExistByUsername(String username) {
+    return userRepo.existsByUsername(username);
+  }
+
+  public boolean getUserExistEmail(String email) {
+    return userRepo.existsByEmail(email);
+  }
+
   public User saveUser(User user) {
     return userRepo.save(user);
+  }
+
+  public void deleteUser(User user) {
+    userRepo.delete(user);
+  }
+
+  public void createVerificationToken(User user, String token) {
+    VerificationToken verificationToken = new VerificationToken(user, token);
+    tokenRepository.save(verificationToken);
   }
 
   public VerificationToken getVerificationToken(String VerificationToken) {
