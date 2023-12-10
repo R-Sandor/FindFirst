@@ -11,11 +11,17 @@ import dev.findfirst.users.repository.RoleRepository;
 import dev.findfirst.users.service.RegistrationService;
 import dev.findfirst.users.service.UserService;
 import jakarta.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.NoSuchElementException;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -33,17 +39,24 @@ public class RegistrationController {
   private final TenantService tenantService;
 
   private final RegistrationService regService;
+  
+  @Value("${bookmarkit.app.frontend-url:http://localhost:3000/}") 
+  private String frontendUrl;
 
   @PostMapping("api/regitrationConfirm")
-  public ResponseEntity<String> confirmRegistration(@RequestParam("token") String token) {
+  public ResponseEntity<String> confirmRegistration(@RequestParam("token") String token) throws URISyntaxException {
 
+    HttpHeaders httpHeaders = new HttpHeaders();
+    URI findfirst = new URI(frontendUrl);
     try {
       regService.registrationComplete(token);
     } catch (NoVerificationTokenFoundException | TokenExpiredException e) {
       return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
     }
-    return new ResponseEntity<>("Registration Complete", HttpStatus.OK);
+    httpHeaders.setLocation(findfirst);
+    return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
   }
+
 
   @PostMapping("api/auth/signup")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
