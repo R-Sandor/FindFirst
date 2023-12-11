@@ -1,7 +1,12 @@
-# BookmarkItApp
-ReactJS and Spring Boot bookmarking app
+<img src="./docs/assets/images/findFirstBanner.png" width="100%" height="100%"> 
 
-This application sets out to simplify and enrich many of the features that other applications 
+<br>
+
+# About FindFirst
+This application sets out to simplify and enrich teams and individuals 
+knowledge resources. 
+
+
 have and combine and rethink those features into a easy UI/UX experience for users.
 
 # Features 
