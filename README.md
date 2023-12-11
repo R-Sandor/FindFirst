@@ -3,11 +3,12 @@
 <br>
 
 # About FindFirst
-This application sets out to simplify and enrich teams and individuals 
-knowledge resources. 
+This application sets out to simplify and enrich individuals and teams
+knowledge resources such as bookmarks, PDFs, notes, etc. Allowing them to be 
+searched not only by keyword but semantic meaning. 
 
-
-have and combine and rethink those features into a easy UI/UX experience for users.
+Create organization to the copious amount of knowledge available, for students,
+devs, teachers, and the common person.
 
 # Features 
 <details>
