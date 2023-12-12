@@ -2,7 +2,7 @@ package dev.findfirst.security.jwt;
 
 import dev.findfirst.security.userAuth.utils.Constants;
 import dev.findfirst.users.model.user.User;
-import dev.findfirst.users.service.UserService;
+import dev.findfirst.users.service.UserManagementService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
@@ -37,7 +37,7 @@ public class JwtService {
 
   @Autowired JwtEncoder encoder;
   @Autowired JwtDecoder jwtDecoder;
-  @Autowired UserService userService;
+  @Autowired UserManagementService userService;
 
   private JwtParser jwtParser;
 

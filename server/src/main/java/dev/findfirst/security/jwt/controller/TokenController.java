@@ -7,7 +7,7 @@ import dev.findfirst.security.userAuth.models.RefreshToken;
 import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 import dev.findfirst.security.userAuth.models.payload.request.TokenRefreshRequest;
 import dev.findfirst.users.model.user.User;
-import dev.findfirst.users.service.UserService;
+import dev.findfirst.users.service.UserManagementService;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,7 @@ public class TokenController {
 
   @Value("${bookmarkit.app.domain:localhost}") private String domain;
 
-  @Autowired UserService userService;
+  @Autowired UserManagementService userService;
 
   @PostMapping("/auth/signin")
   public ResponseEntity<?> token(@RequestHeader(value = "Authorization") String authorization) {

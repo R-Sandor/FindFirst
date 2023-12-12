@@ -1,21 +1,21 @@
 package dev.findfirst.users.service;
 
 import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
-import dev.findfirst.security.userAuth.execeptions.NoVerificationTokenFoundException;
+import dev.findfirst.security.userAuth.execeptions.NoTokenFoundException;
 import dev.findfirst.security.userAuth.execeptions.TokenExpiredException;
+import dev.findfirst.users.model.user.Token;
 import dev.findfirst.users.model.user.User;
-import dev.findfirst.users.model.user.VerificationToken;
 import java.util.Calendar;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 @RequiredArgsConstructor
 public class RegistrationService {
 
-  private final UserService userService;
+  private final UserManagementService userService;
 
   private final DefaultEmailService mail;
 
@@ -29,7 +29,7 @@ public class RegistrationService {
 
     String message =
         """
-            Please finish registring your account with the given url: 
+            Please finish registring your account with the given url:
             %s
 
             Sincerly,
@@ -41,10 +41,10 @@ public class RegistrationService {
   }
 
   public void registrationComplete(String token)
-      throws NoVerificationTokenFoundException, TokenExpiredException {
-    VerificationToken verificationToken = userService.getVerificationToken(token);
+      throws NoTokenFoundException, TokenExpiredException, NoUserFoundException {
+    Token verificationToken = userService.getVerificationToken(token);
     if (verificationToken == null) {
-      throw new NoVerificationTokenFoundException();
+      throw new NoTokenFoundException();
     }
 
     User user = verificationToken.getUser();

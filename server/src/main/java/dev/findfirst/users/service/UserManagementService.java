@@ -1,8 +1,9 @@
 package dev.findfirst.users.service;
 
 import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
+import dev.findfirst.users.model.user.Token;
 import dev.findfirst.users.model.user.User;
-import dev.findfirst.users.model.user.VerificationToken;
+import dev.findfirst.users.repository.PasswordTokenRepository;
 import dev.findfirst.users.repository.UserRepo;
 import dev.findfirst.users.repository.VerificationTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,16 +11,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserManagementService {
 
   private final UserRepo userRepo;
   private final VerificationTokenRepository tokenRepository;
+  private final PasswordTokenRepository passwordTokenRepository;
 
-  public User getUserByEmail(String email) {
+  public User getUserByEmail(String email) throws NoUserFoundException {
     return userRepo.findByEmail(email).orElseThrow(NoUserFoundException::new);
   }
 
-  public User getUserByUsername(String username) {
+  public User getUserByUsername(String username) throws NoUserFoundException {
     return userRepo.findByUsername(username).orElseThrow(NoUserFoundException::new);
   }
 
@@ -38,13 +40,32 @@ public class UserService {
   public void deleteUser(User user) {
     userRepo.delete(user);
   }
+  
+  public void changeUserPassword(User user, String password) {
+    user.setPassword(password);
+    saveUser(user);
+  }
 
   public void createVerificationToken(User user, String token) {
-    VerificationToken verificationToken = new VerificationToken(user, token);
+    Token verificationToken = new Token(user, token);
     tokenRepository.save(verificationToken);
   }
 
-  public VerificationToken getVerificationToken(String VerificationToken) {
+  public Token getVerificationToken(String VerificationToken) {
     return tokenRepository.findByToken(VerificationToken);
   }
+
+  public void createResetPwdToken(User user, String token) {
+    Token pwdToken = new Token(user, token);
+    passwordTokenRepository.save(pwdToken);
+  }
+
+  public Token getPasswordToken(String pwdToken) {
+    return passwordTokenRepository.findByToken(pwdToken);
+  }
+
+  public User getUserFromPasswordToken(String pwdToken) {
+    return passwordTokenRepository.findByToken(pwdToken).getUser();
+  }
+
 }
