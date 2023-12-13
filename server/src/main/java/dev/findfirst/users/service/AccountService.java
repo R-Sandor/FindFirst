@@ -8,7 +8,7 @@ public abstract class AccountService {
 
   protected final DefaultEmailService emailService;
 
-  @Value("${bookmarkit.app.domain:http://localhost:9000/api}") protected String domain;
+  @Value("${bookmarkit.app.domain:http://localhost:9000}") protected String domain;
 
   public AccountService(UserManagementService service, DefaultEmailService email) {
     this.userManagement = service;

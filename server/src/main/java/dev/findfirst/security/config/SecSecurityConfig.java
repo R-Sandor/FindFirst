@@ -82,7 +82,9 @@ public class SecSecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests((authorize) -> authorize.anyRequest().authenticated())
+    http.authorizeHttpRequests(
+            (authorize) ->
+                authorize.requestMatchers("/user/**").permitAll().anyRequest().authenticated())
         .csrf((csrf) -> csrf.disable())
         .httpBasic(Customizer.withDefaults())
         .oauth2ResourceServer((rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder())))

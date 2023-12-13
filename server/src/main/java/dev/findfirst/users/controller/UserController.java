@@ -25,10 +25,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
   private final UserManagementService userService;
@@ -39,7 +41,20 @@ public class UserController {
 
   @Value("${bookmarkit.app.frontend-url:http://localhost:3000/}") private String frontendUrl;
 
-  @GetMapping("api/user/regitrationConfirm")
+  @PostMapping("/signup")
+  public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+    User user;
+    try {
+      user = userService.createNewUserAccount(signUpRequest);
+    } catch (UserNameTakenException | EmailAlreadyRegisteredException | UnexpectedException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    regService.sendRegistration(user);
+    return ResponseEntity.ok(new MessageResponse("User Account Created, Complete Registration!"));
+  }
+
+  @GetMapping("/regitrationConfirm")
   public ResponseEntity<String> confirmRegistration(@RequestParam("token") String token)
       throws URISyntaxException {
 
@@ -54,20 +69,7 @@ public class UserController {
     return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
   }
 
-  @PostMapping("api/user/signup")
-  public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-    User user;
-    try {
-      user = userService.createNewUserAccount(signUpRequest);
-    } catch (UserNameTakenException | EmailAlreadyRegisteredException | UnexpectedException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    regService.sendRegistration(user);
-    return ResponseEntity.ok(new MessageResponse("User Account Created, Complete Registration!"));
-  }
-
-  @PostMapping("api/user/resetPassword")
+  @PostMapping("/resetPassword")
   public ResponseEntity<String> resetPassword(@RequestParam @Email String email) {
     try {
       pwdService.sendResetToken(email);
@@ -77,7 +79,7 @@ public class UserController {
     }
   }
 
-  @GetMapping("api/user/changePassword")
+  @GetMapping("changePassword")
   public ResponseEntity<String> frontendPasswordWithToken(@RequestParam("token") String token)
       throws URISyntaxException {
 
@@ -92,7 +94,7 @@ public class UserController {
     return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
   }
 
-  @PostMapping("api/user/changePassword")
+  @PostMapping("changePassword")
   public ResponseEntity<String> passwordChange(
       @RequestParam("tokenPassword") TokenPassword tokenPassword) throws URISyntaxException {
     try {

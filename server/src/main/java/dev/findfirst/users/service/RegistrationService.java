@@ -25,7 +25,7 @@ public class RegistrationService extends AccountService {
 
   @Override
   void AccountEmailOp(String emailAddres, String token) {
-    String confirmationUrl = domain + "/regitrationConfirm?token=" + token;
+    String confirmationUrl = domain + "/user/regitrationConfirm?token=" + token;
     String message =
         """
             Please finish registring your account with the given url:
