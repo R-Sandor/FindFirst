@@ -1,13 +1,12 @@
 package dev.findfirst.users.service;
 
-import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
 import dev.findfirst.security.userAuth.execeptions.NoTokenFoundException;
+import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
 import dev.findfirst.security.userAuth.execeptions.TokenExpiredException;
 import dev.findfirst.users.model.user.Token;
 import dev.findfirst.users.model.user.TokenPassword;
 import dev.findfirst.users.model.user.User;
 import jakarta.validation.constraints.Email;
-
 import java.util.Calendar;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +26,8 @@ public class ForgotPasswordService extends AccountService {
     AccountEmailOp(email, token);
   }
 
-  public void changePassword(TokenPassword tp) throws NoTokenFoundException, TokenExpiredException, NoUserFoundException {
+  public void changePassword(TokenPassword tp)
+      throws NoTokenFoundException, TokenExpiredException, NoUserFoundException {
     validatePasswordResetToken(tp.token());
     User user = userManagement.getUserFromPasswordToken(tp.token());
     userManagement.changeUserPassword(user, tp.password());
@@ -53,22 +53,22 @@ public class ForgotPasswordService extends AccountService {
     emailService.sendSimpleEmail(emailAddress, "Account Registration", message);
   }
 
-  public boolean validatePasswordResetToken(String token) throws NoTokenFoundException, TokenExpiredException {
+  public boolean validatePasswordResetToken(String token)
+      throws NoTokenFoundException, TokenExpiredException {
     final Token passToken = userManagement.getPasswordToken(token);
-    if(!isTokenFound(passToken))
-        throw new NoTokenFoundException();
-    if(isTokenExpired(passToken)){
-        throw new  TokenExpiredException();
+    if (!isTokenFound(passToken)) throw new NoTokenFoundException();
+    if (isTokenExpired(passToken)) {
+      throw new TokenExpiredException();
     }
     return true;
-}
+  }
 
-private boolean isTokenFound(Token token) {
+  private boolean isTokenFound(Token token) {
     return token != null && token.getUser() != null;
-}
+  }
 
-private boolean isTokenExpired(Token passToken) {
+  private boolean isTokenExpired(Token passToken) {
     final Calendar cal = Calendar.getInstance();
     return passToken.getExpiryDate().before(cal.getTime());
-}
+  }
 }
