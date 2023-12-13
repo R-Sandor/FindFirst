@@ -5,11 +5,10 @@ import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
 import dev.findfirst.security.userAuth.execeptions.TokenExpiredException;
 import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
 import dev.findfirst.security.userAuth.models.payload.response.MessageResponse;
-import dev.findfirst.security.userAuth.tenant.data.TenantService;
+import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
+import dev.findfirst.users.exceptions.UserNameTakenException;
 import dev.findfirst.users.model.user.TokenPassword;
-import dev.findfirst.users.model.user.URole;
 import dev.findfirst.users.model.user.User;
-import dev.findfirst.users.repository.RoleRepository;
 import dev.findfirst.users.service.ForgotPasswordService;
 import dev.findfirst.users.service.RegistrationService;
 import dev.findfirst.users.service.UserManagementService;
@@ -17,13 +16,12 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.NoSuchElementException;
+import java.rmi.UnexpectedException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,12 +32,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
   private final UserManagementService userService;
-
-  private final PasswordEncoder passwdEncoder;
-
-  private final RoleRepository roleRepository;
-
-  private final TenantService tenantService;
 
   private final RegistrationService regService;
 
@@ -55,7 +47,7 @@ public class UserController {
     URI findfirst = new URI(frontendUrl);
     try {
       regService.registrationComplete(token);
-    } catch (NoTokenFoundException | TokenExpiredException | NoUserFoundException   e) {
+    } catch (NoTokenFoundException | TokenExpiredException | NoUserFoundException e) {
       return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
     }
     httpHeaders.setLocation(findfirst);
@@ -64,32 +56,13 @@ public class UserController {
 
   @PostMapping("api/user/signup")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-    if (userService.getUserExistByUsername(signUpRequest.username())) {
-      return ResponseEntity.badRequest()
-          .body(new MessageResponse("Error: Username is already taken!"));
-    }
-
-    if (userService.getUserExistEmail(signUpRequest.email())) {
-      return ResponseEntity.badRequest()
-          .body(new MessageResponse("Error: Email is already in use!"));
-    }
-
-    // Create new user's account
-    User user = new User(signUpRequest, passwdEncoder.encode(signUpRequest.password()));
-    var role =
-        roleRepository.findById(URole.ROLE_USER.ordinal()).orElseThrow(NoSuchElementException::new);
-    user.setRole(role);
-    var t = tenantService.create(signUpRequest.username());
-    // create a new tenant
+    User user;
     try {
-      user.setTenantId(t.getId());
-      userService.saveUser(user);
-    } catch (Exception e) {
-      // If any exception occurs we should delete the records that were just made.
-      tenantService.deleteById(t.getId());
-      userService.deleteUser(user);
-      return ResponseEntity.badRequest().body(new MessageResponse("Could not signup, try again."));
+      user = userService.createNewUserAccount(signUpRequest);
+    } catch (UserNameTakenException | EmailAlreadyRegisteredException | UnexpectedException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
     }
+
     regService.sendRegistration(user);
     return ResponseEntity.ok(new MessageResponse("User Account Created, Complete Registration!"));
   }
@@ -112,7 +85,7 @@ public class UserController {
     URI findfirst = new URI(frontendUrl + "/account/resetPassword/" + token);
     try {
       pwdService.sendResetToken(token);
-    } catch ( NoUserFoundException e) {
+    } catch (NoUserFoundException e) {
       return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
     }
     httpHeaders.setLocation(findfirst);
@@ -120,8 +93,8 @@ public class UserController {
   }
 
   @PostMapping("api/user/changePassword")
-  public ResponseEntity<String> passwordChange(@RequestParam("tokenPassword") TokenPassword tokenPassword)
-      throws URISyntaxException {
+  public ResponseEntity<String> passwordChange(
+      @RequestParam("tokenPassword") TokenPassword tokenPassword) throws URISyntaxException {
     try {
       pwdService.changePassword(tokenPassword);
     } catch (NoTokenFoundException | TokenExpiredException | NoUserFoundException e) {
@@ -129,6 +102,4 @@ public class UserController {
     }
     return new ResponseEntity<>("Password changed", HttpStatus.SEE_OTHER);
   }
-
-
 }
