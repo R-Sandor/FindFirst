@@ -9,7 +9,6 @@ import dev.findfirst.users.model.user.User;
 import jakarta.validation.constraints.Email;
 
 import java.util.Calendar;
-import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,8 +23,7 @@ public class ForgotPasswordService extends AccountService {
     if (user == null) {
       throw new NoUserFoundException();
     }
-    String token = UUID.randomUUID().toString();
-    userManagement.createResetPwdToken(user, token);
+    var token = userManagement.createResetPwdToken(user);
     AccountEmailOp(email, token);
   }
 

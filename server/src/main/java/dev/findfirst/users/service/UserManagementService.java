@@ -71,9 +71,11 @@ public class UserManagementService {
     return tokenRepository.findByToken(VerificationToken);
   }
 
-  public void createResetPwdToken(User user, String token) {
+  public String createResetPwdToken(User user) {
+    String token = UUID.randomUUID().toString();
     Token pwdToken = new Token(user, token);
     passwordTokenRepository.save(pwdToken);
+    return token;
   }
 
   public Token getPasswordToken(String pwdToken) {
