@@ -35,7 +35,7 @@ public class ForgotPasswordService extends AccountService {
 
   @Override
   void AccountEmailOp(String emailAddress, String token) {
-    String confirmationUrl = this.domain + "/regitrationConfirm?token=" + token;
+    String confirmationUrl = this.domain + "/user/changePassword?token=" + token;
     String message =
         """
             You have requested password reset for your account.
