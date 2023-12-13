@@ -1,5 +1,6 @@
 package dev.findfirst.security.jwt;
 
+import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
 import dev.findfirst.security.userAuth.utils.Constants;
 import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.service.UserManagementService;
@@ -72,7 +73,7 @@ public class JwtService {
     return false;
   }
 
-  public String generateTokenFromUsername(String username) {
+  public String generateTokenFromUsername(String username) throws NoUserFoundException {
     return this.generateTokenFromUser(userService.getUserByEmail(username));
   }
 

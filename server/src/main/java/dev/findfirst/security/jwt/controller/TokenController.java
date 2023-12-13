@@ -3,6 +3,7 @@ package dev.findfirst.security.jwt.controller;
 import dev.findfirst.security.jwt.JwtService;
 import dev.findfirst.security.jwt.exceptions.TokenRefreshException;
 import dev.findfirst.security.jwt.service.RefreshTokenService;
+import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
 import dev.findfirst.security.userAuth.models.RefreshToken;
 import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 import dev.findfirst.security.userAuth.models.payload.request.TokenRefreshRequest;
@@ -13,6 +14,7 @@ import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -47,7 +49,12 @@ public class TokenController {
     final String[] values = credentials.split(":", 2);
 
     // This error should never occur, as authentication checks username and throws.
-    User user = userService.getUserByUsername(values[0]);
+    User user;
+    try {
+      user = userService.getUserByUsername(values[0]);
+    } catch (NoUserFoundException e) {
+      return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
     final RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
     String token = jwtService.generateTokenFromUser(user);
 
@@ -75,7 +82,12 @@ public class TokenController {
             .map(RefreshToken::getUser)
             .map(
                 user -> {
-                  String token = jwtService.generateTokenFromUsername(user.getUsername());
+                  String token;
+                  try {
+                    token = jwtService.generateTokenFromUsername(user.getUsername());
+                  } catch (NoUserFoundException e) {
+                    return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+                  }
 
                   ResponseCookie cookie =
                       ResponseCookie.from("bookmarkit", token)

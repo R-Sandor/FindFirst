@@ -1,32 +1,31 @@
 package dev.findfirst.users.service;
 
-import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
 import dev.findfirst.security.userAuth.execeptions.NoTokenFoundException;
+import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
 import dev.findfirst.security.userAuth.execeptions.TokenExpiredException;
 import dev.findfirst.users.model.user.Token;
 import dev.findfirst.users.model.user.User;
 import java.util.Calendar;
 import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
-public class RegistrationService {
+public class RegistrationService extends AccountService {
 
-  private final UserManagementService userService;
-
-  private final DefaultEmailService mail;
-
-  @Value("${bookmarkit.app.domain:http://localhost:9000/api}") private String domain;
+  public RegistrationService(UserManagementService userManagement, DefaultEmailService email) {
+    super(userManagement, email);
+  }
 
   public void sendRegistration(User user) {
+
     String token = UUID.randomUUID().toString();
-    userService.createVerificationToken(user, token);
+    userManagement.createVerificationToken(user, token);
+    AccountEmailOp(user.getEmail(), token);
+  }
 
+  @Override
+  void AccountEmailOp(String emailAddres, String token) {
     String confirmationUrl = domain + "/regitrationConfirm?token=" + token;
-
     String message =
         """
             Please finish registring your account with the given url:
@@ -37,12 +36,12 @@ public class RegistrationService {
         """
             .formatted(confirmationUrl);
 
-    mail.sendSimpleEmail(user.getEmail(), "Account Registration", message);
+    emailService.sendSimpleEmail(emailAddres, "Account Registration", message);
   }
 
   public void registrationComplete(String token)
       throws NoTokenFoundException, TokenExpiredException, NoUserFoundException {
-    Token verificationToken = userService.getVerificationToken(token);
+    Token verificationToken = userManagement.getVerificationToken(token);
     if (verificationToken == null) {
       throw new NoTokenFoundException();
     }
@@ -56,6 +55,6 @@ public class RegistrationService {
       throw new TokenExpiredException();
     }
     user.setEnabled(true);
-    userService.saveUser(user);
+    userManagement.saveUser(user);
   }
 }
