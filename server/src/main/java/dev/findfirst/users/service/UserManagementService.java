@@ -14,6 +14,8 @@ import dev.findfirst.users.repository.UserRepo;
 import dev.findfirst.users.repository.VerificationTokenRepository;
 import java.rmi.UnexpectedException;
 import java.util.NoSuchElementException;
+import java.util.UUID;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,9 +60,11 @@ public class UserManagementService {
     saveUser(user);
   }
 
-  public void createVerificationToken(User user, String token) {
+  public String createVerificationToken(User user) {
+    String token = UUID.randomUUID().toString();
     Token verificationToken = new Token(user, token);
     tokenRepository.save(verificationToken);
+    return token;
   }
 
   public Token getVerificationToken(String VerificationToken) {

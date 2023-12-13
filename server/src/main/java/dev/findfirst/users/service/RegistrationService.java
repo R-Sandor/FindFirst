@@ -6,7 +6,6 @@ import dev.findfirst.security.userAuth.execeptions.TokenExpiredException;
 import dev.findfirst.users.model.user.Token;
 import dev.findfirst.users.model.user.User;
 import java.util.Calendar;
-import java.util.UUID;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,9 +16,7 @@ public class RegistrationService extends AccountService {
   }
 
   public void sendRegistration(User user) {
-
-    String token = UUID.randomUUID().toString();
-    userManagement.createVerificationToken(user, token);
+    var token = userManagement.createVerificationToken(user);
     AccountEmailOp(user.getEmail(), token);
   }
 
