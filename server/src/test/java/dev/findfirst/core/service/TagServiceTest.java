@@ -1,7 +1,6 @@
-package dev.findfirst.bookmarkit.service;
+package dev.findfirst.core.service;
 
-import dev.findfirst.bookmarkit.annotations.IntegrationTestConfig;
-import dev.findfirst.core.service.TagService;
+import dev.findfirst.core.annotations.IntegrationTestConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

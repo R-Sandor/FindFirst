@@ -1,4 +1,4 @@
-package dev.findfirst.bookmarkit.annotations;
+package dev.findfirst.core.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
