@@ -6,14 +6,12 @@ import dev.findfirst.core.annotations.IntegrationTestConfig;
 import dev.findfirst.core.model.Bookmark;
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIf;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.junit.jupiter.EnabledIf;
 
 // @DataJpaTest
 @IntegrationTestConfig
-@EnabledIf(
-    value = "#{{'test', 'prod'}.contains(environment.getActiveProfiles()[0])}",
-    loadContext = true)
+@EnabledIf("#{environment.getActiveProfiles().contains('integration')}")
 public class BookmarkServiceUnitTest {
 
   @Autowired private BookmarkService bookmarkService;

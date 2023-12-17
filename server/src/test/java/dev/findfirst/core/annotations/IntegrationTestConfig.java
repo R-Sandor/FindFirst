@@ -9,8 +9,6 @@ import org.springframework.test.context.junit.jupiter.EnabledIf;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@EnabledIf(
-    value = "#{{'test', 'prod'}.contains(environment.getActiveProfiles()[0])}",
-    loadContext = true)
+@EnabledIf(value = "#{environment.getActiveProfiles().contains('integration')}", loadContext = true)
 @SpringBootTest
 public @interface IntegrationTestConfig {}

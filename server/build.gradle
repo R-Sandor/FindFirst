@@ -7,8 +7,14 @@ plugins {
 
 group = 'dev.findfirst'
 version = '1.0.0'
-sourceCompatibility = '17'
+java {
+	sourceCompatibility = JavaVersion.VERSION_17
+}
 compileJava.dependsOn 'spotlessApply'
+
+ext {
+	set('testcontainers.version', "1.19.3")
+}
 
 spotless {
 	// optional: limit format enforcement to just the files changed by this feature branch
@@ -65,17 +71,19 @@ dependencies {
 
 	annotationProcessor 'org.projectlombok:lombok'
 
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test:3.2.0'
 	testImplementation 'org.springframework.security:spring-security-test:6.0.1'
-
-	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+	// testImplementation 'io.projectreactor:reactor-test'
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:postgresql'
 }
 
 test {
-	useJUnitPlatform()
 	systemProperty 'spring.profiles.active', 'dev'
 	testLogging.showStandardStreams = true
 }
