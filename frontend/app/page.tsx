@@ -28,6 +28,6 @@ export default function App() {
       </TagCntProvider>
     </BookmarkProvider>
   ) : (
-    <div> Hello Welcome to BookmarkIt. </div>
+    <div> Hello Welcome to findfirst. </div>
   );
 }

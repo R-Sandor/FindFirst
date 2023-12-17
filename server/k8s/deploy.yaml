@@ -3,19 +3,19 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: bookmarkit
-  name: bookmarkit
+    app: findfirst
+  name: findfirst
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: bookmarkit
+      app: findfirst
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: bookmarkit
+        app: findfirst
     spec:
       containers:
       - image: backend

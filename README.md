@@ -58,5 +58,4 @@ default user:
 <details>
   <summary>Click to expand!</summary>
 
-![Design](client/public/BookMarkItDesign.png "Design")
 </details>

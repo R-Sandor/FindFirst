@@ -34,9 +34,9 @@ public class TokenController {
   @Autowired RefreshTokenService refreshTokenService;
   @Autowired AuthenticationManager authenticationManager;
 
-  @Value("${bookmarkit.app.jwtExpirationMs}") private int jwtExpirationMs;
+  @Value("${findfirst.app.jwtExpirationMs}") private int jwtExpirationMs;
 
-  @Value("${bookmarkit.app.domain:localhost}") private String domain;
+  @Value("${findfirst.app.domain:localhost}") private String domain;
 
   @Autowired UserManagementService userService;
 
@@ -59,7 +59,7 @@ public class TokenController {
     String token = jwtService.generateTokenFromUser(user);
 
     ResponseCookie cookie =
-        ResponseCookie.from("bookmarkit", token)
+        ResponseCookie.from("findfirst", token)
             .secure(false) // enable this when we are using https
             // .sameSite("strict")
             .path("/")
@@ -90,7 +90,7 @@ public class TokenController {
                   }
 
                   ResponseCookie cookie =
-                      ResponseCookie.from("bookmarkit", token)
+                      ResponseCookie.from("findfirst", token)
                           .secure(false)
                           // .sameSite("strict")
                           .path("/")

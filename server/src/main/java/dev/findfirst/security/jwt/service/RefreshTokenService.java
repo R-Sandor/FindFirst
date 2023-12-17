@@ -1,11 +1,10 @@
 package dev.findfirst.security.jwt.service;
 
-import dev.findfirst.users.model.user.User;
-import dev.findfirst.users.repository.UserRepo;
 import dev.findfirst.security.jwt.exceptions.TokenRefreshException;
 import dev.findfirst.security.jwt.repo.RefreshTokenRepository;
 import dev.findfirst.security.userAuth.models.RefreshToken;
-
+import dev.findfirst.users.model.user.User;
+import dev.findfirst.users.repository.UserRepo;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class RefreshTokenService {
-  @Value("${bookmarkit.app.jwtRefreshExpirationMs}") private Long refreshTokenDurationMs;
+  @Value("${findfirst.app.jwtRefreshExpirationMs}") private Long refreshTokenDurationMs;
 
   @Autowired private RefreshTokenRepository refreshTokenRepository;
 

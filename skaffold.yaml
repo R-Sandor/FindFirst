@@ -1,7 +1,7 @@
 apiVersion: skaffold/v4beta6
 kind: Config
 metadata:
-  name: bookmarkitapp
+  name: findfirstapp
 build:
   artifacts:
     - image: backend

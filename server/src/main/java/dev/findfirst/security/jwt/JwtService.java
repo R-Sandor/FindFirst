@@ -32,9 +32,9 @@ public class JwtService {
 
   @Value("${jwt.private.key}") private RSAPrivateKey priv;
 
-  @Value("${bookmarkit.app.jwtCookieName}") private String jwtCookie;
+  @Value("${findfirst.app.jwtCookieName}") private String jwtCookie;
 
-  @Value("${bookmarkit.app.jwtExpirationMs}") private int jwtExpirationMs;
+  @Value("${findfirst.app.jwtExpirationMs}") private int jwtExpirationMs;
 
   @Autowired JwtEncoder encoder;
   @Autowired JwtDecoder jwtDecoder;

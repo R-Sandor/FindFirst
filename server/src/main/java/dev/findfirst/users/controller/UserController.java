@@ -39,7 +39,7 @@ public class UserController {
 
   private final ForgotPasswordService pwdService;
 
-  @Value("${bookmarkit.app.frontend-url:http://localhost:3000/}") private String frontendUrl;
+  @Value("${findfirst.app.frontend-url:http://localhost:3000/}") private String frontendUrl;
 
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {

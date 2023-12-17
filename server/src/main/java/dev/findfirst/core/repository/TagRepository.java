@@ -2,7 +2,6 @@ package dev.findfirst.core.repository;
 
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.security.userAuth.tenant.repository.TenantableRepository;
-
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
@@ -17,8 +16,8 @@ public interface TagRepository extends TenantableRepository<Tag>, TagRepoCustom 
   List<Tag> findTagsByBookmarkId(long Id);
 
   //   @Query(
-  //   "SELECT new dev.findfirst.bookmarkit.model.TagCntRecord(" +
-  //   "new dev.findfirst.bookmarkit.model.Tag(tag.id, tag.title, tag.url), COUNT(tag.id))" +
+  //   "SELECT new dev.findfirst.findfirst.model.TagCntRecord(" +
+  //   "new dev.findfirst.findfirst.model.Tag(tag.id, tag.title, tag.url), COUNT(tag.id))" +
   //   "FROM tag JOIN bookmark ON bookmark.tag_id" +
   //   "GROUP BY tag.id"
   // )

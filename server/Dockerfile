@@ -1,3 +1,3 @@
 FROM openjdk:17
-COPY ./build/libs/bookmarkit-1.0.0.jar bookmarkit.jar
-ENTRYPOINT ["java", "-jar", "bookmarkit.jar"]
+COPY ./build/libs/findfirst-1.0.0.jar findfirst.jar
+ENTRYPOINT ["java", "-jar", "findfirst.jar"]
