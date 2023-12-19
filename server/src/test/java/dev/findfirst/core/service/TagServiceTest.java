@@ -9,7 +9,7 @@ public class TagServiceTest {
   @Autowired private TagService tagService;
 
   @Test
-  void getNumberOfBookmarksThatBelongToEachTag() {
+  public void getNumberOfBookmarksThatBelongToEachTag() {
     tagService.getTagsWithCnt();
   }
 }

@@ -82,7 +82,6 @@ dependencies {
 
 
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
-	
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -90,12 +89,12 @@ dependencies {
 }
 
 test {
-	// systemProperty 'spring.profiles.active', 'dev'
+	systemProperty 'spring.profiles.active', 'dev'
 	useJUnitPlatform()
 	testLogging.showStandardStreams = true
 	finalizedBy jacocoTestReport // report is always generated after tests run
 }
 
 jacocoTestReport {
-    dependsOn test // tests are required to run before generating the report
+	dependsOn test // tests are required to run before generating the report
 }

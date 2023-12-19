@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import dev.findfirst.core.annotations.IntegrationTestConfig;
 import dev.findfirst.core.repository.BookmarkRepository;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 import org.junit.jupiter.api.Test;
@@ -20,6 +21,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@IntegrationTestConfig
 public class DatabaseTest {
 
   @MockBean private TenantContext tenantContext;
