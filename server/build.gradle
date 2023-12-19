@@ -3,6 +3,7 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id "com.diffplug.spotless" version "6.11.0"
 	id 'java'
+	id 'jacoco'
 }
 
 group = 'dev.findfirst'
@@ -81,18 +82,20 @@ dependencies {
 
 
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
+	
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 }
 
-tasks.named('test') {
+test {
 	// systemProperty 'spring.profiles.active', 'dev'
 	useJUnitPlatform()
-	// testLogging.showStandardStreams = true
+	testLogging.showStandardStreams = true
+	finalizedBy jacocoTestReport // report is always generated after tests run
 }
 
-test {
-	useJUnitPlatform()
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
 }

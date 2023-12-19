@@ -1,7 +1,9 @@
 package dev.findfirst.core;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.findfirst.core.repository.BookmarkRepository;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
@@ -35,5 +37,9 @@ public class DatabaseTest {
   @Test
   void repoLoads() {
     assertNotNull(bkmkRepo);
+    var bkmks = bkmkRepo.findAll();
+    assertTrue(bkmks.size() > 0);
+    // Check that data.sql is loading.
+    assertEquals(bkmks.size(), 4);
   }
 }
