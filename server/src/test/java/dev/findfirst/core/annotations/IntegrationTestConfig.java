@@ -8,5 +8,5 @@ import org.springframework.test.context.junit.jupiter.EnabledIf;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@EnabledIf(expression = "#{environment['spring.profiles.active'].contains('integration')}")
+@EnabledIf(expression = "#{environment['spring.profiles.active'] == 'integration'}")
 public @interface IntegrationTestConfig {}
