@@ -13,10 +13,6 @@ java {
 }
 compileJava.dependsOn 'spotlessApply'
 
-ext{
-
-}
-
 spotless {
 	// optional: limit format enforcement to just the files changed by this feature branch
 	ratchetFrom 'origin/main'
@@ -76,7 +72,6 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test:6.2.0'
 
 	testImplementation 'org.testcontainers:postgresql'
-	testImplementation "org.testcontainers:testcontainers:1.19.3"
 	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
 	testImplementation "org.testcontainers:junit-jupiter:1.19.3"
 
@@ -89,7 +84,7 @@ dependencies {
 }
 
 test {
-	systemProperty 'spring.profiles.active', 'dev'
+	systemProperty 'spring.profiles.active', 'integration'
 	useJUnitPlatform()
 	testLogging.showStandardStreams = true
 	finalizedBy jacocoTestReport // report is always generated after tests run

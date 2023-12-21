@@ -5,11 +5,11 @@
     ],
     "java.compile.nullAnalysis.mode": "automatic",
     "java.test.config": [
-    {
-        "name": "server",
-        "workingDirectory": "${workspaceFolder}/server",
-        "mainClass": "dev.findfirst.FindFirstApplication",
-        "vmArgs": ["-Dspring.profiles.active=integration"],
-    },
+        {
+            "name": "server",
+            "workingDirectory": "${workspaceFolder}/server",
+            "mainClass": "dev.findfirst.FindFirstApplication",
+            "vmArgs": ["-Dspring.profiles.active=integration"],
+        },
     ]
 }
