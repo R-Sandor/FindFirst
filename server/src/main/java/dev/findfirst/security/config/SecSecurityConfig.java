@@ -23,7 +23,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -75,17 +74,17 @@ public class SecSecurityConfig {
     return authProvider;
   }
 
-  @Bean
-  public WebSecurityCustomizer webSecurityCustomizer() {
-    return (web) -> web.ignoring().requestMatchers("/api/**");
-  }
+  // @Bean
+  // public WebSecurityCustomizer webSecurityCustomizer() {
+  //   return (web) -> web.ignoring().requestMatchers("/user/**");
+  // }
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
-            (authorize) ->
-                authorize.requestMatchers("/user/**").permitAll().anyRequest().authenticated())
-        .csrf((csrf) -> csrf.disable())
+        (authorize) ->
+            authorize.requestMatchers("/user/**").permitAll().anyRequest().authenticated());
+    http.csrf((csrf) -> csrf.disable())
         .httpBasic(Customizer.withDefaults())
         .oauth2ResourceServer((rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder())))
         .sessionManagement(

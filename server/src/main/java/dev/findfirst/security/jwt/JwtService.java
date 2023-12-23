@@ -1,8 +1,5 @@
 package dev.findfirst.security.jwt;
 
-import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
-import dev.findfirst.security.userAuth.utils.Constants;
-import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.service.UserManagementService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -16,14 +13,11 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.security.interfaces.RSAPrivateKey;
-import java.time.Instant;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.WebUtils;
 
@@ -33,8 +27,6 @@ public class JwtService {
   @Value("${jwt.private.key}") private RSAPrivateKey priv;
 
   @Value("${findfirst.app.jwtCookieName}") private String jwtCookie;
-
-  @Value("${findfirst.app.jwtExpirationMs}") private int jwtExpirationMs;
 
   @Autowired JwtEncoder encoder;
   @Autowired JwtDecoder jwtDecoder;
@@ -71,29 +63,5 @@ public class JwtService {
     Map<String, Object> claims = jwtDecoder.decode(authToken).getClaims();
     if (claims.get("sub") != null) return true;
     return false;
-  }
-
-  public String generateTokenFromUsername(String username) throws NoUserFoundException {
-    return this.generateTokenFromUser(userService.getUserByEmail(username));
-  }
-
-  public String generateTokenFromUser(User user) {
-    Instant now = Instant.now();
-    String email = user.getEmail();
-    Integer roleId = user.getRole().getId();
-    String roleName = user.getRole().getName().name();
-    Integer tenantId = user.getTenantId();
-    JwtClaimsSet claims =
-        JwtClaimsSet.builder()
-            .issuer("self")
-            .issuedAt(Instant.now())
-            .expiresAt(now.plusSeconds(jwtExpirationMs))
-            .subject(email)
-            .claim("scope", email)
-            .claim(Constants.ROLE_ID_CLAIM, roleId)
-            .claim(Constants.ROLE_NAME_CLAIM, roleName)
-            .claim(Constants.TENANT_ID_CLAIM, tenantId)
-            .build();
-    return this.encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
   }
 }
