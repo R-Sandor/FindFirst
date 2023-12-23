@@ -3,10 +3,12 @@ package dev.findfirst.users.controller;
 import dev.findfirst.security.userAuth.execeptions.NoTokenFoundException;
 import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
 import dev.findfirst.security.userAuth.execeptions.TokenExpiredException;
+import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
 import dev.findfirst.security.userAuth.models.payload.response.MessageResponse;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
 import dev.findfirst.users.exceptions.UserNameTakenException;
+import dev.findfirst.users.model.user.SigninTokens;
 import dev.findfirst.users.model.user.TokenPassword;
 import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.service.ForgotPasswordService;
@@ -21,10 +23,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -40,6 +44,8 @@ public class UserController {
   private final ForgotPasswordService pwdService;
 
   @Value("${findfirst.app.frontend-url:http://localhost:3000/}") private String frontendUrl;
+
+  @Value("${findfirst.app.domain:localhost}") private String domain;
 
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
@@ -103,5 +109,28 @@ public class UserController {
       return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
     }
     return new ResponseEntity<>("Password changed", HttpStatus.SEE_OTHER);
+  }
+
+  @PostMapping("/signin")
+  public ResponseEntity<?> token(@RequestHeader(value = "Authorization") String authorization) {
+    SigninTokens tkns;
+    try {
+      tkns = userService.signinUser(authorization);
+    } catch (NoUserFoundException e) {
+      return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    ResponseCookie cookie =
+        ResponseCookie.from("findfirst", tkns.jwt())
+            .secure(false) // enable this when we are using https
+            // .sameSite("strict")
+            .path("/")
+            .domain(domain)
+            .httpOnly(true)
+            .build();
+
+    return ResponseEntity.ok()
+        .header(HttpHeaders.SET_COOKIE, cookie.toString())
+        .body(new TokenRefreshResponse(tkns.refreshToken()));
   }
 }
