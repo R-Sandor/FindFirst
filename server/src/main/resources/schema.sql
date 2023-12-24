@@ -9,17 +9,25 @@ DROP TABLE IF EXISTS roles;
 CREATE TYPE urole as ENUM ('ROLE_USER','ROLE_MODERATOR','ROLE_ADMIN');
 
 CREATE TABLE public.bookmark (
-    id serial not null PRIMARY KEY,
+    id SERIAL not null PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
     url VARCHAR(255) NOT NULL,
-    tenant_id int NOT Null
+    tenant_id int NOT Null,
+    created_by VARCHAR(255),
+    created_date DATE,
+    last_modified_date DATE,
+    last_modified_by VARCHAR(255)
 );
 
 -- tag --
 CREATE TABLE public.tag (
   id serial not null  PRIMARY KEY,
   tag_title VARCHAR(50) NOT NULL,
-  tenant_id int NOT NULL
+  tenant_id int NOT NULL,
+  created_by VARCHAR(255),
+  created_date DATE,
+  last_modified_date DATE,
+  last_modified_by VARCHAR(255)
 );
 -- ALTER TABLE public.bookmark_tag
 --   ADD CONSTRAINT fk_tag_bookmark_id FOREIGN KEY (id) REFERENCES public.bookmark(id);

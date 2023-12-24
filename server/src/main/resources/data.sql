@@ -1,15 +1,15 @@
-insert into bookmark (id, title, url, tenant_id) values(1, 'Best Cheesecake Recipe', 'https://sugarspunrun.com/best-cheesecake-recipe/',1 );
-insert into bookmark (id, title, url, tenant_id) values(2, 'Dark mode guide', 'https://blog.logrocket.com/dark-mode-react-in-depth-guide/',1 );
-insert into bookmark (id, title, url, tenant_id) values(3, 'Chicken Parm', 'https://www.foodnetwork.com/recipes/bobby-flay/chicken-parmigiana-recipe-1952359', 1);
+insert into bookmark (title, url, tenant_id) values('Best Cheesecake Recipe', 'https://sugarspunrun.com/best-cheesecake-recipe/',1 );
+insert into bookmark (title, url, tenant_id) values('Dark mode guide', 'https://blog.logrocket.com/dark-mode-react-in-depth-guide/',1 );
+insert into bookmark (title, url, tenant_id) values('Chicken Parm', 'https://www.foodnetwork.com/recipes/bobby-flay/chicken-parmigiana-recipe-1952359', 1);
 
 -- rsandor's bookmark 
-insert into bookmark (id, title, url, tenant_id) values(4, 'Favorite Chicken Parm', 'https://www.foodnetwork.com/recipes/bobby-flay/chicken-parmigiana-recipe-1952359', 2);
+insert into bookmark (title, url, tenant_id) values('Favorite Chicken Parm', 'https://www.foodnetwork.com/recipes/bobby-flay/chicken-parmigiana-recipe-1952359', 2);
 
 -- jsmith tags
-insert into tag(id, tag_title, tenant_id) values(1, 'Cooking', 1);
-insert into tag(id, tag_title, tenant_id) values(2, 'web_dev', 1);
-insert into tag(id, tag_title, tenant_id) values(3, 'deserts', 1);
-insert into tag(id, tag_title, tenant_id) values(6, 'camping', 1);
+insert into tag(tag_title, tenant_id) values('Cooking', 1);
+insert into tag(tag_title, tenant_id) values('web_dev', 1);
+insert into tag(tag_title, tenant_id) values('deserts', 1);
+insert into tag(tag_title, tenant_id) values('camping', 1);
 
 -- Cooking related bookmark_tags
 insert into bookmark_tag values(1,1);
@@ -20,8 +20,8 @@ insert into bookmark_tag values(3,1);
 insert into bookmark_tag values(2,2);
 
 -- rsandor's tags
-insert into tag(id, tag_title, tenant_id) values(4, 'Cooking', 2);
-insert into tag(id, tag_title, tenant_id) values(5, 'wishlist', 2);
+insert into tag(tag_title, tenant_id) values('Cooking', 2);
+insert into tag(tag_title, tenant_id) values('wishlist', 2);
 
 insert into bookmark_tag values(4,4);
 
