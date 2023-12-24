@@ -3,9 +3,11 @@ package dev.findfirst.core.controller;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import dev.findfirst.core.annotations.IntegrationTestConfig;
+import dev.findfirst.core.model.AddBkmkReq;
 import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.repository.BookmarkRepository;
 import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,36 @@ public class BookmarkControllerTest {
 
   @Test
   void shouldPassIsAuthenticated() {
+    var response =
+        restTemplate.exchange(baseUrl, HttpMethod.GET, getHttpEntity(), Bookmark[].class);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    var bkmkOpt = Optional.ofNullable(response.getBody());
+    assertEquals(3, bkmkOpt.orElseThrow().length);
+  }
+
+  @Test
+  void getBookmarkById() {
+    var response =
+        restTemplate.exchange(
+            "/api/bookmark?id={id}", HttpMethod.GET, getHttpEntity(), Bookmark.class, 1);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    var bkmkOpt = Optional.ofNullable(response.getBody());
+    var bkmk = bkmkOpt.orElseThrow();
+    assertEquals("Best Cheesecake Recipe", bkmk.getTitle());
+  }
+
+  @Test
+  void addBookmark() {
+    var ent = getHttpEntity(new AddBkmkReq("Facebook", "facebook.com", List.of()));
+    var response = restTemplate.exchange("/api/bookmark/add", HttpMethod.POST, ent, Object.class);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    // assertEquals("Best Cheesecake Recipe", bkmk.getTitle());
+  }
+
+  private HttpEntity<?> getHttpEntity() {
     HttpHeaders headers = new HttpHeaders();
     // test user
     headers.setBasicAuth("jsmith", "test");
@@ -59,12 +91,23 @@ public class BookmarkControllerTest {
     // Add the cookie to next request.
     headers = new HttpHeaders();
     headers.add("Cookie", cookie.get(0));
-    entity = new HttpEntity<>(headers);
+    return new HttpEntity<>(headers);
+  }
 
-    var response = restTemplate.exchange(baseUrl, HttpMethod.GET, entity, Bookmark[].class);
-    assertEquals(HttpStatus.OK, response.getStatusCode());
+  private <T> HttpEntity<?> getHttpEntity(T body) {
+    HttpHeaders headers = new HttpHeaders();
+    // test user
+    headers.setBasicAuth("jsmith", "test");
+    HttpEntity<String> entity = new HttpEntity<>(headers);
+    var signResp = restTemplate.postForEntity("/user/signin", entity, TokenRefreshResponse.class);
 
-    var bkmkOpt = Optional.ofNullable(response.getBody());
-    assertEquals(3, bkmkOpt.orElseThrow().length);
+    // Get the cookie from signin.
+    var cookieOpt = Optional.ofNullable(signResp.getHeaders().get("Set-Cookie"));
+    var cookie = cookieOpt.orElseThrow();
+
+    // Add the cookie to next request.
+    headers = new HttpHeaders();
+    headers.add("Cookie", cookie.get(0));
+    return new HttpEntity<>(body, headers);
   }
 }
