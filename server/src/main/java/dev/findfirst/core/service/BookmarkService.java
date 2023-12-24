@@ -55,7 +55,9 @@ public class BookmarkService {
   }
 
   public void deleteAllBookmarks() {
-    bookmarkRepository.deleteAll();
+    // finds all that belong to the user and deletes them.
+    // Otherwise the @preRemove throws an execption as it should.
+    bookmarkRepository.deleteAll(bookmarkRepository.findAll());
   }
 
   private BiConsumer<List<Bookmark>, Tag> tagDelete =

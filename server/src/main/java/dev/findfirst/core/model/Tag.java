@@ -1,7 +1,6 @@
 package dev.findfirst.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import dev.findfirst.security.userAuth.tenant.model.Tenantable;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -26,7 +25,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Tag extends Tenantable {
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
   @Column(length = 50)

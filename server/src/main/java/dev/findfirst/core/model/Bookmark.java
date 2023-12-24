@@ -44,7 +44,7 @@ public class Bookmark extends Tenantable {
   private String url;
 
   @PreRemove
-  private void removeListsFromMovie() {
+  private void removeTagsFromBookmark() {
     tags.clear();
   }
 

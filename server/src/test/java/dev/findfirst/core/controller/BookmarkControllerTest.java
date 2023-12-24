@@ -1,6 +1,7 @@
 package dev.findfirst.core.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.findfirst.core.annotations.IntegrationTestConfig;
 import dev.findfirst.core.model.AddBkmkReq;
@@ -71,10 +72,21 @@ public class BookmarkControllerTest {
   @Test
   void addBookmark() {
     var ent = getHttpEntity(new AddBkmkReq("Facebook", "facebook.com", List.of()));
-    var response = restTemplate.exchange("/api/bookmark/add", HttpMethod.POST, ent, Object.class);
+    var response = restTemplate.exchange("/api/bookmark/add", HttpMethod.POST, ent, Bookmark.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
+    var bkmk = Optional.ofNullable(response.getBody());
+    assertEquals("Facebook", bkmk.orElseThrow().getTitle());
+  }
 
-    // assertEquals("Best Cheesecake Recipe", bkmk.getTitle());
+  @Test
+  // should test that all of JSmith's bookmarks are deleted but no one else's
+  // were removed.
+  void deleteAllbookmarks() {
+    var response =
+        restTemplate.exchange(
+            baseUrl + "/deleteAll", HttpMethod.POST, getHttpEntity(), String.class);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(bkmkRepo.count() > 0);
   }
 
   private HttpEntity<?> getHttpEntity() {

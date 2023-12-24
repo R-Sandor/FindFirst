@@ -62,9 +62,10 @@ public class BookmarkController {
     return new Response<List<Bookmark>>((b) -> bookmarkService.addBookmarks(b), bookmarks).get();
   }
 
-  @PostMapping(value = "/bookmark/deleteAll")
-  public void deleteAll() {
+  @PostMapping(value = "/bookmarks/deleteAll")
+  public ResponseEntity<String> deleteAll() {
     bookmarkService.deleteAllBookmarks();
+    return ResponseEntity.ok("Deleted All user's bookmarks");
   }
 
   @PostMapping(
