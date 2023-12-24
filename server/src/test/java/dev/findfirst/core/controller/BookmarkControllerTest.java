@@ -87,6 +87,14 @@ public class BookmarkControllerTest {
             baseUrl + "/deleteAll", HttpMethod.POST, getHttpEntity(), String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertTrue(bkmkRepo.count() > 0);
+
+    var bkmks = restTemplate.exchange(baseUrl, HttpMethod.GET, getHttpEntity(), Bookmark[].class);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    var bkmkOpt = Optional.ofNullable(bkmks.getBody());
+
+    assertEquals(0, bkmkOpt.orElseThrow().length);
   }
 
   private HttpEntity<?> getHttpEntity() {
