@@ -108,9 +108,9 @@ public class BookmarkController {
         : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 
-  @DeleteMapping(value = "bookmark/{bookmarkId}/tagId", produces = "application/json")
+  @DeleteMapping(value = "bookmark/{bookmarkID}/deleteTag", produces = "application/json")
   public ResponseEntity<Tag> deleteTagFromBookmarkById(
-      @Valid @PathVariable("bookmarkId") long id, @RequestParam("id") @Valid long tagId) {
+      @Valid @PathVariable("bookmarkID") long id, @RequestParam("tagId") @Valid long tagId) {
 
     var t = tagService.findById(tagId);
     var b = bookmarkService.findById(id);
