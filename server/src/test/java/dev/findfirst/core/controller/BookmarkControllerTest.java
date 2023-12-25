@@ -1,11 +1,13 @@
 package dev.findfirst.core.controller;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.findfirst.core.annotations.IntegrationTestConfig;
 import dev.findfirst.core.model.AddBkmkReq;
 import dev.findfirst.core.model.Bookmark;
+import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.repository.BookmarkRepository;
 import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 import java.util.List;
@@ -61,7 +63,7 @@ public class BookmarkControllerTest {
   void getBookmarkById() {
     var response =
         restTemplate.exchange(
-            "/api/bookmark?id={id}", HttpMethod.GET, getHttpEntity(), Bookmark.class, 1);
+            "/api/bookmark?id=1", HttpMethod.GET, getHttpEntity(), Bookmark.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
     var bkmkOpt = Optional.ofNullable(response.getBody());
@@ -72,7 +74,7 @@ public class BookmarkControllerTest {
   @Test
   void addBookmark() {
     var ent = getHttpEntity(new AddBkmkReq("Facebook", "facebook.com", List.of()));
-    var response = restTemplate.exchange("/api/bookmark/add", HttpMethod.POST, ent, Bookmark.class);
+    var response = restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent, Bookmark.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var bkmk = Optional.ofNullable(response.getBody());
     assertEquals("Facebook", bkmk.orElseThrow().getTitle());
@@ -96,6 +98,35 @@ public class BookmarkControllerTest {
 
     assertEquals(0, bkmkOpt.orElseThrow().length);
   }
+
+@Test
+ void deleteTagFromBookmarkByBookmarkID() {
+    var ent = getHttpEntity(new AddBkmkReq("Web Color Picker", "htmlcolorcodes.com", List.of()));
+    var addBmkResp = restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent, Bookmark.class);
+    assertEquals(HttpStatus.OK, addBmkResp.getStatusCode());
+    var bkmkOpt = Optional.ofNullable(addBmkResp.getBody());
+    var bkmk = bkmkOpt.orElseThrow();
+    
+    ent = getHttpEntity(new Tag("web_dev"));
+    restTemplate.exchange("/api/bookmark/{BookmarkID}", HttpMethod.POST, ent, Tag.class, bkmk.getId());
+    ent = getHttpEntity(new Tag("design"));
+    restTemplate.exchange("/api/bookmark/{BookmarkID}", HttpMethod.POST, ent, Tag.class, bkmk.getId());
+    restTemplate.exchange("/api/bookmark/{BookmarkID}?tag={tagName}", HttpMethod.DELETE, getHttpEntity(), Tag.class,
+      bkmk.getId(), "web_dev"
+    );
+
+    var response =
+    restTemplate.exchange(
+        "/api/bookmark?id={id}", HttpMethod.GET, getHttpEntity(), Bookmark.class, bkmk.getId());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+
+    bkmkOpt = Optional.ofNullable(response.getBody());
+    bkmk = bkmkOpt.orElseThrow();
+    assertEquals(1, bkmk.getTags().size());
+    assertFalse(bkmk.getTags().stream().anyMatch(t -> t.getTag_title().equals("web_dev")));
+
+  }
+
 
   private HttpEntity<?> getHttpEntity() {
     HttpHeaders headers = new HttpHeaders();

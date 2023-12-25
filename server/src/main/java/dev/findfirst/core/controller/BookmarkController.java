@@ -40,11 +40,11 @@ public class BookmarkController {
   }
 
   @GetMapping(value = "/bookmark")
-  public ResponseEntity<Bookmark> getBookmarkById(@RequestParam long id) {
+  public ResponseEntity<Bookmark> getBookmarkById(@RequestParam("id") long id) {
     return new Response<Bookmark>(bookmarkService.findById(id)).get();
   }
 
-  @PostMapping(value = "/bookmark/add")
+  @PostMapping(value = "/bookmark")
   public ResponseEntity<Bookmark> addBookmarks(@RequestBody AddBkmkReq req) {
     Bookmark createdBookmark;
     var response = new Response<Bookmark>();
@@ -69,12 +69,12 @@ public class BookmarkController {
   }
 
   @PostMapping(
-      value = "/bookmark/{bookmarkId}/addTag",
+      value = "/bookmark/{bookmarkID}",
       consumes = "application/json",
       produces = "application/json")
   @ResponseBody
   public ResponseEntity<Tag> addTag(
-      @PathVariable(value = "bookmarkId") Long bookmarkId, @RequestBody final Tag tagRequest) {
+      @PathVariable(value = "bookmarkID") Long bookmarkId, @RequestBody final Tag tagRequest) {
     final var bkmkOpt = bookmarkService.findById(bookmarkId);
 
     if (!bkmkOpt.isPresent()) {
@@ -96,9 +96,9 @@ public class BookmarkController {
     return new Response<Tag>(action, tag).get();
   }
 
-  @DeleteMapping(value = "bookmark/{bookmarkId}/tagTitle", produces = "application/json")
+  @DeleteMapping(value = "bookmark/{bookmarkID}", produces = "application/json")
   public ResponseEntity<Tag> deleteTagFromBookmark(
-      @Valid @PathVariable("bookmarkId") long id, @RequestParam("title") @NotBlank String title) {
+      @Valid @PathVariable("bookmarkID") long id, @RequestParam("tag") @NotBlank String title) {
 
     var t = tagService.getTagByTitle(title);
     var b = bookmarkService.findById(id);
