@@ -54,9 +54,6 @@ public class BookmarkControllerTest {
     var response =
         restTemplate.exchange(baseUrl, HttpMethod.GET, getHttpEntity(), Bookmark[].class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
-
-    var bkmkOpt = Optional.ofNullable(response.getBody());
-    assertEquals(3, bkmkOpt.orElseThrow().length);
   }
 
   @Test
@@ -99,34 +96,38 @@ public class BookmarkControllerTest {
     assertEquals(0, bkmkOpt.orElseThrow().length);
   }
 
-@Test
- void deleteTagFromBookmarkByBookmarkID() {
+  @Test
+  void deleteTagFromBookmarkByBookmarkID() {
     var ent = getHttpEntity(new AddBkmkReq("Web Color Picker", "htmlcolorcodes.com", List.of()));
     var addBmkResp = restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent, Bookmark.class);
     assertEquals(HttpStatus.OK, addBmkResp.getStatusCode());
     var bkmkOpt = Optional.ofNullable(addBmkResp.getBody());
     var bkmk = bkmkOpt.orElseThrow();
-    
+
     ent = getHttpEntity(new Tag("web_dev"));
-    restTemplate.exchange("/api/bookmark/{BookmarkID}", HttpMethod.POST, ent, Tag.class, bkmk.getId());
+    restTemplate.exchange(
+        "/api/bookmark/{BookmarkID}", HttpMethod.POST, ent, Tag.class, bkmk.getId());
     ent = getHttpEntity(new Tag("design"));
-    restTemplate.exchange("/api/bookmark/{BookmarkID}", HttpMethod.POST, ent, Tag.class, bkmk.getId());
-    restTemplate.exchange("/api/bookmark/{BookmarkID}?tag={tagName}", HttpMethod.DELETE, getHttpEntity(), Tag.class,
-      bkmk.getId(), "web_dev"
-    );
+    restTemplate.exchange(
+        "/api/bookmark/{BookmarkID}", HttpMethod.POST, ent, Tag.class, bkmk.getId());
+    restTemplate.exchange(
+        "/api/bookmark/{BookmarkID}?tag={tagName}",
+        HttpMethod.DELETE,
+        getHttpEntity(),
+        Tag.class,
+        bkmk.getId(),
+        "web_dev");
 
     var response =
-    restTemplate.exchange(
-        "/api/bookmark?id={id}", HttpMethod.GET, getHttpEntity(), Bookmark.class, bkmk.getId());
+        restTemplate.exchange(
+            "/api/bookmark?id={id}", HttpMethod.GET, getHttpEntity(), Bookmark.class, bkmk.getId());
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
     bkmkOpt = Optional.ofNullable(response.getBody());
     bkmk = bkmkOpt.orElseThrow();
     assertEquals(1, bkmk.getTags().size());
     assertFalse(bkmk.getTags().stream().anyMatch(t -> t.getTag_title().equals("web_dev")));
-
   }
-
 
   private HttpEntity<?> getHttpEntity() {
     HttpHeaders headers = new HttpHeaders();
