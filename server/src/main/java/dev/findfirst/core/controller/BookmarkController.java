@@ -39,6 +39,12 @@ public class BookmarkController {
     return new Response<List<Bookmark>>(bookmarkService.list(), HttpStatus.OK).get();
   }
 
+  @DeleteMapping(value = "/bookmarks")
+  public ResponseEntity<String> deleteAll() {
+    bookmarkService.deleteAllBookmarks();
+    return ResponseEntity.ok("Deleted All user's bookmarks");
+  }
+
   @GetMapping(value = "/bookmark")
   public ResponseEntity<Bookmark> getBookmarkById(@RequestParam("id") long id) {
     return new Response<Bookmark>(bookmarkService.findById(id)).get();
@@ -57,21 +63,18 @@ public class BookmarkController {
     }
   }
 
+  @DeleteMapping(value = "/bookmark")
+  public ResponseEntity<String> deleteById(@RequestParam("id") Long id) {
+    bookmarkService.deleteBookmark(id);
+    return ResponseEntity.ok().body("deleted bookmark {}".formatted(id));
+  }
+
   @PostMapping(value = "/bookmark/addBookmarks")
   public ResponseEntity<List<Bookmark>> postMethodName(@RequestBody List<Bookmark> bookmarks) {
     return new Response<List<Bookmark>>((b) -> bookmarkService.addBookmarks(b), bookmarks).get();
   }
 
-  @PostMapping(value = "/bookmarks/deleteAll")
-  public ResponseEntity<String> deleteAll() {
-    bookmarkService.deleteAllBookmarks();
-    return ResponseEntity.ok("Deleted All user's bookmarks");
-  }
-
-  @PostMapping(
-      value = "/bookmark/{bookmarkID}",
-      consumes = "application/json",
-      produces = "application/json")
+  @PostMapping(value = "/bookmark/{bookmarkID}/tag")
   @ResponseBody
   public ResponseEntity<Tag> addTag(
       @PathVariable(value = "bookmarkID") Long bookmarkId, @RequestBody final Tag tagRequest) {
@@ -96,34 +99,10 @@ public class BookmarkController {
     return new Response<Tag>(action, tag).get();
   }
 
-  @DeleteMapping(value = "bookmark/{bookmarkID}", produces = "application/json")
-  public ResponseEntity<Tag> deleteTagFromBookmark(
-      @Valid @PathVariable("bookmarkID") long id, @RequestParam("tag") @NotBlank String title) {
-
-    var t = tagService.getTagByTitle(title);
-    var b = bookmarkService.findById(id);
-
-    return b.isPresent()
-        ? new Response<Tag>((tag) -> bookmarkService.deleteTag(id, tag), t).get()
-        : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-  }
-
-  @DeleteMapping(value = "bookmark/{bookmarkID}/deleteTag", produces = "application/json")
-  public ResponseEntity<Tag> deleteTagFromBookmarkById(
-      @Valid @PathVariable("bookmarkID") long id, @RequestParam("tagId") @Valid long tagId) {
-
-    var t = tagService.findById(tagId);
-    var b = bookmarkService.findById(id);
-
-    return b.isPresent()
-        ? new Response<Tag>((tag) -> bookmarkService.deleteTag(id, tag), t).get()
-        : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-  }
-
-  @PostMapping("/bookmark/addTag/{bookmarkId}/{tagId}")
-  public ResponseEntity<BookmarkTagPair> addTag(
-      @PathVariable(value = "bookmarkId") Long bookmarkId,
-      @PathVariable(value = "tagId") Long tagId) {
+  @PostMapping("/bookmark/{bookmarkID}/tagId")
+  public ResponseEntity<BookmarkTagPair> addTagById(
+      @PathVariable(value = "bookmarkID") Long bookmarkId,
+      @RequestParam(value = "tagId") Long tagId) {
 
     var bookmark = bookmarkService.findById(bookmarkId);
     var tag = tagService.findById(tagId);
@@ -141,9 +120,27 @@ public class BookmarkController {
     return ResponseEntity.badRequest().build();
   }
 
-  @DeleteMapping(value = "/bookmark/{id}")
-  public ResponseEntity<String> deleteById(@PathVariable Long id) {
-    bookmarkService.deleteBookmark(id);
-    return ResponseEntity.ok().body("deleted bookmark {}".formatted(id) );
+  @DeleteMapping(value = "bookmark/{bookmarkID}/tag")
+  public ResponseEntity<Tag> deleteTagFromBookmark(
+      @Valid @PathVariable("bookmarkID") long id, @RequestParam("tag") @NotBlank String title) {
+
+    var t = tagService.getTagByTitle(title);
+    var b = bookmarkService.findById(id);
+
+    return b.isPresent()
+        ? new Response<Tag>((tag) -> bookmarkService.deleteTag(id, tag), t).get()
+        : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+  }
+
+  @DeleteMapping(value = "bookmark/{bookmarkID}/tagId", produces = "application/json")
+  public ResponseEntity<Tag> deleteTagFromBookmarkById(
+      @Valid @PathVariable("bookmarkID") long id, @RequestParam("tagId") @Valid long tagId) {
+
+    var t = tagService.findById(tagId);
+    var b = bookmarkService.findById(id);
+
+    return b.isPresent()
+        ? new Response<Tag>((tag) -> bookmarkService.deleteTag(id, tag), t).get()
+        : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 }

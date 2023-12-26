@@ -90,9 +90,7 @@ public class BookmarkControllerTest {
   // should test that all of JSmith's bookmarks are deleted but no one else's
   // were removed.
   void deleteAllbookmarks() {
-    var response =
-        restTemplate.exchange(
-            baseUrl + "/deleteAll", HttpMethod.POST, getHttpEntity(), String.class);
+    var response = restTemplate.exchange(baseUrl, HttpMethod.DELETE, getHttpEntity(), String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertTrue(bkmkRepo.count() > 0);
 
@@ -106,19 +104,24 @@ public class BookmarkControllerTest {
   }
 
   @Test
-  void deleteTagFromBookmarkByBookmarkID() {
+  void deleteTagFromBookmarkByTagTitle() {
     var bkmkResp =
         saveBookmarks(new AddBkmkReq("Web Color Picker", "htmlcolorcodes.com", List.of()));
     var bkmk = bkmkResp.get(0);
 
+    // Add web_dev to bookmark
     var ent = getHttpEntity(new Tag("web_dev"));
     restTemplate.exchange(
-        "/api/bookmark/{bookmarkID}", HttpMethod.POST, ent, Tag.class, bkmk.getId());
+        "/api/bookmark/{bookmarkID}/tag", HttpMethod.POST, ent, Tag.class, bkmk.getId());
+
+    // Add design tag to bookmark.
     ent = getHttpEntity(new Tag("design"));
     restTemplate.exchange(
-        "/api/bookmark/{bookmarkID}", HttpMethod.POST, ent, Tag.class, bkmk.getId());
+        "/api/bookmark/{bookmarkID}/tag", HttpMethod.POST, ent, Tag.class, bkmk.getId());
+
+    // Delete first tag.
     restTemplate.exchange(
-        "/api/bookmark/{bookmarkID}?tag={tagName}",
+        "/api/bookmark/{bookmarkID}/tag?tag={tagName}",
         HttpMethod.DELETE,
         getHttpEntity(),
         Tag.class,
@@ -141,25 +144,32 @@ public class BookmarkControllerTest {
     var bkmkResp = saveBookmarks(new AddBkmkReq("Color Picker2", "htmlcolorcodes2.com", List.of()));
     var bkmk = bkmkResp.get(0);
 
+    // Add Tag web_dev
     var ent = getHttpEntity(new Tag("web_dev"));
     restTemplate.exchange(
-        "/api/bookmark/{bookmarkID}", HttpMethod.POST, ent, Tag.class, bkmk.getId());
+        "/api/bookmark/{bookmarkID}/tag", HttpMethod.POST, ent, Tag.class, bkmk.getId());
+
+    // Add Tag design
     ent = getHttpEntity(new Tag("design"));
+    // Store tag response to delete the tag next
     var tagOpt =
         Optional.ofNullable(
             restTemplate
                 .exchange(
-                    "/api/bookmark/{bookmarkID}", HttpMethod.POST, ent, Tag.class, bkmk.getId())
+                    "/api/bookmark/{bookmarkID}/tag", HttpMethod.POST, ent, Tag.class, bkmk.getId())
                 .getBody());
     long tagId = tagOpt.orElseThrow().getId();
+
+    // Delete by the id.
     restTemplate.exchange(
-        "/api/bookmark/{bookmarkID}/deleteTag?tagId={id}",
+        "/api/bookmark/{bookmarkID}/tagId?tagId={id}",
         HttpMethod.DELETE,
         getHttpEntity(),
         Tag.class,
         bkmk.getId(),
         tagId);
 
+    // See that one tag remains on the bookmark
     var response =
         restTemplate.exchange(
             "/api/bookmark?id={id}", HttpMethod.GET, getHttpEntity(), Bookmark.class, bkmk.getId());
@@ -167,6 +177,7 @@ public class BookmarkControllerTest {
 
     var bkmkOpt = Optional.ofNullable(response.getBody());
     bkmk = bkmkOpt.orElseThrow();
+    assertFalse(bkmk.getTags().stream().anyMatch(t -> t.getId() == tagId));
   }
 
   @Test
@@ -175,21 +186,34 @@ public class BookmarkControllerTest {
         saveBookmarks(new AddBkmkReq("Spring Docs 3.2", "Spring.io/docs/3.2", List.of((long) 1)));
     var tagReq =
         restTemplate.exchange(
-            "/api/bookmark/addTag/{bookmarkID}/{tagId}",
+            "/api/bookmark/{bookmarkID}/tagId?tagId={id}",
             HttpMethod.POST,
             getHttpEntity(),
             BookmarkTagPair.class,
             bkmk.get(0).getId(),
             5);
-    BookmarkTagPair btPair = tagReq.getBody();
-    var tags = btPair.bkmk().getTags();
+    var btPairOpt = Optional.ofNullable(tagReq.getBody());
+    var tags = btPairOpt.orElseThrow().bkmk().getTags();
 
     assertTrue(tags.stream().filter(t -> t.getId() == 5 || t.getId() == 1).count() == 2);
   }
 
   @Test
-  void deleteBookmarkById() { 
-     
+  void deleteBookmarkById() {
+    saveBookmarks(
+        new AddBkmkReq(
+            "color theory for designers",
+            "https://webflow.com/blog/color-theory",
+            List.of(1L, 6L)));
+    var response =
+        restTemplate.exchange(baseUrl, HttpMethod.GET, getHttpEntity(), Bookmark[].class);
+    var bkmkOpt = Optional.ofNullable(response.getBody());
+
+    var id = bkmkOpt.orElseThrow()[0].getId();
+    var delResp =
+        restTemplate.exchange(
+            "/api/bookmark?id={id}", HttpMethod.DELETE, getHttpEntity(), String.class, id);
+    assertEquals(HttpStatus.OK, delResp.getStatusCode());
   }
 
   private List<Bookmark> saveBookmarks(AddBkmkReq... newBkmks) {

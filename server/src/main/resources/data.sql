@@ -11,6 +11,7 @@ insert into tag(tag_title, tenant_id) values('web_dev', 1); --      2
 insert into tag(tag_title, tenant_id) values('deserts', 1); --      3     
 insert into tag(tag_title, tenant_id) values('camping', 1); --      4
 insert into tag(tag_title, tenant_id) values('spring docs', 1); --  5
+insert into tag(tag_title, tenant_id) values('web docs', 1);    --  6
 
 -- Cooking related bookmark_tags
 insert into bookmark_tag values(1,1);
