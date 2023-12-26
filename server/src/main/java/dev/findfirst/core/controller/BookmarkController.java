@@ -2,7 +2,7 @@ package dev.findfirst.core.controller;
 
 import dev.findfirst.core.model.AddBkmkReq;
 import dev.findfirst.core.model.Bookmark;
-import dev.findfirst.core.model.PairWrapper;
+import dev.findfirst.core.model.BookmarkTagPair;
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.service.BookmarkService;
 import dev.findfirst.core.service.TagService;
@@ -121,29 +121,29 @@ public class BookmarkController {
   }
 
   @PostMapping("/bookmark/addTag/{bookmarkId}/{tagId}")
-  public ResponseEntity<PairWrapper<Bookmark, Tag>> addTag(
+  public ResponseEntity<BookmarkTagPair> addTag(
       @PathVariable(value = "bookmarkId") Long bookmarkId,
       @PathVariable(value = "tagId") Long tagId) {
 
     var bookmark = bookmarkService.findById(bookmarkId);
     var tag = tagService.findById(tagId);
 
-    Consumer<PairWrapper<Bookmark, Tag>> action =
-        (PairWrapper<Bookmark, Tag> bt) -> {
-          bookmarkService.addTagToBookmark(bt.left(), bt.right());
+    Consumer<BookmarkTagPair> action =
+        (BookmarkTagPair bt) -> {
+          bookmarkService.addTagToBookmark(bt.bkmk(), bt.tag());
         };
 
     if (bookmark.isPresent() && tag.isPresent()) {
-      var resp = new Response<PairWrapper<Bookmark, Tag>>();
-      resp.prepareResponse(action, new PairWrapper<Bookmark, Tag>(bookmark.get(), tag.get()));
+      var resp = new Response<BookmarkTagPair>();
+      resp.prepareResponse(action, new BookmarkTagPair(bookmark.get(), tag.get()));
       return resp.get();
     }
     return ResponseEntity.badRequest().build();
   }
 
   @DeleteMapping(value = "/bookmark/{id}")
-  public ResponseEntity<HttpStatus> deleteById(@PathVariable Long id) {
+  public ResponseEntity<String> deleteById(@PathVariable Long id) {
     bookmarkService.deleteBookmark(id);
-    return new ResponseEntity<>(HttpStatus.OK);
+    return ResponseEntity.ok().body("deleted bookmark {}".formatted(id) );
   }
 }

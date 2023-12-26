@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import dev.findfirst.core.annotations.IntegrationTestConfig;
 import dev.findfirst.core.model.AddBkmkReq;
 import dev.findfirst.core.model.Bookmark;
+import dev.findfirst.core.model.BookmarkTagPair;
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.repository.BookmarkRepository;
 import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
@@ -166,6 +167,29 @@ public class BookmarkControllerTest {
 
     var bkmkOpt = Optional.ofNullable(response.getBody());
     bkmk = bkmkOpt.orElseThrow();
+  }
+
+  @Test
+  void addExistingBookmarkToExistingTag() {
+    var bkmk =
+        saveBookmarks(new AddBkmkReq("Spring Docs 3.2", "Spring.io/docs/3.2", List.of((long) 1)));
+    var tagReq =
+        restTemplate.exchange(
+            "/api/bookmark/addTag/{bookmarkID}/{tagId}",
+            HttpMethod.POST,
+            getHttpEntity(),
+            BookmarkTagPair.class,
+            bkmk.get(0).getId(),
+            5);
+    BookmarkTagPair btPair = tagReq.getBody();
+    var tags = btPair.bkmk().getTags();
+
+    assertTrue(tags.stream().filter(t -> t.getId() == 5 || t.getId() == 1).count() == 2);
+  }
+
+  @Test
+  void deleteBookmarkById() { 
+     
   }
 
   private List<Bookmark> saveBookmarks(AddBkmkReq... newBkmks) {

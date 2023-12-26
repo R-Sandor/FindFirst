@@ -6,10 +6,11 @@ insert into bookmark (title, url, tenant_id) values('Chicken Parm', 'https://www
 insert into bookmark (title, url, tenant_id) values('Favorite Chicken Parm', 'https://www.foodnetwork.com/recipes/bobby-flay/chicken-parmigiana-recipe-1952359', 2);
 
 -- jsmith tags
-insert into tag(tag_title, tenant_id) values('Cooking', 1);
-insert into tag(tag_title, tenant_id) values('web_dev', 1);
-insert into tag(tag_title, tenant_id) values('deserts', 1);
-insert into tag(tag_title, tenant_id) values('camping', 1);
+insert into tag(tag_title, tenant_id) values('Cooking', 1); -- id   1
+insert into tag(tag_title, tenant_id) values('web_dev', 1); --      2
+insert into tag(tag_title, tenant_id) values('deserts', 1); --      3     
+insert into tag(tag_title, tenant_id) values('camping', 1); --      4
+insert into tag(tag_title, tenant_id) values('spring docs', 1); --  5
 
 -- Cooking related bookmark_tags
 insert into bookmark_tag values(1,1);

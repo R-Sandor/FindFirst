@@ -21,8 +21,8 @@ public class TagController {
 
   @Autowired TagService tagService;
 
-  @PostMapping(value = "/tag/addTag/{tag}")
-  public Tag addTag(@PathVariable Tag tag) {
+  @PostMapping(value = "/tag")
+  public Tag addTag(@RequestBody Tag tag) {
     return tagService.addTag(tag);
   }
 
