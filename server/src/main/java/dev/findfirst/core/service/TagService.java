@@ -1,7 +1,6 @@
 package dev.findfirst.core.service;
 
 import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.model.TagCntRecord;
 import dev.findfirst.core.repository.TagRepository;
 import java.util.Arrays;
 import java.util.List;
@@ -57,10 +56,6 @@ public class TagService {
 
   public List<Tag> getTagsByBookmarkId(long id) {
     return tagRepository.findTagsByBookmarkId(id);
-  }
-
-  public List<TagCntRecord> getTagsWithCnt() {
-    return tagRepository.customTagsWithCnt();
   }
 
   public Optional<Tag> getTagByTitle(String title) {

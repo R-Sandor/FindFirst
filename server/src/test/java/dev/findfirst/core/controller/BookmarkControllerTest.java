@@ -4,7 +4,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import dev.findfirst.core.annotations.IntegrationTestConfig;
+import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.model.AddBkmkReq;
 import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.BookmarkTagPair;
@@ -29,7 +29,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@IntegrationTestConfig
+@IntegrationTest
 public class BookmarkControllerTest {
 
   @Container @ServiceConnection

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource
-public interface TagRepository extends TenantableRepository<Tag>, TagRepoCustom {
+public interface TagRepository extends TenantableRepository<Tag> {
   @Query("SELECT t FROM Tag t WHERE t.tag_title =?1")
   Optional<Tag> findByTagTitle(String title);
 

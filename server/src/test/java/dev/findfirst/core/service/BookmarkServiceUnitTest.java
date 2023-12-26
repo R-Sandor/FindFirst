@@ -1,9 +1,9 @@
 package dev.findfirst.core.service;
 
-import dev.findfirst.core.annotations.IntegrationTestConfig;
+import dev.findfirst.core.annotations.IntegrationTest;
 
 // @DataJpaTest
-@IntegrationTestConfig
+@IntegrationTest
 public class BookmarkServiceUnitTest {
 
   // @Autowired private BookmarkService bookmarkService;

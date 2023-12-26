@@ -1,13 +1,13 @@
 package dev.findfirst.core.controller;
 
 import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.model.TagCntRecord;
 import dev.findfirst.core.service.TagService;
 import dev.findfirst.core.utilies.Response;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +20,22 @@ import org.springframework.web.bind.annotation.RestController;
 public class TagController {
 
   @Autowired TagService tagService;
+
+  @GetMapping(value = "/tags")
+  public List<Tag> getTags() {
+    return tagService.getTags();
+  }
+
+  // @PostMapping("/tags")
+  // public Tag addTags(@RequestBody List<String> tags) {
+
+  //     return entity;
+  // }
+
+  @DeleteMapping(value = "/tags")
+  public void deleteAllTags() {
+    tagService.deleteAllTags();
+  }
 
   @PostMapping(value = "/tag")
   public Tag addTag(@RequestBody Tag tag) {
@@ -45,20 +61,5 @@ public class TagController {
   public ResponseEntity<List<Tag>> addTags(@RequestBody List<String> tagTitles) {
     var titles = tagTitles.toArray(new String[0]); // convert to String []
     return new Response<List<Tag>>(tagService.addAll(titles), HttpStatus.OK).get();
-  }
-
-  @PostMapping(value = "/tag/deleteAll")
-  public void deleteAllTags() {
-    tagService.deleteAllTags();
-  }
-
-  @GetMapping(value = "/tags")
-  public List<Tag> getTags() {
-    return tagService.getTags();
-  }
-
-  @GetMapping(value = "/tagscnt")
-  public List<TagCntRecord> getTagsWithCnt() {
-    return tagService.getTagsWithCnt();
   }
 }
