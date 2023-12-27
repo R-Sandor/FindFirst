@@ -1,3 +1,4 @@
+-- jsmith's bookmarks
 insert into bookmark (title, url, tenant_id) values('Best Cheesecake Recipe', 'https://sugarspunrun.com/best-cheesecake-recipe/',1 );
 insert into bookmark (title, url, tenant_id) values('Dark mode guide', 'https://blog.logrocket.com/dark-mode-react-in-depth-guide/',1 );
 insert into bookmark (title, url, tenant_id) values('Chicken Parm', 'https://www.foodnetwork.com/recipes/bobby-flay/chicken-parmigiana-recipe-1952359', 1);
@@ -25,7 +26,7 @@ insert into bookmark_tag values(2,2);
 insert into tag(tag_title, tenant_id) values('Cooking', 2);
 insert into tag(tag_title, tenant_id) values('wishlist', 2);
 
-insert into bookmark_tag values(4,4);
+insert into bookmark_tag values(4,8);
 
 insert into roles(role_id, name) values(0, 'ROLE_USER');
 -- login is jsmith/test

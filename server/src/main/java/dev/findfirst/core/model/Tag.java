@@ -2,14 +2,13 @@ package dev.findfirst.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dev.findfirst.security.userAuth.tenant.model.Tenantable;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,22 +30,26 @@ public class Tag extends Tenantable {
   @Column(length = 50)
   @NonNull private String tag_title;
 
-  @ManyToMany(
-      fetch = FetchType.LAZY,
-      cascade = {CascadeType.ALL},
-      mappedBy = "tags")
-  @JsonIgnoreProperties("tags")
-  Set<Bookmark> bookmarks = new HashSet<>();
+  public Tag() {}
 
   public Tag(String tagVal) {
     this.tag_title = tagVal;
   }
 
+  @ManyToMany(mappedBy = "tags")
+  @JsonIgnoreProperties("tags")
+  Set<Bookmark> bookmarks = new HashSet<>();
+
   public Set<Bookmark> getBookmarks() {
     return this.bookmarks;
   }
 
-  public Tag() {}
+  @PreRemove
+  private void removeBookAssociations() {
+    for (var bkmk : this.bookmarks) {
+      bkmk.removeTag(this);
+    }
+  }
 
   @Override
   public boolean equals(Object obj) {

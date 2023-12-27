@@ -14,12 +14,4 @@ public interface TagRepository extends TenantableRepository<Tag> {
 
   @Query("SELECT b.tags FROM Bookmark b WHERE b.id =?1")
   List<Tag> findTagsByBookmarkId(long Id);
-
-  //   @Query(
-  //   "SELECT new dev.findfirst.findfirst.model.TagCntRecord(" +
-  //   "new dev.findfirst.findfirst.model.Tag(tag.id, tag.title, tag.url), COUNT(tag.id))" +
-  //   "FROM tag JOIN bookmark ON bookmark.tag_id" +
-  //   "GROUP BY tag.id"
-  // )
-  // List<TagCntRecord> test();
 }

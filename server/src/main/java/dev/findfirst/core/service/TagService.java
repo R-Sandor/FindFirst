@@ -1,6 +1,7 @@
 package dev.findfirst.core.service;
 
 import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.repository.BookmarkRepository;
 import dev.findfirst.core.repository.TagRepository;
 import java.util.Arrays;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 public class TagService {
 
   @Autowired TagRepository tagRepository;
+  @Autowired BookmarkRepository bkmkRepo;
 
   public Tag addTag(Tag tag) {
     return tagRepository.saveAndFlush(tag);
@@ -42,8 +44,10 @@ public class TagService {
     return Arrays.stream(titles).map(t -> findOrCreateTag(t)).toList();
   }
 
-  public void deleteAllTags() {
-    tagRepository.deleteAll();
+  public List<Tag> deleteAllTags() {
+    var userTags = tagRepository.findAll();
+    tagRepository.deleteAll(userTags);
+    return userTags;
   }
 
   public void deleteTag(Tag tag) {

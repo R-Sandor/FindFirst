@@ -2,44 +2,44 @@ package dev.findfirst.core.controller;
 
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.service.TagService;
-import dev.findfirst.core.utilies.Response;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api")
+@Slf4j
 public class TagController {
 
   @Autowired TagService tagService;
 
   @GetMapping(value = "/tags")
-  public List<Tag> getTags() {
-    return tagService.getTags();
+  public ResponseEntity<List<Tag>> getTags() {
+    return ResponseEntity.ok(tagService.getTags());
   }
 
-  // @PostMapping("/tags")
-  // public Tag addTags(@RequestBody List<String> tags) {
-
-  //     return entity;
-  // }
+  @PostMapping("/tags")
+  public ResponseEntity<List<Tag>> addAllTags(@RequestBody String tags[]) {
+    return ResponseEntity.ok(tagService.addAll(tags));
+  }
 
   @DeleteMapping(value = "/tags")
-  public void deleteAllTags() {
-    tagService.deleteAllTags();
+  public ResponseEntity<List<Tag>> deleteAllTags() {
+    return ResponseEntity.ok().body(tagService.deleteAllTags());
   }
 
   @PostMapping(value = "/tag")
-  public Tag addTag(@RequestBody Tag tag) {
-    return tagService.addTag(tag);
+  public ResponseEntity<Tag> addTag(@RequestBody Tag tag) {
+    return ResponseEntity.ok(tagService.addTag(tag));
   }
 
   /**
@@ -48,18 +48,9 @@ public class TagController {
    * @param id of the bookmark to retrieve tags.
    * @return
    */
-  @GetMapping("/tag/bkmk/{id}")
-  public ResponseEntity<Object> getTagByBookmarkId(@PathVariable Long id) {
-    if (id == null) {
-      return new ResponseEntity<>("Please provide an id", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-    var tags = tagService.getTagsByBookmarkId(id);
-    return new ResponseEntity<Object>(tags, null, HttpStatus.OK);
-  }
-
-  @PostMapping(value = "/tags/addTags", consumes = "application/json")
-  public ResponseEntity<List<Tag>> addTags(@RequestBody List<String> tagTitles) {
-    var titles = tagTitles.toArray(new String[0]); // convert to String []
-    return new Response<List<Tag>>(tagService.addAll(titles), HttpStatus.OK).get();
+  @GetMapping("/tag/bkmk")
+  public ResponseEntity<List<Tag>> getTagByBookmarkId(
+      @RequestParam("bookmarkId") @NonNull Long id) {
+    return ResponseEntity.ok(tagService.getTagsByBookmarkId(id));
   }
 }
