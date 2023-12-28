@@ -8,11 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -58,35 +54,6 @@ public class BookmarkService {
     // finds all that belong to the user and deletes them.
     // Otherwise the @preRemove throws an execption as it should.
     bookmarkRepository.deleteAll(bookmarkRepository.findAll());
-  }
-
-  private BiConsumer<List<Bookmark>, Tag> tagDelete =
-      (list, tag) -> {
-        if (list.size() == 1) {
-          tagService.deleteTag(tag);
-        }
-      };
-
-  public void deleteById(Long id) {
-    Set<Tag> tags = bookmarkRepository.getReferenceById(id).getTags();
-    for (var tag : tags) {
-      tagDelete.accept(bookmarkRepository.findByTag(tag), tag);
-    }
-  }
-
-  public ResponseEntity<? super Tag> addTagToBookmark(Long bookmarkId, String title) {
-    var resp =
-        new Object() {
-          ResponseEntity<? super Tag> resp;
-        };
-    tagService
-        .findByTagTitle(title)
-        .ifPresentOrElse(
-            (Tag t) -> {
-              resp.resp = new ResponseEntity<Tag>(t, HttpStatus.OK);
-            },
-            () -> resp.resp = new ResponseEntity<>(HttpStatus.BAD_REQUEST));
-    return resp.resp;
   }
 
   public Tag addTagToBookmark(Bookmark bookmark, Tag tag) {

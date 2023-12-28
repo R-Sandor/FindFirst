@@ -1,0 +1,20 @@
+spring.mail.host: localhost
+spring.mail.port: 1025
+spring.mail.username: "findfirst@localmail.dev"
+# spring.mail.properties.mail.smtp.auth: false
+# spring.mail.properties.mail.smtp.starttls.enable: false
+spring:
+  mail:
+    test-connection: true
+    host: localhost
+    username: "findfirst@localmail.dev"
+    port:  1025
+    protocol: smtp
+    properties:
+      mail:
+        debug: true
+        # smtp:
+    #       auth: false
+        #   starttls:
+            # enable: true
+            # required: true
