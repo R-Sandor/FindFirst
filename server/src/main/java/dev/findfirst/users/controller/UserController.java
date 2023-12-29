@@ -1,10 +1,14 @@
 package dev.findfirst.users.controller;
 
+import dev.findfirst.security.jwt.exceptions.TokenRefreshException;
+import dev.findfirst.security.jwt.service.RefreshTokenService;
 import dev.findfirst.security.userAuth.execeptions.NoTokenFoundException;
 import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
 import dev.findfirst.security.userAuth.execeptions.TokenExpiredException;
+import dev.findfirst.security.userAuth.models.RefreshToken;
 import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
+import dev.findfirst.security.userAuth.models.payload.request.TokenRefreshRequest;
 import dev.findfirst.security.userAuth.models.payload.response.MessageResponse;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
 import dev.findfirst.users.exceptions.UserNameTakenException;
@@ -42,6 +46,8 @@ public class UserController {
   private final RegistrationService regService;
 
   private final ForgotPasswordService pwdService;
+
+  private final RefreshTokenService refreshTokenService;
 
   @Value("${findfirst.app.frontend-url:http://localhost:3000/}") private String frontendUrl;
 
@@ -92,8 +98,8 @@ public class UserController {
     HttpHeaders httpHeaders = new HttpHeaders();
     URI findfirst = new URI(frontendUrl + "/account/resetPassword/" + token);
     try {
-      pwdService.sendResetToken(token);
-    } catch (NoUserFoundException e) {
+      pwdService.validatePasswordResetToken(token);
+    } catch (NoTokenFoundException | TokenExpiredException e) {
       return new ResponseEntity<>(e.toString(), HttpStatus.BAD_REQUEST);
     }
     httpHeaders.setLocation(findfirst);
@@ -101,8 +107,8 @@ public class UserController {
   }
 
   @PostMapping("changePassword")
-  public ResponseEntity<String> passwordChange(
-      @RequestParam("tokenPassword") TokenPassword tokenPassword) throws URISyntaxException {
+  public ResponseEntity<String> passwordChange(@RequestBody TokenPassword tokenPassword)
+      throws URISyntaxException {
     try {
       pwdService.changePassword(tokenPassword);
     } catch (NoTokenFoundException | TokenExpiredException | NoUserFoundException e) {
@@ -132,5 +138,32 @@ public class UserController {
     return ResponseEntity.ok()
         .header(HttpHeaders.SET_COOKIE, cookie.toString())
         .body(new TokenRefreshResponse(tkns.refreshToken()));
+  }
+
+  @PostMapping("/refreshToken")
+  public ResponseEntity<?> refreshToken(@RequestParam("token") TokenRefreshRequest refreshRequest) {
+    String jwt = refreshRequest.refreshToken();
+    return (ResponseEntity<?>)
+        refreshTokenService
+            .findByToken(jwt)
+            .map(refreshTokenService::verifyExpiration)
+            .map(RefreshToken::getUser)
+            .map(
+                user -> {
+                  String token;
+                  token = userService.generateTokenFromUser(user);
+                  ResponseCookie cookie =
+                      ResponseCookie.from("findfirst", token)
+                          .secure(false)
+                          // .sameSite("strict")
+                          .path("/")
+                          .domain(domain)
+                          .httpOnly(true)
+                          .build();
+                  return ResponseEntity.ok()
+                      .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                      .body(token);
+                })
+            .orElseThrow(() -> new TokenRefreshException(jwt, "Refresh token is not in database!"));
   }
 }

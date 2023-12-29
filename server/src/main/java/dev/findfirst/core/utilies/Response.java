@@ -61,17 +61,6 @@ public class Response<T> {
   /**
    * Prepare response with optional check. Return bad request if there is no data.
    *
-   * @param action
-   * @param t
-   */
-  public ResponseEntity<T> prepareResponse(Consumer<T> action, Optional<T> t) {
-    t.ifPresentOrElse(action, () -> setResponse(HttpStatus.BAD_REQUEST));
-    return resp;
-  }
-
-  /**
-   * Prepare response with optional check. Return bad request if there is no data.
-   *
    * @param t
    */
   public ResponseEntity<T> prepareResponse(Optional<T> t) {

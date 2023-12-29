@@ -1,13 +1,18 @@
 package dev.findfirst.users.controller;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
 import dev.findfirst.users.model.MailHogMessage;
+import dev.findfirst.users.model.user.TokenPassword;
+import java.util.Optional;
 import java.util.Properties;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -91,6 +96,7 @@ public class UserControllerTest {
    * registration.
    */
   @Test
+  @Order(2)
   void completeRegistration() {
     var headers = new HttpHeaders();
     var ent =
@@ -101,7 +107,7 @@ public class UserControllerTest {
     var response = restTemplate.exchange(userUrl + "/signup", HttpMethod.POST, ent, String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     try {
-      var token = getTokenFromEmail();
+      var token = getTokenFromEmail(0, 1);
       var regResponse =
           restTemplate.getForEntity(
               userUrl + "/regitrationConfirm?token={token}", String.class, token);
@@ -112,7 +118,49 @@ public class UserControllerTest {
     }
   }
 
-  public String getTokenFromEmail() throws Exception {
+  @Test
+  @Order(1)
+  void resetPassword() {
+    String token = "";
+    var response =
+        restTemplate.exchange(
+            userUrl + "/resetPassword?email={email}",
+            HttpMethod.POST,
+            new HttpEntity<>(new HttpHeaders()),
+            String.class,
+            "jsmith@google.com");
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    try {
+      token = getTokenFromEmail(0, 2);
+    } catch (Exception e) {
+      // fail the test should show message
+      assertTrue(false, e.getMessage());
+    }
+    response =
+        restTemplate.exchange(
+            userUrl + "/changePassword?token={tkn}",
+            HttpMethod.GET,
+            new HttpEntity<>(new HttpHeaders()),
+            String.class,
+            token);
+    assertEquals(HttpStatus.SEE_OTHER, response.getStatusCode());
+
+    var loc = Optional.ofNullable(response.getHeaders().get("Location")).orElseThrow().get(0);
+    var urlStruct = loc.split("/");
+    // token is the last part of the string
+    var tknParam = urlStruct[urlStruct.length - 1];
+    assertNotNull(tknParam);
+    response =
+        restTemplate.exchange(
+            userUrl + "/changePassword?tokenPassword={tkn}",
+            HttpMethod.POST,
+            new HttpEntity<>(
+                new TokenPassword(tknParam, "jsmithsNewsPassword!"), new HttpHeaders()),
+            String.class,
+            token);
+  }
+
+  public String getTokenFromEmail(int emailIdx, int lineWithToken) throws Exception {
     String host = mailhog.getHost();
     int port = mailhog.getMappedPort(8025);
 
@@ -122,10 +170,27 @@ public class UserControllerTest {
 
     ObjectMapper mapper = new ObjectMapper();
     MailHogMessage mailHogMessage = mapper.readValue(messageRaw, MailHogMessage.class);
-    var message = mailHogMessage.items()[0];
+    var message = mailHogMessage.items()[emailIdx];
     var body = message.Content().Body();
-    var secondLine = body.split("\n")[1];
+    var secondLine = body.split("\n")[lineWithToken];
     var token = secondLine.split("=")[1];
     return token.strip();
+  }
+
+  @Test
+  void refreshToken() {
+    HttpHeaders headers = new HttpHeaders();
+    // test user
+    headers.setBasicAuth("jsmith", "test");
+    HttpEntity<String> entity = new HttpEntity<>(headers);
+    var signResp = restTemplate.postForEntity("/user/signin", entity, TokenRefreshResponse.class);
+    var tknRefresh = Optional.ofNullable(signResp.getBody()).orElseThrow();
+    var refreshTkn = tknRefresh.refreshToken();
+    restTemplate.exchange(
+        userUrl + "/refreshToken?token={refreshToken}",
+        HttpMethod.POST,
+        new HttpEntity<>(new HttpHeaders()),
+        String.class,
+        refreshTkn);
   }
 }

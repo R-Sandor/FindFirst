@@ -74,11 +74,6 @@ public class SecSecurityConfig {
     return authProvider;
   }
 
-  // @Bean
-  // public WebSecurityCustomizer webSecurityCustomizer() {
-  //   return (web) -> web.ignoring().requestMatchers("/user/**");
-  // }
-
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(

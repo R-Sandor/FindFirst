@@ -30,10 +30,6 @@ public class TagService {
     return findByTagTitle(title).orElseGet(() -> addTag(new Tag(title)));
   }
 
-  public List<Tag> addAll(List<Tag> tags) {
-    return tagRepository.saveAllAndFlush(tags);
-  }
-
   /**
    * Create List of tags by titles. Creating a new tags for ones that do not exist and returning
    * list of existing tags.
@@ -48,10 +44,6 @@ public class TagService {
     var userTags = tagRepository.findAll();
     tagRepository.deleteAll(userTags);
     return userTags;
-  }
-
-  public void deleteTag(Tag tag) {
-    tagRepository.delete(tag);
   }
 
   public List<Tag> getTags() {

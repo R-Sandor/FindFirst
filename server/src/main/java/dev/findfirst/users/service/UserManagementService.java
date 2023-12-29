@@ -132,7 +132,7 @@ public class UserManagementService {
   public String generateTokenFromUser(User user) {
     Instant now = Instant.now();
     String email = user.getEmail();
-    Integer roleId = user.getRole().getId();
+    Integer roleId = user.getRole().getRole_id();
     String roleName = user.getRole().getName().name();
     Integer tenantId = user.getTenantId();
     JwtClaimsSet claims =
