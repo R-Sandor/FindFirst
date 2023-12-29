@@ -1,6 +1,7 @@
 package dev.findfirst.users.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.findfirst.core.annotations.IntegrationTest;
@@ -106,10 +107,9 @@ public class UserControllerTest {
               userUrl + "/regitrationConfirm?token={token}", String.class, token);
       // assertEquals(HttpStatus.OK, regResponse.getStatusCode());
       assertEquals(HttpStatus.SEE_OTHER, regResponse.getStatusCode());
-
     } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      // fail the test should show message
+      assertTrue(false, e.getMessage());
     }
   }
 
