@@ -20,8 +20,8 @@ import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
 @IntegrationTest
-@WebServiceClientTest(DefaultEmailService.class)
 @TestPropertySource(locations = "classpath:application-test.yml")
+@WebServiceClientTest(DefaultEmailService.class)
 public class DefaultEmailServiceTest {
 
   @Value("${spring.mail.port}") int port;

@@ -21,7 +21,7 @@ public class RegistrationService extends AccountService {
   }
 
   @Override
-  void AccountEmailOp(String emailAddres, String token) {
+  void AccountEmailOp(String emailAddress, String token) {
     String confirmationUrl = domain + "/user/regitrationConfirm?token=" + token;
     String message =
         """
@@ -33,7 +33,7 @@ public class RegistrationService extends AccountService {
         """
             .formatted(confirmationUrl);
 
-    emailService.sendSimpleEmail(emailAddres, "Account Registration", message);
+    emailService.sendSimpleEmail(emailAddress, "Account Registration", message);
   }
 
   public void registrationComplete(String token)

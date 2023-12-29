@@ -1,7 +1,6 @@
 package dev.findfirst.users.model.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
@@ -46,7 +45,7 @@ public class User {
   }
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "user_id")
   private Long userId;
 
