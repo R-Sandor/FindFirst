@@ -105,7 +105,6 @@ public class UserControllerTest {
       var regResponse =
           restTemplate.getForEntity(
               userUrl + "/regitrationConfirm?token={token}", String.class, token);
-      // assertEquals(HttpStatus.OK, regResponse.getStatusCode());
       assertEquals(HttpStatus.SEE_OTHER, regResponse.getStatusCode());
     } catch (Exception e) {
       // fail the test should show message
