@@ -1,24 +1,14 @@
 package dev.findfirst.security.userAuth.tenant.data;
 
-import jakarta.persistence.EntityNotFoundException;
+import dev.findfirst.security.userAuth.tenant.model.Tenant;
 import jakarta.transaction.Transactional;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import dev.findfirst.security.userAuth.tenant.model.Tenant;
 
 @Service
 public class TenantService {
 
   @Autowired private TenantRepository tenantRepository;
-
-  // @Autowired
-  // private JwtService jwtService;
-
-  public Tenant create(Tenant tenant) {
-    return tenantRepository.save(tenant);
-  }
 
   public Tenant create(String name) {
     var tenant = new Tenant();
@@ -26,24 +16,8 @@ public class TenantService {
     return tenantRepository.save(tenant);
   }
 
-  public List<Tenant> findAll() {
-    return tenantRepository.findAll();
-  }
-
-  public Tenant updateById(int id, Tenant tenant) {
-    tenantRepository.findById(id).orElseThrow(EntityNotFoundException::new);
-    tenant.setId(id);
-    return tenantRepository.save(tenant);
-  }
-
   @Transactional
   public void deleteById(int id) {
     tenantRepository.deleteById(id);
   }
-
-  // public String impersonate(int tenantId) {
-  //     String email = (String)
-  // SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-  //     return jwtService.createSuperAdminJwt(email, tenantId);
-  // }
 }
