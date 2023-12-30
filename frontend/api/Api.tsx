@@ -7,7 +7,7 @@ const instance = axios.create({
   baseURL: SERVER_URL,
   timeout: 3000,
   transformResponse: [
-    function (data) {
+    function (data: any) {
       return parseData(data);
     },
   ],
@@ -30,36 +30,29 @@ const api = {
       data,
     });
   },
-
-  // (C)reate
-  addNewBookmark(newBkmkReq: NewBookmarkRequest) {
-    return this.execute("POST", "bookmark/add", newBkmkReq, {});
-  },
   // (R)ead
   getAllBookmarks() {
     return this.execute("GET", "bookmarks", null, {});
   },
-  bookmarkAddTagByTitle(bookmarkId: string | number, tagTitle: string) {
-    return this.execute("POST", "bookmark/" + bookmarkId + "/addTag", {
-      tag_title: tagTitle,
-    }, {});
+  removeAllBookmarks() {
+    return instance.delete("bookmarks");
   },
-  bookmarkRemoveTagById(bookmarkId: string | number, tagId: number) {
-    console.log("removing bookmark-tag", bookmarkId, tagId)
-    return instance.delete("bookmark/" + bookmarkId + "/tagId", {
-      params: { id: tagId },
+  addBookmark(bkmkReq: NewBookmarkRequest) {
+    return instance.post("bookmark",  bkmkReq);
+  },
+  deleteBookmarkById(id: number) {
+    return instance.delete("bookmark", {
+      params: { "id": id },
     });
   },
-  bookmarkRemoveTagByTitle(bookmarkId: string, title: any) {
-    return instance.delete("bookmark/" + bookmarkId + "/tagTitle", {
-      params: { title: title },
+  addBookmarks(bkmks: NewBookmarkRequest[]) {
+    return instance.post("bookmark/addBookmarks",bkmks);
+  },
+  getBookmarkById(id: number) {
+    return instance.get("bookmark", {
+      params: { "id": id },
     });
   },
-  // (D)elete
-  removeBookmarkById(bookmarkId: number) {
-    return instance.delete("bookmark/" + bookmarkId);
-  },
-  
   // Tags
   getAllTags() {
     return this.execute("GET", "tags", null, {});

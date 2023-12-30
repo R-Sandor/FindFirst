@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -70,8 +71,12 @@ public class BookmarkController {
   }
 
   @PostMapping(value = "/bookmark/addBookmarks")
-  public ResponseEntity<List<Bookmark>> postMethodName(@RequestBody List<Bookmark> bookmarks) {
-    return new Response<List<Bookmark>>((b) -> bookmarkService.addBookmarks(b), bookmarks).get();
+  public ResponseEntity<List<Bookmark>> addBookmarks(@RequestBody List<AddBkmkReq> bookmarks) {
+    try {
+      return new ResponseEntity<List<Bookmark>>(bookmarkService.addBookmarks(bookmarks),HttpStatus.OK);
+    } catch (Exception e) {
+      return ResponseEntity.badRequest().build();
+    }
   }
 
   @PostMapping(value = "/bookmark/{bookmarkID}/tag")

@@ -42,8 +42,14 @@ public class BookmarkService {
     return bookmarkRepository.save(newBkmk);
   }
 
-  public void addBookmarks(List<Bookmark> bookmarks) {
-    bookmarkRepository.saveAllAndFlush(bookmarks);
+  public List<Bookmark> addBookmarks(List<AddBkmkReq> bookmarks) throws Exception {
+    return bookmarks.stream().map(t -> {
+      try {
+        return addBookmark(t);
+      } catch (Exception e) {
+        return null;
+      }
+    }).toList();
   }
 
   public void deleteBookmark(Long bookmarkId) {
