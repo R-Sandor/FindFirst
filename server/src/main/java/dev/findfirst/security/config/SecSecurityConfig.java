@@ -49,7 +49,7 @@ public class SecSecurityConfig {
   @Autowired private AuthEntryPointJwt unauthorizedHandler;
 
   @Bean
-  public CookieAuthenticationFilter authenticationJwtTokenFilter() {
+  public CookieAuthenticationFilter cookieJWTAuthFilter() {
     return new CookieAuthenticationFilter();
   }
 
@@ -91,7 +91,7 @@ public class SecSecurityConfig {
                     .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
     http.authenticationProvider(authenticationProvider());
     http.addFilterBefore(
-        authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+        cookieJWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 
