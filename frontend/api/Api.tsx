@@ -55,28 +55,32 @@ const api = {
       params: { title: title },
     });
   },
+  // (D)elete
+  removeBookmarkById(bookmarkId: number) {
+    return instance.delete("bookmark/" + bookmarkId);
+  },
+  
+  // Tags
   getAllTags() {
-    return this.execute("GET", "tagscnt", null, {});
+    return this.execute("GET", "tags", null, {});
   },
   addAllTag(strTags: string []) {
     let t = JSON.stringify(strTags);
-    console.log(t);
-    return this.execute("POST", "tags/addTags", strTags, {});
+    return this.execute("POST", "tags", strTags, {});
+  },
+  deleteAllTags() { 
+    return instance.delete("tags"); 
   },
   getTagById(id: string) {
     return this.execute("GET", "tags/id/" + id, null, {});
   },
-  // (U)pdate
-  updateForId(id: string, text: any, completed: any) {
-    return this.execute("PUT", "bookmarks/" + id, {
-      title: text,
-      completed: completed,
-    }, {});
+  addTag(tag: string) { 
+    return instance.post("tag", tag)
   },
-
-  // (D)elete
-  removeBookmarkById(bookmarkId: number) {
-    return instance.delete("bookmark/" + bookmarkId);
+  getTagByBookmarkId(id: number) {
+    return instance.get("tag/bkm", {
+      params: { "bookmarkId": id }
+    })
   },
 };
 
