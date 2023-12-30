@@ -1,4 +1,4 @@
-package dev.findfirst.security.userAuth.execeptions;
+package dev.findfirst.users.exceptions;
 
 public class NoUserFoundException extends Exception {
   public NoUserFoundException() {

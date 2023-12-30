@@ -1,8 +1,8 @@
 package dev.findfirst.users.service;
 
-import dev.findfirst.security.userAuth.execeptions.NoTokenFoundException;
-import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
-import dev.findfirst.security.userAuth.execeptions.TokenExpiredException;
+import dev.findfirst.users.exceptions.NoTokenFoundException;
+import dev.findfirst.users.exceptions.NoUserFoundException;
+import dev.findfirst.users.exceptions.TokenExpiredException;
 import dev.findfirst.users.model.user.Token;
 import dev.findfirst.users.model.user.User;
 import java.util.Calendar;

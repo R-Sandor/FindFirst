@@ -1,12 +1,12 @@
 package dev.findfirst.users.service;
 
 import dev.findfirst.security.jwt.service.RefreshTokenService;
-import dev.findfirst.security.userAuth.execeptions.NoUserFoundException;
 import dev.findfirst.security.userAuth.models.RefreshToken;
 import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
 import dev.findfirst.security.userAuth.tenant.data.TenantService;
 import dev.findfirst.security.userAuth.utils.Constants;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
+import dev.findfirst.users.exceptions.NoUserFoundException;
 import dev.findfirst.users.exceptions.UserNameTakenException;
 import dev.findfirst.users.model.user.SigninTokens;
 import dev.findfirst.users.model.user.Token;
