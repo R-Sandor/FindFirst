@@ -89,7 +89,7 @@ public class BookmarkControllerTest {
   @Test
   // should test that all of JSmith's bookmarks are deleted but no one else's
   // were removed.
-  void deleteAllbookmarks() {
+  void deleteAllBookmarks() {
     var response =
         restTemplate.exchange(
             baseUrl, HttpMethod.DELETE, getHttpEntity(restTemplate), String.class);
