@@ -7,7 +7,7 @@ export interface User {
   refreshToken: string;
 }
 
-const SIGNIN_URL = "http://localhost:9000/api/user/signin";
+const SIGNIN_URL = "http://localhost:9000/user/signin";
 
 // Used to declare if user is logged-in.
 export enum AuthStatus {
