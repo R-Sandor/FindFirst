@@ -56,7 +56,7 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
       newBkmkRequest.tagIds.push(rt.id);
     });
   });
-  await api.addNewBookmark(newBkmkRequest).then((response) => {
+  await api.addBookmark(newBkmkRequest).then((response) => {
     createBmk.id = response.data.id;
     createBmk.tags = response.data.tags;
   });
