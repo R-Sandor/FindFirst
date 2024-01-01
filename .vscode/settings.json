@@ -1,9 +1,7 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic",
     "eslint.workingDirectories": [
         {"mode": "auto"}
     ],
-    "java.compile.nullAnalysis.mode": "automatic",
     "java.test.config": [
         {
             "name": "server",
@@ -11,5 +9,5 @@
             "mainClass": "dev.findfirst.FindFirstApplication",
             "vmArgs": ["-Dspring.profiles.active=integration"],
         },
-    ]
+    ],
 }

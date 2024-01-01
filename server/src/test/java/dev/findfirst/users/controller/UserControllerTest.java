@@ -97,7 +97,7 @@ public class UserControllerTest {
    */
   @Test
   @Order(2)
-  void completeRegistration() {
+  void completeSignupAndRegistration() {
     var headers = new HttpHeaders();
     var ent =
         new HttpEntity<>(
