@@ -1,0 +1,12 @@
+.login_box {
+    width: 340px;
+}
+
+.login_button {
+  background-color: rgb(240, 250, 253);
+  color: rgb(0, 0, 0);
+  border-color: rgb(171, 231, 226);
+  &:hover { 
+    background-color: rgb(120, 227, 253);
+  }
+}
