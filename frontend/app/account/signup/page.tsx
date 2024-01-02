@@ -48,6 +48,9 @@ export default function Page() {
                   placeholder="Username"
                   type="userName"
                 />
+                 {errors.userName && touched.userName ? (
+                  <div>{errors.userName}</div>
+           ) : null}
               </div>
               <div className="mb-3">
                 <Field
@@ -57,6 +60,7 @@ export default function Page() {
                   placeholder="Email"
                   type="email"
                 />
+              {errors.email && touched.email ? <div>{errors.email}</div> : null}
               </div>
               <div className="mb-3">
                 <Field
@@ -66,6 +70,9 @@ export default function Page() {
                   placeholder="Password"
                   type="password"
                 />
+               {errors.password && touched.password ? (
+                <div>{errors.password}</div>
+                ) : null}
               </div>
 
               <button type="submit" className={`btn ${styles.login_button}`}>
