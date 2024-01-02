@@ -1,6 +1,6 @@
 "use client";
 import { Formik, Field, Form } from "formik";
-import styles from "./login-form.module.css";
+import styles from "./signup-form.module.css";
 import  authService  from "@/services/auth.service";
 import { useRouter } from "next/navigation";
 
@@ -19,7 +19,7 @@ export default function Page() {
   return (
     <div className="grid h-screen place-items-center">
     <div className={ "content-center " + styles.login_box + " p-3"}>
-      <h1 className="display-6 mb-3">Login</h1>
+      <h1 className="display-6 mb-3">Sign up</h1>
       <Formik
         initialValues={{
           username: "",
@@ -42,6 +42,15 @@ export default function Page() {
           <div className="mb-3">
             <Field
               className="form-control"
+              id="email"
+              name="email"
+              placeholder="Email"
+              type="email"
+            />
+          </div>
+          <div className="mb-3">
+            <Field
+              className="form-control"
               id="password"
               name="password"
               placeholder="Password"
@@ -49,7 +58,7 @@ export default function Page() {
             />
           </div>
 
-          <button type="submit" className="btn bg-sky-500/75">
+          <button type="submit" className="btn">
             Login
           </button>
         </Form>
