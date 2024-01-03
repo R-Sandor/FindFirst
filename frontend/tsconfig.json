@@ -21,13 +21,23 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],    
+      "@/*": ["./*"],
       "@components/*": ["components/*"],
       "@services/*": ["services/*"],
       "@api/*": ["api/*"],
       "@type/*": ["types/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/login-form.js", "api/Api.tsx", "contexts/TagContext.ts", "contexts/TagContext.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "components/login-form.js",
+    "api/Api.tsx",
+    "contexts/TagContext.ts",
+    "contexts/TagContext.tsx",
+    "vitestSetup.js"
+  ],
   "exclude": ["node_modules"]
 }

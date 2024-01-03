@@ -1,5 +1,5 @@
 "use client";
-import { Formik, Field, Form } from "formik";
+import { Formik, Field, Form, useFormikContext } from "formik";
 import styles from "./signup-form.module.scss";
 import authService from "@/services/auth.service";
 import { useRouter } from "next/navigation";
@@ -13,13 +13,22 @@ export interface signupRequest {
 
 const SignupSchema = Yup.object().shape({
   userName: Yup.string()
-    .min(4, "Too Short!")
+    .min(4, "Username too short!")
     .max(50, "Too long!")
     .required("Required"),
   email: Yup.string().email("Invalid email").required("Required"),
+  password: Yup.string()
+    .min(8, "Password too short!")
+    .max(24, "Password is too long")
+    .matches(
+      /^(?=.*[!@#$%^&*])/,
+      'Password must contain at least one special character'
+    )
+    .required("Required"),
 });
 
 export default function Page() {
+
   const router = useRouter();
   const handleOnSubmit = async (
     signupRequest: signupRequest,
@@ -38,7 +47,7 @@ export default function Page() {
           onSubmit={handleOnSubmit}
           validationSchema={SignupSchema}
         >
-          {({ errors, touched }) => (
+          {({ values, setFieldValue, errors, touched, isValid, dirty }) => (
             <Form>
               <div className="mb-3">
                 <Field
@@ -47,9 +56,11 @@ export default function Page() {
                   name="userName"
                   placeholder="Username"
                   type="userName"
+                  value={values.userName}
+                  onChange={(e:any) => setFieldValue('userName', e.target.value)}
                 />
                  {errors.userName && touched.userName ? (
-                  <div>{errors.userName}</div>
+                  <div><p>{errors.userName}</p></div>
            ) : null}
               </div>
               <div className="mb-3">
@@ -59,6 +70,8 @@ export default function Page() {
                   name="email"
                   placeholder="Email"
                   type="email"
+                  value={values.email}
+                  onChange={(e:any) => setFieldValue('email', e.target.value)}
                 />
               {errors.email && touched.email ? <div>{errors.email}</div> : null}
               </div>
@@ -69,14 +82,16 @@ export default function Page() {
                   name="password"
                   placeholder="Password"
                   type="password"
+                  value={values.password}
+                  onChange={(e:any) => setFieldValue('password', e.target.value)}
                 />
                {errors.password && touched.password ? (
                 <div>{errors.password}</div>
                 ) : null}
               </div>
 
-              <button type="submit" className={`btn ${styles.login_button}`}>
-                Login
+              <button type="submit" disabled={!(isValid && dirty)} className={`btn ${styles.login_button}`}>
+                Submit 
               </button>
             </Form>
           )}

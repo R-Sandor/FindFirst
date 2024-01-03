@@ -1,4 +1,5 @@
 import { beforeAll, vi } from "vitest";
+import '@testing-library/jest-dom';
 
 vi.mock("next/navigation", () => {
   const actual = vi.importActual("next/navigation");
