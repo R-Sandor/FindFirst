@@ -32,16 +32,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class User {
 
-  public User(String username, String email, String name, String encodedPasswd, boolean enabled) {
+  public User(String username, String email, String encodedPasswd, boolean enabled) {
     this.username = username;
     this.email = email;
-    this.name = name;
     this.password = encodedPasswd;
     this.enabled = enabled;
   }
 
   public User(SignupRequest signup, String encodedPasswd) {
-    this(signup.username(), signup.email(), signup.name(), encodedPasswd, false);
+    this(signup.username(), signup.email(), encodedPasswd, false);
   }
 
   @Id
@@ -55,10 +54,6 @@ public class User {
   @Nonnull
   @Size(max = 20)
   private String username;
-
-  @Nonnull
-  @Size(max = 50)
-  private String name;
 
   @NotBlank
   @Size(max = 50)

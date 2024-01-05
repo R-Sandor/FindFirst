@@ -81,7 +81,7 @@ public class UserControllerTest {
     var ent =
         new HttpEntity<>(
             new SignupRequest(
-                "Steve-Man", "steve@test.com", "Stephen Hayes", "$tev3s_sup3rH@rdPassword"),
+                "Steve-Man", "steve@test.com", "$tev3s_sup3rH@rdPassword"),
             headers);
     var response = restTemplate.exchange(userUrl + "/signup", HttpMethod.POST, ent, String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -102,7 +102,7 @@ public class UserControllerTest {
     var ent =
         new HttpEntity<>(
             new SignupRequest(
-                "beardedMan", "j-dog@gmail.com", "James Johnson", "$tev3s_sup3rH@rdPassword"),
+                "beardedMan", "j-dog@gmail.com", "$tev3s_sup3rH@rdPassword"),
             headers);
     var response = restTemplate.exchange(userUrl + "/signup", HttpMethod.POST, ent, String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
