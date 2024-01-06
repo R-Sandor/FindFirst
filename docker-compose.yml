@@ -11,7 +11,7 @@ services:
       dockerfile: ../docker/server/Dockerfile
       context: ./server
     ports: 
-     - "9001:9001"
+     - "9000:9000"
   db: 
     image: postgres:15.4
     environment:
@@ -20,3 +20,8 @@ services:
       - POSTGRES_PASSWORD=admin
     ports:
       - 5432:5432
+  mail: 
+    image: mailhog/mailhog:latest
+    ports: 
+      - 1025:1025
+      - 8025:8025
