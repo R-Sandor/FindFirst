@@ -1,12 +1,66 @@
 import { expect, test } from "vitest";
-import { getByText, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Page from "app/account/signup/page";
-import { timeout } from "rxjs";
+
 const user = userEvent.setup();
-/**
- * Input forms should all be empty intially.
- */
+const goodEmail = "jsmith@gmail.com";
+const goodUsername = "jsmith";
+const goodPassword = "super_h@rd_p@$$w0rd";
+const badUsername = "js";
+const badEmail = "j-dog.com";
+const badPassword = "test";
+
+type UEP = {
+  usernameInput: HTMLInputElement;
+  emailInput: HTMLInputElement;
+  passwordInput: HTMLInputElement;
+};
+
+function getUsernameEmailPassword(): UEP {
+  const usernameInput = screen.getByPlaceholderText(/Username/i);
+  const emailInput = screen.getByPlaceholderText(/Email/i);
+  const passwordInput = screen.getByPlaceholderText(/Password/i);
+
+  return {
+    usernameInput: usernameInput,
+    emailInput: emailInput,
+    passwordInput: passwordInput,
+  } as UEP;
+}
+
+function clickAway() {
+  const rootElement = document.documentElement;
+  user.click(rootElement);
+}
+
+async function typeUsername(usernameInput: HTMLElement, username: string) {
+  await user.type(usernameInput, username);
+}
+
+async function typeEmail(emailInput: HTMLElement, email: string) {
+  await user.type(emailInput, email);
+}
+
+async function typePassword(passwordInput: HTMLElement, pwd: string) {
+  await user.type(passwordInput, pwd);
+}
+
+async function typeUEP(username: string, email: string, password: string) {
+  const uep = await getUsernameEmailPassword();
+  await typeUsername(uep.usernameInput, username);
+  await typeEmail(uep.emailInput, email);
+  await typePassword(uep.passwordInput, password);
+}
+
+function submitDisabled(isDisabled: Boolean): HTMLButtonElement {
+  const submitBtn = screen
+    .getByText(/submit/i)
+    .closest("button") as HTMLButtonElement;
+  expect(submitBtn.disabled).toBe(isDisabled);
+  return submitBtn;
+}
+
 test("Forms allow input", () => {
   render(<Page />);
   const form = screen.getAllByRole("textbox") as HTMLInputElement[];
@@ -18,13 +72,11 @@ test("Forms allow input", () => {
 
 test("Should be able to type an userName", async () => {
   render(<Page />);
-  const usernameInput = screen.getByPlaceholderText(
-    /Username/i
-  ) as HTMLInputElement;
+  const uep = getUsernameEmailPassword();
   const username = "jsmith";
-  expect(usernameInput.value).toBe("");
-  await user.type(usernameInput, username);
-  expect(usernameInput.value).toBe(username);
+  expect(uep.usernameInput.value).toBe("");
+  await typeUsername(uep.usernameInput, username);
+  expect(uep.usernameInput.value).toBe(username);
 });
 
 test("Should be able to type an email", async () => {
@@ -32,7 +84,7 @@ test("Should be able to type an email", async () => {
   const emailInput = screen.getByPlaceholderText(/Email/i) as HTMLInputElement;
   const email = "jsmith@gmail.com";
   expect(emailInput.value).toBe("");
-  await user.type(emailInput, email);
+  await typeEmail(emailInput, email);
   expect(emailInput.value).toBe(email);
 });
 
@@ -49,91 +101,39 @@ test("Should be able to type an password", async () => {
 
 test("Submit button should be disabled by default until errors are resolved", async () => {
   render(<Page />);
-  const submitBtn = screen
-    .getByText(/submit/i)
-    .closest("button") as HTMLButtonElement;
-  expect(submitBtn.disabled).toBe(true);
+  submitDisabled(true);
 });
-
+//
 test("Username should have an error and button disabled", async () => {
   render(<Page />);
-  const usernameInput = screen.getByPlaceholderText(
-    /Username/i
-  ) as HTMLInputElement;
-  const badUserNameJS = "js";
-
-  await user.type(usernameInput, badUserNameJS);
-
-  const emailInput = screen.getByPlaceholderText(/Email/i) as HTMLInputElement;
-  await user.type(emailInput, "jsmith@gmail.com");
-
-  const passwordInput = screen.getByPlaceholderText(
-    /Password/i
-  ) as HTMLInputElement;
-
-  await user.type(passwordInput, "super_h@rd_p@$$w0rd");
-
+  await typeUEP(badUsername, goodEmail, goodPassword);
   const usernameError = screen.getByText(/username too short/i);
   expect(usernameError).toBeInTheDocument();
-
-  const submitBtn = screen
-    .getByText(/submit/i)
-    .closest("button") as HTMLButtonElement;
-  expect(submitBtn.disabled).toBe(true);
+  submitDisabled(true);
 });
 
 test("Email should have an error", async () => {
   render(<Page />);
-  const usernameInput = screen.getByPlaceholderText(
-    /Username/i
-  ) as HTMLInputElement;
-  const goodUsername = "j-dog";
-  await user.type(usernameInput, goodUsername);
-
-  const emailInput = screen.getByPlaceholderText(/Email/i) as HTMLInputElement;
-  await user.type(emailInput, "j-dog.com");
-
-  const passwordInput = screen.getByPlaceholderText(
-    /Password/i
-  ) as HTMLInputElement;
-  await user.type(passwordInput, "$tev3s_sup3rH@rdPassword");
+  await typeUEP(goodUsername, badEmail, goodPassword);
 
   const emailError = screen.getByText(/Invalid email/i);
   expect(emailError).toBeInTheDocument();
-
-  const submitBtn = screen
-    .getByText(/submit/i)
-    .closest("button") as HTMLButtonElement;
-  expect(submitBtn.disabled).toBe(true);
+  submitDisabled(true);
 });
 
 test("Password should have an error", async () => {
   render(<Page />);
-  const usernameInput = screen.getByPlaceholderText(
-    /Username/i
-  ) as HTMLInputElement;
+  const uep = getUsernameEmailPassword();
+  await typeUEP(goodUsername, goodEmail, "test");
+  await user.type(uep.usernameInput, goodUsername);
 
-  const emailInput = screen.getByPlaceholderText(/Email/i) as HTMLInputElement;
-  await user.type(emailInput, "j-dog@gmail.com");
-
-  const passwordInput = screen.getByPlaceholderText(/Password/i);
-  await user.type(passwordInput, "test");
-
-  const goodUsername = "j-dog";
-  await user.type(usernameInput, goodUsername);
-
-  const submitBtn = screen
-    .getByText(/submit/i)
-    .closest("button") as HTMLButtonElement;
-  expect(submitBtn.disabled).toBe(true);
+  submitDisabled(true);
 
   let pwdErr = screen.getByText(/password too short/i);
   expect(pwdErr).toBeInTheDocument();
-
-  await user.type(passwordInput, "testtest");
+  await user.type(uep.passwordInput, "testtest");
   // to simulate user clicking off of textfield
-  const rootElement = document.documentElement;
-  user.click(rootElement);
+  await clickAway();
 
   pwdErr = screen.getByText(/special character/i);
   expect(pwdErr).toBeInTheDocument();
@@ -141,23 +141,14 @@ test("Password should have an error", async () => {
 
 test("All fields should have an error", async () => {
   render(<Page />);
-  const usernameInput = screen.getByPlaceholderText(/Username/i);
-  const passwordInput = screen.getByPlaceholderText(/Password/i);
-  const emailInput = screen.getByPlaceholderText(/Email/i);
+  await typeUEP(badUsername, badEmail, badPassword);
 
-  const badUsername = "js";
-  await user.type(usernameInput, badUsername);
-  await user.type(emailInput, "j-dog.com");
-  await user.type(passwordInput, "test");
   const usernameError = screen.getByText(/username too short/i);
   expect(usernameError).toBeInTheDocument();
+  await clickAway();
   const emailError = screen.getByText(/Invalid email/i);
   expect(emailError).toBeInTheDocument();
-
-  const submitBtn = screen
-    .getByText(/submit/i)
-    .closest("button") as HTMLButtonElement;
-  expect(submitBtn.disabled).toBe(true);
+  submitDisabled(true);
 });
 
 test("All field are set, user should be able to submit", async () => {
@@ -174,8 +165,9 @@ test("All field are set, user should be able to submit", async () => {
   ) as HTMLInputElement;
   await user.type(passwordInput, "super_h@rd_p@$$w0rd");
 
-  const submitBtn = screen
-    .getByText(/submit/i)
-    .closest("button") as HTMLButtonElement;
-  expect(submitBtn.disabled).toBe(false);
+  const submitBtn = submitDisabled(false);
+  await user.click(submitBtn);
+
+  // const goodMsg = screen.getByText(/Please complete/i);
+  // expect(goodMsg).toBeInTheDocument();
 });
