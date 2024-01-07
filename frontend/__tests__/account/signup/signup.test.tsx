@@ -167,7 +167,7 @@ test("All fields should have an error", async () => {
 describe("Testing that user submits work with correct messages.", () => {
   test("Good submission no errors", async () => {
     render(<Page />);
-    await typeUEP(goodUsername, goodEmail, goodPassword);
+    const uep = await typeUEP(goodUsername, goodEmail, goodPassword);
 
     expect(screen.queryByText(/please complete/i)).toBe(null);
     vi.stubGlobal("fetch", async (url: string, options: any) => {
@@ -180,6 +180,8 @@ describe("Testing that user submits work with correct messages.", () => {
     await user.click(submitBtn);
     const goodMsg = await screen.findByText(/please complete/i);
     expect(goodMsg).toBeInTheDocument();
+    // all the fields should be reset after submit.
+    expect(uep.emailInput.value).toBe("")
   });
   test("Bad Response should see the error message from the response", async () => {
     render(<Page />);

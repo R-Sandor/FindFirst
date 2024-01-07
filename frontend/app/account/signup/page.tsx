@@ -77,6 +77,7 @@ export default function Page() {
     } else { 
       setSubmitSuccess(true)
     }
+    actions.resetForm();
   };
   return (
     <div className="grid h-screen place-items-center">
