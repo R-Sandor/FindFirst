@@ -1,5 +1,5 @@
-import { expect, test } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, expect, test, vi } from "vitest";
+import { queryByText, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Page from "app/account/signup/page";
 
@@ -164,12 +164,35 @@ test("All fields should have an error", async () => {
   submitDisabled(true);
 });
 
-test("All field are set, user should be able to submit", async () => {
-  render(<Page />);
-  typeUEP(goodUsername, goodEmail, goodPassword);
-  const submitBtn = submitDisabled(false);
-  await user.click(submitBtn);
+describe("Testing that user submits work with correct messages.", () => {
+  test("Good submission no errors", async () => {
+    render(<Page />);
+    await typeUEP(goodUsername, goodEmail, goodPassword);
 
-  // const goodMsg = screen.getByText(/Please complete/i);
-  // expect(goodMsg).toBeInTheDocument();
+    expect(screen.queryByText(/please complete/i)).toBe(null);
+    vi.stubGlobal("fetch", async (url: string, options: any) => {
+      return {
+        ok: true,
+        text: async () => "Success message",
+      };
+    });
+    const submitBtn = submitDisabled(false);
+    await user.click(submitBtn);
+    const goodMsg = await screen.findByText(/please complete/i);
+    expect(goodMsg).toBeInTheDocument();
+  });
+  test("Bad Response should see the error message from the response", async () => {
+    render(<Page />);
+    await typeUEP("TakenUsername", goodEmail, goodPassword);
+    vi.stubGlobal("fetch", async (url: string, options: any) => {
+      return {
+        ok: false,
+        text: async () => "Username is already taken.",
+      };
+    });
+    const submitBtn = submitDisabled(false);
+    await user.click(submitBtn);
+    const takenUsernameMsg = await screen.findByText(/Username is already taken/i);
+    expect(takenUsernameMsg).toBeInTheDocument();
+  });
 });
