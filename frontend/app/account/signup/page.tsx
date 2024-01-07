@@ -78,10 +78,6 @@ export default function Page() {
     } else { 
       setSubmitSuccess(true)
     }
-
-    if (!setSubmitSuccess) { 
-      console.log("WE SHOULD NOT SEE THIS")
-    }
   };
   return (
     <div className="grid h-screen place-items-center">
