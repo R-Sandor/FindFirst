@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS roles;
 CREATE TYPE urole as ENUM ('ROLE_USER','ROLE_MODERATOR','ROLE_ADMIN');
 
 CREATE TABLE public.bookmark (
-    id SERIAL not null PRIMARY KEY,
+    id BIGSERIAL not null PRIMARY KEY,
     title VARCHAR(50) NOT NULL,
     url VARCHAR(255) NOT NULL,
     tenant_id int NOT Null,
@@ -21,7 +21,7 @@ CREATE TABLE public.bookmark (
 
 -- tag --
 CREATE TABLE public.tag (
-  id serial not null  PRIMARY KEY,
+  id BIGSERIAL not null  PRIMARY KEY,
   tag_title VARCHAR(50) NOT NULL,
   tenant_id int NOT NULL,
   created_by VARCHAR(255),
@@ -34,8 +34,8 @@ CREATE TABLE public.tag (
 -- CREATE UNIQUE INDEX ix_bookmark_tag_tag_title ON public.tag(tag_title);
 
 CREATE TABLE public.bookmark_tag (
-    bookmark_id INT,
-    tag_id INT
+    bookmark_id BIGINT,
+    tag_id BIGINT
 );
 
 CREATE TABLE IF NOT EXISTS public.roles (
