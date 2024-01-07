@@ -4,7 +4,7 @@ import styles from "./signup-form.module.scss";
 import * as Yup from "yup";
 import { useEffect, useState } from "react";
 
-export interface signupRequest {
+export interface SignupRequest {
   username: string;
   email: string;
   password: string;
@@ -37,6 +37,7 @@ function submitSuccessDisplay(submissionMessage: string) {
 }
 
 function submitFailureDisplay(submissionMessage: string) {
+  console.log("FAILURE");
   return <div className={styles.failure}>{submissionMessage}</div>;
 }
 
@@ -64,27 +65,23 @@ export default function Page() {
     }
   }, [submitSuccess]);
 
-  const handleOnSubmit = async (signupRequest: signupRequest, actions: any) => {
+  const handleOnSubmit = async (signupRequest: SignupRequest, actions: any) => {
     console.log(JSON.stringify(signupRequest));
-    fetch(signupUrl, {
+    const response = await fetch(signupUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(signupRequest),
     })
-      .then((response) => {
-        if (response.ok) {
-          setSubmitSuccess(true);
-          actions.resetForm();
-        } else {
-          setSubmitSuccess(false);
-        }
-        return response.text();
-      })
-      .then((message) => {
-        if (!submitSuccess) {
-          setSubmitMessage(message);
-        }
-      });
+    if (!response.ok) { 
+      setSubmitMessage(await response.text());
+      setSubmitSuccess(false);
+    } else { 
+      setSubmitSuccess(true)
+    }
+
+    if (!setSubmitSuccess) { 
+      console.log("WE SHOULD NOT SEE THIS")
+    }
   };
   return (
     <div className="grid h-screen place-items-center">
