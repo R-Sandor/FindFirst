@@ -1,6 +1,7 @@
+import { SignupRequest } from "@/app/account/signup/page";
 import { NewBookmarkRequest } from "@/components/bookmark/NewBookmarkCard";
 import axios from "axios";
-const SERVER_URL = "http://localhost:9000/api";
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/api";
 
 const instance = axios.create({
   withCredentials: true,

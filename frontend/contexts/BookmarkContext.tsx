@@ -33,7 +33,7 @@ function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
       bookmarkList =  bookmarkList.filter((b, i) => b.id !== action.bookmarkId);
       if (action.bookmarkId) {
         const id = parseInt(action.bookmarkId.toString())
-        api.removeBookmarkById(id);
+        // api.removeBookmarkById(id);
       }
       return bookmarkList
     }
