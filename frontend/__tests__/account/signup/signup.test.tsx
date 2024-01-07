@@ -34,23 +34,40 @@ function clickAway() {
   user.click(rootElement);
 }
 
-async function typeUsername(usernameInput: HTMLElement, username: string) {
+async function typeUsername(username: string): Promise<HTMLInputElement> {
+  const usernameInput: HTMLInputElement =
+    screen.getByPlaceholderText(/Username/i);
   await user.type(usernameInput, username);
+  return usernameInput;
 }
 
-async function typeEmail(emailInput: HTMLElement, email: string) {
+async function typeEmail(email: string): Promise<HTMLInputElement> {
+  const emailInput: HTMLInputElement = screen.getByPlaceholderText(/Email/i);
   await user.type(emailInput, email);
+  return emailInput;
 }
 
-async function typePassword(passwordInput: HTMLElement, pwd: string) {
+async function typePassword(pwd: string): Promise<HTMLInputElement> {
+  const passwordInput: HTMLInputElement =
+    screen.getByPlaceholderText(/Password/i);
   await user.type(passwordInput, pwd);
+  return passwordInput;
 }
 
-async function typeUEP(username: string, email: string, password: string) {
-  const uep = await getUsernameEmailPassword();
-  await typeUsername(uep.usernameInput, username);
-  await typeEmail(uep.emailInput, email);
-  await typePassword(uep.passwordInput, password);
+async function typeUEP(
+  username: string,
+  email: string,
+  password: string
+): Promise<UEP> {
+  const usernameInput = await typeUsername(username);
+  const emailInput = await typeEmail(email);
+  const passwordInput = await typePassword(password);
+
+  return {
+    usernameInput: usernameInput,
+    emailInput: emailInput,
+    passwordInput: passwordInput,
+  } as UEP;
 }
 
 function submitDisabled(isDisabled: Boolean): HTMLButtonElement {
@@ -75,35 +92,33 @@ test("Should be able to type an userName", async () => {
   const uep = getUsernameEmailPassword();
   const username = "jsmith";
   expect(uep.usernameInput.value).toBe("");
-  await typeUsername(uep.usernameInput, username);
+  await typeUsername(username);
   expect(uep.usernameInput.value).toBe(username);
 });
 
 test("Should be able to type an email", async () => {
   render(<Page />);
-  const emailInput = screen.getByPlaceholderText(/Email/i) as HTMLInputElement;
+  const uep = getUsernameEmailPassword();
   const email = "jsmith@gmail.com";
-  expect(emailInput.value).toBe("");
-  await typeEmail(emailInput, email);
-  expect(emailInput.value).toBe(email);
+  expect(uep.emailInput.value).toBe("");
+  await typeEmail(email);
+  expect(uep.emailInput.value).toBe(email);
 });
 
 test("Should be able to type an password", async () => {
   render(<Page />);
-  const passwordInput = screen.getByPlaceholderText(
-    /Password/i
-  ) as HTMLInputElement;
+  const uep = getUsernameEmailPassword();
   const password = "test";
-  expect(passwordInput.value).toBe("");
-  await user.type(passwordInput, password);
-  expect(passwordInput.value).toBe(password);
+  expect(uep.passwordInput.value).toBe("");
+  await typePassword(password);
+  expect(uep.passwordInput.value).toBe(password);
 });
 
 test("Submit button should be disabled by default until errors are resolved", async () => {
   render(<Page />);
   submitDisabled(true);
 });
-//
+
 test("Username should have an error and button disabled", async () => {
   render(<Page />);
   await typeUEP(badUsername, goodEmail, goodPassword);
@@ -115,7 +130,6 @@ test("Username should have an error and button disabled", async () => {
 test("Email should have an error", async () => {
   render(<Page />);
   await typeUEP(goodUsername, badEmail, goodPassword);
-
   const emailError = screen.getByText(/Invalid email/i);
   expect(emailError).toBeInTheDocument();
   submitDisabled(true);
@@ -123,8 +137,7 @@ test("Email should have an error", async () => {
 
 test("Password should have an error", async () => {
   render(<Page />);
-  const uep = getUsernameEmailPassword();
-  await typeUEP(goodUsername, goodEmail, "test");
+  const uep = await typeUEP(goodUsername, goodEmail, "test");
   await user.type(uep.usernameInput, goodUsername);
 
   submitDisabled(true);
@@ -153,18 +166,7 @@ test("All fields should have an error", async () => {
 
 test("All field are set, user should be able to submit", async () => {
   render(<Page />);
-  const usernameInput = screen.getByPlaceholderText(
-    /Username/i
-  ) as HTMLInputElement;
-  const badUserNameJS = "jsmith";
-  await user.type(usernameInput, badUserNameJS);
-  const emailInput = screen.getByPlaceholderText(/Email/i) as HTMLInputElement;
-  await user.type(emailInput, "jsmith@gmail.com");
-  const passwordInput = screen.getByPlaceholderText(
-    /Password/i
-  ) as HTMLInputElement;
-  await user.type(passwordInput, "super_h@rd_p@$$w0rd");
-
+  typeUEP(goodUsername, goodEmail, goodPassword);
   const submitBtn = submitDisabled(false);
   await user.click(submitBtn);
 

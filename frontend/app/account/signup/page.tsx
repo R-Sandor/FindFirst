@@ -1,18 +1,19 @@
 "use client";
-import { Formik, Field, Form, useFormikContext } from "formik";
+import { Formik, Field, Form, useFormikContext, FormikBag } from "formik";
 import styles from "./signup-form.module.scss";
-import authService from "@/services/auth.service";
-import { useRouter } from "next/navigation";
 import * as Yup from "yup";
+import { useEffect, useState } from "react";
 
 export interface signupRequest {
-  userName: string;
+  username: string;
   email: string;
   password: string;
 }
 
+const signupUrl = process.env.NEXT_PUBLIC_SERVER_URL + "/user/signup";
+
 const SignupSchema = Yup.object().shape({
-  userName: Yup.string()
+  username: Yup.string()
     .min(4, "Username too short!")
     .max(50, "Too long!")
     .required("Required"),
@@ -22,25 +23,76 @@ const SignupSchema = Yup.object().shape({
     .max(24, "Password is too long")
     .matches(
       /^(?=.*[!@#$%^&*])/,
-      'Password must contain at least one special character'
+      "Password must contain at least one special character"
     )
     .required("Required"),
 });
 
-export default function Page() {
+function submitSuccessDisplay(submissionMessage: string) {
+  return (
+    <div className={styles.success}>
+      <p>{submissionMessage}</p>
+    </div>
+  );
+}
 
-  const router = useRouter();
-  const handleOnSubmit = async (
-    signupRequest: signupRequest,
-    actions: any
-  ) => {};
+function submitFailureDisplay(submissionMessage: string) {
+  return <div className={styles.failure}>{submissionMessage}</div>;
+}
+
+function submissionMessage(
+  submitSuccess: boolean | undefined,
+  submitMessage: string
+) {
+  if (submitSuccess == undefined) {
+    return <div></div>;
+  }
+  return submitSuccess
+    ? submitSuccessDisplay(submitMessage)
+    : submitFailureDisplay(submitMessage);
+}
+
+export default function Page() {
+  const [submitSuccess, setSubmitSuccess] = useState<boolean | undefined>(
+    undefined
+  );
+  const [submitMessage, setSubmitMessage] = useState<string>("");
+
+  useEffect(() => {
+    if (submitSuccess) {
+      setSubmitMessage("Please complete your registration with your email.");
+    }
+  }, [submitSuccess]);
+
+  const handleOnSubmit = async (signupRequest: signupRequest, actions: any) => {
+    console.log(JSON.stringify(signupRequest));
+    fetch(signupUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(signupRequest),
+    })
+      .then((response) => {
+        if (response.ok) {
+          setSubmitSuccess(true);
+          actions.resetForm();
+        } else {
+          setSubmitSuccess(false);
+        }
+        return response.text();
+      })
+      .then((message) => {
+        if (!submitSuccess) {
+          setSubmitMessage(message);
+        }
+      });
+  };
   return (
     <div className="grid h-screen place-items-center">
-      <div className={"content-center " + styles.login_box + " p-3"}>
+      <div className={"content-center " + " p-3"}>
         <h1 className="display-6 mb-3">Sign up</h1>
         <Formik
           initialValues={{
-            userName: "",
+            username: "",
             email: "",
             password: "",
           }}
@@ -52,16 +104,20 @@ export default function Page() {
               <div className="mb-3">
                 <Field
                   className="form-control"
-                  id="userName"
-                  name="userName"
+                  id="username"
+                  name="username"
                   placeholder="Username"
-                  type="userName"
-                  value={values.userName}
-                  onChange={(e:any) => setFieldValue('userName', e.target.value)}
+                  type="username"
+                  value={values.username}
+                  onChange={(e: any) =>
+                    setFieldValue("username", e.target.value)
+                  }
                 />
-                 {errors.userName && touched.userName ? (
-                  <div><p>{errors.userName}</p></div>
-           ) : null}
+                {errors.username && touched.username ? (
+                  <div>
+                    <p>{errors.username}</p>
+                  </div>
+                ) : null}
               </div>
               <div className="mb-3">
                 <Field
@@ -71,9 +127,11 @@ export default function Page() {
                   placeholder="Email"
                   type="email"
                   value={values.email}
-                  onChange={(e:any) => setFieldValue('email', e.target.value)}
+                  onChange={(e: any) => setFieldValue("email", e.target.value)}
                 />
-              {errors.email && touched.email ? <div>{errors.email}</div> : null}
+                {errors.email && touched.email ? (
+                  <div>{errors.email}</div>
+                ) : null}
               </div>
               <div className="mb-3">
                 <Field
@@ -83,15 +141,21 @@ export default function Page() {
                   placeholder="Password"
                   type="password"
                   value={values.password}
-                  onChange={(e:any) => setFieldValue('password', e.target.value)}
+                  onChange={(e: any) =>
+                    setFieldValue("password", e.target.value)
+                  }
                 />
-               {errors.password && touched.password ? (
-                <div>{errors.password}</div>
+                {errors.password && touched.password ? (
+                  <div>{errors.password}</div>
                 ) : null}
               </div>
-
-              <button type="submit" disabled={!(isValid && dirty)} className={`btn ${styles.login_button}`}>
-                Submit 
+              {submissionMessage(submitSuccess, submitMessage)}
+              <button
+                type="submit"
+                disabled={!(isValid && dirty)}
+                className={`btn ${styles.login_button}`}
+              >
+                Submit
               </button>
             </Form>
           )}

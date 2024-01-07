@@ -1,12 +1,24 @@
-.login_box {
-    width: 340px;
+.signup_box {
+  width: 340px;
 }
 
-.login_button {
+.signup_button {
   background-color: rgb(240, 250, 253);
   color: rgb(0, 0, 0);
   border-color: rgb(171, 231, 226);
-  &:hover { 
+  &:hover {
     background-color: rgb(120, 227, 253);
   }
+}
+
+.success {
+  text-align: center;
+  height: 75px;
+  max-width: 300px;
+  background-color: rgb(240, 250, 253);
+  color: black;
+  justify-content: center; /* Align horizontal */
+  align-items: center; /* Align vertical */
+  border-radius: 10px;
+  padding: 15px;
 }
