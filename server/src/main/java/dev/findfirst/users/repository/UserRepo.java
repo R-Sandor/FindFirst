@@ -4,7 +4,7 @@ import dev.findfirst.users.model.user.User;
 import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 
-public interface UserRepo extends CrudRepository<User, Long> {
+public interface UserRepo extends CrudRepository<User, Integer> {
 
   Optional<User> findByEmail(String email);
 

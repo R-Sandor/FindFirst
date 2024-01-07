@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class UserDetailsImpl implements UserDetails {
   private static final long serialVersionUID = 1L;
 
-  private Long id;
+  private Integer id;
 
   private String username;
 
@@ -23,7 +23,7 @@ public class UserDetailsImpl implements UserDetails {
   private GrantedAuthority authority;
 
   public UserDetailsImpl(
-      Long id, String username, String email, String password, GrantedAuthority authority) {
+      Integer id, String username, String email, String password, GrantedAuthority authority) {
     this.id = id;
     this.username = username;
     this.email = email;
@@ -43,7 +43,7 @@ public class UserDetailsImpl implements UserDetails {
     return List.of(authority);
   }
 
-  public Long getId() {
+  public Integer getId() {
     return id;
   }
 
