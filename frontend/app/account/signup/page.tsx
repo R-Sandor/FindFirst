@@ -37,7 +37,6 @@ function submitSuccessDisplay(submissionMessage: string) {
 }
 
 function submitFailureDisplay(submissionMessage: string) {
-  console.log("FAILURE");
   return <div className={styles.failure}>{submissionMessage}</div>;
 }
 
