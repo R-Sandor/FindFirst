@@ -1,60 +1,149 @@
-DROP TABLE IF EXISTS public.bookmark_tag;
-DROP TABLE IF EXISTS public.bookmark;
-DROP TABLE IF EXISTS public.tag;
-DROP TABLE IF EXISTS public.users CASCADE;
-DROP TABLE IF EXISTS public.user_roles CASCADE;
-DROP TYPE  IF EXISTS urole CASCADE;
-DROP TABLE IF EXISTS roles;
+drop table if exists bookmark_tag cascade;
 
-CREATE TYPE urole as ENUM ('ROLE_USER','ROLE_MODERATOR','ROLE_ADMIN');
+drop table if exists bookmark cascade;
 
-CREATE TABLE public.bookmark (
-    id BIGSERIAL not null PRIMARY KEY,
-    title VARCHAR(50) NOT NULL,
-    url VARCHAR(255) NOT NULL,
-    tenant_id int NOT Null,
-    created_by VARCHAR(255),
-    created_date DATE,
-    last_modified_date DATE,
-    last_modified_by VARCHAR(255)
+drop table if exists tag cascade;
+
+drop table if exists refreshtoken cascade;
+
+DROP TABLE IF EXISTS users CASCADE;
+
+DROP TABLE IF EXISTS user_roles CASCADE;
+
+DROP TYPE IF EXISTS urole CASCADE;
+
+drop table if exists roles cascade;
+
+drop table if exists tenants cascade;
+
+drop table if exists token cascade;
+
+drop sequence if exists refreshtoken_seq;
+
+drop sequence if exists tenants_seq;
+
+drop sequence if exists token_seq;
+
+CREATE TYPE urole as ENUM ('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN');
+
+create table bookmark (
+  tenant_id integer not null,
+  created_date timestamp(6),
+  id bigserial not null,
+  last_modified_date timestamp(6),
+  title varchar(50),
+  created_by varchar(255),
+  last_modified_by varchar(255),
+  url varchar(255),
+  primary key (id)
 );
 
--- tag --
-CREATE TABLE public.tag (
-  id BIGSERIAL not null  PRIMARY KEY,
-  tag_title VARCHAR(50) NOT NULL,
-  tenant_id int NOT NULL,
-  created_by VARCHAR(255),
-  created_date DATE,
-  last_modified_date DATE,
-  last_modified_by VARCHAR(255)
-);
--- ALTER TABLE public.bookmark_tag
---   ADD CONSTRAINT fk_tag_bookmark_id FOREIGN KEY (id) REFERENCES public.bookmark(id);
--- CREATE UNIQUE INDEX ix_bookmark_tag_tag_title ON public.tag(tag_title);
-
-CREATE TABLE public.bookmark_tag (
-    bookmark_id BIGINT,
-    tag_id BIGINT
+create table tag (
+  tenant_id integer not null,
+  created_date timestamp(6),
+  id bigserial not null,
+  last_modified_date timestamp(6),
+  tag_title varchar(50),
+  created_by varchar(255),
+  last_modified_by varchar(255),
+  primary key (id)
 );
 
-CREATE TABLE IF NOT EXISTS public.roles (
-  role_id INT NOT NULL PRIMARY key, 
-  name urole
+create table tenants (
+  id integer not null,
+  created_date timestamp(6),
+  last_modified_date timestamp(6),
+  created_by varchar(255),
+  last_modified_by varchar(255),
+  name varchar(255) not null,
+  primary key (id)
 );
 
--- Not need in a one to one relationship
--- CREATE TABLE IF NOT EXISTS public.user_roles (
---   user_id INT,
---   role_id INT
--- );
-
-CREATE TABLE public.users (
-  user_id serial NOT NULL PRIMARY key,
-  enabled Boolean, 
-  username VARCHAR(20) NOT NULL,
-  email VARCHAR(50) NOT NULL,
-  password VARCHAR(255) NOT NULL,
-  role_role_id INT NOT NULL,
-  tenant_id INT NOT NULL
+create table token (
+  expiry_date date,
+  user_id integer not null unique,
+  id bigint not null,
+  token varchar(255),
+  primary key (id)
 );
+
+create table users (
+  enabled boolean,
+  role_role_id integer not null,
+  tenant_id integer not null,
+  user_id serial not null,
+  username varchar(20),
+  email varchar(50),
+  password varchar(255),
+  primary key (user_id),
+  unique (username),
+  unique (email)
+);
+
+create table bookmark_tag (
+  bookmark_id bigint not null,
+  tag_id bigint not null,
+  primary key (bookmark_id, tag_id)
+);
+
+create table refreshtoken (
+  user_id integer,
+  expiry_date timestamp(6) with time zone not null,
+  id bigint not null,
+  token varchar(255) not null unique,
+  primary key (id)
+);
+
+create table roles (
+  role_id serial not null,
+  name varchar(20) check (
+    name in ('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')
+  ),
+  primary key (role_id)
+);
+
+alter table
+  if exists bookmark_tag drop constraint if exists FKhq7j2vott6kem0g51hhgq5nfl;
+
+alter table
+  if exists bookmark_tag drop constraint if exists FKpfa5mq9fkkjmv9jmu4hk9igpw;
+
+alter table
+  if exists refreshtoken drop constraint if exists FKa652xrdji49m4isx38pp4p80p;
+
+alter table
+  if exists token drop constraint if exists FKj8rfw4x0wjjyibfqq566j4qng;
+
+alter table
+  if exists users drop constraint if exists FKruo12mi6hchjfi06jhln9tdkt;
+
+create sequence refreshtoken_seq start with 1 increment by 50;
+
+create sequence tenants_seq start with 1 increment by 50;
+
+create sequence token_seq start with 1 increment by 50;
+
+alter table
+  if exists bookmark_tag
+add
+  constraint FKhq7j2vott6kem0g51hhgq5nfl foreign key (tag_id) references tag;
+
+alter table
+  if exists bookmark_tag
+add
+  constraint FKpfa5mq9fkkjmv9jmu4hk9igpw foreign key (bookmark_id) references bookmark;
+
+alter table
+  if exists refreshtoken
+add
+  constraint FKa652xrdji49m4isx38pp4p80p foreign key (user_id) references users;
+
+alter table
+  if exists token
+add
+  constraint FKj8rfw4x0wjjyibfqq566j4qng foreign key (user_id) references users;
+
+alter table
+  if exists users
+add
+  constraint FKruo12mi6hchjfi06jhln9tdkt foreign key (role_role_id) references roles;
