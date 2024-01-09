@@ -116,7 +116,7 @@ public class BookmarkControllerTest {
     // Add web_dev to bookmark
     var ent = getHttpEntity(restTemplate);
     restTemplate.exchange(
-        "/api/bookmark/{bookmarkID}/tag?title={title}",
+        "/api/bookmark/{bookmarkID}/tag?tag={title}",
         HttpMethod.POST,
         ent,
         Tag.class,
@@ -126,7 +126,7 @@ public class BookmarkControllerTest {
     // Add design tag to bookmark.
     ent = getHttpEntity(restTemplate);
     restTemplate.exchange(
-        "/api/bookmark/{bookmarkID}/tag?title={title}",
+        "/api/bookmark/{bookmarkID}/tag?tag={title}",
         HttpMethod.POST,
         ent,
         Tag.class,
@@ -165,7 +165,7 @@ public class BookmarkControllerTest {
     // Add Tag web_dev
     var ent = getHttpEntity(restTemplate);
     restTemplate.exchange(
-        "/api/bookmark/{bookmarkID}/tag?title={title}",
+        "/api/bookmark/{bookmarkID}/tag?tag={title}",
         HttpMethod.POST,
         ent,
         Tag.class,
@@ -179,7 +179,7 @@ public class BookmarkControllerTest {
         Optional.ofNullable(
             restTemplate
                 .exchange(
-                    "/api/bookmark/{bookmarkID}/tag?title={title}",
+                    "/api/bookmark/{bookmarkID}/tag?tag={title}",
                     HttpMethod.POST,
                     ent,
                     Tag.class,

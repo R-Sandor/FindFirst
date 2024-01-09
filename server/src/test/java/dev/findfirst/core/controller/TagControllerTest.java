@@ -133,10 +133,11 @@ public class TagControllerTest {
         Optional.ofNullable(
             restTemplate
                 .exchange(
-                    "/api/tag",
+                    "/api/tag?tag={title}",
                     HttpMethod.POST,
-                    getHttpEntity(restTemplate, new Tag(title)),
-                    Tag.class)
+                    getHttpEntity(restTemplate),
+                    Tag.class,
+                    title)
                 .getBody());
     return tagOpts.orElseThrow();
   }

@@ -16,8 +16,8 @@ public class TagService {
   @Autowired TagRepository tagRepository;
   @Autowired BookmarkRepository bkmkRepo;
 
-  public Tag addTag(Tag tag) {
-    return tagRepository.saveAndFlush(tag);
+  public Tag addTag(String title) {
+    return tagRepository.saveAndFlush(new Tag(title));
   }
 
   /**
@@ -27,7 +27,7 @@ public class TagService {
    * @return Tag existing tag with ID or a new Tag with the given title.
    */
   public Tag findOrCreateTag(String title) {
-    return findByTagTitle(title).orElseGet(() -> addTag(new Tag(title)));
+    return findByTagTitle(title).orElseGet(() -> addTag(title));
   }
 
   /**
