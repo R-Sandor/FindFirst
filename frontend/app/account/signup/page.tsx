@@ -1,6 +1,6 @@
 "use client";
-import { Formik, Field, Form, useFormikContext, FormikBag } from "formik";
-import styles from "./signup-form.module.scss";
+import { Formik, Field, Form} from "formik";
+import styles from "./signupForm.module.scss";
 import * as Yup from "yup";
 import { useEffect, useState } from "react";
 
@@ -30,7 +30,7 @@ const SignupSchema = Yup.object().shape({
 
 function submitSuccessDisplay(submissionMessage: string) {
   return (
-    <div className={styles.success}>
+    <div className={styles.success }>
       <p>{submissionMessage}</p>
     </div>
   );

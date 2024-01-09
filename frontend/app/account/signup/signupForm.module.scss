@@ -11,14 +11,24 @@
   }
 }
 
-.success {
+%message {
   text-align: center;
   height: 75px;
   max-width: 300px;
-  background-color: rgb(240, 250, 253);
-  color: black;
+  border-radius: 10px;
   justify-content: center; /* Align horizontal */
   align-items: center; /* Align vertical */
-  border-radius: 10px;
   padding: 15px;
+}
+
+.success {
+  @extend %message;
+  color: black;
+  background-color: rgb(240, 250, 253);
+}
+
+.failure {
+  @extend %message;
+  background-color: rgb(253, 240, 240);
+  color: rgb(78, 11, 11);
 }
