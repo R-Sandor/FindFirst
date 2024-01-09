@@ -9,6 +9,8 @@ import dev.findfirst.core.service.TagService;
 import dev.findfirst.core.utilies.Response;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.util.List;
 import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +74,8 @@ public class BookmarkController {
   @PostMapping(value = "/bookmark/addBookmarks")
   public ResponseEntity<List<Bookmark>> addBookmarks(@RequestBody List<AddBkmkReq> bookmarks) {
     try {
-      return new ResponseEntity<List<Bookmark>>(bookmarkService.addBookmarks(bookmarks),HttpStatus.OK);
+      return new ResponseEntity<List<Bookmark>>(
+          bookmarkService.addBookmarks(bookmarks), HttpStatus.OK);
     } catch (Exception e) {
       return ResponseEntity.badRequest().build();
     }
@@ -81,24 +84,23 @@ public class BookmarkController {
   @PostMapping(value = "/bookmark/{bookmarkID}/tag")
   @ResponseBody
   public ResponseEntity<Tag> addTag(
-      @PathVariable(value = "bookmarkID") Long bookmarkId, @RequestBody final Tag tagRequest) {
+      @PathVariable(value = "bookmarkID") @NotNull Long bookmarkId,
+      @RequestParam("title") @Size(max = 50) @NotBlank String title) {
     final var bkmkOpt = bookmarkService.findById(bookmarkId);
 
     if (!bkmkOpt.isPresent()) {
       return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
     var bookmark = bkmkOpt.get();
-    Tag tag = tagRequest;
 
     Consumer<Tag> action =
         (t) -> {
           bookmarkService.addTagToBookmark(bookmark, t);
         };
 
-    if (tagRequest.getId() == null) {
-      // Check if there is a tag by the given title.
-      tag = tagService.findOrCreateTag(tagRequest.getTag_title());
-    }
+    // Check if there is a tag by the given title.
+    Tag tag;
+    tag = tagService.findOrCreateTag(title);
 
     return new Response<Tag>(action, tag).get();
   }

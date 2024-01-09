@@ -114,14 +114,24 @@ public class BookmarkControllerTest {
     var bkmk = bkmkResp.get(0);
 
     // Add web_dev to bookmark
-    var ent = getHttpEntity(restTemplate, new Tag("web_dev"));
+    var ent = getHttpEntity(restTemplate);
     restTemplate.exchange(
-        "/api/bookmark/{bookmarkID}/tag", HttpMethod.POST, ent, Tag.class, bkmk.getId());
+        "/api/bookmark/{bookmarkID}/tag?title={title}",
+        HttpMethod.POST,
+        ent,
+        Tag.class,
+        bkmk.getId(),
+        "web_dev");
 
     // Add design tag to bookmark.
-    ent = getHttpEntity(restTemplate, new Tag("design"));
+    ent = getHttpEntity(restTemplate);
     restTemplate.exchange(
-        "/api/bookmark/{bookmarkID}/tag", HttpMethod.POST, ent, Tag.class, bkmk.getId());
+        "/api/bookmark/{bookmarkID}/tag?title={title}",
+        HttpMethod.POST,
+        ent,
+        Tag.class,
+        bkmk.getId(),
+        "design");
 
     // Delete first tag.
     restTemplate.exchange(
@@ -153,18 +163,28 @@ public class BookmarkControllerTest {
     var bkmk = bkmkResp.get(0);
 
     // Add Tag web_dev
-    var ent = getHttpEntity(restTemplate, new Tag("web_dev"));
+    var ent = getHttpEntity(restTemplate);
     restTemplate.exchange(
-        "/api/bookmark/{bookmarkID}/tag", HttpMethod.POST, ent, Tag.class, bkmk.getId());
+        "/api/bookmark/{bookmarkID}/tag?title={title}",
+        HttpMethod.POST,
+        ent,
+        Tag.class,
+        bkmk.getId(),
+        "web_dev");
 
     // Add Tag design
-    ent = getHttpEntity(restTemplate, new Tag("design"));
     // Store tag response to delete the tag next
+    ent = getHttpEntity(restTemplate);
     var tagOpt =
         Optional.ofNullable(
             restTemplate
                 .exchange(
-                    "/api/bookmark/{bookmarkID}/tag", HttpMethod.POST, ent, Tag.class, bkmk.getId())
+                    "/api/bookmark/{bookmarkID}/tag?title={title}",
+                    HttpMethod.POST,
+                    ent,
+                    Tag.class,
+                    bkmk.getId(),
+                    "design")
                 .getBody());
     long tagId = tagOpt.orElseThrow().getId();
 
