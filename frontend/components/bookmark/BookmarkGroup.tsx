@@ -22,16 +22,13 @@ export default function BookmarkGroup() {
       api.getAllBookmarks().then((results) => {
         for (let bkmk of results.data) {
           console.log(bkmk);
-          let bkmkAction: BookmarkAction = {
-            type: "add",
-            bookmark: bkmk,
-          };
           bookmarks.push(bkmk);
-          setLoading(false);
         }
+      }).then(() => { 
+          setLoading(false);
       });
     }
-  }, [userAuth]);
+  }, [bookmarks, userAuth]);
 
   let bookmarkGroup: any = [];
   bookmarks.map((b, i) => {
@@ -44,7 +41,10 @@ export default function BookmarkGroup() {
 
   return !loading ? (
     <div>
-      <div className="pt-3 pb-10 input-group">
+      {/* 
+          This is where I want the search box to be for alpha. 
+      */}
+      {/* <div className="pt-3 pb-10 input-group">
         <input
           type="search"
           className="form-control rounded"
@@ -55,9 +55,9 @@ export default function BookmarkGroup() {
         <button type="button" className="btn btn-outline-primary">
           search
         </button>
-      </div>
+      </div> */}
 
-      <div className="row">
+      <div className="row pt-3">
         <div className="col-6 col-md-12 col-lg-4">
           <NewBookmarkCard />
         </div>

@@ -153,13 +153,6 @@ export default function NewBookmarkCard() {
         <Form>
           <Card>
             <Card.Body>
-              <Image
-                className="journal-icon"
-                src="/journal-bookmark-fill.svg"
-                height={50}
-                width={50}
-                alt="Add New Bookmark"
-              />
               <Card.Title>Add Bookmark <i className="bi bi-bookmarks-fill"></i> </Card.Title>
               <Card.Text className="title">
                 <Field

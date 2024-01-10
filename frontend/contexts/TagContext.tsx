@@ -43,7 +43,7 @@ function tagCntReducer(tagsWithCnt: Map<number, TagWithCnt>, action: TagAction) 
       } else {
         let tId = action.tagId ? action.tagId : -1;
         tagsWithCnt.set(action.tagId, {
-          tag: { id: tId, tag_title: action.tagTitle },
+          tagTitle: action.tagTitle ,
           count: 1,
         });
       }

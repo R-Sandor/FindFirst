@@ -7,6 +7,8 @@ import {
 } from "@/contexts/TagContext";
 import useAuth from "@components/UseAuth";
 import api from "@/api/Api";
+import Tag from "@/types/Bookmarks/Tag";
+import TagWithCnt from "@/types/Bookmarks/TagWithCnt";
 
 const TagList = () => {
   const userAuth = useAuth();
@@ -15,22 +17,29 @@ const TagList = () => {
   useEffect(() => {
     if (userAuth) {
       api.getAllTags().then((results) => {
-        for (let tagCnt of results.data) {
-          tagMap.set(tagCnt.tag.id, tagCnt);
+        const tags: Tag[] =  results.data as Tag[]
+        console.log("getting all Tags:", tags);
+        for (let tag of tags) {
+          const twc: TagWithCnt = { 
+            tagTitle: tag.tag_title,
+            count: tag.bookmarks.length
+          }
+          tagMap.set(tag.id,  twc);
         }
+      }).then(() => { 
         setLoading(false);
       });
     }
-  }, [userAuth]);
+  }, [tagMap, userAuth]);
 
   let groupItems: any = [];
   tagMap.forEach((tagCnt, key) => {
     groupItems.push(
       <ListGroup.Item
-        key={tagCnt.tag.id}
+        key={key}
         className="d-flex justify-content-between align-items-start"
       >
-        {tagCnt.tag.tag_title}
+        {tagCnt.tagTitle}
         <Badge bg="primary" pill>
           {tagCnt.count}
         </Badge>

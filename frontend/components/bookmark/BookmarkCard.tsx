@@ -78,19 +78,19 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
     console.log("delete this bookmark");
     let action: BookmarkAction = {
       type: "delete",
-      bookmarkId: bookmark.id
+      bookmarkId: bookmark.id,
     };
     // delete the bookmark.
     bkmkDispatch(action);
 
     // decrement the bookmark counters
-    bookmark.tags.forEach((tag)=> {
-    const idx = getIdxFromTitle(tag.tag_title);
-    const tagId = bookmark.tags[idx].id;
-    // update the sidebar. 
-    let action: TagAction = { type: "delete", tagId: tagId, tagTitle: "" };
-    dispatch(action);
-  });
+    bookmark.tags.forEach((tag) => {
+      const idx = getIdxFromTitle(tag.tag_title);
+      const tagId = bookmark.tags[idx].id;
+      // update the sidebar.
+      let action: TagAction = { type: "delete", tagId: tagId, tagTitle: "" };
+      dispatch(action);
+    });
   }
 
   const deleteTag = (tag_title: string) => {
@@ -103,7 +103,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
     let titles = bookmark.tags.map((t) => t.tag_title); // just the titles display
     setStrTags(titles);
 
-    // update the sidebar. 
+    // update the sidebar.
     let action: TagAction = { type: "delete", tagId: tagId, tagTitle: "" };
     dispatch(action);
   };
@@ -153,9 +153,14 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   }
 
   return bookmark ? (
-    <div className="px-1">
-      <Card>
-        <CloseButton onClick={handleShow} />
+    <div className="px-2 flex">
+      <Card className="">
+        <div className="card-header">
+          <CloseButton
+            className="inline float-right text-sm"
+            onClick={handleShow}
+          />
+        </div>
         <DeleteModal
           show={show}
           handleClose={handleClose}
