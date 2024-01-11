@@ -72,7 +72,7 @@ const api = {
   },
   // Deletes a tag from an existing bookmark using the bookmarkId and tag ID.
   deleteTagById(bkmkId: number, tagId: number) { 
-    return instance.delete(`bookmark/${bkmkId}/tag?tagId=${tagId}`)
+    return instance.delete(`bookmark/${bkmkId}/tagId?tagId=${tagId}`)
   },
   // Gets all tags
   getAllTags() {
