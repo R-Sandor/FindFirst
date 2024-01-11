@@ -8,6 +8,7 @@ import "./bookmarkCard.scss";
 import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 import { Tag } from "@/types/Bookmarks/Tag";
+import api from "@/api/Api";
 
 interface BookmarkProp {
   bookmark: Bookmark;
@@ -29,16 +30,14 @@ async function addTagToBookmark(
     tagId: -1,
     tagTitle: "",
   };
-  await api
-    .bookmarkAddTagByTitle(bookmark?.id, trimmedInput)
-    .then((response) => {
-      // It will always be the last index since it was the last added.
-      // let index = response.data.length - 1;
-      console.log("response", response);
-      action.tagId = response.data.id;
-      action.tagTitle = response.data.tag_title;
-      bookmark.tags.push({ id: action.tagId, tag_title: action.tagTitle });
-    });
+  await api.addBookmarkTag(bookmark?.id, trimmedInput).then((response) => {
+    // It will always be the last index since it was the last added.
+    // let index = response.data.length - 1;
+    console.log("response", response);
+    action.tagId = response.data.id;
+    action.tagTitle = response.data.tag_title;
+    bookmark.tags.push({ id: action.tagId, tag_title: action.tagTitle });
+  });
   return action;
 }
 
@@ -51,7 +50,6 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   const [show, setShow] = useState(false);
   const handleClose = () => {
     setShow(false);
-    console.log("handle close");
   };
   const handleShow = () => setShow(true);
 
@@ -98,7 +96,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
     if (bookmark) {
       bookmark.tags = bookmark.tags.filter((t, i) => i !== idx);
     }
-    // api.bookmarkRemoveTagById(bookmark.id, tagId);
+    api.deleteTagById(bookmark.id, tagId);
     let titles = bookmark.tags.map((t) => t.tag_title); // just the titles display
     setStrTags(titles);
 

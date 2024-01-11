@@ -28,7 +28,7 @@ export default function BookmarkGroup() {
           setLoading(false);
       });
     }
-  }, [bookmarks, userAuth]);
+  }, [userAuth]);
 
   let bookmarkGroup: any = [];
   bookmarks.map((b, i) => {

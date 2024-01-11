@@ -24,16 +24,17 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
 function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
   switch (action.type) {
     case "add": {
+      console.info("should have added bookmark")
       if (action.bookmark) {
         bookmarkList.push(action.bookmark) 
       }
-      return bookmarkList;
+      return  [...bookmarkList];
     }
     case "delete": {
       bookmarkList =  bookmarkList.filter((b, i) => b.id !== action.bookmarkId);
       if (action.bookmarkId) {
         const id = parseInt(action.bookmarkId.toString())
-        // api.removeBookmarkById(id);
+        api.deleteBookmarkById(id);
       }
       return bookmarkList
     }
