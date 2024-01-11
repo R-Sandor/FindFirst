@@ -27,7 +27,7 @@ public class Tag extends Tenantable {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @Column(length = 50)
+  @Column(length = 255)
   @NonNull private String tag_title;
 
   public Tag() {}

@@ -1,5 +1,7 @@
 package dev.findfirst.core.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.findfirst.core.model.AddBkmkReq;
 import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.BookmarkTagPair;
@@ -65,10 +67,13 @@ public class BookmarkController {
     }
   }
 
-  @DeleteMapping(value = "/bookmark")
-  public ResponseEntity<String> deleteById(@RequestParam("id") Long id) {
+  @DeleteMapping(value = "/bookmark", produces = "application/json")
+  public ResponseEntity<String> deleteById(@RequestParam("id") Long id)
+      throws JsonProcessingException {
     bookmarkService.deleteBookmark(id);
-    return ResponseEntity.ok().body("deleted bookmark {}".formatted(id));
+    ObjectMapper mapper = new ObjectMapper();
+    String jsonStr = mapper.writeValueAsString("Deleted Bookmark %s".formatted(id));
+    return new ResponseEntity<String>(jsonStr, HttpStatus.OK);
   }
 
   @PostMapping(value = "/bookmark/addBookmarks")

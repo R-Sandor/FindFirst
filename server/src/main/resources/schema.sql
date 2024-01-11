@@ -31,7 +31,7 @@ create table bookmark (
   created_date timestamp(6),
   id bigserial not null,
   last_modified_date timestamp(6),
-  title varchar(50),
+  title varchar(255),
   created_by varchar(255),
   last_modified_by varchar(255),
   url varchar(255),
