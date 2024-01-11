@@ -1,7 +1,18 @@
 import Bookmark from "./Bookmark";
 
-export default interface Tag {
+export interface Tag {
   id: number;
   tag_title: string;
-  bookmarks: Bookmark[]
+}
+
+export interface TagReqPayload {
+  id: number;
+  tag_title: string;
+  bookmarks: Bookmark[];
+}
+
+// Tag with count associated bookmarks.
+export interface TagWithCnt {
+  tagTitle: string;
+  count: number;
 }

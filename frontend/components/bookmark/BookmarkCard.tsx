@@ -1,14 +1,13 @@
 import { useEffect, useState } from "react";
 import { Card, CloseButton } from "react-bootstrap";
-import api from "@/api/Api";
 import { useTagsDispatch } from "@/contexts/TagContext";
 import Bookmark from "@/types/Bookmarks/Bookmark";
-import Tag from "@/types/Bookmarks/Tag";
 import TagAction from "@/types/Bookmarks/TagAction";
 import DeleteModal from "./DeleteModal";
 import "./bookmarkCard.scss";
 import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
+import { Tag } from "@/types/Bookmarks/Tag";
 
 interface BookmarkProp {
   bookmark: Bookmark;
@@ -30,16 +29,16 @@ async function addTagToBookmark(
     tagId: -1,
     tagTitle: "",
   };
-  // await api
-  //   .bookmarkAddTagByTitle(bookmark?.id, trimmedInput)
-  //   .then((response) => {
-  //     // It will always be the last index since it was the last added.
-  //     // let index = response.data.length - 1;
-  //     console.log("response", response);
-  //     action.tagId = response.data.id;
-  //     action.tagTitle = response.data.tag_title;
-  //     bookmark.tags.push({ id: action.tagId, tag_title: action.tagTitle });
-  //   });
+  await api
+    .bookmarkAddTagByTitle(bookmark?.id, trimmedInput)
+    .then((response) => {
+      // It will always be the last index since it was the last added.
+      // let index = response.data.length - 1;
+      console.log("response", response);
+      action.tagId = response.data.id;
+      action.tagTitle = response.data.tag_title;
+      bookmark.tags.push({ id: action.tagId, tag_title: action.tagTitle });
+    });
   return action;
 }
 

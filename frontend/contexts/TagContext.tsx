@@ -1,7 +1,7 @@
 import { Dispatch, createContext, useContext, useReducer} from "react";
-import TagWithCnt from '@type/Bookmarks/TagWithCnt';
 // import { Action } from "rxjs/internal/scheduler/Action";
 import TagAction from "@/types/Bookmarks/TagAction";
+import { TagWithCnt } from "@/types/Bookmarks/Tag";
 
 export interface disapatchInterface { 
  tagsWithCnt: Map<number, TagWithCnt>

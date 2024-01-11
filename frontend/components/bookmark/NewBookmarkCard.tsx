@@ -7,9 +7,9 @@ import api from "@/api/Api";
 import Bookmark from "@/types/Bookmarks/Bookmark";
 import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
-import Tag from "@/types/Bookmarks/Tag";
 import { useTagsDispatch } from "@/contexts/TagContext";
 import TagAction from "@/types/Bookmarks/TagAction";
+import { Tag } from "@/types/Bookmarks/Tag";
 
 /**
  * Bookmark representation from the NewBookmarkCard card form.. 

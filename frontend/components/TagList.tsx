@@ -7,8 +7,7 @@ import {
 } from "@/contexts/TagContext";
 import useAuth from "@components/UseAuth";
 import api from "@/api/Api";
-import Tag from "@/types/Bookmarks/Tag";
-import TagWithCnt from "@/types/Bookmarks/TagWithCnt";
+import { TagReqPayload, TagWithCnt } from "@/types/Bookmarks/Tag";
 
 const TagList = () => {
   const userAuth = useAuth();
@@ -17,7 +16,7 @@ const TagList = () => {
   useEffect(() => {
     if (userAuth) {
       api.getAllTags().then((results) => {
-        const tags: Tag[] =  results.data as Tag[]
+        const tags: TagReqPayload[] =  results.data as TagReqPayload[]
         console.log("getting all Tags:", tags);
         for (let tag of tags) {
           const twc: TagWithCnt = { 
