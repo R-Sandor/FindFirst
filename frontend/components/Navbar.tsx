@@ -55,19 +55,6 @@ const GlobalNavbar: React.FC = () => {
           FindFirst
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="me-auto">
-            <Nav.Link onClick={() => router.push("/")}>Discover</Nav.Link>
-            <NavDropdown title="Collection" id="basic-nav-dropdown">
-              <NavDropdown.Item onClick={() => router.push("/")}>
-                Tags
-              </NavDropdown.Item>
-              <NavDropdown.Item onClick={() => router.push("/")}>
-                Reading List
-              </NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
-        </Navbar.Collapse>
         <Form className="mx-3">{authButton()}</Form>
       </Container>
     </Navbar>
