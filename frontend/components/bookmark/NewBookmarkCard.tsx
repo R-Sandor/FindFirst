@@ -144,16 +144,16 @@ export default function NewBookmarkCard() {
   };
 
   return (
-    <div className="px-1">
+    <div className="px-1 new-bookmark-card">
       <Formik
         initialValues={newcard}
         onSubmit={handleOnSubmit}
         onReset={handleOnReset}
       >
         <Form>
-          <Card>
-            <Card.Body>
-              <Card.Title>Add Bookmark <i className="bi bi-bookmarks-fill"></i> </Card.Title>
+          <Card className="new-bookmark-card">
+              <Card.Header>Add Bookmark <i className="bi bi-bookmarks-fill"></i> </Card.Header>
+              <Card.Body>
               <Card.Text className="title">
                 <Field
                   className="form-control"

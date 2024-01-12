@@ -150,8 +150,8 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   }
 
   return bookmark ? (
-    <div className="px-2 flex">
-      <Card className="">
+    <div className="px-2 flex bookmark-card">
+      <Card>
         <div className="card-header">
           <CloseButton
             className="inline float-right text-sm"
@@ -165,7 +165,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
         />
         <Card.Body>
           <Card.Title>{bookmark.title}</Card.Title>
-          <Card.Text className="title">{bookmark.url.toString()}</Card.Text>
+          <Card.Link href={bookmark.url}>{bookmark.url}</Card.Link> 
         </Card.Body>
         <Card.Footer className="card-footer">
           <div className="container">

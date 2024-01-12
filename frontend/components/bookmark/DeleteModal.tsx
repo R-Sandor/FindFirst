@@ -10,7 +10,6 @@ export interface modalProps {
 function DeleteModal({ show, handleClose, deleteBkmk }: modalProps) {
   return (
     <div
-      className="modal show"
       style={{ display: "block", position: "initial" }}
     >
       <Modal className="" show={show} onHide={handleClose}>

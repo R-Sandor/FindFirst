@@ -91,3 +91,17 @@
 .reset { 
   float: right;
 }
+
+.bookmark-card { 
+  height: 250px;
+  min-height: 250px;
+  margin-bottom: 20px;
+}
+
+.new-bookmark-card { 
+  @extend .bookmark-card;
+  text-align: center; 
+  input {
+    margin-top: 20px;
+  }
+}
