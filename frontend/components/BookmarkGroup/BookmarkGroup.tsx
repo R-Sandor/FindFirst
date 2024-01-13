@@ -17,14 +17,13 @@ export default function BookmarkGroup() {
   // Grab the data.
   useEffect(() => {
     if (userAuth) {
-      bookmarks.forEach(() => bookmarks.pop())  
       api.getAllBookmarks().then((results) => {
           bookmarks.push(...results.data as Bookmark[])
       }).then(() => { 
           setLoading(false);
       });
     }
-  }, [userAuth]);
+  }, [userAuth, bookmarks]);
 
   let bookmarkGroup: any = [];
   bookmarks.map((b, i) => {
