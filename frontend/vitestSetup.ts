@@ -1,7 +1,7 @@
-import { beforeAll, vi } from "vitest";
+import { vi } from "vitest";
 import '@testing-library/jest-dom';
 import { loadEnvConfig } from '@next/env'
-
+import './app/globals.css'
 loadEnvConfig(process.cwd())
 
 vi.mock("next/navigation", () => {
