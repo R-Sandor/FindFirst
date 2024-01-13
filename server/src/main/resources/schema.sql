@@ -1,3 +1,4 @@
+-- Development Uncomment
 drop table if exists bookmark_tag cascade;
 
 drop table if exists bookmark cascade;
@@ -9,8 +10,6 @@ drop table if exists refreshtoken cascade;
 DROP TABLE IF EXISTS users CASCADE;
 
 DROP TABLE IF EXISTS user_roles CASCADE;
-
-DROP TYPE IF EXISTS urole CASCADE;
 
 drop table if exists roles cascade;
 
@@ -24,9 +23,7 @@ drop sequence if exists tenants_seq;
 
 drop sequence if exists token_seq;
 
-CREATE TYPE urole as ENUM ('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN');
-
-create table bookmark (
+create table if not exists bookmark (
   tenant_id integer not null,
   created_date timestamp(6),
   id bigserial not null,
@@ -38,7 +35,7 @@ create table bookmark (
   primary key (id)
 );
 
-create table tag (
+create table if not exists tag (
   tenant_id integer not null,
   created_date timestamp(6),
   id bigserial not null,
@@ -49,8 +46,8 @@ create table tag (
   primary key (id)
 );
 
-create table tenants (
-  id integer not null,
+create table if not exists tenants (
+  id serial not null,
   created_date timestamp(6),
   last_modified_date timestamp(6),
   created_by varchar(255),
@@ -59,7 +56,7 @@ create table tenants (
   primary key (id)
 );
 
-create table token (
+create table if not exists token (
   expiry_date date,
   user_id integer not null unique,
   id bigint not null,
@@ -67,7 +64,7 @@ create table token (
   primary key (id)
 );
 
-create table users (
+create table if not exists users (
   enabled boolean,
   role_role_id integer not null,
   tenant_id integer not null,
@@ -80,13 +77,13 @@ create table users (
   unique (email)
 );
 
-create table bookmark_tag (
+create table if not exists bookmark_tag (
   bookmark_id bigint not null,
   tag_id bigint not null,
   primary key (bookmark_id, tag_id)
 );
 
-create table refreshtoken (
+create table if not exists refreshtoken (
   user_id integer,
   expiry_date timestamp(6) with time zone not null,
   id bigint not null,
@@ -94,7 +91,7 @@ create table refreshtoken (
   primary key (id)
 );
 
-create table roles (
+create table if not exists roles (
   role_id serial not null,
   name varchar(20) check (
     name in ('ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN')
@@ -117,11 +114,11 @@ alter table
 alter table
   if exists users drop constraint if exists FKruo12mi6hchjfi06jhln9tdkt;
 
-create sequence refreshtoken_seq start with 1 increment by 50;
+create sequence if not exists refreshtoken_seq start with 1 increment by 50;
 
-create sequence tenants_seq start with 1 increment by 50;
+create sequence if not exists tenants_seq start with 1 increment by 50;
 
-create sequence token_seq start with 1 increment by 50;
+create sequence if not exists token_seq start with 1 increment by 50;
 
 alter table
   if exists bookmark_tag

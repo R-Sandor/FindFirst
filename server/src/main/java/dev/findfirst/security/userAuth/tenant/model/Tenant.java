@@ -14,7 +14,7 @@ import lombok.Data;
 public class Tenant extends Auditable {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Integer id;
 

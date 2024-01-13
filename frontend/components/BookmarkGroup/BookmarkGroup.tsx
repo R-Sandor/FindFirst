@@ -10,6 +10,7 @@ import api from "@/api/Api";
 // Bookmark group composed of Bookmarks.
 export default function BookmarkGroup() {
   const bookmarks = useBookmarks();
+  console.log(bookmarks);
   const userAuth = UseAuth();
   const [loading, setLoading] = useState(true);
 

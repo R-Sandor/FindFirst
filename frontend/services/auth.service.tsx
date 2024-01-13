@@ -1,7 +1,6 @@
+'use client';
 import axios from "axios";
-import { alertService } from "./alert.service";
 import { credentials } from "../app/account/login/page";
-import React from "react";
 export interface User {
   username: string;
   refreshToken: string;
@@ -62,33 +61,15 @@ class AuthService  {
         success = true;
       }
     });
-    // TODO: some error handling here.
-    //   .catch((error) => {
-    //     actions.setSubmitting(false);
-    //     actions.resetForm();
-    //     handleServerResponse(false, error.response);
-    //   });
     return success;
   }
 
   public logout() {
-    // alertService.clear();
-    // remove user from local storage, publish null to user subscribers and redirect to login page
     localStorage.removeItem("user");
     this.authorizedState = AuthStatus.Unauthorized
     this.notify(AuthStatus.Unauthorized);
   }
 
-  // TODO: Handle user registration.
-  public register(user: User) {}
-  //     return axios.post(API_URL + 'signup', {
-  //         username: user.username,
-  //         email: user.email,
-  //         password: user.password,
-  //     });
-  // }
-
-  // TODO: Stub to handle when the user has been logged out at some point.
   handleAuth() {}
 
   public authCheck(url: string): AuthStatus {

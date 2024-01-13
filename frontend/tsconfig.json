@@ -21,11 +21,11 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
       "@components/*": ["components/*"],
       "@services/*": ["services/*"],
       "@api/*": ["api/*"],
-      "@type/*": ["types/*"]
+      "@type/*": ["types/*"],
+      "@/*": ["./*"],
     }
   },
   "include": [
