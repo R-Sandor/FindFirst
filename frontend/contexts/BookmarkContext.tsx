@@ -2,7 +2,7 @@ import api from "@/api/Api";
 import { NewBookmarkRequest } from "@/components/BookmarkGroup/bookmark/NewBookmarkCard";
 import Bookmark from "@/types/Bookmarks/Bookmark";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
-import { Dispatch, createContext, useContext, useReducer } from "react";
+import { Dispatch, createContext, useContext, useEffect, useReducer } from "react";
 
 export const BookmarkContext = createContext<Bookmark[]>([]);
 export const BookmarkDispatchContext = createContext<Dispatch<BookmarkAction>>(
@@ -12,6 +12,11 @@ export const BookmarkDispatchContext = createContext<Dispatch<BookmarkAction>>(
 export function BookmarkProvider({ children }: { children: React.ReactNode }) {
   const [bookmarks, dispatch] = useReducer(bookmarkReducer, initialBookmarks);
 
+  useEffect(() => () => { 
+    for(let i = 0; i < bookmarks.length; i++){
+      bookmarks.pop()
+    }
+  }, [])
   return (
     <BookmarkContext.Provider value={bookmarks}>
       <BookmarkDispatchContext.Provider value={dispatch}>
@@ -25,8 +30,8 @@ function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
   switch (action.type) {
     case "add": {
       console.info("should have added bookmark")
-      if (action.bookmark) {
-        bookmarkList.push(action.bookmark) 
+      if (action.bookmarks) {
+        bookmarkList.push(...action.bookmarks) 
       }
       return  [...bookmarkList];
     }

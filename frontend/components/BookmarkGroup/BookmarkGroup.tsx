@@ -16,14 +16,10 @@ export default function BookmarkGroup() {
 
   // Grab the data.
   useEffect(() => {
-    let b: Bookmark[] = [];
     if (userAuth) {
-      console.log(bookmarks);
+      bookmarks.forEach(() => bookmarks.pop())  
       api.getAllBookmarks().then((results) => {
-        for (let bkmk of results.data) {
-          console.log(bkmk);
-          bookmarks.push(bkmk);
-        }
+          bookmarks.push(...results.data as Bookmark[])
       }).then(() => { 
           setLoading(false);
       });

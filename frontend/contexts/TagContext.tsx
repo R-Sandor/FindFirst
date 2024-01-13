@@ -1,4 +1,4 @@
-import { Dispatch, createContext, useContext, useReducer} from "react";
+import { Dispatch, createContext, useContext, useEffect, useReducer} from "react";
 // import { Action } from "rxjs/internal/scheduler/Action";
 import TagAction from "@/types/Bookmarks/TagAction";
 import { TagWithCnt } from "@/types/Bookmarks/Tag";
@@ -16,6 +16,9 @@ export const TagsCntDispatchContext = createContext<Dispatch<TagAction>>(() => {
 export function TagCntProvider({ children }: {
   children: React.ReactNode
 }) {
+
+  useEffect(() => () => { tags.clear() })
+
   const [tags, dispatch] = useReducer(
     tagCntReducer,
     initialTagCnts 
