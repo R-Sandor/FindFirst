@@ -1,6 +1,5 @@
 import { Field, Form, Formik, FormikHelpers } from "formik";
 import { useState } from "react";
-import Image from "next/image";
 import { Button, Card } from "react-bootstrap";
 import "./bookmarkCard.scss";
 import api from "@/api/Api";

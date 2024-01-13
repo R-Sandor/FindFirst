@@ -1,5 +1,5 @@
 import api from "@/api/Api";
-import { NewBookmarkRequest } from "@/components/bookmark/NewBookmarkCard";
+import { NewBookmarkRequest } from "@/components/BookmarkGroup/bookmark/NewBookmarkCard";
 import Bookmark from "@/types/Bookmarks/Bookmark";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 import { Dispatch, createContext, useContext, useReducer } from "react";

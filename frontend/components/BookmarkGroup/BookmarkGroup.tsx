@@ -1,11 +1,10 @@
 import Bookmark from "@/types/Bookmarks/Bookmark";
-import BookmarkCard from "./BookmarkCard";
-import NewBookmarkCard from "./NewBookmarkCard";
+import BookmarkCard from "./bookmark/BookmarkCard";
+import NewBookmarkCard from "./bookmark/NewBookmarkCard";
 import { useBookmarks } from "@/contexts/BookmarkContext";
 import { useEffect, useState } from "react";
 import UseAuth from "@/components/UseAuth";
 import api from "@/api/Api";
-import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 
 
 // Bookmark group composed of Bookmarks.

@@ -1,9 +1,9 @@
 "use client";
 import { TagCntProvider } from "contexts/TagContext";
-import BookmarkGroup from "@/components/bookmark/BookmarkGroup";
 import { BookmarkProvider } from "@/contexts/BookmarkContext";
 import UseAuth from "@components/UseAuth";
-import TagList from "@/components/tag/TagList";
+import TagList from "@components/tag/TagList";
+import BookmarkGroup from "@components/BookmarkGroup/BookmarkGroup";
 
 export default function App() {
   const userAuth = UseAuth();
