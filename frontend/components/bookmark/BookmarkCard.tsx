@@ -150,8 +150,8 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   }
 
   return bookmark ? (
-    <div className="px-2 flex bookmark-card">
-      <Card>
+    <div className="px-2">
+      <Card className="bookmark-card">
         <div className="card-header">
           <CloseButton
             className="inline float-right text-sm"
