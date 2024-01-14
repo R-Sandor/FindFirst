@@ -73,7 +73,6 @@ class AuthService  {
   handleAuth() {}
 
   public authCheck(url: string): AuthStatus {
-    console.log("checking Path")
     // redirect to login page if accessing a private page and not logged in
     const publicPaths = ["/account/login", "/account/signup"];
     const path = url.split("?")[0];
@@ -84,7 +83,6 @@ class AuthService  {
 
   private notify(authorizedState: AuthStatus) {
     this.observers.forEach((observer) => {
-      console.log("notifying! " + authorizedState)
       observer(authorizedState);
     });
   }

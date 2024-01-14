@@ -22,12 +22,12 @@ export function useBookmarkDispatch() {
   return useContext(BookmarkDispatchContext);
 }
 
-const initialBookmarks: Bookmark[] = [];
 
 export function BookmarkProvider({ children }: { children: React.ReactNode }) {
-  const [bookmarks, dispatch] = useReducer(bookmarkReducer, initialBookmarks);
+  const [bookmarks, dispatch] = useReducer(bookmarkReducer, []);
 
   useEffect(() => () => {
+    console.log("clearing up bookmarks")
     for (let i = 0; i < bookmarks.length; i++) {
       bookmarks.pop();
     }

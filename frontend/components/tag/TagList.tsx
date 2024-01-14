@@ -29,7 +29,7 @@ const TagList = () => {
         setLoading(false);
       });
     }
-  }, [tagMap, userAuth]);
+  }, [userAuth]);
 
   let groupItems: any = [];
   tagMap.forEach((tagCnt, key) => {
