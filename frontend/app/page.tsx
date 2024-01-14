@@ -14,6 +14,7 @@ export default function App() {
    * Meaning that the '/' will eventually be added to the public route and not authenticated will be the
    * the regular landing.
    */
+  console.log("HERE")
   return userAuth ? (
     <BookmarkProvider>
       <TagCntProvider>

@@ -88,7 +88,7 @@ export default function NewBookmarkCard() {
     let action: BookmarkAction = {
       type: "add",
       bookmarkId: retBkmk.id,
-      bookmark: retBkmk,
+      bookmarks: [retBkmk],
     };
     retBkmk.tags.forEach((t, i) => {
       let tAct: TagAction = {
