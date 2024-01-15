@@ -12,6 +12,7 @@
     "vitest-preview": "vitest-preview"
   },
   "dependencies": {
+    "@next/env": "^14.0.4",
     "@testing-library/jest-dom": "^6.1.6",
     "@testing-library/user-event": "^14.5.2",
     "@types/node": "20.4.0",
@@ -19,6 +20,7 @@
     "@types/react-dom": "18.2.6",
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
+    "axios-mock-adapter": "^1.22.0",
     "bootstrap": "^5.3.1",
     "bootstrap-icons": "^1.10.5",
     "dotenv": "^16.3.1",

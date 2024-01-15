@@ -1,6 +1,6 @@
 import Bookmark from "./Bookmark";
 
-export interface Tag {
+export default interface Tag {
   id: number;
   tag_title: string;
 }

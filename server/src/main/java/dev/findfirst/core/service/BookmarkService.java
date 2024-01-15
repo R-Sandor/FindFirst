@@ -23,7 +23,7 @@ public class BookmarkService {
   }
 
   public Optional<Bookmark> findById(Long id) {
-    return bookmarkRepository.findById(id);
+    return id == null? Optional.ofNullable(null): bookmarkRepository.findById(id);
   }
 
   public Bookmark addBookmark(AddBkmkReq reqBkmk) throws Exception {
@@ -53,7 +53,9 @@ public class BookmarkService {
   }
 
   public void deleteBookmark(Long bookmarkId) {
-    bookmarkRepository.deleteById(bookmarkId);
+    if (bookmarkId != null) {
+      bookmarkRepository.deleteById(bookmarkId);
+    }
   }
 
   public void deleteAllBookmarks() {

@@ -65,7 +65,6 @@ export default function Page() {
   }, [submitSuccess]);
 
   const handleOnSubmit = async (signupRequest: SignupRequest, actions: any) => {
-    console.log(JSON.stringify(signupRequest));
     const response = await fetch(signupUrl, {
       method: "POST",
       headers: { "Content-Type": "application/json" },

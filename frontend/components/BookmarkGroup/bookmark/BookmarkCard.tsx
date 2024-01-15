@@ -7,7 +7,7 @@ import DeleteModal from "./DeleteModal";
 import "./bookmarkCard.scss";
 import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
-import { Tag } from "@/types/Bookmarks/Tag";
+import  Tag  from "@/types/Bookmarks/Tag";
 import api from "@/api/Api";
 
 interface BookmarkProp {
