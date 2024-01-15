@@ -1,7 +1,7 @@
 import Bookmark from "@/types/Bookmarks/Bookmark";
 import BookmarkCard from "./bookmark/BookmarkCard";
 import NewBookmarkCard from "./bookmark/NewBookmarkCard";
-import { useBookmarkDispatch, useBookmarks } from "@/contexts/BookmarkContext";
+import { useBookmarks } from "@/contexts/BookmarkContext";
 import { useEffect, useState } from "react";
 import UseAuth from "@/components/UseAuth";
 import api from "@/api/Api";
@@ -17,6 +17,7 @@ export default function BookmarkGroup() {
     if (userAuth) {
       console.log("getting all bookmarks")
       api.getAllBookmarks().then((resp) => {
+        console.log(...resp.data);
         bookmarks.push(...(resp.data as Bookmark[]))
         setLoading(false);
       });

@@ -2,6 +2,8 @@ import { vi } from "vitest";
 import '@testing-library/jest-dom';
 import { loadEnvConfig } from '@next/env'
 import './app/globals.css'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.min.css'
 loadEnvConfig(process.cwd())
 
 vi.mock("next/navigation", () => {
