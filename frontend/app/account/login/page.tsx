@@ -1,7 +1,8 @@
 "use client";
 import { Formik, Field, Form } from "formik";
-import styles from "./login-form.module.css";
-import  authService  from "@/services/auth.service";
+import styles from "./login-form.module.scss";
+import authService from "@/services/auth.service";
+import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 
 export interface credentials {
@@ -17,45 +18,54 @@ export default function Page() {
     }
   };
 
+  const SigninSchema = Yup.object().shape({
+  username: Yup.string()
+    .required("Required"),
+  password: Yup.string()
+    .required("Required"),
+});
 
   return (
     <div className="grid h-screen place-items-center">
-    <div className={ "content-center " + styles.login_box + " p-3"}>
-      <h1 className="display-6 mb-3">Login</h1>
-      <Formik
-        initialValues={{
-          username: "",
-          password: "",
-        }}
-        onSubmit={handleOnSubmit}
-      >
-        <Form>
-          <div className="mb-3">
-            <Field
-              className="form-control"
-              id="username"
-              name="username"
-              placeholder="Username"
-              aria-describedby="usernameHelp"
-            />
-          </div>
+      <div className={"content-center " + styles.login_box + " p-3"}>
+        <h1 className="display-6 mb-3">Login</h1>
+        <Formik
+          initialValues={{
+            username: "",
+            password: "",
+          }}
+          onSubmit={handleOnSubmit}
+          validationSchema={SigninSchema}
+        >
+        {({ values, setFieldValue, errors, touched, isValid, dirty }) => (
+          <Form>
+            <div className="mb-3">
+              <Field
+                className="form-control"
+                id="username"
+                name="username"
+                placeholder="Username"
+                aria-describedby="usernameHelp"
+              />
+            </div>
 
-          <div className="mb-3">
-            <Field
-              className="form-control"
-              id="password"
-              name="password"
-              placeholder="Password"
-              type="password"
-            />
-          </div>
-
-          <button type="submit" className="btn bg-sky-500/75">
-            Login
-          </button>
-        </Form>
-      </Formik>
-    </div>
+            <div className="mb-3">
+              <Field
+                className="form-control"
+                id="password"
+                name="password"
+                placeholder="Password"
+                type="password"
+              />
+            </div>
+            <button type="submit"
+             disabled={!(isValid && dirty)}
+             className={`btn ${styles.signin_button}`}>
+              Login
+            </button>
+          </Form>)}
+        </Formik>
+      </div>
     </div>
   );
 }

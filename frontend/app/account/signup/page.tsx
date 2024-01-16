@@ -145,7 +145,7 @@ export default function Page() {
               <button
                 type="submit"
                 disabled={!(isValid && dirty)}
-                className={`btn ${styles.login_button}`}
+                className={`btn ${styles.signup_button}`}
               >
                 Submit
               </button>

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { queryByText, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Page from "app/account/signup/page";
 
@@ -34,7 +34,9 @@ function clickAway() {
   user.click(rootElement);
 }
 
-async function typeUsername(username: string): Promise<HTMLInputElement> {
+export async function typeUsername(
+  username: string
+): Promise<HTMLInputElement> {
   const usernameInput: HTMLInputElement =
     screen.getByPlaceholderText(/Username/i);
   await user.type(usernameInput, username);
@@ -47,7 +49,7 @@ async function typeEmail(email: string): Promise<HTMLInputElement> {
   return emailInput;
 }
 
-async function typePassword(pwd: string): Promise<HTMLInputElement> {
+export async function typePassword(pwd: string): Promise<HTMLInputElement> {
   const passwordInput: HTMLInputElement =
     screen.getByPlaceholderText(/Password/i);
   await user.type(passwordInput, pwd);
@@ -70,9 +72,16 @@ async function typeUEP(
   } as UEP;
 }
 
-function submitDisabled(isDisabled: Boolean): HTMLButtonElement {
+export function submitDisabled(
+  isDisabled: Boolean,
+  text?: string
+): HTMLButtonElement {
+  const txt = text ? text : "Submit";
+  console.log(txt);
   const submitBtn = screen
-    .getByText(/submit/i)
+    .getByRole("button", {
+      name: txt,
+    })
     .closest("button") as HTMLButtonElement;
   expect(submitBtn.disabled).toBe(isDisabled);
   return submitBtn;

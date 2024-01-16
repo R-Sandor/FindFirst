@@ -51,6 +51,7 @@ class AuthService  {
         password: credentials.password,
       },
     }).then((response) => {
+      console.log("signin attempt")
       if (response.status == 200) {
         let signedinUser: User = {
           username: credentials.username,
