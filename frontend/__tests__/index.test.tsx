@@ -128,7 +128,5 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
       timeout:3000
     })
     expect(bkmkCard).toBeInTheDocument();
-    debug();
-
   });
 });

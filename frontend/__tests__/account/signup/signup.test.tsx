@@ -1,4 +1,4 @@
-import { describe, expect, test, vi } from "vitest";
+import { beforeEach, describe, expect, test, vi } from "vitest";
 import { queryByText, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Page from "app/account/signup/page";
@@ -77,98 +77,101 @@ function submitDisabled(isDisabled: Boolean): HTMLButtonElement {
   expect(submitBtn.disabled).toBe(isDisabled);
   return submitBtn;
 }
+describe("simple cases", () => {
+  beforeEach(() => {
+    render(<Page />);
+  });
+  test("Forms allow input", () => {
+    const form = screen.getAllByRole("textbox") as HTMLInputElement[];
+    expect(form[0].value).toBe("");
+    expect(form[1].value).toBe("");
+    const password = screen.getByPlaceholderText(
+      /password/i
+    ) as HTMLInputElement;
+    expect(password.value).toBe("");
+  });
 
-test("Forms allow input", () => {
-  render(<Page />);
-  const form = screen.getAllByRole("textbox") as HTMLInputElement[];
-  expect(form[0].value).toBe("");
-  expect(form[1].value).toBe("");
-  const password = screen.getByPlaceholderText(/password/i) as HTMLInputElement;
-  expect(password.value).toBe("");
+  test("Should be able to type an userName", async () => {
+    const uep = getUsernameEmailPassword();
+    const username = "jsmith";
+    expect(uep.usernameInput.value).toBe("");
+    await typeUsername(username);
+    expect(uep.usernameInput.value).toBe(username);
+  });
+
+  test("Should be able to type an email", async () => {
+    const uep = getUsernameEmailPassword();
+    const email = "jsmith@gmail.com";
+    expect(uep.emailInput.value).toBe("");
+    await typeEmail(email);
+    expect(uep.emailInput.value).toBe(email);
+  });
+
+  test("Should be able to type an password", async () => {
+    const uep = getUsernameEmailPassword();
+    const password = "test";
+    expect(uep.passwordInput.value).toBe("");
+    await typePassword(password);
+    expect(uep.passwordInput.value).toBe(password);
+  });
 });
 
-test("Should be able to type an userName", async () => {
-  render(<Page />);
-  const uep = getUsernameEmailPassword();
-  const username = "jsmith";
-  expect(uep.usernameInput.value).toBe("");
-  await typeUsername(username);
-  expect(uep.usernameInput.value).toBe(username);
-});
+describe("Errors on fields.", () => {
+  beforeEach(() => {
+    render(<Page />);
+  });
+  test("Submit button should be disabled by default until errors are resolved", async () => {
+    submitDisabled(true);
+  });
 
-test("Should be able to type an email", async () => {
-  render(<Page />);
-  const uep = getUsernameEmailPassword();
-  const email = "jsmith@gmail.com";
-  expect(uep.emailInput.value).toBe("");
-  await typeEmail(email);
-  expect(uep.emailInput.value).toBe(email);
-});
+  test("Username should have an error and button disabled", async () => {
+    await typeUEP(badUsername, goodEmail, goodPassword);
+    const usernameError = screen.getByText(/username too short/i);
+    expect(usernameError).toBeInTheDocument();
+    submitDisabled(true);
+  });
 
-test("Should be able to type an password", async () => {
-  render(<Page />);
-  const uep = getUsernameEmailPassword();
-  const password = "test";
-  expect(uep.passwordInput.value).toBe("");
-  await typePassword(password);
-  expect(uep.passwordInput.value).toBe(password);
-});
+  test("Email should have an error", async () => {
+    await typeUEP(goodUsername, badEmail, goodPassword);
+    const emailError = screen.getByText(/Invalid email/i);
+    expect(emailError).toBeInTheDocument();
+    submitDisabled(true);
+  });
 
-test("Submit button should be disabled by default until errors are resolved", async () => {
-  render(<Page />);
-  submitDisabled(true);
-});
+  test("Password should have an error", async () => {
+    const uep = await typeUEP(goodUsername, goodEmail, "test");
+    await user.type(uep.usernameInput, goodUsername);
 
-test("Username should have an error and button disabled", async () => {
-  render(<Page />);
-  await typeUEP(badUsername, goodEmail, goodPassword);
-  const usernameError = screen.getByText(/username too short/i);
-  expect(usernameError).toBeInTheDocument();
-  submitDisabled(true);
-});
+    submitDisabled(true);
 
-test("Email should have an error", async () => {
-  render(<Page />);
-  await typeUEP(goodUsername, badEmail, goodPassword);
-  const emailError = screen.getByText(/Invalid email/i);
-  expect(emailError).toBeInTheDocument();
-  submitDisabled(true);
-});
+    let pwdErr = screen.getByText(/password too short/i);
+    expect(pwdErr).toBeInTheDocument();
+    await user.type(uep.passwordInput, "testtest");
+    // to simulate user clicking off of textfield
+    await clickAway();
 
-test("Password should have an error", async () => {
-  render(<Page />);
-  const uep = await typeUEP(goodUsername, goodEmail, "test");
-  await user.type(uep.usernameInput, goodUsername);
+    pwdErr = screen.getByText(/special character/i);
+    expect(pwdErr).toBeInTheDocument();
+  });
 
-  submitDisabled(true);
+  test("All fields should have an error", async () => {
+    await typeUEP(badUsername, badEmail, badPassword);
 
-  let pwdErr = screen.getByText(/password too short/i);
-  expect(pwdErr).toBeInTheDocument();
-  await user.type(uep.passwordInput, "testtest");
-  // to simulate user clicking off of textfield
-  await clickAway();
-
-  pwdErr = screen.getByText(/special character/i);
-  expect(pwdErr).toBeInTheDocument();
-});
-
-test("All fields should have an error", async () => {
-  render(<Page />);
-  await typeUEP(badUsername, badEmail, badPassword);
-
-  const usernameError = screen.getByText(/username too short/i);
-  expect(usernameError).toBeInTheDocument();
-  await clickAway();
-  const emailError = screen.getByText(/Invalid email/i);
-  expect(emailError).toBeInTheDocument();
-  submitDisabled(true);
+    const usernameError = screen.getByText(/username too short/i);
+    expect(usernameError).toBeInTheDocument();
+    await clickAway();
+    const emailError = screen.getByText(/Invalid email/i);
+    expect(emailError).toBeInTheDocument();
+    submitDisabled(true);
+  });
 });
 
 describe("Testing that user submits work with correct messages.", () => {
-  test("Good submission no errors", async () => {
+  beforeEach(() => {
     render(<Page />);
+  });
+  test("Good submission, no error.", async () => {
     const uep = await typeUEP(goodUsername, goodEmail, goodPassword);
-
     expect(screen.queryByText(/please complete/i)).toBe(null);
     vi.stubGlobal("fetch", async (url: string, options: any) => {
       return {
@@ -181,10 +184,9 @@ describe("Testing that user submits work with correct messages.", () => {
     const goodMsg = await screen.findByText(/please complete/i);
     expect(goodMsg).toBeInTheDocument();
     // all the fields should be reset after submit.
-    expect(uep.emailInput.value).toBe("")
+    expect(uep.emailInput.value).toBe("");
   });
-  test("Bad Response should see the error message from the response", async () => {
-    render(<Page />);
+  test("Bad Response, should see the error message from the response.", async () => {
     await typeUEP("TakenUsername", goodEmail, goodPassword);
     vi.stubGlobal("fetch", async (url: string, options: any) => {
       return {
@@ -194,7 +196,9 @@ describe("Testing that user submits work with correct messages.", () => {
     });
     const submitBtn = submitDisabled(false);
     await user.click(submitBtn);
-    const takenUsernameMsg = await screen.findByText(/Username is already taken/i);
+    const takenUsernameMsg = await screen.findByText(
+      /Username is already taken/i
+    );
     expect(takenUsernameMsg).toBeInTheDocument();
   });
 });
