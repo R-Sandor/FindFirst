@@ -77,7 +77,6 @@ export function submitDisabled(
   text?: string
 ): HTMLButtonElement {
   const txt = text ? text : "Submit";
-  console.log(txt);
   const submitBtn = screen
     .getByRole("button", {
       name: txt,

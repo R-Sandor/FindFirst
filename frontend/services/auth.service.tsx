@@ -41,6 +41,7 @@ class AuthService  {
     return this.getUser() ? AuthStatus.Authorized : AuthStatus.Unauthorized;
   }
   public async login(credentials: credentials): Promise<boolean> {
+    console.log("user attempt to login")
     let success = false;
     await axios({
       url: SIGNIN_URL,
