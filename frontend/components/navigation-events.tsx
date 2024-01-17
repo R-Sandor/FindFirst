@@ -12,6 +12,7 @@ export function NavigationEvents() {
   const router = useRouter();
 
   useEffect(() => {
+    console.log(pathname)
       if (authService.authCheck(pathname) == AuthStatus.Unauthorized) {
       // do the reroute here.
       router.push("/account/login");

@@ -10,11 +10,32 @@ import {
 } from "../signup/signup.test";
 import { debug } from "vitest-preview";
 import axios from "axios";
+import RootLayout from "@/app/layout";
+import { usePathname } from "next/navigation";
 const user = userEvent.setup();
 
 describe("Login events.", () => {
+  vi.mock("next/navigation", () => {
+    const actual = vi.importActual("next/navigation");
+    return {
+      ...actual,
+      useRouter: vi.fn(() => ({
+        push: vi.fn(),
+      })),
+      useSearchParams: vi.fn(() => ({
+        get: vi.fn(),
+      })),
+      usePathname: vi.fn().mockImplementation(() => "/account/login/"),
+    };
+  });
+
   beforeEach(() => {
-    render(<Page />);
+    // eslint-disable-next-line react/no-children-prop
+    render(
+      <RootLayout>
+        <Page />
+      </RootLayout>
+    );
   });
   test("User can login with a valid username password", async () => {
     // Mock recieving a 200 on the return from the server.
@@ -24,6 +45,7 @@ describe("Login events.", () => {
       tokenType: "Bearer",
       refreshToken: "5c3de962-950a-4633-91fa-90cc45f12a9d",
     };
+    debug();
     axiosMock.onPost(SIGNIN_URL).reply((config) => {
       return [
         200,
@@ -35,7 +57,10 @@ describe("Login events.", () => {
     });
     await typeUsername("j-dog");
     await typePassword("$t3ves_$uperh@rd_P@$$w0rd");
-    await user.click(submitDisabled(false, "Login"));
+    const submitBtn = screen.getAllByRole("button", {
+      name: "Login",
+    })[1];
+    await user.click(submitBtn);
   });
 
   test("User login failed  invalid username password"),
