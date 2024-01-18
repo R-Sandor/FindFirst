@@ -1,10 +1,9 @@
 import { expect, it, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import Page from "../app/page";
-import { debug } from "vitest-preview";
 import { describe } from "node:test";
 import authService, { User } from "@services/auth.service";
-import api, { instance } from "@api/Api";
+import  { instance } from "@api/Api";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import Tag from "@type/Bookmarks/Tag";
 

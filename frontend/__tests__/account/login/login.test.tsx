@@ -11,7 +11,6 @@ import {
 import { debug } from "vitest-preview";
 import axios from "axios";
 import RootLayout from "@/app/layout";
-import { usePathname } from "next/navigation";
 const user = userEvent.setup();
 
 describe("Login events.", () => {
@@ -45,7 +44,6 @@ describe("Login events.", () => {
       tokenType: "Bearer",
       refreshToken: "5c3de962-950a-4633-91fa-90cc45f12a9d",
     };
-    debug();
     axiosMock.onPost(SIGNIN_URL).reply((config) => {
       return [
         200,

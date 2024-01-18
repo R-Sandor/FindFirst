@@ -1,6 +1,6 @@
 "use client";
 import { Formik, Field, Form} from "formik";
-import styles from "./signupForm.module.scss";
+import styles from  '../accountForm.module.scss'
 import * as Yup from "yup";
 import { useEffect, useState } from "react";
 
