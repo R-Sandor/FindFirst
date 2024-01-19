@@ -1,5 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import PasswordReset from "@/app/account/resetPassword/[token]/page";
 import { debug } from "vitest-preview";
@@ -131,6 +131,5 @@ describe("Submission handling.", () => {
     await user.type(fields.pwd, "TestTest!");
     await user.type(fields.confirmPwd, "TestTest!");
     await user.click(submitDisabled(false));
-    debug();
   });
 });
