@@ -57,10 +57,7 @@ export default function PasswordReset() {
     passwordConfirm: PasswordConfirm,
     actions: any
   ) => {
-    console.log(params);
-    console.log(params.token);
     let tknVal = "";
-    console.log(typeof params.token);
     if (typeof params.token == "string") {
       tknVal = params.token;
     }
@@ -71,9 +68,6 @@ export default function PasswordReset() {
     console.log("POSTING");
     axios.post(SERVER_URL + "changePassword", tknPwd).then(
       (response) => {
-        console.log("RESPONE", response.status);
-
-        console.log(response.data.text);
         setSubmitMessage(response.data.text);
         setSubmitSuccess(true);
         actions.resetForm();
