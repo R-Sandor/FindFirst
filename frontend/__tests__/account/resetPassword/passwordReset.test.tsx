@@ -2,7 +2,6 @@ import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import PasswordReset from "@/app/account/resetPassword/[token]/page";
-import { debug } from "vitest-preview";
 import RootLayout from "@/app/layout";
 import {
   clickAway,
