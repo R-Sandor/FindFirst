@@ -2,10 +2,11 @@
 import { Field, Form, Formik } from "formik";
 import { useParams } from "next/navigation";
 import TokenPassword, { PasswordConfirm } from "@type/account/TokenPassword";
-import styles from '../../accountForm.module.scss';
+import styles from "../../accountForm.module.scss";
 import * as Yup from "yup";
 import axios from "axios";
 import { useState } from "react";
+import { Router, useRouter } from "next/router";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/user/";
 export default function PasswordReset() {
@@ -14,7 +15,6 @@ export default function PasswordReset() {
   );
   const [submitMessage, setSubmitMessage] = useState<string>("");
   const params = useParams();
-
 
   function submitSuccessDisplay(submissionMessage: string) {
     return (
@@ -57,20 +57,32 @@ export default function PasswordReset() {
     passwordConfirm: PasswordConfirm,
     actions: any
   ) => {
-    const tknVal: string = params.token[0];
+    console.log(params);
+    console.log(params.token);
+    let tknVal = "";
+    console.log(typeof params.token);
+    if (typeof params.token == "string") {
+      tknVal = params.token;
+    }
     const tknPwd: TokenPassword = {
       token: tknVal,
       password: passwordConfirm.password,
     };
-    axios.post(SERVER_URL + "changePassword", tknPwd).then((response) => {
-      if (response.status != 200) {
-        setSubmitMessage(response.statusText);
-        setSubmitSuccess(false);
-      } else {
+    console.log("POSTING");
+    axios.post(SERVER_URL + "changePassword", tknPwd).then(
+      (response) => {
+        console.log("RESPONE", response.status);
+
+        console.log(response.data.text);
+        setSubmitMessage(response.data.text);
         setSubmitSuccess(true);
+        actions.resetForm();
+      },
+      (reject) => {
+        setSubmitMessage(reject.response.data.text);
+        setSubmitSuccess(false);
       }
-      actions.resetForm();
-    });
+    );
   };
 
   return (

@@ -4,13 +4,12 @@ import userEvent from "@testing-library/user-event";
 import Page from "app/account/login/page";
 import MockAdapter from "axios-mock-adapter";
 import {
-  submitDisabled,
   typePassword,
   typeUsername,
 } from "../signup/signup.test";
-import { debug } from "vitest-preview";
 import axios from "axios";
 import RootLayout from "@/app/layout";
+import { submitDisabled } from "@/__tests__/utilities/TestingUtilities";
 const user = userEvent.setup();
 
 describe("Login events.", () => {

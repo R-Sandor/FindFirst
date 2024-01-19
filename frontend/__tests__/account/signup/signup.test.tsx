@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Page from "app/account/signup/page";
+import { submitDisabled } from "@/__tests__/utilities/TestingUtilities";
 
 const user = userEvent.setup();
 const goodEmail = "jsmith@gmail.com";
@@ -29,7 +30,7 @@ function getUsernameEmailPassword(): UEP {
   } as UEP;
 }
 
-function clickAway() {
+export function clickAway() {
   const rootElement = document.documentElement;
   user.click(rootElement);
 }
@@ -72,19 +73,7 @@ async function typeUEP(
   } as UEP;
 }
 
-export function submitDisabled(
-  isDisabled: Boolean,
-  text?: string
-): HTMLButtonElement {
-  const txt = text ? text : "Submit";
-  const submitBtn = screen
-    .getByRole("button", {
-      name: txt,
-    })
-    .closest("button") as HTMLButtonElement;
-  expect(submitBtn.disabled).toBe(isDisabled);
-  return submitBtn;
-}
+
 describe("simple cases", () => {
   beforeEach(() => {
     render(<Page />);
