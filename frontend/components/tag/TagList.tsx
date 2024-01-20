@@ -3,10 +3,10 @@ import React, { useContext, useEffect, useState } from "react";
 import { Badge, ListGroup } from "react-bootstrap";
 import {
   useTags,
-  useTagsDispatch,
 } from "@/contexts/TagContext";
 import useAuth from "@components/UseAuth";
 import api from "@/api/Api";
+import styles from './tag.module.scss'
 import { TagReqPayload, TagWithCnt } from "@/types/Bookmarks/Tag";
 
 const TagList = () => {
@@ -46,9 +46,19 @@ const TagList = () => {
     );
   });
 
+  if (groupItems.length == 0) {
+      groupItems.push(
+      <ListGroup.Item className="h-10 d-flex justify-content-between align-items-start">
+        Tag List
+        <Badge bg="primary" pill>
+          Tag Count!
+        </Badge>
+      </ListGroup.Item>) 
+  }
+
   return (
     <div>
-      {!loading ? <ListGroup>{groupItems}</ListGroup> : <div> loading</div>}
+      {!loading ? <ListGroup className="px-3 pt-3">{groupItems}</ListGroup> : <div> loading</div>}
     </div>
   );
 };

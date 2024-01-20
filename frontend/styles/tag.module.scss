@@ -1,0 +1,15 @@
+.tagList {
+  
+  min-height: calc(100vh - 60px);
+  background-color: lightgray;
+
+  @media screen and (max-width: 800px) {
+    min-height: calc(50vh - 60px);
+    .title {
+      font-size: 12px;
+    }
+    p {
+      font-size: 20px;
+    }
+  }
+}
