@@ -76,7 +76,7 @@ class AuthService  {
 
   public authCheck(url: string): AuthStatus {
     // redirect to login page if accessing a private page and not logged in
-    const publicPaths = ["/account/*"];
+    const publicPaths = ["/account/login","/account/signup"];
     const path = url.split("?")[0];
     return !this.getUser() && !publicPaths.includes(path)
         ? AuthStatus.Unauthorized

@@ -50,7 +50,7 @@ cd server; ./gradlew bootRun
 ````
 
 default user: 
-`user:user password:password`
+`jsmith:test password:password`
 
 </details>
 
