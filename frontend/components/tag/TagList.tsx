@@ -58,7 +58,7 @@ const TagList = () => {
 
   return (
     <div>
-      {!loading ? <ListGroup className="px-3 pt-3">{groupItems}</ListGroup> : <div> loading</div>}
+      {!loading ? <ListGroup className="pt-3">{groupItems}</ListGroup> : <div> loading</div>}
     </div>
   );
 };

@@ -1,7 +1,9 @@
 .tagList {
-  
+   
   min-height: calc(100vh - 60px);
-  background-color: lightgray;
+  background-color: #E8E8E8;
+  border: 1px solid #29b5bf;
+  border-radius: 10px;
 
   @media screen and (max-width: 800px) {
     min-height: calc(50vh - 60px);
