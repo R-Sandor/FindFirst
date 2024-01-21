@@ -7,9 +7,17 @@ import {
   useContext,
   useEffect,
   useReducer,
+  useState,
 } from "react";
 
-export const BookmarkContext = createContext<Bookmark[]>([]);
+interface ProviderProps {
+  values: Bookmark[];
+  loading: boolean;
+}
+export const BookmarkContext = createContext<ProviderProps>({
+  values: [],
+  loading: true,
+});
 export const BookmarkDispatchContext = createContext<Dispatch<BookmarkAction>>(
   () => {}
 );
@@ -22,19 +30,30 @@ export function useBookmarkDispatch() {
   return useContext(BookmarkDispatchContext);
 }
 
-
 export function BookmarkProvider({ children }: { children: React.ReactNode }) {
   const [bookmarks, dispatch] = useReducer(bookmarkReducer, []);
+  const [isLoading, setIsLoading] = useState(true);
 
+  useEffect(() => {
+    console.log("fetching again")
+    api.getAllBookmarks().then((resp) => {
+      console.log(...resp.data);
+      bookmarks.push(...(resp.data as Bookmark[]));
+      setIsLoading(false);
+    });
+  });
+
+  // clean up hook
   useEffect(() => () => {
-    console.log("clearing up bookmarks")
+    console.log("clearing up bookmarks");
+    setIsLoading(true);
     for (let i = 0; i < bookmarks.length; i++) {
       bookmarks.pop();
     }
   });
 
   return (
-    <BookmarkContext.Provider value={bookmarks}>
+    <BookmarkContext.Provider value={{ values: bookmarks, loading: isLoading }}>
       <BookmarkDispatchContext.Provider value={dispatch}>
         {children}
       </BookmarkDispatchContext.Provider>
