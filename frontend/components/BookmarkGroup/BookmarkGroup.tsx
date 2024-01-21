@@ -1,16 +1,10 @@
-import Bookmark from "@/types/Bookmarks/Bookmark";
 import BookmarkCard from "./bookmark/BookmarkCard";
 import NewBookmarkCard from "./bookmark/NewBookmarkCard";
 import { useBookmarks } from "@/contexts/BookmarkContext";
-import { useEffect, useState } from "react";
-import UseAuth from "@/components/UseAuth";
-import api from "@/api/Api";
 
 // Bookmark group composed of Bookmarks.
 export default function BookmarkGroup() {
   const bookmarks = useBookmarks();
-
-  
 
   return (
     <div>

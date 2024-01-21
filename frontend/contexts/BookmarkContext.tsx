@@ -41,16 +41,15 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
       bookmarks.push(...(resp.data as Bookmark[]));
       setIsLoading(false);
     });
-  });
+  }, []);
 
   // clean up hook
   useEffect(() => () => {
     console.log("clearing up bookmarks");
-    setIsLoading(true);
-    for (let i = 0; i < bookmarks.length; i++) {
+    for(let i = 0; i < bookmarks.length; i++){ 
       bookmarks.pop();
     }
-  });
+  }, []);
 
   return (
     <BookmarkContext.Provider value={{ values: bookmarks, loading: isLoading }}>
