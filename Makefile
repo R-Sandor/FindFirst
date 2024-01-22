@@ -36,8 +36,8 @@ clean:
 	cd server; ./gradlew clean; 
 	cd client; npm ci
 
-
 stop: 
 	@echo "Brute force Kill All" 
+	docker compose down 
 	killall node
 	killall java
