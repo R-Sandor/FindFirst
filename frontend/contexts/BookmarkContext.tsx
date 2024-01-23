@@ -8,6 +8,7 @@ import {
   useEffect,
   useReducer,
   useState,
+  useRef,
 } from "react";
 
 interface ProviderProps {
@@ -19,7 +20,7 @@ export const BookmarkContext = createContext<ProviderProps>({
   loading: true,
 });
 export const BookmarkDispatchContext = createContext<Dispatch<BookmarkAction>>(
-  () => {}
+  () => {},
 );
 
 export function useBookmarks() {
@@ -33,21 +34,18 @@ export function useBookmarkDispatch() {
 export function BookmarkProvider({ children }: { children: React.ReactNode }) {
   const [bookmarks, dispatch] = useReducer(bookmarkReducer, []);
   const [isLoading, setIsLoading] = useState(true);
+  const hasFetched = useRef(false);
 
   useEffect(() => {
-    console.log("fetching again")
-    api.getAllBookmarks().then((resp) => {
-      console.log(...resp.data);
-      bookmarks.push(...(resp.data as Bookmark[]));
-      setIsLoading(false);
-    });
-  }, []);
-
-  // clean up hook
-  useEffect(() => () => {
-    console.log("clearing up bookmarks");
-    for(let i = 0; i < bookmarks.length; i++){ 
-      bookmarks.pop();
+    console.log("fetching");
+    if (bookmarks.length == 0 && !hasFetched.current) {
+      hasFetched.current = true;
+      api.getAllBookmarks().then((resp) => {
+        console.log(resp.data);
+        console.log("dispatching");
+        dispatch({ type: "add", bookmarks: resp.data as Bookmark[] });
+        setIsLoading(false);
+      });
     }
   }, []);
 
@@ -64,17 +62,17 @@ function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
   switch (action.type) {
     case "add": {
       if (action.bookmarks) {
-        bookmarkList.push(...action.bookmarks);
+        console.log("adding");
+        return [...bookmarkList, ...action.bookmarks];
       }
-      return [...bookmarkList];
+      return bookmarkList;
     }
     case "delete": {
-      bookmarkList = bookmarkList.filter((b, i) => b.id !== action.bookmarkId);
       if (action.bookmarkId) {
         const id = parseInt(action.bookmarkId.toString());
         api.deleteBookmarkById(id);
       }
-      return bookmarkList;
+      return bookmarkList.filter((b) => b.id !== action.bookmarkId);
     }
     default: {
       throw Error("Unknown action: " + action.type);
