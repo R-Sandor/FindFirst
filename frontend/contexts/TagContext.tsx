@@ -1,28 +1,32 @@
-import { Dispatch, createContext, useContext, useEffect, useReducer} from "react";
+import {
+  Dispatch,
+  createContext,
+  useContext,
+  useEffect,
+  useReducer,
+} from "react";
 // import { Action } from "rxjs/internal/scheduler/Action";
 import TagAction from "@/types/Bookmarks/TagAction";
 import { TagWithCnt } from "@/types/Bookmarks/Tag";
 
-export interface disapatchInterface { 
- tagsWithCnt: Map<number, TagWithCnt>
- action: TagAction
+export interface disapatchInterface {
+  tagsWithCnt: Map<number, TagWithCnt>;
+  action: TagAction;
 }
 
-export const TagsCntContext = createContext<Map<number, TagWithCnt>>(new Map<number, TagWithCnt>());
-export const TagsCntDispatchContext = createContext<Dispatch<TagAction>>(() => {
-});
+export const TagsCntContext = createContext<Map<number, TagWithCnt>>(
+  new Map<number, TagWithCnt>()
+);
+export const TagsCntDispatchContext = createContext<Dispatch<TagAction>>(
+  () => {}
+);
 
+export function TagCntProvider({ children }: { children: React.ReactNode }) {
+  useEffect(() => () => {
+    tags.clear();
+  });
 
-export function TagCntProvider({ children }: {
-  children: React.ReactNode
-}) {
-
-  useEffect(() => () => { tags.clear() })
-
-  const [tags, dispatch] = useReducer(
-    tagCntReducer,
-    initialTagCnts 
-  );
+  const [tags, dispatch] = useReducer(tagCntReducer, initialTagCnts);
 
   return (
     <TagsCntContext.Provider value={tags}>
@@ -33,34 +37,38 @@ export function TagCntProvider({ children }: {
   );
 }
 
-function tagCntReducer(tagsWithCnt: Map<number, TagWithCnt>, action: TagAction) {
+function tagCntReducer(tagMap: Map<number, TagWithCnt>, action: TagAction) {
+  const tagId = action.tagId;
+  const tagCnt: TagWithCnt | undefined = tagMap.get(action.tagId);
+  // create a deep copy of the existing.
+  const newTagMap = new Map(tagMap);
   switch (action.type) {
     case "add": {
-      console.log("add Tag")
-      console.log(action)
-      let tagCnt: TagWithCnt | undefined = tagsWithCnt.get(action.tagId);
+      console.log("add Tag");
       if (tagCnt) {
-        console.log(tagCnt)
-        tagCnt.count = tagCnt.count + 1;
-        tagsWithCnt.set(action.tagId, tagCnt)
+        newTagMap.set(tagId, {
+          tagTitle: tagCnt.tagTitle,
+          count: tagCnt.count + 1,
+        });
       } else {
-        let tId = action.tagId ? action.tagId : -1;
-        tagsWithCnt.set(action.tagId, {
-          tagTitle: action.tagTitle ,
+        newTagMap.set(tagId, {
+          tagTitle: action.tagTitle,
           count: 1,
         });
       }
-      return new Map(tagsWithCnt);
+      return newTagMap;
     }
     case "delete": {
-      let tagCnt: TagWithCnt | undefined = tagsWithCnt.get(action.tagId);
       console.log("deleting");
       if (tagCnt && tagCnt.count > 1) {
-        tagCnt.count--;
+        newTagMap.set(tagId, {
+          tagTitle: tagCnt.tagTitle,
+          count: tagCnt.count - 1,
+        });
       } else {
-        tagsWithCnt.delete(action.tagId);
+        newTagMap.delete(action.tagId);
       }
-      return new Map(tagsWithCnt);
+      return newTagMap;
     }
     default: {
       throw Error("Unknown action: " + action.type);
@@ -75,6 +83,5 @@ export function useTags() {
 export function useTagsDispatch() {
   return useContext(TagsCntDispatchContext);
 }
-
 
 const initialTagCnts: Map<number, TagWithCnt> = new Map();
