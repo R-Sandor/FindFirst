@@ -54,7 +54,10 @@ public class BookmarkService {
 
   public void deleteBookmark(Long bookmarkId) {
     if (bookmarkId != null) {
-      bookmarkRepository.deleteById(bookmarkId);
+      Optional<Bookmark> bookmark = bookmarkRepository.findById(bookmarkId);
+      if(bookmark.isPresent()) { 
+        bookmarkRepository.deleteById(bookmarkId);
+      }
     }
   }
 
