@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,7 +24,7 @@ public class BookmarkService {
   }
 
   public Optional<Bookmark> findById(Long id) {
-    return id == null? Optional.ofNullable(null): bookmarkRepository.findById(id);
+    return id == null ? Optional.ofNullable(null) : bookmarkRepository.findById(id);
   }
 
   public Bookmark addBookmark(AddBkmkReq reqBkmk) throws Exception {
@@ -43,20 +44,32 @@ public class BookmarkService {
   }
 
   public List<Bookmark> addBookmarks(List<AddBkmkReq> bookmarks) throws Exception {
-    return bookmarks.stream().map(t -> {
-      try {
-        return addBookmark(t);
-      } catch (Exception e) {
-        return null;
-      }
-    }).toList();
+    return bookmarks.stream()
+        .map(
+            t -> {
+              try {
+                return addBookmark(t);
+              } catch (Exception e) {
+                return null;
+              }
+            })
+        .toList();
   }
 
   public void deleteBookmark(Long bookmarkId) {
     if (bookmarkId != null) {
       Optional<Bookmark> bookmark = bookmarkRepository.findById(bookmarkId);
-      if(bookmark.isPresent()) { 
-        bookmarkRepository.deleteById(bookmarkId);
+      if (bookmark.isPresent()) {
+        try {
+          bookmarkRepository.deleteById(bookmarkId);
+          bookmarkRepository.flush();
+
+        } catch (ObjectOptimisticLockingFailureException exception) {
+          // I don't know a fool proof way of preventing this error other than blocking on
+          // the method.
+          // Which would not be ideal given its a controller and the error itself
+          // resolves.
+        }
       }
     }
   }
