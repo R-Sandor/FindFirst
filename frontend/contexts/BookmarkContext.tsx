@@ -65,14 +65,17 @@ function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
         console.log("adding");
         return [...bookmarkList, ...action.bookmarks];
       }
-      return bookmarkList;
+      return [...bookmarkList];
     }
     case "delete": {
+      console.log("DELETE")
       if (action.bookmarkId) {
+        const found = bookmarkList.filter((b) => b.id == action.bookmarkId).length
+        console.log("FOUND ", found)
         const id = parseInt(action.bookmarkId.toString());
         api.deleteBookmarkById(id);
       }
-      return bookmarkList.filter((b) => b.id !== action.bookmarkId);
+      return [...bookmarkList.filter((b) => b.id !== action.bookmarkId)];
     }
     default: {
       throw Error("Unknown action: " + action.type);

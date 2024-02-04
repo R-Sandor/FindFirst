@@ -6,54 +6,72 @@ import {
 } from "@/contexts/TagContext";
 import useAuth from "@components/UseAuth";
 import api from "@/api/Api";
-import styles from './tag.module.scss'
 import { TagReqPayload, TagWithCnt } from "@/types/Bookmarks/Tag";
+import styles from './tag.module.scss'
+
+
 
 const TagList = () => {
   const userAuth = useAuth();
   const tagMap = useTags();
   const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<string[]>([])
   useEffect(() => {
     if (userAuth) {
       api.getAllTags().then((results) => {
-        const tags: TagReqPayload[] =  results.data as TagReqPayload[]
+
+        const tags: TagReqPayload[] = results.data as TagReqPayload[]
         console.log("getting all Tags:", tags);
         for (let tag of tags) {
-          const twc: TagWithCnt = { 
+          const twc: TagWithCnt = {
             tagTitle: tag.tag_title,
             count: tag.bookmarks.length
           }
-          tagMap.set(tag.id,  twc);
+          tagMap.set(tag.id, twc);
         }
-      }).then(() => { 
+      }).then(() => {
         setLoading(false);
       });
     }
   }, [userAuth]);
+
+  function selectTag(event: any, title: string) {
+    const idx = selected.indexOf(title)
+    console.log(idx)
+    idx >= 0 ? setSelected(selected.splice(idx, 1)) : setSelected([...selected, title])
+    const current = event.target.classList;
+    event.target.classList.add(styles.on)
+  }
+
+  function setStyle(title: string) {
+
+  }
 
   let groupItems: any = [];
   tagMap.forEach((tagCnt, key) => {
     groupItems.push(
       <ListGroup.Item
         key={key}
-        className="d-flex justify-content-between align-items-start"
+        type="button"
+        className={`d-flex btn justify-content-between align-items-start`}
+        onClick={(event) => selectTag(event, tagCnt.tagTitle)}
       >
         {tagCnt.tagTitle}
-        <Badge bg="primary" pill>
+        < Badge bg="primary" pill >
           {tagCnt.count}
-        </Badge>
-      </ListGroup.Item>
+        </Badge >
+      </ListGroup.Item >
     );
   });
 
   if (groupItems.length == 0) {
-      groupItems.push(
+    groupItems.push(
       <ListGroup.Item className="h-10 d-flex justify-content-between align-items-start">
         Tag List
         <Badge bg="primary" pill>
-          Tag Count!
+          Count
         </Badge>
-      </ListGroup.Item>) 
+      </ListGroup.Item>)
   }
 
   return (
