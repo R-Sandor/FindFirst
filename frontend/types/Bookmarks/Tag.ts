@@ -14,5 +14,6 @@ export interface TagReqPayload {
 // Tag with count associated bookmarks.
 export interface TagWithCnt {
   tagTitle: string;
+  associatedBkmks: Bookmark[]
   count: number;
 }

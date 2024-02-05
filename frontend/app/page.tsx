@@ -5,6 +5,7 @@ import UseAuth from "@components/UseAuth";
 import TagList from "@components/tag/TagList";
 import BookmarkGroup from "@components/BookmarkGroup/BookmarkGroup";
 import tagStyles from '@/styles/tag.module.scss'
+import { SelectedTagProvider } from "@/contexts/SelectedContext";
 
 export default function App() {
   const userAuth = UseAuth();
@@ -18,14 +19,16 @@ export default function App() {
   return userAuth ? (
     <BookmarkProvider>
       <TagCntProvider>
-        <div className="row">
-          <div className={`col-md-4 col-lg-3 ${tagStyles.tagList}`}>
-            <TagList />
+        <SelectedTagProvider>
+          <div className="row">
+            <div className={`col-md-4 col-lg-3 ${tagStyles.tagList}`}>
+              <TagList />
+            </div>
+            <div className={`col-md-8 col-lg-9`}>
+              <BookmarkGroup />
+            </div>
           </div>
-          <div className={`col-md-8 col-lg-9`}>
-            <BookmarkGroup />
-          </div>
-        </div>
+        </SelectedTagProvider>
       </TagCntProvider>
     </BookmarkProvider>
   ) : (

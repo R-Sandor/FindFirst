@@ -7,7 +7,7 @@ import DeleteModal from "./DeleteModal";
 import "./bookmarkCard.scss";
 import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
-import  Tag  from "@/types/Bookmarks/Tag";
+import Tag from "@/types/Bookmarks/Tag";
 import api from "@/api/Api";
 
 interface BookmarkProp {
@@ -24,11 +24,11 @@ async function addTagToBookmark(
   bookmark: Bookmark,
   trimmedInput: string
 ): Promise<TagAction> {
-  console.log("trimmedInput", trimmedInput);
   let action: TagAction = {
     type: "add",
     tagId: -1,
     tagTitle: "",
+    bookmark: bookmark
   };
   await api.addBookmarkTag(bookmark?.id, trimmedInput).then((response) => {
     // It will always be the last index since it was the last added.
@@ -85,7 +85,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
       const idx = getIdxFromTitle(tag.tag_title);
       const tagId = bookmark.tags[idx].id;
       // update the sidebar.
-      let action: TagAction = { type: "delete", tagId: tagId, tagTitle: "" };
+      let action: TagAction = { type: "delete", tagId: tagId, tagTitle: "", bookmark };
       dispatch(action);
     });
   }
@@ -101,7 +101,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
     setStrTags(titles);
 
     // update the sidebar.
-    let action: TagAction = { type: "delete", tagId: tagId, tagTitle: "" };
+    let action: TagAction = { type: "delete", tagId: tagId, tagTitle: "", bookmark };
     dispatch(action);
   };
 
@@ -131,7 +131,6 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
       console.log(strTags);
       setStrTags([...strTags]);
       console.log("input :", input);
-      let ltag: Tag;
       addTagToBookmark(bookmark, trimmedInput).then((action) => {
         dispatch(action);
       });
@@ -165,7 +164,7 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
         />
         <Card.Body>
           <Card.Title>{bookmark.title}</Card.Title>
-          <Card.Link href={bookmark.url}>{bookmark.url}</Card.Link> 
+          <Card.Link href={bookmark.url}>{bookmark.url}</Card.Link>
         </Card.Body>
         <Card.Footer className="card-footer">
           <div className="container">

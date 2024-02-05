@@ -8,6 +8,8 @@ import {
 // import { Action } from "rxjs/internal/scheduler/Action";
 import TagAction from "@/types/Bookmarks/TagAction";
 import { TagWithCnt } from "@/types/Bookmarks/Tag";
+import { act } from "react-dom/test-utils";
+import Bookmark from "@type/Bookmarks/Bookmark";
 
 export interface disapatchInterface {
   tagsWithCnt: Map<number, TagWithCnt>;
@@ -18,7 +20,7 @@ export const TagsCntContext = createContext<Map<number, TagWithCnt>>(
   new Map<number, TagWithCnt>()
 );
 export const TagsCntDispatchContext = createContext<Dispatch<TagAction>>(
-  () => {}
+  () => { }
 );
 
 export function TagCntProvider({ children }: { children: React.ReactNode }) {
@@ -42,18 +44,26 @@ function tagCntReducer(tagMap: Map<number, TagWithCnt>, action: TagAction) {
   const tagCnt: TagWithCnt | undefined = tagMap.get(action.tagId);
   // create a deep copy of the existing.
   const newTagMap = new Map(tagMap);
+
+  const bkmk = action.bookmark;
+
+
   switch (action.type) {
     case "add": {
       console.log("add Tag");
       if (tagCnt) {
+        console.log(action.bookmark)
+        addBkmkToTag(tagCnt, action.bookmark)
         newTagMap.set(tagId, {
           tagTitle: tagCnt.tagTitle,
           count: tagCnt.count + 1,
+          associatedBkmks: tagCnt.associatedBkmks
         });
       } else {
         newTagMap.set(tagId, {
           tagTitle: action.tagTitle,
           count: 1,
+          associatedBkmks: [bkmk]
         });
       }
       return newTagMap;
@@ -64,6 +74,7 @@ function tagCntReducer(tagMap: Map<number, TagWithCnt>, action: TagAction) {
         newTagMap.set(tagId, {
           tagTitle: tagCnt.tagTitle,
           count: tagCnt.count - 1,
+          associatedBkmks: remBkmkFrmTag(tagCnt, action.bookmark)
         });
       } else {
         newTagMap.delete(action.tagId);
@@ -74,6 +85,29 @@ function tagCntReducer(tagMap: Map<number, TagWithCnt>, action: TagAction) {
       throw Error("Unknown action: " + action.type);
     }
   }
+}
+
+function addBkmkToTag(tagCnt: TagWithCnt, bkmk: Bookmark) {
+  let fnd = false;
+  if (tagCnt) {
+    const associatedBkmks = tagCnt.associatedBkmks;
+    for (let i = 0; i < associatedBkmks.length; i++) {
+      if (associatedBkmks[i].title == bkmk.title) {
+        fnd = true;
+        break;
+      }
+    }
+  }
+  if (!fnd) {
+    console.log("Should add new bookmark")
+    tagCnt?.associatedBkmks.push({ ...bkmk })
+  }
+}
+
+function remBkmkFrmTag(tagCnt: TagWithCnt, bkmk: Bookmark) {
+  return tagCnt.associatedBkmks.filter((b) => {
+    b.title != bkmk.title
+  });
 }
 
 export function useTags() {
