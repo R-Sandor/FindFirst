@@ -95,3 +95,9 @@ nav{
    width: 100%;
   }
 }
+
+
+[data-bs-theme="dark"] {
+  background-color: #717a83;
+
+}

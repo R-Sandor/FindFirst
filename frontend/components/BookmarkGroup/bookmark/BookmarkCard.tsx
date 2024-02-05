@@ -150,11 +150,11 @@ export default function BookmarkCard(bookmarkProp: BookmarkProp) {
   }
 
   return bookmark ? (
-    <div className="px-2">
+    <div className="mx-2">
       <Card className="bookmark-card">
-        <div className="card-header">
+        <div className="card-header w-full">
           <CloseButton
-            className="inline float-right text-sm"
+            className="inline p-2 m-0 float-right text-sm"
             onClick={handleShow}
           />
         </div>

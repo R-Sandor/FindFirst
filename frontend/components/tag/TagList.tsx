@@ -38,13 +38,15 @@ const TagList = () => {
   function selectTag(event: any, title: string) {
     const idx = selected.indexOf(title)
     console.log(idx)
-    idx >= 0 ? setSelected(selected.splice(idx, 1)) : setSelected([...selected, title])
-    const current = event.target.classList;
-    event.target.classList.add(styles.on)
-  }
-
-  function setStyle(title: string) {
-
+    if (idx >= 0) {
+      const updated = [...selected];
+      updated.pop();
+      setSelected(updated)
+      event.target.classList.remove(styles.on)
+    } else {
+      setSelected([...selected, title])
+      event.target.classList.add(styles.on)
+    }
   }
 
   let groupItems: any = [];
@@ -52,14 +54,17 @@ const TagList = () => {
     groupItems.push(
       <ListGroup.Item
         key={key}
-        type="button"
-        className={`d-flex btn justify-content-between align-items-start`}
-        onClick={(event) => selectTag(event, tagCnt.tagTitle)}
+        className="w-full m-0 p-0"
       >
+        <button 
+          onClick={(event) => selectTag(event, tagCnt.tagTitle)}
+          className={`d-flex m-0 w-full btn ${styles.btn} justify-content-between align-items-start`}
+        >
         {tagCnt.tagTitle}
         < Badge bg="primary" pill >
           {tagCnt.count}
         </Badge >
+        </button>
       </ListGroup.Item >
     );
   });
@@ -76,7 +81,7 @@ const TagList = () => {
 
   return (
     <div>
-      {!loading ? <ListGroup className="pt-3">{groupItems}</ListGroup> : <div> loading</div>}
+      {!loading ? <ListGroup className="pt-3 w-full  ml-1 p-0">{groupItems}</ListGroup> : <div> loading</div>}
     </div>
   );
 };
