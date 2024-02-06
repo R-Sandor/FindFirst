@@ -32,6 +32,6 @@ export default function App() {
       </TagCntProvider>
     </BookmarkProvider>
   ) : (
-    <div> Hello Welcome to findfirst. </div>
+    <div></div>
   );
 }

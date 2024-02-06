@@ -20,7 +20,7 @@ export const BookmarkContext = createContext<ProviderProps>({
   loading: true,
 });
 export const BookmarkDispatchContext = createContext<Dispatch<BookmarkAction>>(
-  () => {},
+  () => { },
 );
 
 export function useBookmarks() {
@@ -37,12 +37,9 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
   const hasFetched = useRef(false);
 
   useEffect(() => {
-    console.log("fetching");
     if (bookmarks.length == 0 && !hasFetched.current) {
       hasFetched.current = true;
       api.getAllBookmarks().then((resp) => {
-        console.log(resp.data);
-        console.log("dispatching");
         dispatch({ type: "add", bookmarks: resp.data as Bookmark[] });
         setIsLoading(false);
       });

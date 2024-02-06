@@ -36,14 +36,12 @@ export default function BookmarkGroup() {
     if (selected.length == 0) {
       return bookmarks
     } else {
+      console.log("Selected", selected)
       selected.forEach((selectedTag) => {
-        console.log(selectedTag)
         // get tagId of each selected
         const key = getTagId(tags, selectedTag)
-        console.log(key)
         if (key > 0) {
           const selectedBkmks = tags.get(key)?.associatedBkmks.map((v) => v.id)
-          console.log(selectedBkmks)
           if (selectedBkmks) {
             addIfNotInList(selectedBkmks)
           }

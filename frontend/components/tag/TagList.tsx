@@ -41,16 +41,16 @@ const TagList = () => {
     const idx = selected.indexOf(title)
     console.log(idx)
     if (idx >= 0) {
+      console.log("Selected - remove")
       const updated = [...selected];
-      updated.pop();
-      setSelected(updated)
+      updated.splice(idx, 1);
+      setSelected(updated);
       event.target.classList.remove(styles.on)
-      console.log("HERE")
     } else {
+      console.log("OnSelected - on", title)
       setSelected([...selected, title])
       event.target.classList.add(styles.on)
     }
-    console.log(selected)
   }
 
   let groupItems: any = [];
