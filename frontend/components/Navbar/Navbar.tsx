@@ -1,8 +1,6 @@
 "use client";
 import {
   Navbar,
-  Nav,
-  NavDropdown,
   Form,
   Button,
   ButtonGroup,
@@ -11,6 +9,7 @@ import {
 import { useRouter } from "next/navigation";
 import authService, { AuthStatus } from "@services/auth.service";
 import useAuth from "@components/UseAuth";
+import LightDarkToggle from "./LightDarkToggle";
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
@@ -48,13 +47,15 @@ const GlobalNavbar: React.FC = () => {
   };
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
+    <Navbar expand="lg" className="bg-body-tertiary x">
       <Container>
         <Navbar.Brand onClick={() => router.push("/")} className="mx-3 cursor-pointer">
           FindFirst
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Form className="mx-3">{authButton()}</Form>
+        <div className="mx-3">
+          <LightDarkToggle />
+          {authButton()}</div>
       </Container>
     </Navbar>
   );

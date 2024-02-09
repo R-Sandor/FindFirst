@@ -1,9 +1,9 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import Navbar from '@components/Navbar'
+import Navbar from '@components/Navbar/Navbar'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.min.css'
-import {NavigationEvents} from '@components/navigation-events'
+import { NavigationEvents } from '@components/navigation-events'
 
 export const metadata: Metadata = {
   title: 'FindFirst',
@@ -19,7 +19,7 @@ export default function RootLayout({
     <html lang="en">
       <body data-bs-theme="dark">
         <Navbar />
-        <NavigationEvents/>
+        <NavigationEvents />
         {children}
       </body>
     </html>
