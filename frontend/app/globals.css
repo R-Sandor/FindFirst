@@ -96,8 +96,18 @@ nav{
   }
 }
 
+:root {
+ --tag-list-bg: #DCF2F1
+}
+
+[data-bs-theme="light"] {
+  background-color: #F7FBFC;
+  --tag-list-bg: #D6E6F2;
+
+}
 
 [data-bs-theme="dark"] {
   background-color: #717a83;
+  --tag-list-bg: #2c3437;
 
 }
