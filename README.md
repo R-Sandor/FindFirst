@@ -31,24 +31,15 @@ A hit list of read laters.
 
 ## Running the Application 
 
+test user credentials: 
+`jsmith:test password:password`
+
 Docker: 
 ```
 docker compose up
 ```
 
-Local Stack from the commandline: 
-````
-cd client; pnpm install; pnpm run serve
-# create a new tab/terminal
-cd server; ./gradlew bootRun
-````
-
-default user: 
-`jsmith:test password:password`
-
-
-## Design
-<details>
-  <summary>Click to expand!</summary>
-
-</details>
+Local Stack: 
+```sh 
+make run
+```
