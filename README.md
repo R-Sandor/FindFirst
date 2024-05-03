@@ -10,32 +10,26 @@ searched not only by keyword but semantic meaning.
 Create organization to the copious amount of knowledge available, for students,
 devs, teachers, and the common person.
 
-# Features 
-<details>
-  <summary>Click to expand!</summary>
+## Features 
 
-## Easy Searching
+### Easy Searching
 For example when the user arrives to the page they will have a search bar that is right at the top ready for user to immediately begin doing
 full context page searches. 
 
-## Quick Reference
+### Quick Reference
 This section shows the bookmarks that are frequently referenced. 
 
-## Team Knowledgebase
+### Team Knowledgebase
 In this section the bookmarks become the welcome page for new member to share team knowledge that is relevant to the team.
 
-## RSS Feed from bookmarked sites
+### RSS Feed from bookmarked sites
 Many of the sites a user bookmarks they may also want an RSS feed from, this solves two problems at once.
 
-## Reading list
+### Reading list
 A hit list of read laters. 
 
-## And more to come!
-</details>
 
-# Running the Application 
-<details>
-  <summary>Click to expand!</summary>
+## Running the Application 
 
 Docker: 
 ```
@@ -52,9 +46,8 @@ cd server; ./gradlew bootRun
 default user: 
 `jsmith:test password:password`
 
-</details>
 
-# Design
+## Design
 <details>
   <summary>Click to expand!</summary>
 
