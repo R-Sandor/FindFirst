@@ -1,17 +1,17 @@
-.PHONY= build_server build_client run run_test stop
+.PHONY= build_server build_frontend run run_test stop
 .DEFAULT_GOAL := default 
 CERT_FILE = ./server/src/main/resources/app.key
 
 default: 
-	cd server; ./gradlew clean build
 	$(MAKE) build_server
-	$(MAKE) build_client
+	$(MAKE) build_frontend
 
 build_server: 
-	docker build -t findfirst/server -f ./docker/server/Dockerfile ./
+	cd ./server && ./gradlew clean build
+	docker build -t findfirst/server -f ./docker/server/Dockerfile ./server
 
-build_client: 
-	docker build -t findfirst/client -f ./docker/client/Dockerfile ./client
+build_frontend: 
+	docker build -t findfirst/frontend -f ./docker/frontend/Dockerfile ./frontend
 
 run: 
 	@echo ">Running frontend and server locally."
