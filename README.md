@@ -36,9 +36,9 @@ Docker:
 docker compose up
 ```
 
-On the commandline: 
+Local Stack from the commandline: 
 ````
-cd client; npm run serve
+cd client; pnpm install; pnpm run serve
 # create a new tab/terminal
 cd server; ./gradlew bootRun
 ````
