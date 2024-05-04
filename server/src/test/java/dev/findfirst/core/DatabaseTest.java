@@ -10,7 +10,6 @@ import dev.findfirst.core.repository.BookmarkRepository;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -18,7 +17,6 @@ import org.springframework.boot.testcontainers.service.connection.ServiceConnect
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
 
 @Testcontainers
 @DataJpaTest
@@ -28,11 +26,9 @@ public class DatabaseTest {
 
   @MockBean private TenantContext tenantContext;
 
-  @Value("${findfirstaticst.app.db}") String dbImage;
-
-
   @Container @ServiceConnection
-  private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
+  private static final PostgreSQLContainer<?> postgres =
+      new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
   @Autowired BookmarkRepository bkmkRepo;
 

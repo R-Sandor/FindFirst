@@ -1,5 +1,6 @@
 spring.mail.host: localhost
 spring.mail.port: 1025
 spring.mail.username: findfirst@localmail.dev
+findfirst.app.frontend-url: https://example.com
 # spring.mail.properties.mail.smtp.auth: false
 # spring.mail.properties.mail.smtp.starttls.enable: false
