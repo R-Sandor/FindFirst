@@ -1,6 +1,6 @@
 package dev.findfirst.core.controller;
 
-import static dev.findfirst.core.controller.HttpUtility.getHttpEntity;
+import static dev.findfirst.utilities.HttpUtility.getHttpEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -28,7 +28,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 public class TagControllerTest {
 
   @Container @ServiceConnection
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine");
+  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
   @Autowired TagRepository tagRepo;
 

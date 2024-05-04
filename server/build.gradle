@@ -69,6 +69,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 
+	testCompileOnly 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:3.2.0'
 	testImplementation 'org.springframework.security:spring-security-test:6.2.0'
 
