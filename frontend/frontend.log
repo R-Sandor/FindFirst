@@ -2,11 +2,36 @@
 > frontend@0.1.0 dev /home/rsandor/repos/FindFirst/FindFirst/frontend
 > next dev
 
- ⚠ Port 3000 is in use, trying 3001 instead.
- ⚠ Port 3001 is in use, trying 3002 instead.
- ⚠ Port 3002 is in use, trying 3003 instead.
    ▲ Next.js 14.1.0
-   - Local:        http://localhost:3003
+   - Local:        http://localhost:3000
    - Environments: .env.development
 
- ✓ Ready in 1934ms
+ ✓ Ready in 1993ms
+ ○ Compiling /account/login ...
+Browserslist: caniuse-lite is outdated. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+ ✓ Compiled /account/login in 5.2s (1098 modules)
+ ⨯ components/Navbar/LightDarkToggle.tsx (4:52) @ localStorage
+ ⨯ ReferenceError: localStorage is not defined
+    at LightDarkToggle (./components/Navbar/LightDarkToggle.tsx:12:79)
+[0m [90m 2 |[39m[0m
+[0m [90m 3 |[39m [36mexport[39m [36mdefault[39m [36mfunction[39m [33mLightDarkToggle[39m() {[0m
+[0m[31m[1m>[22m[39m[90m 4 |[39m   [36mconst[39m [theme[33m,[39m setTheme] [33m=[39m useState[33m<[39m[33mstring[39m [33m|[39m [36mnull[39m[33m>[39m(localStorage[33m.[39mgetItem([32m'theme'[39m))[33m;[39m[0m
+[0m [90m   |[39m                                                    [31m[1m^[22m[39m[0m
+[0m [90m 5 |[39m[0m
+[0m [90m 6 |[39m   [36mfunction[39m changeTheme() {[0m
+[0m [90m 7 |[39m     [36mif[39m (theme [33m===[39m [32m'dark'[39m [33m||[39m theme [33m==[39m undefined) {[0m
+ ✓ Compiled in 388ms (501 modules)
+ ⨯ components/Navbar/LightDarkToggle.tsx (4:52) @ localStorage
+ ⨯ ReferenceError: localStorage is not defined
+    at LightDarkToggle (./components/Navbar/LightDarkToggle.tsx:12:79)
+[0m [90m 2 |[39m[0m
+[0m [90m 3 |[39m [36mexport[39m [36mdefault[39m [36mfunction[39m [33mLightDarkToggle[39m() {[0m
+[0m[31m[1m>[22m[39m[90m 4 |[39m   [36mconst[39m [theme[33m,[39m setTheme] [33m=[39m useState[33m<[39m[33mstring[39m [33m|[39m [36mnull[39m[33m>[39m(localStorage[33m.[39mgetItem([32m'theme'[39m))[33m;[39m[0m
+[0m [90m   |[39m                                                    [31m[1m^[22m[39m[0m
+[0m [90m 5 |[39m[0m
+[0m [90m 6 |[39m   [36mfunction[39m changeTheme() {[0m
+[0m [90m 7 |[39m     [36mif[39m (theme [33m===[39m [32m'dark'[39m [33m||[39m theme [33m==[39m undefined) {[0m
+ ○ Compiling / ...
+ ✓ Compiled / in 718ms (1177 modules)

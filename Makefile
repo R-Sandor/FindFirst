@@ -56,5 +56,10 @@ ifneq (,$(wildcard backend.pid))
 	kill $(file < backend.pid)
 	rm -f backend.pid
 endif
-	@-kill -9 $$(cat frontend.pid) $$(pgrep "next-server") $$(pgrep -f "next dev")
+
+	@-kill -9 $$(pgrep node) $$(pgrep "next-server") $$(pgrep -f "next dev")
+
+ifneq (,$(wildcard frontend.pid)) 
+	kill $(file < frontend.pid)
 	rm -f frontend.pid
+endif
