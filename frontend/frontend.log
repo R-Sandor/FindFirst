@@ -1,0 +1,12 @@
+
+> frontend@0.1.0 dev /home/rsandor/repos/FindFirst/FindFirst/frontend
+> next dev
+
+ ⚠ Port 3000 is in use, trying 3001 instead.
+ ⚠ Port 3001 is in use, trying 3002 instead.
+ ⚠ Port 3002 is in use, trying 3003 instead.
+   ▲ Next.js 14.1.0
+   - Local:        http://localhost:3003
+   - Environments: .env.development
+
+ ✓ Ready in 1934ms

@@ -32,7 +32,7 @@ A hit list of read laters.
 ## Running the Application 
 
 test user credentials: 
-`jsmith:test password:password`
+`jsmith:test`
 
 Docker: 
 ```

@@ -21,16 +21,29 @@ ifeq ( ,$(wildcard $(CERT_FILE)))
 	@echo ">Creating certificates"
 	cd ./conf && ./createServerKeys.sh
 endif
-	@echo ">>Mailhog container starting:"
+	@echo ">>>>>>> Mailhog container starting:"
+	@echo "=============================================================================="
 	docker compose up mail -d
 
-	@echo ">frontend"
+	@echo ">>>>>>> Frontend"
+	@echo "=============================================================================="
 	cd frontend && pnpm install 
-	@echo ">>Start frontend"
-	cd frontend && pnpm run dev & echo "$$!" > frontend.pid
+	@echo ">> Starting Frontend"
+	cd frontend && pnpm run dev > frontend.log 2>&1 & echo "$$!" > frontend.pid
+	@echo "==============================================================================\n"
 
-	@echo ">Spring Boot Backend"
-	cd server && nohup ./gradlew bootrun >application.log 2>&1 & echo "$$!" > backend.pid
+	@echo ">>>>>>> Backend"
+	@echo "=============================================================================="
+	@echo ">> Building and running backend"
+	cd server && nohup ./gradlew bootrun > application.log 2>&1 & echo "$$!" > backend.pid
+	@echo "==============================================================================\n"
+
+	@echo "=============================================================================="
+	@echo "WELCOME: navigate to localhost:3000"
+	@echo "==============================================================================\n"
+	@echo "User: jsmith"
+	@echo "Password: test\n"
+	@echo "==============================================================================\n"
 
 clean: 
 	cd server; ./gradlew clean; 
