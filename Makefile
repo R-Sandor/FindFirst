@@ -1,4 +1,4 @@
-.PHONY= build_server build_frontend run run_test stop
+.PHONY= build_server build_frontend run run_test stop test_run
 .DEFAULT_GOAL := default 
 CERT_FILE = ./server/src/main/resources/app.key
 
@@ -27,17 +27,21 @@ endif
 	@echo ">frontend"
 	cd frontend && pnpm install 
 	@echo ">>Start frontend"
-	cd frontend && pnpm run dev &
+	cd frontend && pnpm run dev & echo "$$!" > frontend.pid
 
 	@echo ">Spring Boot Backend"
-	cd server && nohup ./gradlew bootrun >application.log 2>&1 & 
+	cd server && nohup ./gradlew bootrun >application.log 2>&1 & echo "$$!" > backend.pid
 
 clean: 
 	cd server; ./gradlew clean; 
 	cd client; npm ci
 
 stop: 
-	@echo "Brute force Kill All" 
-	docker compose down 
-	killall node
-	killall java
+	@echo "Stopping all started processes on host."
+	docker compose down
+ifneq (,$(wildcard backend.pid)) 
+	kill $(file < backend.pid)
+	rm backend.pid
+endif
+	@-kill -9 $$(cat frontend.pid) $$(pgrep "next-server") $$(pgrep -f "next dev")
+	rm -f frontend.pid
