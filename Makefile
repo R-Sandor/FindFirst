@@ -41,7 +41,7 @@ stop:
 	docker compose down
 ifneq (,$(wildcard backend.pid)) 
 	kill $(file < backend.pid)
-	rm backend.pid
+	rm -f backend.pid
 endif
 	@-kill -9 $$(cat frontend.pid) $$(pgrep "next-server") $$(pgrep -f "next dev")
 	rm -f frontend.pid
