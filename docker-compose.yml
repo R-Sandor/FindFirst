@@ -1,4 +1,3 @@
-version: '3'
 services: 
   frontend:
     build: 
@@ -15,9 +14,8 @@ services:
   db: 
     image: postgres:16.2-alpine3.19 
     environment:
-        # Local development only.
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=admin
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - 5432:5432
   mail: 
