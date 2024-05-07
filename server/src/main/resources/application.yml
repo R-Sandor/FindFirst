@@ -1,14 +1,3 @@
-spring:
-  mail:
-    host: smtp.mail.yahoo.com
-    port: 587
-    username: ########
-    password: ########
-    protocol: smtp
-    properties.mail.smtp:
-      auth: true
-      starttls.enable: true
-
 server:
   port: 9000
 

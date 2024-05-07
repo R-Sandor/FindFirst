@@ -8,10 +8,10 @@ default:
 
 build_server: 
 	cd ./server && ./gradlew clean build
-	docker build -t findfirst/server -f ./docker/server/Dockerfile ./server
+	docker build -t findfirst-server -f ./docker/server/Dockerfile ./server
 
 build_frontend: 
-	docker build -t findfirst/frontend -f ./docker/frontend/Dockerfile ./frontend
+	docker build -t findfirst-frontend -f ./docker/frontend/Dockerfile ./frontend
 
 run: 
 	@echo ">Running frontend and server locally."

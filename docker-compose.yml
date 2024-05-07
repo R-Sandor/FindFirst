@@ -1,11 +1,11 @@
 services: 
-  frontend:
+  findfirst-frontend:
     build: 
       dockerfile: ../docker/frontend/Dockerfile
       context: ./frontend
     ports: 
      - "8080:8080"
-  backend:
+  findfirst-server:
     build: 
       dockerfile: ../docker/server/Dockerfile
       context: ./server
