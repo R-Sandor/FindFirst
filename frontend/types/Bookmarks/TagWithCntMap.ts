@@ -1,5 +1,4 @@
-import Tag from "./Tag";
-import TagWithCnt from "./TagWithCnt";
+import TagWithCnt from "./Tag";
 
 // List of Tags that contain their count.
 export default interface TagWithCntMap  {

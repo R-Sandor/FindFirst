@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import axios from "axios";
 import { credentials } from "../app/account/login/page";
 export interface User {
@@ -16,11 +16,11 @@ export enum AuthStatus {
 
 export type AuthObserver = (autherizedState: AuthStatus) => void;
 
-class AuthService  {
+class AuthService {
   private observers: AuthObserver[] = [];
 
   private authorizedState: AuthStatus = AuthStatus.Unauthorized;
-  
+
   public attach(observer: AuthObserver) {
     this.observers.push(observer);
   }
@@ -30,18 +30,23 @@ class AuthService  {
   }
 
   public getUser(): User | null {
-     let user = localStorage.getItem("user");
-     return user ? JSON.parse(user) : null;
+    if (typeof window == "undefined") {
+      let user = localStorage.getItem("user");
+      return user ? JSON.parse(user) : null;
+    }
+    return null
   }
-  public setUser(user: User | null){ 
-    localStorage.setItem("user", JSON.stringify(user)) 
+  public setUser(user: User | null) {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("user", JSON.stringify(user));
+    }
   }
 
   public getAuthorized(): AuthStatus {
     return this.getUser() ? AuthStatus.Authorized : AuthStatus.Unauthorized;
   }
   public async login(credentials: credentials): Promise<boolean> {
-    console.log("user attempt to login")
+    console.log("user attempt to login");
     let success = false;
     await axios({
       url: SIGNIN_URL,
@@ -52,35 +57,39 @@ class AuthService  {
         password: credentials.password,
       },
     }).then((response) => {
-      console.log("signin attempt")
+      console.log("signin attempt");
       if (response.status == 200) {
         let signedinUser: User = {
           username: credentials.username,
           refreshToken: response.data.refreshToken,
         };
-        this.notify(this.authorizedState = AuthStatus.Authorized);
-        localStorage.setItem("user", JSON.stringify(signedinUser));
-        success = true;
+        this.notify((this.authorizedState = AuthStatus.Authorized));
+        if (typeof window !== "undefined") {
+          localStorage.setItem("user", JSON.stringify(signedinUser));
+          success = true;
+        }
       }
     });
     return success;
   }
 
   public logout() {
-    localStorage.removeItem("user");
-    this.authorizedState = AuthStatus.Unauthorized
-    this.notify(AuthStatus.Unauthorized);
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("user");
+      this.authorizedState = AuthStatus.Unauthorized;
+      this.notify(AuthStatus.Unauthorized);
+    }
   }
 
   handleAuth() {}
 
   public authCheck(url: string): AuthStatus {
     // redirect to login page if accessing a private page and not logged in
-    const publicPaths = ["/account/login","/account/signup"];
+    const publicPaths = ["/account/login", "/account/signup"];
     const path = url.split("?")[0];
     return !this.getUser() && !publicPaths.includes(path)
-        ? AuthStatus.Unauthorized
-        : AuthStatus.Authorized;
+      ? AuthStatus.Unauthorized
+      : AuthStatus.Authorized;
   }
 
   private notify(authorizedState: AuthStatus) {
@@ -88,7 +97,6 @@ class AuthService  {
       observer(authorizedState);
     });
   }
-  
 }
 const authService = new AuthService();
 export default authService;

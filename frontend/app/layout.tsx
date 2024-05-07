@@ -4,6 +4,7 @@ import Navbar from '@components/Navbar/Navbar'
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.min.css'
 import { NavigationEvents } from '@components/navigation-events'
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'FindFirst',
@@ -19,7 +20,9 @@ export default function RootLayout({
     <html lang="en">
       <body data-bs-theme="dark">
         <Navbar />
-        <NavigationEvents />
+        <Suspense>
+          <NavigationEvents />
+        </Suspense>
         {children}
       </body>
     </html>

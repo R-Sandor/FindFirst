@@ -1,4 +1,4 @@
-import { defineConfig, configDefaults } from 'vitest/config'
+import { defineConfig, configDefaults, UserConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
 import tsconfigPaths from 'vite-tsconfig-paths'
 import path from 'path'
@@ -7,7 +7,7 @@ const defaults =
        configDefaults.coverage.exclude? configDefaults.coverage.exclude: []
  
 export default defineConfig({
-  plugins: [react(), tsconfigPaths()],
+  plugins: [react(), tsconfigPaths()] as UserConfig["plugins"],
   test: {
     environment: 'jsdom',
     globals: true,
