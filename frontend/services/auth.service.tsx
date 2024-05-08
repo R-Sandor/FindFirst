@@ -30,21 +30,18 @@ class AuthService {
   }
 
   public getUser(): User | null {
-    if (typeof window == "undefined") {
       let user = localStorage.getItem("user");
       return user ? JSON.parse(user) : null;
-    }
-    return null
   }
+
   public setUser(user: User | null) {
-    if (typeof window !== "undefined") {
       localStorage.setItem("user", JSON.stringify(user));
-    }
   }
 
   public getAuthorized(): AuthStatus {
     return this.getUser() ? AuthStatus.Authorized : AuthStatus.Unauthorized;
   }
+
   public async login(credentials: credentials): Promise<boolean> {
     console.log("user attempt to login");
     let success = false;
@@ -64,21 +61,17 @@ class AuthService {
           refreshToken: response.data.refreshToken,
         };
         this.notify((this.authorizedState = AuthStatus.Authorized));
-        if (typeof window !== "undefined") {
-          localStorage.setItem("user", JSON.stringify(signedinUser));
-          success = true;
-        }
+        localStorage.setItem("user", JSON.stringify(signedinUser));
+        success = true;
       }
     });
     return success;
   }
 
   public logout() {
-    if (typeof window !== "undefined") {
       localStorage.removeItem("user");
       this.authorizedState = AuthStatus.Unauthorized;
       this.notify(AuthStatus.Unauthorized);
-    }
   }
 
   handleAuth() {}
@@ -98,5 +91,6 @@ class AuthService {
     });
   }
 }
+
 const authService = new AuthService();
 export default authService;

@@ -11,8 +11,6 @@ services:
       context: ./server
     ports: 
      - "9000:9000"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
   db: 
     image: postgres:16.2-alpine3.19 
     environment:
@@ -20,8 +18,3 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - 5432:5432
-  mail: 
-    image: mailhog/mailhog:latest
-    ports: 
-      - 1025:1025
-      - 8025:8025

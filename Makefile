@@ -7,6 +7,10 @@ default:
 	$(MAKE) build_frontend
 
 build_server: 
+ifeq ( ,$(wildcard $(CERT_FILE)))
+	@echo ">Creating certificates"
+	cd ./conf && ./createServerKeys.sh
+endif
 	cd ./server && ./gradlew clean build
 	docker build -t findfirst-server -f ./docker/server/Dockerfile ./server
 
