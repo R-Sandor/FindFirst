@@ -7,12 +7,12 @@ default:
 	$(MAKE) build_frontend
 
 build_server: 
+	cd ./server && ./gradlew clean build
 ifeq ( ,$(wildcard $(CERT_FILE)))
 	@echo ">Creating certificates"
-	cd ./conf && ./createServerKeys.sh
+	cd ./server/scripts && ./createServerKeys.sh
 endif
-	cd ./server && ./gradlew clean build
-	docker build -t findfirst-server -f ./docker/server/Dockerfile ./server
+	docker build -t findfirst-server -f ./docker/server/Dockerfile.buildlocal ./server
 
 build_frontend: 
 	docker build -t findfirst-frontend -f ./docker/frontend/Dockerfile ./frontend
@@ -23,7 +23,7 @@ run:
 	docker compose down
 ifeq ( ,$(wildcard $(CERT_FILE)))
 	@echo ">Creating certificates"
-	cd ./conf && ./createServerKeys.sh
+	cd ./server/scripts && ./createServerKeys.sh
 endif
 	@echo ">>>>>>> Mailhog container starting:"
 	@echo "=============================================================================="

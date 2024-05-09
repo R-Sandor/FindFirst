@@ -11,7 +11,6 @@ version = '1.0.0'
 java {
 	sourceCompatibility = JavaVersion.VERSION_17
 }
-compileJava.dependsOn 'spotlessApply'
 
 spotless {
 	// optional: limit format enforcement to just the files changed by this feature branch
