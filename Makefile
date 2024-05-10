@@ -7,11 +7,11 @@ default:
 	$(MAKE) build_frontend
 
 build_server: 
-	cd ./server && ./gradlew clean build
 ifeq ( ,$(wildcard $(CERT_FILE)))
 	@echo ">Creating certificates"
 	cd ./server/scripts && ./createServerKeys.sh
 endif
+	cd ./server && ./gradlew clean build
 	docker build -t findfirst-server -f ./docker/server/Dockerfile.buildlocal ./server
 
 build_frontend: 
