@@ -1,7 +1,7 @@
-#! /bin/sh
+#! /bin/bash
 outpath=../src/main/resources
-
 if [[ $# -eq 0 ]] ; then
+  cd "$(dirname "$0")"
   outpath=../src/main/resources
 else 
   outpath="$1"

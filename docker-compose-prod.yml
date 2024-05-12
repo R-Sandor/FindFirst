@@ -11,10 +11,17 @@ services:
       context: ./server
     ports: 
      - "9000:9000"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
   db: 
     image: postgres:16.2-alpine3.19 
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    -volumes:
+      - pgdata:/var/lib/postgresql/data 
     ports:
-      - 5432:5432
+      - 5432
