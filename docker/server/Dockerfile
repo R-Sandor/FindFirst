@@ -1,7 +1,7 @@
 
 FROM alpine:3.19.1 as linux
 WORKDIR /keys
-RUN apk add openssl openjdk17
+RUN apk add openssl openjdk17 
 COPY ./scripts/createServerKeys.sh  .
 RUN chmod +x ./createServerKeys.sh
 RUN ./createServerKeys.sh .

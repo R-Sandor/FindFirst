@@ -1,10 +1,11 @@
-.PHONY= build_server build_frontend run run_test stop test_run
+.PHONY= build_server build_frontend run_local run_test stop test_run db
 .DEFAULT_GOAL := default 
 CERT_FILE = ./server/src/main/resources/app.key
 
 default: 
 	$(MAKE) build_server
 	$(MAKE) build_frontend
+	$(MAKE) db
 
 build_server: 
 ifeq ( ,$(wildcard $(CERT_FILE)))
@@ -17,7 +18,13 @@ endif
 build_frontend: 
 	docker build -t findfirst-frontend -f ./docker/frontend/Dockerfile ./frontend
 
+db: 
+	docker build -t findfirst-db ./docker/postgres
+
 run: 
+	docker compose up
+
+run_local: 
 	@echo ">Running frontend and server locally."
 	@echo ">>Stop all compose services"
 	docker compose down
@@ -55,7 +62,7 @@ clean:
 
 stop: 
 	@echo "Stopping all started processes on host."
-	docker compose down
+	docker compose down --remove-orphans
 ifneq (,$(wildcard backend.pid)) 
 	kill $(file < backend.pid)
 	rm -f backend.pid

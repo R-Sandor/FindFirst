@@ -12,15 +12,19 @@ services:
     ports: 
      - "9000:9000"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/findfirst
+      - SPRING_PROFILES_ACTIVE=staging
   db: 
-    image: postgres:16.2-alpine3.19 
+    build: 
+      context: ./docker/postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - 5432:5432
+    volumes:
+      - ./scripts/postgres:/docker-entrypoint-initd.d
   mail: 
     image: mailhog/mailhog:latest
     ports: 
