@@ -23,8 +23,6 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - 5432:5432
-    volumes:
-      - ./scripts/postgres:/docker-entrypoint-initd.d
   mail: 
     image: mailhog/mailhog:latest
     ports: 
