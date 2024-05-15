@@ -1,3 +1,4 @@
 # log files
 *.log
-**/application-prod.properties
+**/prod.yml
+**/prod.properties
