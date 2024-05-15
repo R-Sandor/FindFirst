@@ -12,16 +12,18 @@ services:
     ports: 
      - "9000:9000"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/postgres
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/findfirst
       - SPRING_PROFILES_ACTIVE=prod
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - ./server/prod.yml:/app/prod.yml
   db: 
-    image: postgres:16.2-alpine3.19 
+    build: 
+      context: ./docker/postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    -volumes:
-      - pgdata:/var/lib/postgresql/data 
+      - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - 5432
