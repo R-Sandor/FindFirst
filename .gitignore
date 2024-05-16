@@ -49,7 +49,7 @@ node_modules
 # local env files
 .env.local
 .env.*.local
-.production.env
+.prod.env
 
 
 # Log files

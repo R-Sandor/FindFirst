@@ -12,8 +12,8 @@ services:
     ports: 
      - "9000:9000"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/findfirst
-      - SPRING_PROFILES_ACTIVE=prod
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
@@ -26,4 +26,4 @@ services:
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
-      - 5432
+      - 5432:5432
