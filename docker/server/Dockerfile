@@ -8,7 +8,7 @@ RUN ./gradlew jar
 
 FROM linux as runner
 WORKDIR /app
-COPY --from=builder /app/build/libs/findfirst-1.0.0.jar findfirst.jar
+COPY --from=builder /app/build/libs/findfirst-1.0.0-plain.jar findfirst.jar
 COPY scripts/ scripts/
 RUN chmod u+x scripts/*
 
