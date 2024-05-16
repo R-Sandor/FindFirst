@@ -1,5 +1,6 @@
 
 FROM alpine:3.19.1 as linux
+RUN apk add openssl openjdk17 
 
 FROM openjdk:21-oracle AS builder
 WORKDIR /app
