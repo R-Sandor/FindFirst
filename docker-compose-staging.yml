@@ -13,9 +13,10 @@ services:
      - "9000:9000"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/findfirst
-      - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_PROFILES_ACTIVE=staging
   db: 
-    image: postgres:16.2-alpine
+    build: 
+      context: ./docker/postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
