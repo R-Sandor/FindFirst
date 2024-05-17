@@ -45,8 +45,7 @@ public class FindFirstApplication {
         Arrays.asList(
             "https://localhost:3000",
             "http://localhost:3000",
-            "https://findfirst.dev:3000",
-            "http://findfirst.dev:3000",
+            "https://findfirst.dev",
             "http://localhost",
             "http://127.0.0.1"));
     config.setAllowedMethods(Collections.singletonList("*"));
