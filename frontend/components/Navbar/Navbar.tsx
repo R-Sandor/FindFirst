@@ -52,7 +52,6 @@ const GlobalNavbar: React.FC = () => {
         <Navbar.Brand onClick={() => router.push("/")} className="mx-3 cursor-pointer">
           FindFirst
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <div className="mx-3">
           <LightDarkToggle />
           {authButton()}</div>
