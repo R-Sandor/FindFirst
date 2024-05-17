@@ -6,7 +6,7 @@ export interface User {
   refreshToken: string;
 }
 
-const SIGNIN_URL = "http://localhost:9000/user/signin";
+const SIGNIN_URL = process.env.NEXT_PUBLIC_SERVER_URL +"/user/signin";
 
 // Used to declare if user is logged-in.
 export enum AuthStatus {
