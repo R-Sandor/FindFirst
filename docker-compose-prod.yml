@@ -18,6 +18,9 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - ./server/prod.yml:/app/prod.yml
+    depends_on:
+      - db
+    restart: always
   db: 
     build: 
       context: ./docker/postgres
