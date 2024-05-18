@@ -1,5 +1,5 @@
+![FindFirst Logo](./docs/assets/images/findFirstlogo-dark.png#gh-dark-mode-only)
 ![FindFirst Logo](./docs/assets/images/findFirstlogo-light.png#gh-light-mode-only)
-![FindFirst Logo](./docs/assets/images/findFirstlogo-light.png#gh-dark-mode-only)
 
 <br>
 
