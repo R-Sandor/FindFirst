@@ -1,4 +1,5 @@
-<img src="./docs/assets/images/findFirstBanner.png" width="100%" height="100%"> 
+![FindFirst Logo](./docs/assets/images/findFirstlogo-light.png#gh-light-mode-only)
+![FindFirst Logo](./docs/assets/images/findFirstlogo-light.png#gh-dark-mode-only)
 
 <br>
 
