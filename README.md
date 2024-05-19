@@ -44,3 +44,6 @@ Local Stack:
 ```sh 
 make run
 ```
+
+## Architecture 
+About the [Architecture](./docs/Architecture.md)
