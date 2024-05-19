@@ -1,3 +1,13 @@
+[data-bs-theme="light"] {
+  --tag-list-bg: #d6e6f2;
+  --card-bg: #d9e9e6;
+}
+
+[data-bs-theme="dark"] {
+  --tag-list-bg: #2c3437;
+  --card-bg: unset;
+}
+
 .pill-button {
   background-color: #ddd;
   border: none;
@@ -15,7 +25,9 @@
   text-align: center;
   &:hover {
     background-color: rgb(81, 191, 291);
-    cursor: url("./icons/x-journal.svg") 16 16, pointer;
+    cursor:
+      url("./icons/x-journal.svg") 16 16,
+      pointer;
   }
 }
 
@@ -52,14 +64,15 @@
 .card-footer {
   padding: 0;
   border-top: 0px;
+  background-color: var(--card-bg);
 }
 
-.card-header { 
-  background-color: unset;
+.card-header {
+  background-color: var(--card-bg);
   margin-top: 0px;
   padding-top: 2px;
   padding: unset;
-  border: unset
+  border: 2px;
 }
 
 .row.no-pad {
@@ -87,27 +100,31 @@
   }
 }
 
-.journal-icon { 
-    display: block;
-    float: right;
-}
-
-.submit { 
+.journal-icon {
+  display: block;
   float: right;
 }
 
-.reset { 
+.submit {
   float: right;
 }
 
-.bookmark-card { 
+.reset {
+  float: right;
+}
+
+.card-body {
+  background-color: var(--card-bg);
+}
+
+.bookmark-card {
   min-height: 250px;
   margin-bottom: 20px;
 }
 
-.new-bookmark-card { 
+.new-bookmark-card {
   @extend .bookmark-card;
-  text-align: center; 
+  text-align: center;
   input {
     margin-top: 20px;
   }

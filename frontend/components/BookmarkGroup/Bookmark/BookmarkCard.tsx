@@ -41,8 +41,7 @@ async function addTagToBookmark(
   return action;
 }
 
-export default function BookmarkCard(bookmarkProp: BookmarkProp) {
-  const bookmark: Bookmark = bookmarkProp.bookmark;
+export default function BookmarkCard({ bookmark} : BookmarkProp) {
   const dispatch = useTagsDispatch();
   const bkmkDispatch = useBookmarkDispatch();
   const [input, setInput] = useState("");

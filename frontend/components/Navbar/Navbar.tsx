@@ -1,11 +1,5 @@
 "use client";
-import {
-  Navbar,
-  Form,
-  Button,
-  ButtonGroup,
-  Container,
-} from "react-bootstrap";
+import { Navbar, Form, Button, ButtonGroup, Container } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import authService, { AuthStatus } from "@services/auth.service";
 import useAuth from "@components/UseAuth";
@@ -47,14 +41,18 @@ const GlobalNavbar: React.FC = () => {
   };
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary x">
+    <Navbar expand="lg" className="bg-body-tertiary border">
       <Container>
-        <Navbar.Brand onClick={() => router.push("/")} className="mx-3 cursor-pointer">
+        <Navbar.Brand
+          onClick={() => router.push("/")}
+          className="mx-3 cursor-pointer"
+        >
           FindFirst
         </Navbar.Brand>
         <div className="mx-3">
           <LightDarkToggle />
-          {authButton()}</div>
+          {authButton()}
+        </div>
       </Container>
     </Navbar>
   );

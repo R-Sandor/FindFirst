@@ -81,7 +81,7 @@ dependencies {
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	// developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 }
 
 test {
