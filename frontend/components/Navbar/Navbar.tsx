@@ -41,7 +41,11 @@ const GlobalNavbar: React.FC = () => {
   };
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary border">
+    <Navbar
+      expand="lg"
+      style={{ borderBottom: "1px solid" }}
+      className="bg-body-tertiary"
+    >
       <Container>
         <Navbar.Brand
           onClick={() => router.push("/")}

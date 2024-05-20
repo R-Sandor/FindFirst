@@ -50,6 +50,10 @@
   color: black;
 }
 
+.btn:disabled {
+  background-color: grey;
+}
+
 .container input {
   height: 25px;
   flex: content;

@@ -9,9 +9,10 @@ import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 import { useTagsDispatch } from "@/contexts/TagContext";
 import TagAction from "@/types/Bookmarks/TagAction";
 import Tag from "@/types/Bookmarks/Tag";
+import * as Yup from "yup";
 
 /**
- * Bookmark representation from the NewBookmarkCard card form.. 
+ * Bookmark representation from the NewBookmarkCard card form..
  */
 export interface NewBookmarkForm {
   id?: string;
@@ -72,9 +73,13 @@ export default function NewBookmarkCard() {
     setInput(value);
   };
 
-  const handleOnSubmit = async (submittedBmk: NewBookmarkForm, actions: any) => {
+  const handleOnSubmit = async (
+    submittedBmk: NewBookmarkForm,
+    actions: any,
+  ) => {
+    console.log("submit");
     submittedBmk.tagTitles = strTags;
-    let tags: Tag[] = strTags.map((t, i) => {
+    let tags: Tag[] = strTags.map((t) => {
       return { tag_title: t, id: -1 };
     });
     submittedBmk.title = submittedBmk.url;
@@ -90,28 +95,25 @@ export default function NewBookmarkCard() {
       bookmarkId: retBkmk.id,
       bookmarks: [retBkmk],
     };
-    retBkmk.tags.forEach((t, i) => {
+    retBkmk.tags.forEach((t) => {
       let tAct: TagAction = {
         type: "add",
         tagId: t.id,
         tagTitle: t.tag_title,
-        bookmark: retBkmk
+        bookmark: retBkmk,
       };
-      tagDispatch(tAct)
+      tagDispatch(tAct);
     });
 
     bkmkDispatch(action);
     actions.resetForm({ newcard }, setStrTags([]));
   };
 
-  const handleOnReset = async (
-    newbookmark: NewBookmarkForm,
-    formikHelpers: FormikHelpers<NewBookmarkForm>
-  ) => {
+  const handleOnReset = async ({ tagTitles, title, url }: NewBookmarkForm) => {
     setStrTags([]);
-    newbookmark.tagTitles = [];
-    newbookmark.title = "";
-    newbookmark.url = "";
+    tagTitles = [];
+    title = "";
+    url = "";
   };
 
   function onKeyDown(e: any) {
@@ -143,56 +145,70 @@ export default function NewBookmarkCard() {
     setStrTags(strTags.filter((t, i) => i !== index));
   };
 
+  const bookmarkSchema = Yup.object().shape({
+    url: Yup.string().required("Required"),
+    tagTitles: Yup.array().optional(),
+  });
+
   return (
     <div className="px-1 new-bookmark-card">
       <Formik
         initialValues={newcard}
         onSubmit={handleOnSubmit}
         onReset={handleOnReset}
+        validationSchema={bookmarkSchema}
       >
-        <Form>
-          <Card className="new-bookmark-card">
-            <Card.Header>Add Bookmark <i className="bi bi-bookmarks-fill"></i> </Card.Header>
-            <Card.Body>
-              <Card.Text className="title">
-                <Field
-                  className="form-control"
-                  id="url"
-                  name="url"
-                  placeholder="url: https://findfirst.com/discover"
-                  type="text"
-                />
-              </Card.Text>
-            </Card.Body>
-            <Card.Footer className="card-footer">
-              <div className="container">
-                {strTags.map((tag, index) => (
-                  <button
-                    key={index}
-                    onClick={() => deleteTag(index)}
-                    type="button"
-                    className="pill-button"
-                  >
-                    {tag}
-                    <i className="xtag bi bi-journal-x"></i>
-                  </button>
-                ))}
-                <input
-                  value={input}
-                  placeholder="Enter a tag"
-                  onKeyDown={onKeyDown}
-                  onChange={onChange}
-                />
-              </div>
-              <Button className="pill-button submit" type="submit">
-                Submit
-              </Button>
-              <Button className="pill-button reset" type="reset">
-                Reset
-              </Button>
-            </Card.Footer>
-          </Card>
-        </Form>
+        {({ isValid, dirty }) => (
+          <Form>
+            <Card className="new-bookmark-card">
+              <Card.Header>
+                Add Bookmark <i className="bi bi-bookmarks-fill"></i>{" "}
+              </Card.Header>
+              <Card.Body>
+                <Card.Text className="title">
+                  <Field
+                    className="form-control"
+                    id="url"
+                    name="url"
+                    placeholder="url: https://findfirst.com/discover"
+                    type="text"
+                  />
+                </Card.Text>
+              </Card.Body>
+              <Card.Footer className="card-footer">
+                <div className="container">
+                  {strTags.map((tag, index) => (
+                    <button
+                      key={index}
+                      onClick={() => deleteTag(index)}
+                      type="button"
+                      className="pill-button"
+                    >
+                      {tag}
+                      <i className="xtag bi bi-journal-x"></i>
+                    </button>
+                  ))}
+                  <input
+                    value={input}
+                    placeholder="Enter a tag"
+                    onKeyDown={onKeyDown}
+                    onChange={onChange}
+                  />
+                </div>
+                <Button
+                  disabled={!(isValid && dirty)}
+                  className="pill-button submit"
+                  type="submit"
+                >
+                  Submit
+                </Button>
+                <Button className="pill-button reset" type="reset">
+                  Reset
+                </Button>
+              </Card.Footer>
+            </Card>
+          </Form>
+        )}
       </Formik>
     </div>
   );
