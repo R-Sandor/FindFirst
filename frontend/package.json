@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest",
+    "test-ui": "vitest --ui",
     "coverage": "vitest run --coverage",
     "vitest-preview": "vitest-preview"
   },
@@ -50,8 +51,8 @@
     "@vitest/ui": "^1.6.0",
     "jsdom": "^23.2.0",
     "vitest": "^1.6.0"
-  }, 
-  "pnpm": { 
+  },
+  "pnpm": {
     "overrides": {
       "express@<4.19.2": "^4.19.2",
       "postcss@<8.4.31": "^8.4.31",

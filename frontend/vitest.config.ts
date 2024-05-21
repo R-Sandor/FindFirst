@@ -1,30 +1,27 @@
-import { defineConfig, configDefaults, UserConfig } from 'vitest/config'
-import react from '@vitejs/plugin-react'
-import tsconfigPaths from 'vite-tsconfig-paths'
-import path from 'path'
+import { defineConfig, configDefaults, UserConfig } from "vitest/config";
+import react from "@vitejs/plugin-react";
+import tsconfigPaths from "vite-tsconfig-paths";
+import path from "path";
 
-const defaults =  
-       configDefaults.coverage.exclude? configDefaults.coverage.exclude: []
- 
+const defaults = configDefaults.coverage.exclude
+  ? configDefaults.coverage.exclude
+  : [];
+
 export default defineConfig({
   plugins: [react(), tsconfigPaths()] as UserConfig["plugins"],
   test: {
-    environment: 'jsdom',
+    environment: "jsdom",
     globals: true,
     css: true,
-    setupFiles: ['vitestSetup.ts'],
+    setupFiles: ["vitestSetup.ts"],
     coverage: {
-       exclude: [
-        'types/**',
-        '*.config.js',
-        '*/**/index.js',
-        ...defaults,
-        ]
-     }
+      exclude: ["types/**", "*.config.js", "*/**/index.js", ...defaults],
+    },
   },
   resolve: {
     alias: {
-      '@components': path.resolve(__dirname, './components/'),
+      "@components": path.resolve(__dirname, "./components/"),
     },
   },
-})
+});
+
