@@ -1,35 +1,43 @@
 .signup_box {
-    width: 340px;
+  width: 340px;
+}
+
+.signin_button {
+  background-color: rgb(240, 250, 253);
+  color: rgb(0, 0, 0);
+  border-color: rgb(171, 231, 226);
+  &:hover {
+    background-color: rgb(120, 227, 253);
   }
-  
-  .signin_button {
-    background-color: rgb(240, 250, 253);
-    color: rgb(0, 0, 0);
-    border-color: rgb(171, 231, 226);
-    &:hover {
-      background-color: rgb(120, 227, 253);
-    }
-  }
-  
-  %message {
-    text-align: center;
-    height: 75px;
-    max-width: 300px;
-    border-radius: 10px;
-    justify-content: center; /* Align horizontal */
-    align-items: center; /* Align vertical */
-    padding: 15px;
-  }
-  
-  .success {
-    @extend %message;
-    color: black;
-    background-color: rgb(240, 250, 253);
-  }
-  
-  .failure {
-    @extend %message;
-    background-color: rgb(253, 240, 240);
-    color: rgb(78, 11, 11);
-  }
-  
+}
+
+%message {
+  text-align: center;
+  height: 75px;
+  max-width: 300px;
+  border-radius: 10px;
+  justify-content: center; /* Align horizontal */
+  align-items: center; /* Align vertical */
+  padding: 15px;
+}
+
+.success {
+  @extend %message;
+  color: black;
+  background-color: rgb(240, 250, 253);
+}
+
+.failure {
+  @extend %message;
+  background-color: rgb(253, 240, 240);
+  color: rgb(78, 11, 11);
+}
+
+.center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 10px;
+}
+
