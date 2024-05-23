@@ -19,15 +19,13 @@ export default function Page() {
   };
 
   const SigninSchema = Yup.object().shape({
-  username: Yup.string()
-    .required("Required"),
-  password: Yup.string()
-    .required("Required"),
-});
+    username: Yup.string().required("Required"),
+    password: Yup.string().required("Required"),
+  });
 
   return (
-    <div className="grid h-screen place-items-center">
-      <div className={"content-center " + styles.login_box + " p-3"}>
+    <div className={` ${styles.center} grid`}>
+      <div className={" " + styles.login_box + " "}>
         <h1 className="display-6 mb-3">Login</h1>
         <Formik
           initialValues={{
@@ -37,33 +35,36 @@ export default function Page() {
           onSubmit={handleOnSubmit}
           validationSchema={SigninSchema}
         >
-        {({isValid, dirty }) => (
-          <Form>
-            <div className="mb-3">
-              <Field
-                className="form-control"
-                id="username"
-                name="username"
-                placeholder="Username"
-                aria-describedby="usernameHelp"
-              />
-            </div>
+          {({ isValid, dirty }) => (
+            <Form>
+              <div className="mb-3">
+                <Field
+                  className="form-control"
+                  id="username"
+                  name="username"
+                  placeholder="Username"
+                  aria-describedby="usernameHelp"
+                />
+              </div>
 
-            <div className="mb-3">
-              <Field
-                className="form-control"
-                id="password"
-                name="password"
-                placeholder="Password"
-                type="password"
-              />
-            </div>
-            <button type="submit"
-             disabled={!(isValid && dirty)}
-             className={`btn ${styles.signin_button}`}>
-              Login
-            </button>
-          </Form>)}
+              <div className="mb-3">
+                <Field
+                  className="form-control"
+                  id="password"
+                  name="password"
+                  placeholder="Password"
+                  type="password"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={!(isValid && dirty)}
+                className={`btn ${styles.signin_button}`}
+              >
+                Login
+              </button>
+            </Form>
+          )}
         </Formik>
       </div>
     </div>

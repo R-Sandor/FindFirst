@@ -1,20 +1,22 @@
-services: 
+services:
   frontend:
-    build: 
+    build:
       dockerfile: ../docker/frontend/Dockerfile
       context: ./frontend
-    ports: 
-     - "3000:3000"
+    ports:
+      - "3000:3000"
   server:
-    build: 
+    build:
+      args:
+        - BUILDENV=dev
       dockerfile: ../docker/server/Dockerfile
       context: ./server
-    ports: 
-     - "9000:9000"
+    ports:
+      - "9000:9000"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/findfirst
       - SPRING_PROFILES_ACTIVE=dev
-  db: 
+  db:
     image: postgres:16.2-alpine
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -22,8 +24,8 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - 5432:5432
-  mail: 
+  mail:
     image: mailhog/mailhog:latest
-    ports: 
+    ports:
       - 1025:1025
       - 8025:8025

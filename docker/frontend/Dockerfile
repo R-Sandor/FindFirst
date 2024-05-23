@@ -17,12 +17,14 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+ARG BUILDENV=prod
+
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN corepack enable pnpm && pnpm run build; 
+RUN corepack enable pnpm && pnpm run build:$BUILDENV; 
 
 # Production image, copy all the files and run next
 FROM base AS runner

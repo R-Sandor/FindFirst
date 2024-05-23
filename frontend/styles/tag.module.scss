@@ -1,11 +1,11 @@
 .tagList {
-  min-height: calc(100vh - 60px);
+  min-height: calc(100vh - 70px);
+  margin-top: 5px;
   border-radius: 10px;
 
   background-color: var(--tag-list-bg);
 
   @media screen and (max-width: 800px) {
-    min-height: calc(50vh - 60px);
     .title {
       font-size: 12px;
     }

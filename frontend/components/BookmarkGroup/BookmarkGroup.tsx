@@ -1,8 +1,7 @@
 import { useSelectedTags } from "@/contexts/SelectedContext";
 import BookmarkCard from "./Bookmark/BookmarkCard";
 import NewBookmarkCard from "./Bookmark/NewBookmarkCard";
-import { BookmarkContext, useBookmarks } from "@/contexts/BookmarkContext";
-import { useEffect, useRef } from "react";
+import { useBookmarks } from "@/contexts/BookmarkContext";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import { useTags } from "@/contexts/TagContext";
 import { TagWithCnt } from "@type/Bookmarks/Tag";
