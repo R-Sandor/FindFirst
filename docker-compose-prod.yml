@@ -1,16 +1,18 @@
-services: 
+services:
   frontend:
-    build: 
+    build:
       dockerfile: ../docker/frontend/Dockerfile
       context: ./frontend
-    ports: 
-     - "3000:3000"
+    ports:
+      - "3000:3000"
   server:
-    build: 
+    build:
+      args:
+        - BUILDENV=prod
       dockerfile: ../docker/server/Dockerfile
       context: ./server
-    ports: 
-     - "9000:9000"
+    ports:
+      - "9000:9000"
     environment:
       - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
@@ -21,8 +23,8 @@ services:
     depends_on:
       - db
     restart: always
-  db: 
-    build: 
+  db:
+    build:
       context: ./docker/postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}

@@ -1,6 +1,7 @@
 .PHONY= build_server build_frontend run_local run_test stop test_run db
 .DEFAULT_GOAL := default 
 CERT_FILE = ./server/src/main/resources/app.key
+ENV?=dev
 
 default: 
 	$(MAKE) build_server
@@ -16,7 +17,7 @@ endif
 	docker build -t findfirst-server -f ./docker/server/Dockerfile.buildlocal ./server
 
 build_frontend: 
-	docker build -t findfirst-frontend -f ./docker/frontend/Dockerfile ./frontend
+	docker build -t findfirst-frontend -f ./docker/frontend/Dockerfile --build-arg BUILDENV=$(ENV) ./frontend 
 
 db: 
 	docker build -t findfirst-db ./docker/postgres
@@ -58,7 +59,7 @@ endif
 
 clean: 
 	cd server; ./gradlew clean; 
-	cd client; npm ci
+	cd client; pnpm install --frozen-lockfile;
 
 stop: 
 	@echo "Stopping all started processes on host."
