@@ -10,7 +10,7 @@
     "start": "next start",
     "lint": "next lint",
     "test": "vitest",
-    "test-ui": "vitest --ui",
+    "test-ui": "vitest --ui --coverage",
     "coverage": "vitest run --coverage",
     "vitest-preview": "vitest-preview"
   },
