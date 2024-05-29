@@ -16,6 +16,7 @@ export default defineConfig({
     setupFiles: ["vitestSetup.ts"],
     coverage: {
       exclude: ["types/**", "*.config.js", "*/**/index.js", ...defaults],
+      reportOnFailure: true,
     },
   },
   resolve: {
@@ -24,4 +25,3 @@ export default defineConfig({
     },
   },
 });
-
