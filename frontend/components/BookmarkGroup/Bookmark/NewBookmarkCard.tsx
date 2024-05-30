@@ -121,7 +121,7 @@ export default function NewBookmarkCard() {
     const trimmedInput = input.trim();
     if (
       // add tag via space bar or enter
-      (keyCode === 32 || keyCode == 13) &&
+      (keyCode === 32 || keyCode === 13) &&
       trimmedInput.length &&
       !strTags.includes(trimmedInput)
     ) {
