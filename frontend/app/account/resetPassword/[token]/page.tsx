@@ -6,12 +6,11 @@ import styles from "../../accountForm.module.scss";
 import * as Yup from "yup";
 import axios from "axios";
 import { useState } from "react";
-import { Router, useRouter } from "next/router";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/user/";
 export default function PasswordReset() {
   const [submitSuccess, setSubmitSuccess] = useState<boolean | undefined>(
-    undefined
+    undefined,
   );
   const [submitMessage, setSubmitMessage] = useState<string>("");
   const params = useParams();
@@ -26,7 +25,7 @@ export default function PasswordReset() {
 
   function submissionMessage(
     submitSuccess: boolean | undefined,
-    submitMessage: string
+    submitMessage: string,
   ) {
     if (submitSuccess == undefined) {
       return <div></div>;
@@ -45,7 +44,7 @@ export default function PasswordReset() {
       .max(24, "Password is too long")
       .matches(
         /^(?=.*[!@#$%^&*])/,
-        "Password must contain at least one special character"
+        "Password must contain at least one special character",
       )
       .required("Required"),
     passwordConfirm: Yup.string()
@@ -55,7 +54,7 @@ export default function PasswordReset() {
 
   const handleOnSubmit = async (
     passwordConfirm: PasswordConfirm,
-    actions: any
+    actions: any,
   ) => {
     let tknVal = "";
     if (typeof params.token == "string") {
@@ -75,7 +74,7 @@ export default function PasswordReset() {
       (reject) => {
         setSubmitMessage(reject.response.data.text);
         setSubmitSuccess(false);
-      }
+      },
     );
   };
 

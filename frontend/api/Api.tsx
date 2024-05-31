@@ -25,7 +25,7 @@ const api = {
     method: string,
     resource: string,
     data: any | null | undefined,
-    config: {} | undefined
+    config: {} | undefined,
   ) {
     return instance({
       method: method,

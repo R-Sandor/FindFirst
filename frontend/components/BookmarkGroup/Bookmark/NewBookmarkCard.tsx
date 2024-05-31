@@ -50,6 +50,7 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
   let tagTitles: string[] = createBmk.tags.map((t, i) => {
     return t.tag_title;
   });
+
   await api.addAllTag(tagTitles).then((response) => {
     let respTags: Tag[] = response.data;
     respTags.forEach((rt) => {
@@ -77,7 +78,6 @@ export default function NewBookmarkCard() {
     submittedBmk: NewBookmarkForm,
     actions: any,
   ) => {
-    console.log("submit");
     submittedBmk.tagTitles = strTags;
     let tags: Tag[] = strTags.map((t) => {
       return { tag_title: t, id: -1 };
