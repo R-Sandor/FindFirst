@@ -78,8 +78,9 @@ export default function NewBookmarkCard() {
     submittedBmk: NewBookmarkForm,
     actions: any,
   ) => {
-    submittedBmk.tagTitles = strTags;
-    let tags: Tag[] = strTags.map((t) => {
+    // get the the last inputed string and all the tags already entered.
+    console.log(input)
+    let tags: Tag[] = strTags.concat(input).map((t) => {
       return { tag_title: t, id: -1 };
     });
     submittedBmk.title = submittedBmk.url;
@@ -106,7 +107,7 @@ export default function NewBookmarkCard() {
     });
 
     bkmkDispatch(action);
-    actions.resetForm({ newcard }, setStrTags([]));
+    actions.resetForm({ newcard }, setStrTags([]), setInput(""));
   };
 
   const handleOnReset = async ({ tagTitles, title, url }: NewBookmarkForm) => {
