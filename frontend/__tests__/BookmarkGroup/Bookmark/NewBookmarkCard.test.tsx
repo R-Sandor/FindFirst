@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { fireEvent, getByText, render, screen } from "@testing-library/react";
 import NewBookmarkCard from "@components/BookmarkGroup/Bookmark/NewBookmarkCard";
 import userEvent from "@testing-library/user-event";
 import { act } from "react-dom/test-utils";
@@ -7,7 +7,42 @@ import MockAdapter from "axios-mock-adapter";
 import { TagReqPayload } from "@type/Bookmarks/Tag";
 import { instance } from "@api/Api";
 import Bookmark from "@type/Bookmarks/Bookmark";
+import { debug } from "vitest-preview";
 const user = userEvent.setup();
+
+async function hitEnter(element: Element) {
+  fireEvent.keyDown(element, {
+    key: "Enter",
+    code: "Enter",
+    keyCode: 13,
+    charCode: 13,
+  });
+}
+
+async function hitKey(
+  element: Element,
+  key: string,
+  code: string,
+  keyCode: number,
+  charCode: number,
+) {
+  fireEvent.keyDown(element, {
+    key: key,
+    code: code,
+    keyCode: keyCode,
+    charCode: charCode,
+  });
+}
+
+async function populateTags(tags: string[]) {
+  const tagForm = screen.getByPlaceholderText("Enter a tag");
+  for (let i = 0; i < tags.length; i++) {
+    await user.type(tagForm, tags[i]);
+    hitEnter(tagForm);
+    // the testing-library is not perfect...
+    await user.clear(tagForm);
+  }
+}
 
 describe("New Bookmark Card Renders", () => {
   beforeEach(() => {
@@ -57,12 +92,7 @@ describe("All Fields Work", () => {
       await user.type(url, "foodnetwork.com");
       await user.type(tags, "cooking");
     });
-    fireEvent.keyDown(tags, {
-      key: "Enter",
-      code: "Enter",
-      keyCode: "13",
-      charCode: "13",
-    });
+    hitEnter(tags);
     expect(submit).not.toBeDisabled();
 
     // fields should be populated
@@ -128,9 +158,64 @@ describe("All Fields Work", () => {
     expect(submit).toBeDisabled();
   });
 
-  it("Reset option works", () => {});
+  it("Too many tags, UI should limit to 8 tags", async () => {
+    await act(async () => {
+      await populateTags([
+        "cooking",
+        "food",
+        "recipes",
+        "ideas",
+        "home",
+        "meals",
+        "dinner",
+        "favs",
+        "misc",
+      ]);
+    });
+    expect(screen.getByText(/Too many tags/i)).toBeVisible();
+  });
 
-  it("Too many tags!", () => {});
+  it("Reset option works", async () => {
+    const reset = screen.getByText(/reset/i);
+    const url = screen.getByPlaceholderText(/discover/i);
+    const tags = screen.getByPlaceholderText("Enter a tag");
+    const submit = screen.getByText("Submit");
+    await act(async () => {
+      await populateTags([
+        "cooking",
+        "food",
+        "recipes",
+        "ideas",
+        "home",
+        "meals",
+        "dinner",
+        "favs2",
+        "misc",
+      ]);
+      await user.type(url, "foodnetwork.com");
+    });
+    await user.click(reset);
+    expect(url).toHaveValue("");
+    expect(tags).toHaveValue("");
+    expect(submit).toBeDisabled();
+  });
+
+  it("Click delete a Tag", async () => {
+    await act(async () => {
+      await populateTags(["Tag1", "Tag2"]);
+      await user.click(screen.getByTestId("Tag2"));
+    });
+    expect(screen.queryByTestId("Tag2")).toEqual(null);
+  });
+
+  it("Back Space delete a Tag", async () => {
+    const tags = screen.getByPlaceholderText("Enter a tag");
+    await act(async () => {
+      await populateTags(["Tag1", "Tag2"]);
+      hitKey(tags, "Backspace", "Backspace", 8, 8);
+    });
+    expect(screen.queryByTestId("Tag2")).toEqual(null);
+  });
 
   it("Unsubmitted tag is added on submit", () => {});
 });
