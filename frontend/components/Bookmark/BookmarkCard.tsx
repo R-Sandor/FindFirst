@@ -22,13 +22,13 @@ interface BookmarkProp {
  */
 async function addTagToBookmark(
   bookmark: Bookmark,
-  trimmedInput: string
+  trimmedInput: string,
 ): Promise<TagAction> {
   let action: TagAction = {
     type: "add",
     tagId: -1,
     tagTitle: "",
-    bookmark: bookmark
+    bookmark: bookmark,
   };
   await api.addBookmarkTag(bookmark?.id, trimmedInput).then((response) => {
     // It will always be the last index since it was the last added.
@@ -41,7 +41,7 @@ async function addTagToBookmark(
   return action;
 }
 
-export default function BookmarkCard({ bookmark} : BookmarkProp) {
+export default function BookmarkCard({ bookmark }: BookmarkProp) {
   const dispatch = useTagsDispatch();
   const bkmkDispatch = useBookmarkDispatch();
   const [input, setInput] = useState("");
@@ -84,7 +84,12 @@ export default function BookmarkCard({ bookmark} : BookmarkProp) {
       const idx = getIdxFromTitle(tag.tag_title);
       const tagId = bookmark.tags[idx].id;
       // update the sidebar.
-      let action: TagAction = { type: "delete", tagId: tagId, tagTitle: "", bookmark };
+      let action: TagAction = {
+        type: "delete",
+        tagId: tagId,
+        tagTitle: "",
+        bookmark,
+      };
       dispatch(action);
     });
   }
@@ -100,7 +105,12 @@ export default function BookmarkCard({ bookmark} : BookmarkProp) {
     setStrTags(titles);
 
     // update the sidebar.
-    let action: TagAction = { type: "delete", tagId: tagId, tagTitle: "", bookmark };
+    let action: TagAction = {
+      type: "delete",
+      tagId: tagId,
+      tagTitle: "",
+      bookmark,
+    };
     dispatch(action);
   };
 

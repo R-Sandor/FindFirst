@@ -18,13 +18,11 @@ export default function LightDarkToggle() {
   }
 
   useEffect(() => {
-    console.log(theme);
     if (theme === undefined) {
       setTheme("dark");
       localStorage.setItem("theme", "dark");
     }
     if (theme) {
-      console.log("theme");
       document.body.setAttribute("data-bs-theme", theme);
     }
   }, [theme]);

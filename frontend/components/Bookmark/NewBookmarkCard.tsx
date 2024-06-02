@@ -1,4 +1,4 @@
-import { Field, Form, Formik, FormikHelpers } from "formik";
+import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import "./bookmarkCard.scss";
@@ -47,7 +47,7 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
     url: createBmk.url,
     tagIds: [],
   };
-  let tagTitles: string[] = createBmk.tags.map((t, i) => {
+  let tagTitles: string[] = createBmk.tags.map((t) => {
     return t.tag_title;
   });
 
@@ -79,7 +79,6 @@ export default function NewBookmarkCard() {
     actions: any,
   ) => {
     // get the the last inputed string and all the tags already entered.
-    console.log(input)
     let tags: Tag[] = strTags.concat(input).map((t) => {
       return { tag_title: t, id: -1 };
     });
@@ -167,7 +166,7 @@ export default function NewBookmarkCard() {
         validateOnBlur={true}
         validationSchema={bookmarkSchema}
       >
-        {({ isValid, dirty, values, setValues, errors, touched }) => (
+        {({ isValid, dirty, values, setValues, errors }) => (
           <Form>
             <Card className="new-bookmark-card">
               <Card.Header>

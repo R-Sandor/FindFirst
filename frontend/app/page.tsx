@@ -2,7 +2,7 @@
 import { TagCntProvider } from "contexts/TagContext";
 import { BookmarkProvider } from "@/contexts/BookmarkContext";
 import UseAuth from "@components/UseAuth";
-import TagList from "@components/tag/TagList";
+import TagList from "@components/Tags/TagList";
 import BookmarkGroup from "@components/BookmarkGroup/BookmarkGroup";
 import tagStyles from "@/styles/tag.module.scss";
 import { SelectedTagProvider } from "@/contexts/SelectedContext";

@@ -1,13 +1,12 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { fireEvent, getByText, render, screen } from "@testing-library/react";
-import NewBookmarkCard from "@components/BookmarkGroup/Bookmark/NewBookmarkCard";
+import NewBookmarkCard from "@components/Bookmark/NewBookmarkCard";
 import userEvent from "@testing-library/user-event";
 import { act } from "react-dom/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import { TagReqPayload } from "@type/Bookmarks/Tag";
 import { instance } from "@api/Api";
 import Bookmark from "@type/Bookmarks/Bookmark";
-import { debug } from "vitest-preview";
 const user = userEvent.setup();
 
 async function hitEnter(element: Element) {

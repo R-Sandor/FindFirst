@@ -1,4 +1,4 @@
-import { NewBookmarkRequest } from "@/components/BookmarkGroup/Bookmark/NewBookmarkCard";
+import { NewBookmarkRequest } from "@/components/Bookmark/NewBookmarkCard";
 import axios from "axios";
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/api";
 
