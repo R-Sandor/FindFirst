@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { fireEvent, getByText, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import NewBookmarkCard from "@components/Bookmark/NewBookmarkCard";
 import userEvent from "@testing-library/user-event";
 import { act } from "react-dom/test-utils";
@@ -7,41 +7,9 @@ import MockAdapter from "axios-mock-adapter";
 import { TagReqPayload } from "@type/Bookmarks/Tag";
 import { instance } from "@api/Api";
 import Bookmark from "@type/Bookmarks/Bookmark";
+import { hitEnter, hitKey } from "../utilities/fireEvents";
+import { populateTags } from "../utilities/BookmarkUtils/BookmarkUtil";
 const user = userEvent.setup();
-
-async function hitEnter(element: Element) {
-  fireEvent.keyDown(element, {
-    key: "Enter",
-    code: "Enter",
-    keyCode: 13,
-    charCode: 13,
-  });
-}
-
-async function hitKey(
-  element: Element,
-  key: string,
-  code: string,
-  keyCode: number,
-  charCode: number,
-) {
-  fireEvent.keyDown(element, {
-    key: key,
-    code: code,
-    keyCode: keyCode,
-    charCode: charCode,
-  });
-}
-
-async function populateTags(tags: string[]) {
-  const tagForm = screen.getByPlaceholderText("Enter a tag");
-  for (let i = 0; i < tags.length; i++) {
-    await user.type(tagForm, tags[i]);
-    hitEnter(tagForm);
-    // the testing-library is not perfect...
-    await user.clear(tagForm);
-  }
-}
 
 describe("New Bookmark Card Renders", () => {
   beforeEach(() => {
@@ -159,17 +127,20 @@ describe("All Fields Work", () => {
 
   it("Too many tags, UI should limit to 8 tags", async () => {
     await act(async () => {
-      await populateTags([
-        "cooking",
-        "food",
-        "recipes",
-        "ideas",
-        "home",
-        "meals",
-        "dinner",
-        "favs",
-        "misc",
-      ]);
+      await populateTags(
+        [
+          "cooking",
+          "food",
+          "recipes",
+          "ideas",
+          "home",
+          "meals",
+          "dinner",
+          "favs",
+          "misc",
+        ],
+        user,
+      );
     });
     expect(screen.getByText(/Too many tags/i)).toBeVisible();
   });
@@ -180,17 +151,20 @@ describe("All Fields Work", () => {
     const tags = screen.getByPlaceholderText("Enter a tag");
     const submit = screen.getByText("Submit");
     await act(async () => {
-      await populateTags([
-        "cooking",
-        "food",
-        "recipes",
-        "ideas",
-        "home",
-        "meals",
-        "dinner",
-        "favs2",
-        "misc",
-      ]);
+      await populateTags(
+        [
+          "cooking",
+          "food",
+          "recipes",
+          "ideas",
+          "home",
+          "meals",
+          "dinner",
+          "favs2",
+          "misc",
+        ],
+        user,
+      );
       await user.type(url, "foodnetwork.com");
     });
     await user.click(reset);
@@ -201,7 +175,7 @@ describe("All Fields Work", () => {
 
   it("Click delete a Tag", async () => {
     await act(async () => {
-      await populateTags(["Tag1", "Tag2"]);
+      await populateTags(["Tag1", "Tag2"], user);
       await user.click(screen.getByTestId("Tag2"));
     });
     expect(screen.queryByTestId("Tag2")).toEqual(null);
@@ -210,7 +184,7 @@ describe("All Fields Work", () => {
   it("Back Space delete a Tag", async () => {
     const tags = screen.getByPlaceholderText("Enter a tag");
     await act(async () => {
-      await populateTags(["Tag1", "Tag2"]);
+      await populateTags(["Tag1", "Tag2"], user);
       hitKey(tags, "Backspace", "Backspace", 8, 8);
     });
     expect(screen.queryByTestId("Tag2")).toEqual(null);
