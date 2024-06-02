@@ -10,7 +10,7 @@ import { debug } from "vitest-preview";
 import BookmarkCard from "@components/Bookmark/BookmarkCard";
 const user = userEvent.setup();
 
-describe("Bookmark Card Renders", () => {
+describe("Bookmark functions", () => {
   beforeEach(() => {
     act(() => {
       render(
@@ -34,10 +34,18 @@ describe("Bookmark Card Renders", () => {
       );
     });
   });
+
   it("Card renders", () => {
     debug();
     const fb = screen.getAllByText(/facebook.com/i);
     expect(fb.length).toEqual(2);
     expect(screen.getByText(/socail/i)).toBeInTheDocument();
   });
+
+  it("Deleting Bookmark", () => {});
+});
+
+describe("Adding and deleting Tags", () => {
+  it("Adding tags", () => {});
+  it("Deleting tags", () => {});
 });
