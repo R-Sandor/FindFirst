@@ -79,9 +79,12 @@ export default function NewBookmarkCard() {
     actions: any,
   ) => {
     // get the the last inputed string and all the tags already entered.
-    let tags: Tag[] = strTags.concat(input).map((t) => {
+    let tags: Tag[] = strTags.map((t) => {
       return { tag_title: t, id: -1 };
     });
+    if (input) {
+      tags.push({ tag_title: input, id: -1 });
+    }
     submittedBmk.title = submittedBmk.url;
     let newBkmk: Bookmark = {
       id: -1,

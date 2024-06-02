@@ -215,6 +215,4 @@ describe("All Fields Work", () => {
     });
     expect(screen.queryByTestId("Tag2")).toEqual(null);
   });
-
-  it("Unsubmitted tag is added on submit", () => {});
 });
