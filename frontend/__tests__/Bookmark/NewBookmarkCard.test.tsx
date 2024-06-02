@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { act } from "@testing-library/react";
 import NewBookmarkCard from "@components/Bookmark/NewBookmarkCard";
 import userEvent from "@testing-library/user-event";
-import { act } from "react-dom/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import { TagReqPayload } from "@type/Bookmarks/Tag";
 import { instance } from "@api/Api";
@@ -14,15 +14,13 @@ const user = userEvent.setup();
 
 describe("New Bookmark Card Renders", () => {
   beforeEach(() => {
-    act(() => {
-      render(
-        <div data-bs-theme="dark" className="row pt-3">
-          <div className="col-6 col-sm-12 col-md-12 col-lg-4">
-            <NewBookmarkCard />
-          </div>
-        </div>,
-      );
-    });
+    render(
+      <div data-bs-theme="dark" className="row pt-3">
+        <div className="col-6 col-sm-12 col-md-12 col-lg-4">
+          <NewBookmarkCard />
+        </div>
+      </div>,
+    );
   });
 
   it("Card renders", () => {
@@ -34,17 +32,15 @@ describe("New Bookmark Card Renders", () => {
   });
 });
 
-describe("All Fields Work", () => {
+describe("Adding new Bookmark logic", () => {
   beforeEach(() => {
-    act(() => {
-      render(
-        <div data-bs-theme="dark" className="row pt-3">
-          <div className="col-6 col-sm-12 col-md-12 col-lg-4">
-            <NewBookmarkCard />
-          </div>
-        </div>,
-      );
-    });
+    render(
+      <div data-bs-theme="dark" className="row pt-3">
+        <div className="col-6 col-sm-12 col-md-12 col-lg-4">
+          <NewBookmarkCard />
+        </div>
+      </div>,
+    );
   });
 
   it("No fields have data, should be disabled", () => {
@@ -258,7 +254,6 @@ describe("All Fields Work", () => {
     await act(async () => {
       await user.click(submit);
     });
-    debug();
 
     // if everything submitted correctly then it should be empty input field.
     expect(url).toHaveValue("");

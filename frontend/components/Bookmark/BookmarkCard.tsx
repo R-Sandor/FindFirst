@@ -126,7 +126,6 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   function onKeyDown(e: any) {
     const { keyCode } = e;
     const trimmedInput = input.trim();
-    console.log(trimmedInput);
     if (
       // Enter or space
       (keyCode === 32 || keyCode == 13) &&
@@ -137,9 +136,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
       setStrTags((prevState) => [...prevState, trimmedInput]);
 
       strTags.push(trimmedInput);
-      console.log(strTags);
       setStrTags([...strTags]);
-      console.log("input :", input);
       addTagToBookmark(bookmark, trimmedInput).then((action) => {
         dispatch(action);
       });
