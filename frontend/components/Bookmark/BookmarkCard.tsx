@@ -33,7 +33,6 @@ async function addTagToBookmark(
   await api.addBookmarkTag(bookmark?.id, trimmedInput).then((response) => {
     // It will always be the last index since it was the last added.
     // let index = response.data.length - 1;
-    console.log("response", response);
     action.tagId = response.data.id;
     action.tagTitle = response.data.tag_title;
     bookmark.tags.push({ id: action.tagId, tag_title: action.tagTitle });

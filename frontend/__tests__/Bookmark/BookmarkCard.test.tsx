@@ -71,10 +71,6 @@ describe("Adding and deleting Tags", () => {
 
   it("Adding tags", async () => {
     const axiosMock = new MockAdapter(instance);
-    const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
-    const tagsAPI = SERVER_URL + "/api/";
-    // bookmark/${bkmkId}/tag?tag=${title}
-    const bookmarkAPI = SERVER_URL + "/api/bookmark";
     const firstTag: TagReqPayload[] = [
       {
         id: 2,
@@ -99,7 +95,25 @@ describe("Adding and deleting Tags", () => {
     await act(async () => {
       await populateTags(["fb", "friends"], user);
     });
+    expect(screen.getByText(/fb/i)).toBeInTheDocument();
+    expect(screen.getByText(/friends/i)).toBeInTheDocument();
     debug();
   });
-  it("Deleting tags", () => {});
+
+  it("Deleting tags on click", async () => {
+    const axiosMock = new MockAdapter(instance);
+    axiosMock.onDelete().replyOnce(() => {
+      return [
+        200,
+        JSON.stringify({
+          id: 1,
+          tag_title: "socail",
+        }),
+      ];
+    });
+    await act(async () => {
+      await user.click(screen.getByText(/socail/i));
+    });
+    expect(screen.queryByText(/socail/i)).toBeNull();
+  });
 });
