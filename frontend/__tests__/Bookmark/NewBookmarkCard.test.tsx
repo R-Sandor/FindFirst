@@ -9,7 +9,6 @@ import { instance } from "@api/Api";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import { hitEnter, hitKey } from "../utilities/fireEvents";
 import { populateTags } from "../utilities/BookmarkUtils/BookmarkUtil";
-import { debug } from "vitest-preview";
 const user = userEvent.setup();
 
 describe("New Bookmark Card Renders", () => {
@@ -32,7 +31,7 @@ describe("New Bookmark Card Renders", () => {
   });
 });
 
-describe("Adding new Bookmark logic", () => {
+describe("Fields logic", () => {
   beforeEach(() => {
     act(() => {
       render(
@@ -89,7 +88,7 @@ describe("Adding new Bookmark logic", () => {
       ],
     };
 
-    axiosMock.onPost(tagsAPI, ["cooking"]).reply((config) => {
+    axiosMock.onPost(tagsAPI, ["cooking"]).reply(() => {
       return [200, JSON.stringify(expectedResult)];
     });
 
@@ -99,7 +98,7 @@ describe("Adding new Bookmark logic", () => {
         url: "foodnetwork.com",
         tagIds: [1],
       })
-      .reply((config) => {
+      .reply(() => {
         return [200, JSON.stringify(expectedBookmark)];
       });
 
@@ -122,26 +121,6 @@ describe("Adding new Bookmark logic", () => {
       );
     });
     expect(submit).toBeDisabled();
-  });
-
-  it("Too many tags, UI should limit to 8 tags", async () => {
-    await act(async () => {
-      await populateTags(
-        [
-          "cooking",
-          "food",
-          "recipes",
-          "ideas",
-          "home",
-          "meals",
-          "dinner",
-          "favs",
-          "misc",
-        ],
-        user,
-      );
-    });
-    expect(screen.getByText(/Too many tags/i)).toBeVisible();
   });
 
   it("Reset option works", async () => {
@@ -170,23 +149,6 @@ describe("Adding new Bookmark logic", () => {
     expect(url).toHaveValue("");
     expect(tags).toHaveValue("");
     expect(submit).toBeDisabled();
-  });
-
-  it("Click delete a Tag", async () => {
-    await act(async () => {
-      await populateTags(["Tag1", "Tag2"], user);
-      await user.click(screen.getByTestId("Tag2"));
-    });
-    expect(screen.queryByTestId("Tag2")).toEqual(null);
-  });
-
-  it("Back Space delete a Tag", async () => {
-    const tags = screen.getByPlaceholderText("Enter a tag");
-    await act(async () => {
-      await populateTags(["Tag1", "Tag2"], user);
-      hitKey(tags, "Backspace", "Backspace", 8, 8);
-    });
-    expect(screen.queryByTestId("Tag2")).toEqual(null);
   });
 
   it("Field with unsubmitted tag", async () => {
@@ -239,7 +201,7 @@ describe("Adding new Bookmark logic", () => {
       ],
     };
 
-    axiosMock.onPost(tagsAPI, ["cooking", "food"]).reply((config) => {
+    axiosMock.onPost(tagsAPI, ["cooking", "food"]).reply(() => {
       return [200, JSON.stringify(expectedResult)];
     });
 
@@ -249,7 +211,7 @@ describe("Adding new Bookmark logic", () => {
         url: "foodnetwork.com",
         tagIds: [1, 2],
       })
-      .reply((config) => {
+      .reply(() => {
         return [200, JSON.stringify(expectedBookmark)];
       });
 
@@ -263,5 +225,56 @@ describe("Adding new Bookmark logic", () => {
     expect(url).toHaveValue("");
     expect(tags).toHaveValue("");
     expect(submit).toBeDisabled();
+  });
+});
+
+describe("Tags Operations", () => {
+  beforeEach(() => {
+    act(() => {
+      render(
+        <div data-bs-theme="dark" className="row pt-3">
+          <div className="col-6 col-sm-12 col-md-12 col-lg-4">
+            <NewBookmarkCard />
+          </div>
+        </div>,
+      );
+    });
+  });
+
+  it("Too many tags, UI should limit to 8 tags", async () => {
+    await act(async () => {
+      await populateTags(
+        [
+          "cooking",
+          "food",
+          "recipes",
+          "ideas",
+          "home",
+          "meals",
+          "dinner",
+          "favs",
+          "misc",
+        ],
+        user,
+      );
+    });
+    expect(screen.getByText(/Too many tags/i)).toBeVisible();
+  });
+
+  it("Click delete a Tag", async () => {
+    await act(async () => {
+      await populateTags(["Tag1", "Tag2"], user);
+      await user.click(screen.getByTestId("Tag2"));
+    });
+    expect(screen.queryByTestId("Tag2")).toEqual(null);
+  });
+
+  it("Back Space delete a Tag", async () => {
+    const tags = screen.getByPlaceholderText("Enter a tag");
+    await act(async () => {
+      await populateTags(["Tag1", "Tag2"], user);
+      hitKey(tags, "Backspace", "Backspace", 8, 8);
+    });
+    expect(screen.queryByTestId("Tag2")).toEqual(null);
   });
 });
