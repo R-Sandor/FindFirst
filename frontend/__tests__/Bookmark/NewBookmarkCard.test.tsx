@@ -34,13 +34,15 @@ describe("New Bookmark Card Renders", () => {
 
 describe("Adding new Bookmark logic", () => {
   beforeEach(() => {
-    render(
-      <div data-bs-theme="dark" className="row pt-3">
-        <div className="col-6 col-sm-12 col-md-12 col-lg-4">
-          <NewBookmarkCard />
-        </div>
-      </div>,
-    );
+    act(() => {
+      render(
+        <div data-bs-theme="dark" className="row pt-3">
+          <div className="col-6 col-sm-12 col-md-12 col-lg-4">
+            <NewBookmarkCard />
+          </div>
+        </div>,
+      );
+    });
   });
 
   it("No fields have data, should be disabled", () => {
@@ -163,8 +165,8 @@ describe("Adding new Bookmark logic", () => {
         user,
       );
       await user.type(url, "foodnetwork.com");
+      await user.click(reset);
     });
-    await user.click(reset);
     expect(url).toHaveValue("");
     expect(tags).toHaveValue("");
     expect(submit).toBeDisabled();
@@ -196,8 +198,8 @@ describe("Adding new Bookmark logic", () => {
       await user.type(tags, "cooking");
       hitEnter(tags);
       await user.clear(tags);
+      await user.type(tags, "food");
     });
-    await user.type(tags, "food");
     expect(submit).not.toBeDisabled();
 
     // fields should be populated
@@ -252,7 +254,9 @@ describe("Adding new Bookmark logic", () => {
       });
 
     await act(async () => {
-      await user.click(submit);
+      await act(async () => {
+        await user.click(submit);
+      });
     });
 
     // if everything submitted correctly then it should be empty input field.
