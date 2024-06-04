@@ -70,7 +70,6 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
    * the state of bookmarks.
    */
   function deleteBkmk() {
-    console.log("delete this bookmark");
     let action: BookmarkAction = {
       type: "delete",
       bookmarkId: bookmark.id,
@@ -148,18 +147,18 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
       let tagsCopy = [...strTags];
       let poppedTag = tagsCopy.pop();
       if (poppedTag) deleteTag(poppedTag);
-      if (!poppedTag) poppedTag = "";
-      setInput(poppedTag);
+      setInput(poppedTag ? poppedTag : "");
     }
   }
 
-  return bookmark ? (
+  return (
     <div className="mx-2">
       <Card className="bookmark-card">
         <div className="card-header w-full">
           <CloseButton
             className="inline p-2 m-0 float-right text-sm"
             onClick={handleShow}
+            data-testid="deleteBtn"
           />
         </div>
         <DeleteModal
@@ -195,7 +194,5 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
         </Card.Footer>
       </Card>
     </div>
-  ) : (
-    <p>...loading </p>
   );
 }
