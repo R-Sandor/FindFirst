@@ -1,5 +1,5 @@
 plugins {
-  id 'application'
+    id 'application'
 	id 'org.springframework.boot' version '3.2.1'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id "com.diffplug.spotless" version "6.11.0"
@@ -102,4 +102,5 @@ jacocoTestReport {
 		csv.required = true
 		xml.destination = file("$buildDir/reports/coverage.xml")
 	}
+
 }
