@@ -39,29 +39,46 @@ const newcard: NewBookmarkForm = {
   tagTitles: [],
 };
 
-// TODO error handling, tag list limits
-async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
-  let newBkmkRequest: NewBookmarkRequest;
-  newBkmkRequest = {
-    title: createBmk.title,
-    url: createBmk.url,
-    tagIds: [],
-  };
-  let tagTitles: string[] = createBmk.tags.map((t) => {
-    return t.tag_title;
-  });
+// Define validation schema
+const validationSchema = Yup.object({
+  url: Yup.string()
+    .url('Must be a valid URL')
+    .required('URL is required'),
+});
 
-  await api.addAllTag(tagTitles).then((response) => {
-    let respTags: Tag[] = response.data;
-    respTags.forEach((rt) => {
-      newBkmkRequest.tagIds.push(rt.id);
+// TODO error handling, tag list limits
+async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark | null> {
+  try {
+    // Validate URL before creating a new bookmark
+    await validationSchema.validate({ url: createBmk.url });
+
+    // URL is valid, create a new bookmark
+    let newBkmkRequest: NewBookmarkRequest;
+    newBkmkRequest = {
+      title: createBmk.title,
+      url: createBmk.url,
+      tagIds: [],
+    };
+    let tagTitles: string[] = createBmk.tags.map((t) => {
+      return t.tag_title;
     });
-  });
-  await api.addBookmark(newBkmkRequest).then((response) => {
-    createBmk.id = response.data.id;
-    createBmk.tags = response.data.tags;
-  });
-  return createBmk;
+
+    await api.addAllTag(tagTitles).then((response) => {
+      let respTags: Tag[] = response.data;
+      respTags.forEach((rt) => {
+        newBkmkRequest.tagIds.push(rt.id);
+      });
+    });
+    await api.addBookmark(newBkmkRequest).then((response) => {
+      createBmk.id = response.data.id;
+      createBmk.tags = response.data.tags;
+    });
+    return createBmk;
+  } catch (error: any) {
+    // URL is not valid, show an alert and do not create a new bookmark
+    alert('Invalid URL: ' + error.message);
+  }
+  return null;
 }
 
 export default function NewBookmarkCard() {
@@ -93,22 +110,31 @@ export default function NewBookmarkCard() {
       tags: tags,
     };
     let retBkmk = await makeNewBookmark(newBkmk);
-    let action: BookmarkAction = {
-      type: "add",
-      bookmarkId: retBkmk.id,
-      bookmarks: [retBkmk],
-    };
-    retBkmk.tags.forEach((t) => {
-      let tAct: TagAction = {
+    if (retBkmk) {
+      let action: BookmarkAction = {
         type: "add",
-        tagId: t.id,
-        tagTitle: t.tag_title,
-        bookmark: retBkmk,
+        bookmarkId: retBkmk.id,
+        bookmarks: [retBkmk],
       };
-      tagDispatch(tAct);
-    });
-
-    bkmkDispatch(action);
+      retBkmk.tags.forEach((t) => {
+        let tAct: TagAction = {
+          type: "add",
+          tagId: t.id,
+          tagTitle: t.tag_title,
+          bookmark: retBkmk as Bookmark,
+        };
+        tagDispatch(tAct);
+      });
+  
+      if (retBkmk) {
+        let action: BookmarkAction = {
+          type: "add",
+          bookmarkId: retBkmk.id,
+          bookmarks: [retBkmk],
+        };
+        bkmkDispatch(action);
+      }
+    }
     actions.resetForm({ newcard }, setStrTags([]), setInput(""));
   };
 
