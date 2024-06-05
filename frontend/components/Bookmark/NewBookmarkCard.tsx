@@ -1,4 +1,4 @@
-import { Field, Form, Formik, FormikHelpers } from "formik";
+import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Button, Card } from "react-bootstrap";
 import "./bookmarkCard.scss";
@@ -47,9 +47,10 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
     url: createBmk.url,
     tagIds: [],
   };
-  let tagTitles: string[] = createBmk.tags.map((t, i) => {
+  let tagTitles: string[] = createBmk.tags.map((t) => {
     return t.tag_title;
   });
+
   await api.addAllTag(tagTitles).then((response) => {
     let respTags: Tag[] = response.data;
     respTags.forEach((rt) => {
@@ -77,11 +78,13 @@ export default function NewBookmarkCard() {
     submittedBmk: NewBookmarkForm,
     actions: any,
   ) => {
-    console.log("submit");
-    submittedBmk.tagTitles = strTags;
+    // get the the last inputed string and all the tags already entered.
     let tags: Tag[] = strTags.map((t) => {
       return { tag_title: t, id: -1 };
     });
+    if (input) {
+      tags.push({ tag_title: input, id: -1 });
+    }
     submittedBmk.title = submittedBmk.url;
     let newBkmk: Bookmark = {
       id: -1,
@@ -106,7 +109,7 @@ export default function NewBookmarkCard() {
     });
 
     bkmkDispatch(action);
-    actions.resetForm({ newcard }, setStrTags([]));
+    actions.resetForm({ newcard }, setStrTags([]), setInput(""));
   };
 
   const handleOnReset = async ({ tagTitles, title, url }: NewBookmarkForm) => {
@@ -116,38 +119,44 @@ export default function NewBookmarkCard() {
     url = "";
   };
 
-  function onKeyDown(e: any) {
+  function onKeyDown(e: any, sv: any, values: NewBookmarkForm) {
     const { keyCode } = e;
     const trimmedInput = input.trim();
     if (
       // add tag via space bar or enter
-      (keyCode === 32 || keyCode == 13) &&
+      (keyCode === 32 || keyCode === 13) &&
       trimmedInput.length &&
       !strTags.includes(trimmedInput)
     ) {
       e.preventDefault();
       setStrTags((prevState) => [...prevState, trimmedInput]);
+      values.tagTitles = strTags.concat(trimmedInput);
       setInput("");
     }
+    // user hits backspace and the user has input field of 0
+    // then pop the last tag only if there is one.
     if (keyCode === 8 && !input.length && strTags.length) {
       e.preventDefault();
       const tagsCopy = [...strTags];
       let poppedTag = tagsCopy.pop();
-      if (!poppedTag) poppedTag = "";
 
+      values.tagTitles = tagsCopy;
       setStrTags(tagsCopy);
-      setInput(poppedTag);
+      setInput(poppedTag ? poppedTag : "");
     }
+    sv(values);
   }
 
-  const deleteTag = (index: number) => {
-    let tagTitle = strTags[index];
-    setStrTags(strTags.filter((t, i) => i !== index));
+  const deleteTag = (index: number, sv: any, values: NewBookmarkForm) => {
+    const tags = strTags.filter((t, i) => i !== index);
+    values.tagTitles = tags;
+    setStrTags(tags);
+    sv(values);
   };
 
   const bookmarkSchema = Yup.object().shape({
-    url: Yup.string().required("Required"),
-    tagTitles: Yup.array().optional(),
+    url: Yup.string().required("Required").min(3),
+    tagTitles: Yup.array().max(8, "Too many tags. Max 8.").optional(),
   });
 
   return (
@@ -156,9 +165,11 @@ export default function NewBookmarkCard() {
         initialValues={newcard}
         onSubmit={handleOnSubmit}
         onReset={handleOnReset}
+        validateOnChange={true}
+        validateOnBlur={true}
         validationSchema={bookmarkSchema}
       >
-        {({ isValid, dirty }) => (
+        {({ isValid, dirty, values, setValues, errors }) => (
           <Form>
             <Card className="new-bookmark-card">
               <Card.Header>
@@ -180,8 +191,9 @@ export default function NewBookmarkCard() {
                   {strTags.map((tag, index) => (
                     <button
                       key={index}
-                      onClick={() => deleteTag(index)}
+                      onClick={() => deleteTag(index, setValues, values)}
                       type="button"
+                      data-testid={tag}
                       className="pill-button"
                     >
                       {tag}
@@ -191,7 +203,7 @@ export default function NewBookmarkCard() {
                   <input
                     value={input}
                     placeholder="Enter a tag"
-                    onKeyDown={onKeyDown}
+                    onKeyDown={(e) => onKeyDown(e, setValues, values)}
                     onChange={onChange}
                   />
                 </div>
@@ -205,6 +217,9 @@ export default function NewBookmarkCard() {
                 <Button className="pill-button reset" type="reset">
                   Reset
                 </Button>
+                {errors.tagTitles && values.tagTitles ? (
+                  <div className="error-text">{errors.tagTitles}</div>
+                ) : null}
               </Card.Footer>
             </Card>
           </Form>

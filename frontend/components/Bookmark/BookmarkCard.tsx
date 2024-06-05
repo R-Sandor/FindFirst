@@ -22,18 +22,17 @@ interface BookmarkProp {
  */
 async function addTagToBookmark(
   bookmark: Bookmark,
-  trimmedInput: string
+  trimmedInput: string,
 ): Promise<TagAction> {
   let action: TagAction = {
     type: "add",
     tagId: -1,
     tagTitle: "",
-    bookmark: bookmark
+    bookmark: bookmark,
   };
   await api.addBookmarkTag(bookmark?.id, trimmedInput).then((response) => {
     // It will always be the last index since it was the last added.
     // let index = response.data.length - 1;
-    console.log("response", response);
     action.tagId = response.data.id;
     action.tagTitle = response.data.tag_title;
     bookmark.tags.push({ id: action.tagId, tag_title: action.tagTitle });
@@ -41,7 +40,7 @@ async function addTagToBookmark(
   return action;
 }
 
-export default function BookmarkCard({ bookmark} : BookmarkProp) {
+export default function BookmarkCard({ bookmark }: BookmarkProp) {
   const dispatch = useTagsDispatch();
   const bkmkDispatch = useBookmarkDispatch();
   const [input, setInput] = useState("");
@@ -71,7 +70,6 @@ export default function BookmarkCard({ bookmark} : BookmarkProp) {
    * the state of bookmarks.
    */
   function deleteBkmk() {
-    console.log("delete this bookmark");
     let action: BookmarkAction = {
       type: "delete",
       bookmarkId: bookmark.id,
@@ -84,7 +82,12 @@ export default function BookmarkCard({ bookmark} : BookmarkProp) {
       const idx = getIdxFromTitle(tag.tag_title);
       const tagId = bookmark.tags[idx].id;
       // update the sidebar.
-      let action: TagAction = { type: "delete", tagId: tagId, tagTitle: "", bookmark };
+      let action: TagAction = {
+        type: "delete",
+        tagId: tagId,
+        tagTitle: "",
+        bookmark,
+      };
       dispatch(action);
     });
   }
@@ -100,7 +103,12 @@ export default function BookmarkCard({ bookmark} : BookmarkProp) {
     setStrTags(titles);
 
     // update the sidebar.
-    let action: TagAction = { type: "delete", tagId: tagId, tagTitle: "", bookmark };
+    let action: TagAction = {
+      type: "delete",
+      tagId: tagId,
+      tagTitle: "",
+      bookmark,
+    };
     dispatch(action);
   };
 
@@ -116,7 +124,6 @@ export default function BookmarkCard({ bookmark} : BookmarkProp) {
   function onKeyDown(e: any) {
     const { keyCode } = e;
     const trimmedInput = input.trim();
-    console.log(trimmedInput);
     if (
       // Enter or space
       (keyCode === 32 || keyCode == 13) &&
@@ -127,9 +134,7 @@ export default function BookmarkCard({ bookmark} : BookmarkProp) {
       setStrTags((prevState) => [...prevState, trimmedInput]);
 
       strTags.push(trimmedInput);
-      console.log(strTags);
       setStrTags([...strTags]);
-      console.log("input :", input);
       addTagToBookmark(bookmark, trimmedInput).then((action) => {
         dispatch(action);
       });
@@ -142,18 +147,18 @@ export default function BookmarkCard({ bookmark} : BookmarkProp) {
       let tagsCopy = [...strTags];
       let poppedTag = tagsCopy.pop();
       if (poppedTag) deleteTag(poppedTag);
-      if (!poppedTag) poppedTag = "";
-      setInput(poppedTag);
+      setInput(poppedTag ? poppedTag : "");
     }
   }
 
-  return bookmark ? (
+  return (
     <div className="mx-2">
       <Card className="bookmark-card">
         <div className="card-header w-full">
           <CloseButton
             className="inline p-2 m-0 float-right text-sm"
             onClick={handleShow}
+            data-testid="deleteBtn"
           />
         </div>
         <DeleteModal
@@ -189,7 +194,5 @@ export default function BookmarkCard({ bookmark} : BookmarkProp) {
         </Card.Footer>
       </Card>
     </div>
-  ) : (
-    <p>...loading </p>
   );
 }

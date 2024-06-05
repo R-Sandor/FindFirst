@@ -25,7 +25,7 @@
       "@services/*": ["services/*"],
       "@api/*": ["api/*"],
       "@type/*": ["types/*"],
-      "@/*": ["./*"],
+      "@/*": ["./*"]
     }
   },
   "include": [
@@ -34,7 +34,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "components/login-form.js",
-    "api/Api.tsx",
+    "api/Api.ts",
     "contexts/TagContext.ts",
     "contexts/TagContext.tsx",
     "vitestSetup.js"

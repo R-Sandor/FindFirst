@@ -36,7 +36,7 @@ export function clickAway() {
 }
 
 export async function typeUsername(
-  username: string
+  username: string,
 ): Promise<HTMLInputElement> {
   const usernameInput: HTMLInputElement =
     screen.getByPlaceholderText(/Username/i);
@@ -60,7 +60,7 @@ export async function typePassword(pwd: string): Promise<HTMLInputElement> {
 async function typeUEP(
   username: string,
   email: string,
-  password: string
+  password: string,
 ): Promise<UEP> {
   const usernameInput = await typeUsername(username);
   const emailInput = await typeEmail(email);
@@ -73,7 +73,6 @@ async function typeUEP(
   } as UEP;
 }
 
-
 describe("simple cases", () => {
   beforeEach(() => {
     render(<Page />);
@@ -83,7 +82,7 @@ describe("simple cases", () => {
     expect(form[0].value).toBe("");
     expect(form[1].value).toBe("");
     const password = screen.getByPlaceholderText(
-      /password/i
+      /password/i,
     ) as HTMLInputElement;
     expect(password.value).toBe("");
   });
@@ -194,7 +193,7 @@ describe("Testing that user submits work with correct messages.", () => {
     const submitBtn = submitDisabled(false);
     await user.click(submitBtn);
     const takenUsernameMsg = await screen.findByText(
-      /Username is already taken/i
+      /Username is already taken/i,
     );
     expect(takenUsernameMsg).toBeInTheDocument();
   });

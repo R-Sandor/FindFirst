@@ -1,4 +1,4 @@
-import { NewBookmarkRequest } from "@/components/BookmarkGroup/Bookmark/NewBookmarkCard";
+import { NewBookmarkRequest } from "@/components/Bookmark/NewBookmarkCard";
 import axios from "axios";
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/api";
 
@@ -25,7 +25,7 @@ const api = {
     method: string,
     resource: string,
     data: any | null | undefined,
-    config: {} | undefined
+    config: {} | undefined,
   ) {
     return instance({
       method: method,

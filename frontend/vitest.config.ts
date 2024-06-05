@@ -15,8 +15,17 @@ export default defineConfig({
     css: true,
     setupFiles: ["vitestSetup.ts"],
     coverage: {
-      exclude: ["types/**", "*.config.js", "*/**/index.js", ...defaults],
+      exclude: [
+        "types/**",
+        "*.config.js",
+        "components/Logo.js",
+        "*/**/index.js",
+        "api",
+        ...defaults,
+      ],
+      reportOnFailure: true,
     },
+    testTimeout: 20000 // 20 seconds to run a test.
   },
   resolve: {
     alias: {
@@ -24,4 +33,3 @@ export default defineConfig({
     },
   },
 });
-

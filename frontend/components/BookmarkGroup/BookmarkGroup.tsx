@@ -1,6 +1,6 @@
 import { useSelectedTags } from "@/contexts/SelectedContext";
-import BookmarkCard from "./Bookmark/BookmarkCard";
-import NewBookmarkCard from "./Bookmark/NewBookmarkCard";
+import BookmarkCard from "@components/Bookmark/BookmarkCard";
+import NewBookmarkCard from "@components/Bookmark/NewBookmarkCard";
 import { useBookmarks } from "@/contexts/BookmarkContext";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import { useTags } from "@/contexts/TagContext";

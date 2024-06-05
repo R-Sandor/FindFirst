@@ -20,7 +20,7 @@ export const BookmarkContext = createContext<ProviderProps>({
   loading: true,
 });
 export const BookmarkDispatchContext = createContext<Dispatch<BookmarkAction>>(
-  () => { },
+  () => {},
 );
 
 export function useBookmarks() {
@@ -65,10 +65,8 @@ function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
       return [...bookmarkList];
     }
     case "delete": {
-      console.log("DELETE")
+      console.log("DELETE");
       if (action.bookmarkId) {
-        const found = bookmarkList.filter((b) => b.id == action.bookmarkId).length
-        console.log("FOUND ", found)
         const id = parseInt(action.bookmarkId.toString());
         api.deleteBookmarkById(id);
       }
