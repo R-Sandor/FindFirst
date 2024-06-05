@@ -4,6 +4,7 @@ plugins {
 	id "com.diffplug.spotless" version "6.11.0"
 	id 'java'
 	id 'jacoco'
+	id 'application'
 }
 
 group = 'dev.findfirst'
@@ -96,5 +97,11 @@ jacocoTestReport {
 		xml.required = true
 		csv.required = true
 		xml.destination = file("$buildDir/reports/coverage.xml")
+	}
+
+
+// Application plugin configuration
+application {
+	mainClassName = 'dev.findfirst.FindFirstApplication' // Replace with your main class
 	}
 }
