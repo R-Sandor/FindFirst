@@ -61,7 +61,7 @@ describe("Fields logic", () => {
     expect(submit).not.toBeDisabled();
 
     // fields should be populated
-    expect(url).toHaveValue("foodnetwork.com");
+    expect(url).toHaveValue("https://foodnetwork.com");
 
     const axiosMock = new MockAdapter(instance);
     const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
@@ -94,8 +94,8 @@ describe("Fields logic", () => {
 
     axiosMock
       .onPost(bookmarkAPI, {
-        title: "foodnetwork.com",
-        url: "foodnetwork.com",
+        title: "https://foodnetwork.com",
+        url: "https://foodnetwork.com",
         tagIds: [1],
       })
       .reply(() => {
@@ -165,7 +165,7 @@ describe("Fields logic", () => {
     expect(submit).not.toBeDisabled();
 
     // fields should be populated
-    expect(url).toHaveValue("foodnetwork.com");
+    expect(url).toHaveValue("https://foodnetwork.com");
 
     const axiosMock = new MockAdapter(instance);
     const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
@@ -187,8 +187,8 @@ describe("Fields logic", () => {
 
     const expectedBookmark: Bookmark = {
       id: 1,
-      title: "foodnetwork.com",
-      url: "foodnetwork.com",
+      title: "https://foodnetwork.com",
+      url: "https://foodnetwork.com",
       tags: [
         {
           id: 1,
@@ -207,8 +207,8 @@ describe("Fields logic", () => {
 
     axiosMock
       .onPost(bookmarkAPI, {
-        title: "foodnetwork.com",
-        url: "foodnetwork.com",
+        title: "https://foodnetwork.com",
+        url: "https://foodnetwork.com",
         tagIds: [1, 2],
       })
       .reply(() => {

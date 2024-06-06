@@ -128,6 +128,7 @@ export default function NewBookmarkCard() {
 
   const handleOnReset = async ({ tagTitles, title, url }: NewBookmarkForm) => {
     setStrTags([]);
+    setUrlInput("");
     tagTitles = [];
     title = "";
     url = "";
