@@ -39,56 +39,48 @@ const newcard: NewBookmarkForm = {
   tagTitles: [],
 };
 
-// Define validation schema
-const validationSchema = Yup.object({
-  url: Yup.string()
-    .url('Must be a valid URL')
-    .required('URL is required'),
-});
+async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
+  let newBkmkRequest: NewBookmarkRequest;
+  newBkmkRequest = {
+    title: createBmk.title,
+    url: createBmk.url,
+    tagIds: [],
+  };
+  let tagTitles: string[] = createBmk.tags.map((t) => {
+    return t.tag_title;
+  });
 
-// TODO error handling, tag list limits
-async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark | null> {
-  try {
-    // Validate URL before creating a new bookmark
-    await validationSchema.validate({ url: createBmk.url });
-
-    // URL is valid, create a new bookmark
-    let newBkmkRequest: NewBookmarkRequest;
-    newBkmkRequest = {
-      title: createBmk.title,
-      url: createBmk.url,
-      tagIds: [],
-    };
-    let tagTitles: string[] = createBmk.tags.map((t) => {
-      return t.tag_title;
+  await api.addAllTag(tagTitles).then((response) => {
+    let respTags: Tag[] = response.data;
+    respTags.forEach((rt) => {
+      newBkmkRequest.tagIds.push(rt.id);
     });
-
-    await api.addAllTag(tagTitles).then((response) => {
-      let respTags: Tag[] = response.data;
-      respTags.forEach((rt) => {
-        newBkmkRequest.tagIds.push(rt.id);
-      });
-    });
-    await api.addBookmark(newBkmkRequest).then((response) => {
-      createBmk.id = response.data.id;
-      createBmk.tags = response.data.tags;
-    });
-    return createBmk;
-  } catch (error: any) {
-    // URL is not valid, show an alert and do not create a new bookmark
-    alert('Invalid URL: ' + error.message);
-  }
-  return null;
+  });
+  await api.addBookmark(newBkmkRequest).then((response) => {
+    createBmk.id = response.data.id;
+    createBmk.tags = response.data.tags;
+  });
+  return createBmk;
 }
 
 export default function NewBookmarkCard() {
-  const [input, setInput] = useState("");
+  const [urlInput, setUrlInput] = useState("");
+  const [tagInput, setTagInput] = useState("");
   const [strTags, setStrTags] = useState<string[]>([]);
   const bkmkDispatch = useBookmarkDispatch();
   const tagDispatch = useTagsDispatch();
-  const onChange = (e: any) => {
-    const { value } = e.target;
-    setInput(value);
+
+  const onTagInputChange = (e: any) => {
+    setTagInput(e.target.value);
+  };
+
+  const urlInputChange = (e: any, setFieldValue: any) => {
+    let url: string = e.target.value;
+    if (url.length > 4 && !url.startsWith("http")) {
+      url = "https://" + url;
+    }
+    setFieldValue("url", url, true);
+    setUrlInput(url);
   };
 
   const handleOnSubmit = async (
@@ -99,8 +91,8 @@ export default function NewBookmarkCard() {
     let tags: Tag[] = strTags.map((t) => {
       return { tag_title: t, id: -1 };
     });
-    if (input) {
-      tags.push({ tag_title: input, id: -1 });
+    if (tagInput) {
+      tags.push({ tag_title: tagInput, id: -1 });
     }
     submittedBmk.title = submittedBmk.url;
     let newBkmk: Bookmark = {
@@ -109,13 +101,10 @@ export default function NewBookmarkCard() {
       url: submittedBmk.url,
       tags: tags,
     };
+
     let retBkmk = await makeNewBookmark(newBkmk);
+    // if adding the bookmark was successful.
     if (retBkmk) {
-      let action: BookmarkAction = {
-        type: "add",
-        bookmarkId: retBkmk.id,
-        bookmarks: [retBkmk],
-      };
       retBkmk.tags.forEach((t) => {
         let tAct: TagAction = {
           type: "add",
@@ -125,17 +114,15 @@ export default function NewBookmarkCard() {
         };
         tagDispatch(tAct);
       });
-  
-      if (retBkmk) {
-        let action: BookmarkAction = {
-          type: "add",
-          bookmarkId: retBkmk.id,
-          bookmarks: [retBkmk],
-        };
-        bkmkDispatch(action);
-      }
+
+      let action: BookmarkAction = {
+        type: "add",
+        bookmarkId: retBkmk.id,
+        bookmarks: [retBkmk],
+      };
+      bkmkDispatch(action);
     }
-    actions.resetForm({ newcard }, setStrTags([]), setInput(""));
+    actions.resetForm({ newcard }, setStrTags([]), setTagInput(""));
   };
 
   const handleOnReset = async ({ tagTitles, title, url }: NewBookmarkForm) => {
@@ -147,7 +134,7 @@ export default function NewBookmarkCard() {
 
   function onKeyDown(e: any, sv: any, values: NewBookmarkForm) {
     const { keyCode } = e;
-    const trimmedInput = input.trim();
+    const trimmedInput = tagInput.trim();
     if (
       // add tag via space bar or enter
       (keyCode === 32 || keyCode === 13) &&
@@ -157,31 +144,31 @@ export default function NewBookmarkCard() {
       e.preventDefault();
       setStrTags((prevState) => [...prevState, trimmedInput]);
       values.tagTitles = strTags.concat(trimmedInput);
-      setInput("");
+      setTagInput("");
     }
     // user hits backspace and the user has input field of 0
     // then pop the last tag only if there is one.
-    if (keyCode === 8 && !input.length && strTags.length) {
+    if (keyCode === 8 && !tagInput.length && strTags.length) {
       e.preventDefault();
       const tagsCopy = [...strTags];
       let poppedTag = tagsCopy.pop();
 
       values.tagTitles = tagsCopy;
       setStrTags(tagsCopy);
-      setInput(poppedTag ? poppedTag : "");
+      setTagInput(poppedTag ? poppedTag : "");
     }
     sv(values);
   }
 
-  const deleteTag = (index: number, sv: any, values: NewBookmarkForm) => {
+  const deleteTag = (index: number, setField: any, values: NewBookmarkForm) => {
     const tags = strTags.filter((t, i) => i !== index);
     values.tagTitles = tags;
     setStrTags(tags);
-    sv(values);
+    setField("tags", tags, true);
   };
 
   const bookmarkSchema = Yup.object().shape({
-    url: Yup.string().required("Required").min(3),
+    url: Yup.string().url().required("Must be a valid URL").min(3),
     tagTitles: Yup.array().max(8, "Too many tags. Max 8.").optional(),
   });
 
@@ -195,7 +182,7 @@ export default function NewBookmarkCard() {
         validateOnBlur={true}
         validationSchema={bookmarkSchema}
       >
-        {({ isValid, dirty, values, setValues, errors }) => (
+        {({ isValid, dirty, values, setValues, setFieldValue, errors }) => (
           <Form>
             <Card className="new-bookmark-card">
               <Card.Header>
@@ -207,6 +194,8 @@ export default function NewBookmarkCard() {
                     className="form-control"
                     id="url"
                     name="url"
+                    value={urlInput}
+                    onChange={(e: any) => urlInputChange(e, setFieldValue)}
                     placeholder="url: https://findfirst.com/discover"
                     type="text"
                   />
@@ -217,7 +206,7 @@ export default function NewBookmarkCard() {
                   {strTags.map((tag, index) => (
                     <button
                       key={index}
-                      onClick={() => deleteTag(index, setValues, values)}
+                      onClick={() => deleteTag(index, setFieldValue, values)}
                       type="button"
                       data-testid={tag}
                       className="pill-button"
@@ -227,10 +216,10 @@ export default function NewBookmarkCard() {
                     </button>
                   ))}
                   <input
-                    value={input}
+                    value={tagInput}
                     placeholder="Enter a tag"
                     onKeyDown={(e) => onKeyDown(e, setValues, values)}
-                    onChange={onChange}
+                    onChange={onTagInputChange}
                   />
                 </div>
                 <Button
@@ -243,6 +232,9 @@ export default function NewBookmarkCard() {
                 <Button className="pill-button reset" type="reset">
                   Reset
                 </Button>
+                {errors.url ? (
+                  <div className="error-text">{errors.url}</div>
+                ) : null}
                 {errors.tagTitles && values.tagTitles ? (
                   <div className="error-text">{errors.tagTitles}</div>
                 ) : null}
