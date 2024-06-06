@@ -16,7 +16,7 @@ function getTagId(map: Map<number, TagWithCnt>, tagTitle: string) {
 }
 
 // Bookmark group composed of Bookmarks.
-export default function BookmarkGroup() {
+export default function BookmarkCardsView() {
   const bookmarks = useBookmarks();
   const { selected } = useSelectedTags();
   const tags = useTags();

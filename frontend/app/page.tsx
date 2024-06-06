@@ -3,9 +3,9 @@ import { TagCntProvider } from "contexts/TagContext";
 import { BookmarkProvider } from "@/contexts/BookmarkContext";
 import UseAuth from "@components/UseAuth";
 import TagList from "@components/Tags/TagList";
-import BookmarkGroup from "@components/BookmarkGroup/BookmarkGroup";
 import tagStyles from "@/styles/tag.module.scss";
 import { SelectedTagProvider } from "@/contexts/SelectedContext";
+import BookmarkCardsView from "@components/CardView/BookmarkCardsView";
 
 export default function App() {
   const userAuth = UseAuth();
@@ -26,7 +26,7 @@ export default function App() {
                 <TagList />
               </div>
               <div className={`col-md-8 col-lg-9`}>
-                <BookmarkGroup />
+                <BookmarkCardsView />
               </div>
             </div>
           </div>
