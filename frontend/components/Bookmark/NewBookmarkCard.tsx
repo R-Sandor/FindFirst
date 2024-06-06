@@ -175,12 +175,9 @@ export default function NewBookmarkCard() {
       .required("Must be a valid URL")
       .min(3)
       .test("The TLD is valid", "The Domain must be valid.", (value) => {
-        if (value) {
-          const dots = value.split(".");
-          const tld = dots[dots.length - 1];
-          return tlds.includes(tld.toUpperCase());
-        }
-        return false;
+        const dots = value.split(".");
+        const tld = dots[dots.length - 1];
+        return tlds.includes(tld.toUpperCase());
       }),
     tagTitles: Yup.array().max(8, "Too many tags. Max 8.").optional(),
   });
