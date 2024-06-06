@@ -11,34 +11,11 @@ import TagAction from "@/types/Bookmarks/TagAction";
 import Tag from "@/types/Bookmarks/Tag";
 import * as Yup from "yup";
 import { tlds } from "@type/Bookmarks/TLDS";
-
-/**
- * Bookmark representation from the NewBookmarkCard card form..
- */
-export interface NewBookmarkForm {
-  id?: string;
-  title: string;
-  url: string;
-  tagTitles: string[];
-}
-
-/**
- * The actual request made to server.
- */
-export interface NewBookmarkRequest {
-  title: string;
-  url: string;
-  tagIds: number[];
-}
-
-/**
- * NewCard form.
- */
-const newcard: NewBookmarkForm = {
-  title: "",
-  url: "",
-  tagTitles: [],
-};
+import {
+  NewBookmarkRequest,
+  NewBookmarkForm,
+  newcard,
+} from "@type/Bookmarks/NewBookmark";
 
 async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
   let newBkmkRequest: NewBookmarkRequest;
