@@ -10,6 +10,7 @@ import { useTagsDispatch } from "@/contexts/TagContext";
 import TagAction from "@/types/Bookmarks/TagAction";
 import Tag from "@/types/Bookmarks/Tag";
 import * as Yup from "yup";
+import { tlds } from "@type/Bookmarks/TLDS";
 
 /**
  * Bookmark representation from the NewBookmarkCard card form..
@@ -168,7 +169,18 @@ export default function NewBookmarkCard() {
   };
 
   const bookmarkSchema = Yup.object().shape({
-    url: Yup.string().url().required("Must be a valid URL").min(3),
+    url: Yup.string()
+      .url()
+      .required("Must be a valid URL")
+      .min(3)
+      .test("The TLD is valid", "The Domain must be valid.", (value) => {
+        if (value) {
+          const dots = value.split(".");
+          const tld = dots[dots.length - 1];
+          return tlds.includes(tld.toUpperCase());
+        }
+        return false;
+      }),
     tagTitles: Yup.array().max(8, "Too many tags. Max 8.").optional(),
   });
 
