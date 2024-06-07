@@ -152,7 +152,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   }
 
   return (
-    <div className="mx-2">
+    <div data-testid={`bookmark-${bookmark.title}`} className="mx-2">
       <Card className="bookmark-card">
         <div className="card-header w-full">
           <CloseButton

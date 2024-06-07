@@ -7,7 +7,6 @@ import { bkmkResp, tagsData } from "./data/SampleData";
 import userEvent from "@testing-library/user-event";
 import { act } from "react-dom/test-utils";
 import Navbar from "@components/Navbar/Navbar";
-import { debug } from "vitest-preview";
 import { hitEnter } from "./utilities/fireEvents";
 const userEvnt = userEvent.setup();
 
@@ -48,6 +47,13 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
     });
     const bkmkCard = screen.getByText(/Best Cheesecake/i);
     expect(bkmkCard).toBeInTheDocument();
+    let allbkmks = screen.getAllByTestId(/bookmark-/i);
+    expect(allbkmks.length).toBe(1);
+    await act(async () => {
+      await userEvnt.click(screen.getByTestId("deserts-list-item"));
+    });
+    allbkmks = screen.getAllByTestId(/bookmark-/i);
+    expect(allbkmks.length).toBe(3);
   });
 
   test("User adds a tag", async () => {
