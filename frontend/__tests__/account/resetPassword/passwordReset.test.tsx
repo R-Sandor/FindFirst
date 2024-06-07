@@ -2,7 +2,6 @@ import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import PasswordReset from "@/app/account/resetPassword/[token]/page";
-import RootLayout from "@/app/layout";
 import {
   clickAway,
   submitDisabled,
@@ -11,7 +10,6 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import TokenPassword from "@type/account/TokenPassword";
-import { debug } from "vitest-preview";
 const user = userEvent.setup();
 
 function getPasswordFields() {
@@ -99,7 +97,8 @@ describe("Submission handling.", () => {
       token: myParams.token,
       password: "TestTest!",
     };
-    axiosMock.onPost(resetUrl, tknPwd).reply((config) => {
+
+    axiosMock.onPost(resetUrl, tknPwd).reply(() => {
       return [
         200,
         expectedResult,
@@ -129,7 +128,7 @@ describe("Submission handling.", () => {
       token: myParams.token,
       password: "TestTest!",
     };
-    axiosMock.onPost(resetUrl, tknPwd).reply((config) => {
+    axiosMock.onPost(resetUrl, tknPwd).reply(() => {
       return [
         400,
         expectedResult,
