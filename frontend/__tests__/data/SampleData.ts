@@ -11,11 +11,6 @@ export const tagsData = [
         title: "Chicken Parm",
         url: "https://www.foodnetwork.com/recipes/bobby-flay/chicken-parmigiana-recipe-1952359",
       },
-      {
-        id: 1,
-        title: "Best Cheesecake Recipe",
-        url: "https://sugarspunrun.com/best-cheesecake-recipe/",
-      },
     ],
   },
   {
@@ -76,7 +71,7 @@ export const bkmkResp: Bookmark[] = [
     id: 1,
     title: "Best Cheesecake Recipe",
     url: "https://sugarspunrun.com/best-cheesecake-recipe/",
-    tags: [myTags[2], myTags[0]],
+    tags: [myTags[2]],
   },
   {
     id: 2,

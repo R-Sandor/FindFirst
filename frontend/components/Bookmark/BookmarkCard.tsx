@@ -178,6 +178,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
                 onClick={() => deleteTag(tag)}
                 type="button"
                 className="pill-button"
+                data-testid={`${tag}-tag-${bookmark.id}-bk`}
               >
                 {tag}
                 <i className="xtag bi bi-journal-x"></i>
@@ -187,6 +188,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
             <input
               value={input}
               placeholder="Enter a tag"
+              data-testid={`${bookmark.title}-input`}
               onKeyDown={onKeyDown}
               onChange={onChange}
             />

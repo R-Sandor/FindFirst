@@ -14,7 +14,7 @@ const TagList = () => {
   const [loading, setLoading] = useState(true);
   const { selected, setSelected } = useSelectedTags();
   useEffect(() => {
-    if (userAuth) {
+    if (userAuth && tagMap.size == 0) {
       api
         .getAllTags()
         .then((results) => {
@@ -33,7 +33,7 @@ const TagList = () => {
           setLoading(false);
         });
     }
-  });
+  }, [tagMap, userAuth]);
 
   function selectTag(event: any, title: string) {
     const idx = selected.indexOf(title);
