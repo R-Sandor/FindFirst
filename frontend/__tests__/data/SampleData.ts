@@ -1,12 +1,7 @@
-import { describe, expect, it, test, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
-import Page from "../app/page";
-import authService, { User } from "@services/auth.service";
-import { instance } from "@api/Api";
 import Bookmark from "@type/Bookmarks/Bookmark";
-import Tag from "@type/Bookmarks/Tag";
+import Tag, { TagReqPayload } from "@type/Bookmarks/Tag";
 
-const tags = [
+export const tagsData = [
   {
     id: 1,
     tag_title: "Cooking",
@@ -62,7 +57,7 @@ const tags = [
   },
 ];
 
-const myTags: Tag[] = [
+export const myTags: Tag[] = [
   {
     id: 1,
     tag_title: "Cooking",
@@ -76,7 +71,7 @@ const myTags: Tag[] = [
     tag_title: "deserts",
   },
 ];
-const bkmkResp: Bookmark[] = [
+export const bkmkResp: Bookmark[] = [
   {
     id: 1,
     title: "Best Cheesecake Recipe",
@@ -97,26 +92,30 @@ const bkmkResp: Bookmark[] = [
   },
 ];
 
-const data = JSON.stringify(bkmkResp, null, 2);
+export const defaultBookmark: Bookmark = {
+  id: 1,
+  title: "facebook.com",
+  url: "facebook.com",
+  tags: [
+    {
+      id: 1,
+      tag_title: "socail",
+    },
+  ],
+};
 
-describe("User is authenticated and bookmark/tag data is present.", () => {
-  const user: User = { username: "jsmith", refreshToken: "blahblajhdfh34234" };
+export const firstTag: TagReqPayload[] = [
+  {
+    id: 2,
+    tag_title: "fb",
+    bookmarks: [],
+  },
+];
 
-  test("should be bookmarks available", async () => {
-    let MockAdapter = require("axios-mock-adapter");
-    var mock = new MockAdapter(instance);
-    // Mock GET request to /users when param `searchText` is 'John'
-    // arguments for reply are (status, data, headers)
-    mock.onGet("/bookmarks").reply(200, data);
-
-    mock.onGet("/tags").reply(200, JSON.stringify(tags));
-
-    vi.spyOn(authService, "getUser").mockImplementation(() => user);
-    vi.spyOn(authService, "getAuthorized").mockImplementation(() => 1);
-    render(<Page />);
-    const bkmkCard = await screen.findByText(/Best Cheesecake/i, undefined, {
-      timeout: 1000,
-    });
-    expect(bkmkCard).toBeInTheDocument();
-  });
-});
+export const secondTag: TagReqPayload[] = [
+  {
+    id: 3,
+    tag_title: "friends",
+    bookmarks: [],
+  },
+];

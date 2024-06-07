@@ -2,27 +2,14 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { debug } from "vitest-preview";
 import BookmarkCard from "@components/Bookmark/BookmarkCard";
-import Bookmark from "@/types/Bookmarks/Bookmark";
 import { populateTags } from "../utilities/BookmarkUtils/BookmarkUtil";
 import { instance } from "@api/Api";
 import MockAdapter from "axios-mock-adapter";
-import { TagReqPayload } from "@type/Bookmarks/Tag";
 import { hitKey } from "../utilities/fireEvents";
+import { defaultBookmark, firstTag, secondTag } from "../data/SampleData";
 const user = userEvent.setup();
 
-const defaultBookmark: Bookmark = {
-  id: 1,
-  title: "facebook.com",
-  url: "facebook.com",
-  tags: [
-    {
-      id: 1,
-      tag_title: "socail",
-    },
-  ],
-};
 describe("Bookmark functions", () => {
   beforeEach(() => {
     act(() => {
@@ -83,21 +70,6 @@ describe("Adding and deleting Tags", () => {
 
   it("Adding tags", async () => {
     const axiosMock = new MockAdapter(instance);
-    const firstTag: TagReqPayload[] = [
-      {
-        id: 2,
-        tag_title: "fb",
-        bookmarks: [],
-      },
-    ];
-    const secondTag: TagReqPayload[] = [
-      {
-        id: 3,
-        tag_title: "friends",
-        bookmarks: [],
-      },
-    ];
-
     axiosMock.onPost().replyOnce(() => {
       return [200, JSON.stringify(firstTag)];
     });

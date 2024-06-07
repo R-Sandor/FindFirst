@@ -1,12 +1,9 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Page from "app/account/login/page";
 import MockAdapter from "axios-mock-adapter";
-import {
-  typePassword,
-  typeUsername,
-} from "../signup/signup.test";
+import { typePassword, typeUsername } from "../signup/signup.test";
 import axios from "axios";
 import RootLayout from "@/app/layout";
 import { submitDisabled } from "@/__tests__/utilities/TestingUtilities";
@@ -28,12 +25,14 @@ describe("Login events.", () => {
   });
 
   beforeEach(() => {
-    // eslint-disable-next-line react/no-children-prop
-    render(
-      <RootLayout>
-        <Page />
-      </RootLayout>
-    );
+    act(() => {
+      // eslint-disable-next-line react/no-children-prop
+      render(
+        <RootLayout>
+          <Page />
+        </RootLayout>,
+      );
+    });
   });
   test("User can login with a valid username password", async () => {
     // Mock recieving a 200 on the return from the server.
@@ -52,12 +51,15 @@ describe("Login events.", () => {
         },
       ];
     });
-    await typeUsername("j-dog");
-    await typePassword("$t3ves_$uperh@rd_P@$$w0rd");
     const submitBtn = screen.getAllByRole("button", {
       name: "Login",
     })[1];
-    await user.click(submitBtn);
+    await act(async () => {
+      await typeUsername("j-dog");
+      await typePassword("$t3ves_$uperh@rd_P@$$w0rd");
+
+      await user.click(submitBtn);
+    });
   });
 
   test("User login failed  invalid username password"),
@@ -68,7 +70,9 @@ describe("Login events.", () => {
 
 describe("Errors on fields.", () => {
   beforeEach(() => {
-    render(<Page />);
+    act(() => {
+      render(<Page />);
+    });
   });
   test("Submit button should be disabled no usename or password.", async () => {
     submitDisabled(true, "Login");

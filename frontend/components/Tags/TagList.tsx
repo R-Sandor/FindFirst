@@ -39,13 +39,11 @@ const TagList = () => {
     const idx = selected.indexOf(title);
     console.log(idx);
     if (idx >= 0) {
-      console.log("Selected - remove");
       const updated = [...selected];
       updated.splice(idx, 1);
       setSelected(updated);
       event.target.classList.remove(styles.on);
     } else {
-      console.log("OnSelected - on", title);
       setSelected([...selected, title]);
       event.target.classList.add(styles.on);
     }
@@ -57,6 +55,7 @@ const TagList = () => {
       <ListGroup.Item key={key} className="w-full m-0 p-0">
         <button
           onClick={(event) => selectTag(event, tagCnt.tagTitle)}
+          data-testid={`${tagCnt.tagTitle}-list-item`}
           className={`d-flex m-0 w-full btn ${styles.btn} justify-content-between align-items-start`}
         >
           {tagCnt.tagTitle}
