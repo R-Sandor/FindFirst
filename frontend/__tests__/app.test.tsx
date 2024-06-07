@@ -4,35 +4,34 @@ import Page from "../app/page";
 import authService, { User } from "@services/auth.service";
 import { instance } from "@api/Api";
 import { bkmkResp, tagsData } from "./data/SampleData";
-import { debug } from "vitest-preview";
 import userEvent from "@testing-library/user-event";
 import { act } from "react-dom/test-utils";
-import { async } from "rxjs";
+import Navbar from "@components/Navbar/Navbar";
 const userEvnt = userEvent.setup();
 
 const data = JSON.stringify(bkmkResp, null, 2);
 
-describe("User is authenticated and bookmark/tag data is present.", () => {
+beforeEach(async () => {
   const user: User = { username: "jsmith", refreshToken: "blahblajhdfh34234" };
-
-  beforeEach(async () => {
-    let MockAdapter = require("axios-mock-adapter");
-    let mock = new MockAdapter(instance);
-    // Mock GET request to /users when param `searchText` is 'John'
-    // arguments for reply are (status, data, headers)
-    mock.onGet("/bookmarks").reply(200, data);
-    mock.onGet("/tags").reply(200, JSON.stringify(tagsData));
-    vi.spyOn(authService, "getUser").mockImplementation(() => user);
-    vi.spyOn(authService, "getAuthorized").mockImplementation(() => 1);
-    await act(async () => {
-      render(
-        <div data-bs-theme="dark" className="row pt-3">
-          <Page />
-        </div>,
-      );
-    });
+  let MockAdapter = require("axios-mock-adapter");
+  let mock = new MockAdapter(instance);
+  // Mock GET request to /users when param `searchText` is 'John'
+  // arguments for reply are (status, data, headers)
+  mock.onGet("/bookmarks").reply(200, data);
+  mock.onGet("/tags").reply(200, JSON.stringify(tagsData));
+  vi.spyOn(authService, "getUser").mockImplementation(() => user);
+  vi.spyOn(authService, "getAuthorized").mockImplementation(() => 1);
+  await act(async () => {
+    render(
+      <div>
+        <Navbar />
+        <Page />
+      </div>,
+    );
   });
+});
 
+describe("User is authenticated and bookmark/tag data is present.", () => {
   test("should be bookmarks available", async () => {
     const bkmkCard = await screen.findByText(/Best Cheesecake/i, undefined, {
       timeout: 1000,
@@ -46,5 +45,20 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
     });
     const bkmkCard = screen.getByText(/Best Cheesecake/i);
     expect(bkmkCard).toBeInTheDocument();
+  });
+});
+
+describe("Clicks around the page", () => {
+  test("Change theme", async () => {
+    await act(async () => {
+      const toggle = screen.getByTestId("light-dark");
+      await userEvnt.click(toggle);
+    });
+    expect(localStorage.getItem("theme")).toBe("light");
+    const toggle = screen.getByTestId("light-dark");
+    await act(async () => {
+      await userEvnt.click(toggle);
+    });
+    expect(localStorage.getItem("theme")).toBe("dark");
   });
 });
