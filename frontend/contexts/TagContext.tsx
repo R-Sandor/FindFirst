@@ -22,10 +22,6 @@ export const TagsCntDispatchContext = createContext<Dispatch<TagAction>>(
 );
 
 export function TagCntProvider({ children }: { children: React.ReactNode }) {
-  useEffect(() => () => {
-    tags.clear();
-  });
-
   const [tags, dispatch] = useReducer(tagCntReducer, initialTagCnts);
 
   return (
@@ -49,6 +45,7 @@ function tagCntReducer(tagMap: Map<number, TagWithCnt>, action: TagAction) {
     case "add": {
       console.log("add Tag");
       if (tagCnt) {
+        console.log(action.bookmark);
         addBkmkToTag(tagCnt, action.bookmark);
         newTagMap.set(tagId, {
           tagTitle: tagCnt.tagTitle,
