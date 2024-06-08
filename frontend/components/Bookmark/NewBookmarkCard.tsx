@@ -207,6 +207,7 @@ export default function NewBookmarkCard() {
                     placeholder="Enter a tag"
                     onKeyDown={(e) => onKeyDown(e, setValues, values)}
                     onChange={onTagInputChange}
+                    data-testid="new-bk-tag-input"
                   />
                 </div>
                 <Button

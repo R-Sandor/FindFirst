@@ -35,7 +35,7 @@ describe("Bookmark functions", () => {
       return [200, JSON.stringify("Deleting Bookmark 1")];
     });
     await act(async () => {
-      await user.click(screen.getByTestId("deleteBtn"));
+      await user.click(screen.getByTestId("bk-id-1-deleteBtn"));
     });
     await act(async () => {
       await user.click(screen.getByText(/yes/i));

@@ -14,8 +14,6 @@ const TagList = () => {
   const [loading, setLoading] = useState(false);
   const { selected, setSelected } = useSelectedTags();
   useEffect(() => {
-    console.log("Rerendering");
-    console.log(tagMap.size);
     if (userAuth && tagMap.size == 0) {
       setLoading(true);
       api
@@ -63,7 +61,9 @@ const TagList = () => {
         >
           {tagCnt.tagTitle}
           <Badge bg="primary" pill>
-            {tagCnt.count}
+            <div data-testid={`${tagCnt.tagTitle}-list-item-cnt`}>
+              {tagCnt.count}
+            </div>
           </Badge>
         </button>
       </ListGroup.Item>,

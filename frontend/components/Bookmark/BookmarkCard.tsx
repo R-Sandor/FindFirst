@@ -73,6 +73,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
     let action: BookmarkAction = {
       type: "delete",
       bookmarkId: bookmark.id,
+      bookmarks: [],
     };
     // delete the bookmark.
     bkmkDispatch(action);
@@ -158,7 +159,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
           <CloseButton
             className="inline p-2 m-0 float-right text-sm"
             onClick={handleShow}
-            data-testid="deleteBtn"
+            data-testid={`bk-id-${bookmark.id}-deleteBtn`}
           />
         </div>
         <DeleteModal

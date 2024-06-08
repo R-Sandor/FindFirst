@@ -44,7 +44,7 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
         setIsLoading(false);
       });
     }
-  }, []);
+  }, [bookmarks.length]);
 
   return (
     <BookmarkContext.Provider value={{ values: bookmarks, loading: isLoading }}>
@@ -58,11 +58,7 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
 function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
   switch (action.type) {
     case "add": {
-      if (action.bookmarks) {
-        console.log("adding");
-        return [...bookmarkList, ...action.bookmarks];
-      }
-      return [...bookmarkList];
+      return [...bookmarkList, ...action.bookmarks];
     }
     case "delete": {
       console.log("DELETE");
