@@ -11,10 +11,13 @@ import { useSelectedTags } from "@/contexts/SelectedContext";
 const TagList = () => {
   const userAuth = useAuth();
   const tagMap = useTags();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { selected, setSelected } = useSelectedTags();
   useEffect(() => {
+    console.log("Rerendering");
+    console.log(tagMap.size);
     if (userAuth && tagMap.size == 0) {
+      setLoading(true);
       api
         .getAllTags()
         .then((results) => {
@@ -83,7 +86,7 @@ const TagList = () => {
       {!loading ? (
         <ListGroup className="pt-3 w-full  ml-1 p-0">{groupItems}</ListGroup>
       ) : (
-        <div> loading</div>
+        <div></div>
       )}
     </div>
   );

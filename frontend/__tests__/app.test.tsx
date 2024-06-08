@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import Page from "../app/page";
 import authService, { User } from "@services/auth.service";
 import { instance } from "@api/Api";
@@ -8,6 +8,7 @@ import userEvent from "@testing-library/user-event";
 import { act } from "react-dom/test-utils";
 import Navbar from "@components/Navbar/Navbar";
 import { hitEnter } from "./utilities/fireEvents";
+import { debug } from "vitest-preview";
 const userEvnt = userEvent.setup();
 
 const data = JSON.stringify(bkmkResp, null, 2);
@@ -42,10 +43,11 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
   });
 
   test("User clicks a tag in list", async () => {
+    debug();
+    const bkmkCard = screen.getByText(/Best Cheesecake/i);
     await act(async () => {
       await userEvnt.click(screen.getByTestId("deserts-list-item"));
     });
-    const bkmkCard = screen.getByText(/Best Cheesecake/i);
     expect(bkmkCard).toBeInTheDocument();
     let allbkmks = screen.getAllByTestId(/bookmark-/i);
     expect(allbkmks.length).toBe(1);
