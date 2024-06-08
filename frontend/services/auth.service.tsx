@@ -6,7 +6,7 @@ export interface User {
   refreshToken: string;
 }
 
-const SIGNIN_URL = process.env.NEXT_PUBLIC_SERVER_URL +"/user/signin";
+const SIGNIN_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/user/signin";
 
 // Used to declare if user is logged-in.
 export enum AuthStatus {
@@ -30,12 +30,8 @@ class AuthService {
   }
 
   public getUser(): User | null {
-      let user = localStorage.getItem("user");
-      return user ? JSON.parse(user) : null;
-  }
-
-  public setUser(user: User | null) {
-      localStorage.setItem("user", JSON.stringify(user));
+    let user = localStorage.getItem("user");
+    return user ? JSON.parse(user) : null;
   }
 
   public getAuthorized(): AuthStatus {
@@ -69,12 +65,10 @@ class AuthService {
   }
 
   public logout() {
-      localStorage.removeItem("user");
-      this.authorizedState = AuthStatus.Unauthorized;
-      this.notify(AuthStatus.Unauthorized);
+    localStorage.removeItem("user");
+    this.authorizedState = AuthStatus.Unauthorized;
+    this.notify(AuthStatus.Unauthorized);
   }
-
-  handleAuth() {}
 
   public authCheck(url: string): AuthStatus {
     // redirect to login page if accessing a private page and not logged in
