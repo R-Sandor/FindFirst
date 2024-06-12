@@ -1,9 +1,10 @@
 "use client";
-import { Navbar, Form, Button, ButtonGroup, Container } from "react-bootstrap";
+import { Navbar, Button, ButtonGroup, Container } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import authService, { AuthStatus } from "@services/auth.service";
 import useAuth from "@components/UseAuth";
 import LightDarkToggle from "./LightDarkToggle";
+import ImportModal from "@components/Import/ImportModal";
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
@@ -55,6 +56,7 @@ const GlobalNavbar: React.FC = () => {
         </Navbar.Brand>
         <div className="mx-3">
           <LightDarkToggle />
+          <ImportModal />
           {authButton()}
         </div>
       </Container>
@@ -63,6 +65,3 @@ const GlobalNavbar: React.FC = () => {
 };
 
 export default GlobalNavbar;
-function setAuthorized(arg0: AuthStatus) {
-  throw new Error("Function not implemented.");
-}
