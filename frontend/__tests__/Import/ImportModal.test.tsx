@@ -23,5 +23,11 @@ beforeEach(async () => {
 });
 
 describe("Import Bookmarks UI.", () => {
-  it("UI renders correctly", async () => {});
+  it("UI renders correctly", async () => {
+    await act(async () => {
+      await userEvnt.click(screen.getByTestId("import-btn"));
+    });
+    expect(screen.getByText(/Import Bookmarks/i)).toBeInTheDocument();
+    debug();
+  });
 });

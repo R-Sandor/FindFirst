@@ -19,13 +19,14 @@ export default defineConfig({
         "types/**",
         "*.config.js",
         "components/Logo.js",
+        "components/Import/FilePicker.tsx", // uses native browser to select files.
         "*/**/index.js",
         "api",
         ...defaults,
       ],
       reportOnFailure: true,
     },
-    testTimeout: 20000 // 20 seconds to run a test.
+    testTimeout: 20000, // 20 seconds to run a test.
   },
   resolve: {
     alias: {

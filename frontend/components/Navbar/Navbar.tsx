@@ -10,6 +10,7 @@ const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
 
   const router = useRouter();
+  // TODO: Refactor into its own component.
   function authButton() {
     if (userAuth == AuthStatus.Unauthorized || userAuth === undefined) {
       return (

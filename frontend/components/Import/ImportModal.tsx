@@ -4,20 +4,29 @@ import "./modal.scss";
 
 export default function ImportModal(props: any) {
   const [modalShow, setModalShow] = useState(false);
+
+  const handleClose = () => setModalShow(false);
+  const handleShow = () => setModalShow(true);
+
   return (
     <div className="float-left mr-4">
-      <button className="btn" onClick={() => setModalShow(true)}>
+      <button
+        className="btn"
+        data-testid="import-btn"
+        onClick={() => setModalShow(true)}
+      >
         <i className="bi bi-file-earmark-arrow-up-fill"></i>
       </button>
 
       <Modal
         {...props}
         show={modalShow}
+        onHide={handleClose}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header closeButton onClick={() => setModalShow(false)}>
+        <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
             Import Bookmarks
           </Modal.Title>
@@ -31,7 +40,7 @@ export default function ImportModal(props: any) {
           </p>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => setModalShow(false)}>Close</Button>
+          <Button onClick={handleClose}>Close</Button>
         </Modal.Footer>
       </Modal>
     </div>
