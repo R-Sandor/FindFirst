@@ -8,9 +8,10 @@ import {
   ImageDimensionsValidator,
 } from "use-file-picker/validators";
 
-export default function FilePicker(pickerProp: {
-  setSearch: Dispatch<SetStateAction<string>>;
-  classifications: string[];
+export default function FilePicker({
+  setUpload,
+}: {
+  setUpload: Dispatch<SetStateAction<string>>;
 }) {
   const { openFilePicker, filesContent, loading, errors } = useFilePicker({
     readAs: "DataURL",
@@ -29,7 +30,7 @@ export default function FilePicker(pickerProp: {
     onFilesSuccessfullySelected: ({ plainFiles, filesContent }) => {
       // this callback is called when there were no validation errors
       const userFile = plainFiles[0];
-      pickerProp.setSearch(userFile.name);
+      setUpload(userFile.name);
       // API call to add the html file of bookmarks
       // api.import()...
 
@@ -50,11 +51,8 @@ export default function FilePicker(pickerProp: {
   if (filesContent) {
   }
   return (
-    <button
-      className="btn bi bi-file-earmark-arrow-up-fill"
-      onClick={() => openFilePicker()}
-    >
-      <i className="bi bi-file-earmark-arrow-up-fill"></i>
+    <button className="btn btn-outline-info" onClick={() => openFilePicker()}>
+      <i className="bi bi-arrow-bar-up"> Upload File</i>
     </button>
   );
 }
