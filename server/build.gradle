@@ -1,5 +1,5 @@
 plugins {
-    id 'application'
+	id 'application'
 	id 'org.springframework.boot' version '3.2.1'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id "com.diffplug.spotless" version "6.11.0"
@@ -41,6 +41,10 @@ spotless {
 
 		//licenseHeader '/* (C) $YEAR */' // or licenseHeaderFile
 	}
+}
+
+tasks.named("build") {
+	dependsOn("spotlessApply")
 }
 
 repositories {
@@ -85,8 +89,8 @@ dependencies {
 	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 }
 
-application { 
-  mainClass = 'dev.findfirst.FindFirstApplication'
+application {
+mainClass = 'dev.findfirst.FindFirstApplication'
 }
 
 test {
