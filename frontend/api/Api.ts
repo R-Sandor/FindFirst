@@ -61,6 +61,9 @@ const api = {
   addBookmarks(bkmks: NewBookmarkRequest[]) {
     return instance.post("bookmark/addBookmarks", bkmks);
   },
+  importBookmarks(htmlFile: File) { 
+    return instance.post("bookmark/import", htmlFile)
+  },
   // Adds a tag to an existing bookmark by bookmark Id with just string title of tag.
   addBookmarkTag(bkmkId: number, title: string) {
     return instance.post(`bookmark/${bkmkId}/tag?tag=${title}`);
