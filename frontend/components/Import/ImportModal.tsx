@@ -6,7 +6,7 @@ import FilePicker from "./FilePicker";
 export default function ImportModal(props: any) {
   const [modalShow, setModalShow] = useState(false);
   const [uploadFileName, setUploadFileName] = useState(
-    "Import from .html file.",
+    "Import your bookmarks from a .html.",
   );
 
   const handleClose = () => setModalShow(false);
@@ -43,6 +43,7 @@ export default function ImportModal(props: any) {
             />
             <FilePicker setUpload={setUploadFileName} />
           </div>
+          <hr />
           <p>
             Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
             dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta
