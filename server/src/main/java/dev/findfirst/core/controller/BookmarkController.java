@@ -13,10 +13,13 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
 
 @RestController
 @Validated
@@ -153,5 +157,16 @@ public class BookmarkController {
     return b.isPresent()
         ? new Response<Tag>((tag) -> bookmarkService.deleteTag(id, tag), t).get()
         : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+  }
+
+  private Flux<Bookmark> stream() {
+    return Flux.range(1, 3)
+        .delayElements(Duration.ofSeconds(1))
+        .map(i -> new Bookmark("bk" + i, i.toString()));
+  }
+
+  @PostMapping(value = "bookmark/import", produces = MediaType.APPLICATION_NDJSON_VALUE)
+  public Flux<Bookmark> handleReqDefResult1() {
+    return stream();
   }
 }

@@ -12,6 +12,8 @@ import dev.findfirst.users.model.MailHogMessage;
 import dev.findfirst.users.model.user.TokenPassword;
 import java.util.Optional;
 import java.util.Properties;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
