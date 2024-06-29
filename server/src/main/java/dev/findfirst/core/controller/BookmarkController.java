@@ -14,7 +14,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
 @RestController
@@ -166,7 +166,7 @@ public class BookmarkController {
   }
 
   @PostMapping(value = "bookmark/import", produces = MediaType.APPLICATION_NDJSON_VALUE)
-  public Flux<Bookmark> handleReqDefResult1() {
+  public Flux<Bookmark> importBookmarks(@RequestParam("file") MultipartFile file) {
     return stream();
   }
 }

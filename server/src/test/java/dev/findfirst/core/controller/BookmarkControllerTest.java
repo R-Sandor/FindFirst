@@ -2,9 +2,13 @@ package dev.findfirst.core.controller;
 
 import static dev.findfirst.utilities.HttpUtility.getHttpEntity;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -18,9 +22,9 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -44,7 +48,8 @@ public class BookmarkControllerTest {
 
   @Autowired TestRestTemplate restTemplate;
 
-  private WebTestClient client = MockMvcWebTestClient.bindToController(new BookmarkController()).build();
+  private WebTestClient client =
+      MockMvcWebTestClient.bindToController(new BookmarkController()).build();
 
   private String baseUrl = "/api/bookmarks";
 
@@ -262,17 +267,39 @@ public class BookmarkControllerTest {
     assertEquals(HttpStatus.OK, delResp.getStatusCode());
   }
 
-  /**
-   * Test the Flux endpoint for importing bookmarks.
-   */
+  /** Test the Flux endpoint for importing bookmarks. 
+   * @throws IOException */
   @Test
-  void importBookmarks() { 
-    client.post()
-    .uri("/api/bookmark/import")
-    .accept(MediaType.APPLICATION_NDJSON)
-    .cookie("findfirst", "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJqc21pdGhAZ29vZ2xlLmNvbSIsInJvbGVJZCI6MCwic2NvcGUiOiJqc21pdGhAZ29vZ2xlLmNvbSIsImlzcyI6InNlbGYiLCJyb2xlTmFtZSI6IlJPTEVfVVNFUiIsInRlbmFudElkIjoxLCJleHAiOjE3MjIzODg0ODAsImlhdCI6MTcxODc4ODQ4MH0.etXs2wIKxJakGKZNo3O_XPBXtk0cqUQsZRrxDvWVrUPjzyixldUNlewO9o1-LLamM7WXE6JxjdDMY1oci7vuOHl4KSpaaArNjrWwcnOs_2nYLEgyIWmln3T8Fo3g7-9Cm69jE_uTIJq9jpOSRdYooytKffHjbf9ndMXVd2bVmt2G4CaDR9usNEwh5zjmDN1TnmQLHpivwqhOTIWcxlvV2y8OWgpfgDjdoFHyI3DgccRUhZuwySDbpKRIZkJSbBVv-xjhTu40qo_U7S9xixd4ZdEQV85gpDwjBzTlqb1DLXE2GyQRXsoN5piOK0_fLW5NegVIajT_dE_7hQNM4lz68A; Path=/; Domain=localhost; HttpOnly;")
-    .exchange()
-    .expectStatus().isOk();
+  void importBookmarks() throws IOException {
+    assertNotNull(new File("google_bookmarks_1_21_24.html"));
+    var bodyBuilder = new MultipartBodyBuilder();
+// byte[] file = new ClassPathResource("google_bookmarks_1_21_24.html").getInputStream().readAllBytes();
+    // bodyBuilder.part("file", new ByteArrayResource(file), MediaType.MULTIPART_FORM_DATA);
+
+    		byte[] fileContent = "bar".getBytes(StandardCharsets.UTF_8);
+        		bodyBuilder.part("file", fileContent).filename("orig");
+
+	  client
+        .post()
+        .uri("/api/bookmark/import")
+        .accept(MediaType.APPLICATION_NDJSON)
+        .cookie(
+            "findfirst",
+            """
+            eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiJqc21pdGhAZ29vZ2xlLmNvbSIsInJvbGVJZC\
+            I6MCwic2NvcGUiOiJqc21pdGhAZ29vZ2xlLmNvbSIsImlzcyI6InNlbGYiLCJyb2xlT\
+            mFtZSI6IlJPTEVfVVNFUiIsInRlbmFudElkIjoxLCJleHAiOjE3MjIzODg0ODAsImlh\
+            dCI6MTcxODc4ODQ4MH0.etXs2wIKxJakGKZNo3O_XPBXtk0cqUQsZRrxDvWVrUPjzyi\
+            xldUNlewO9o1-LLamM7WXE6JxjdDMY1oci7vuOHl4KSpaaArNjrWwcnOs_2nYLEgyIW\
+            mln3T8Fo3g7-9Cm69jE_uTIJq9jpOSRdYooytKffHjbf9ndMXVd2bVmt2G4CaDR9usN\
+            Ewh5zjmDN1TnmQLHpivwqhOTIWcxlvV2y8OWgpfgDjdoFHyI3DgccRUhZuwySDbpKRI\
+            ZkJSbBVv-xjhTu40qo_U7S9xixd4ZdEQV85gpDwjBzTlqb1DLXE2GyQRXsoN5piOK0_\
+            fLW5NegVIajT_dE_7hQNM4lz68A; Path=/; Domain=localhost; HttpOnly;
+            """)
+        .bodyValue(bodyBuilder.build())
+        .exchange()
+        .expectStatus()
+        .isOk();
   }
 
   private List<Bookmark> saveBookmarks(AddBkmkReq... newBkmks) {
