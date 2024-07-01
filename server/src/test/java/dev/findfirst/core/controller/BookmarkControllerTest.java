@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -273,11 +274,11 @@ public class BookmarkControllerTest {
   void importBookmarks() throws IOException {
     assertNotNull(new File("google_bookmarks_1_21_24.html"));
     var bodyBuilder = new MultipartBodyBuilder();
-// byte[] file = new ClassPathResource("google_bookmarks_1_21_24.html").getInputStream().readAllBytes();
+    byte[] fileContent = new ClassPathResource("google_bookmarks_1_21_24.html").getInputStream().readAllBytes();
     // bodyBuilder.part("file", new ByteArrayResource(file), MediaType.MULTIPART_FORM_DATA);
 
-    		byte[] fileContent = "bar".getBytes(StandardCharsets.UTF_8);
-        		bodyBuilder.part("file", fileContent).filename("orig");
+   	// byte[] fileContent = "bar".getBytes(StandardCharsets.UTF_8);
+    bodyBuilder.part("file", fileContent).filename("BookmarksExample.html");
 
 	  client
         .post()
