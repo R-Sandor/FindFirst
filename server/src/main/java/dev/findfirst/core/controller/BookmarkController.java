@@ -1,12 +1,22 @@
 package dev.findfirst.core.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.findfirst.core.model.AddBkmkReq;
+import dev.findfirst.core.model.Bookmark;
+import dev.findfirst.core.model.BookmarkTagPair;
+import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.service.BookmarkService;
+import dev.findfirst.core.service.TagService;
+import dev.findfirst.core.utilies.Response;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
-
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,21 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import dev.findfirst.core.model.AddBkmkReq;
-import dev.findfirst.core.model.Bookmark;
-import dev.findfirst.core.model.BookmarkTagPair;
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.service.BookmarkService;
-import dev.findfirst.core.service.TagService;
-import dev.findfirst.core.utilies.Response;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import reactor.core.publisher.Flux;
 
 @RestController
@@ -166,19 +161,20 @@ public class BookmarkController {
         : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 
-
-
-
   @PostMapping(value = "bookmark/import", produces = MediaType.APPLICATION_NDJSON_VALUE)
-  public Flux<Bookmark> importBookmarks(@RequestParam("file") MultipartFile file) throws IOException {
+  public Flux<Bookmark> importBookmarks(@RequestParam("file") MultipartFile file)
+      throws IOException {
+
+    var fBytes = file.getBytes();
+    String string = new String(fBytes, StandardCharsets.UTF_8);
+    System.out.println(string);
+    var doc = Jsoup.parse(string);
+    System.out.println(doc.title());
 
     // TODO: If the filename doesn't end with .html then throw.
     // var tmpUpload = Path.of("/tmp/" + file.getOriginalFilename());
     // Files.copy(file.getInputStream(), tmpUpload);
     // Files.read
-    var fBytes  = file.getBytes();
-      String htmlFile 
-            = new String(fBytes, StandardCharsets.UTF_8); 
-    return bookmarkService.importBookmarks(htmlFile);
+    return bookmarkService.stream();
   }
 }

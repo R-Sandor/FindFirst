@@ -90,8 +90,7 @@ public class SecSecurityConfig {
                     .authenticationEntryPoint(unauthorizedHandler)
                     .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
     http.authenticationProvider(authenticationProvider());
-    http.addFilterBefore(
-        cookieJWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+    http.addFilterBefore(cookieJWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 

@@ -6,13 +6,18 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.core.model.AddBkmkReq;
+import dev.findfirst.core.model.Bookmark;
+import dev.findfirst.core.model.BookmarkTagPair;
+import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.repository.BookmarkRepository;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,16 +31,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
+import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import dev.findfirst.core.annotations.IntegrationTest;
-import dev.findfirst.core.model.AddBkmkReq;
-import dev.findfirst.core.model.Bookmark;
-import dev.findfirst.core.model.BookmarkTagPair;
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.repository.BookmarkRepository;
 
 @Testcontainers
 @IntegrationTest
@@ -49,8 +48,14 @@ public class BookmarkControllerTest {
 
   @Autowired TestRestTemplate restTemplate;
 
-  private WebTestClient client =
-      MockMvcWebTestClient.bindToController(new BookmarkController()).build();
+  @Autowired WebApplicationContext wac;
+
+  private WebTestClient client;
+
+  @BeforeEach
+  void setUp() {
+    client = MockMvcWebTestClient.bindToApplicationContext(this.wac).build();
+  }
 
   private String baseUrl = "/api/bookmarks";
 
@@ -268,19 +273,24 @@ public class BookmarkControllerTest {
     assertEquals(HttpStatus.OK, delResp.getStatusCode());
   }
 
-  /** Test the Flux endpoint for importing bookmarks. 
-   * @throws IOException */
+  /**
+   * Test the Flux endpoint for importing bookmarks.
+   *
+   * @throws IOException
+   * @throws InterruptedException
+   */
   @Test
-  void importBookmarks() throws IOException {
+  void importBookmarks() throws IOException, InterruptedException {
     assertNotNull(new File("google_bookmarks_1_21_24.html"));
     var bodyBuilder = new MultipartBodyBuilder();
-    byte[] fileContent = new ClassPathResource("google_bookmarks_1_21_24.html").getInputStream().readAllBytes();
+    byte[] fileContent =
+        new ClassPathResource("google_bookmarks_1_21_24.html").getInputStream().readAllBytes();
     // bodyBuilder.part("file", new ByteArrayResource(file), MediaType.MULTIPART_FORM_DATA);
 
-   	// byte[] fileContent = "bar".getBytes(StandardCharsets.UTF_8);
+    // byte[] fileContent = "bar".getBytes(StandardCharsets.UTF_8);
     bodyBuilder.part("file", fileContent).filename("BookmarksExample.html");
 
-	  client
+    client
         .post()
         .uri("/api/bookmark/import")
         .accept(MediaType.APPLICATION_NDJSON)

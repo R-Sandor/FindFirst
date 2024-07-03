@@ -27,8 +27,7 @@ public class FindFirstApplication {
           ==============================================
           Check that the app.key, app.pub are generated.
           To generate call ./scripts/createServerKeys.sh
-          """
-          );
+          """);
     }
   }
 
