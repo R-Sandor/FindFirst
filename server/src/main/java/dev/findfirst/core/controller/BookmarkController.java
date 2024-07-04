@@ -166,15 +166,11 @@ public class BookmarkController {
       throws IOException {
 
     var fBytes = file.getBytes();
-    String string = new String(fBytes, StandardCharsets.UTF_8);
-    System.out.println(string);
-    var doc = Jsoup.parse(string);
-    System.out.println(doc.title());
+    String docStr = new String(fBytes, StandardCharsets.UTF_8);
 
     // TODO: If the filename doesn't end with .html then throw.
-    // var tmpUpload = Path.of("/tmp/" + file.getOriginalFilename());
-    // Files.copy(file.getInputStream(), tmpUpload);
-    // Files.read
-    return bookmarkService.stream();
+    // TODO: Check if the file is too big! 
+
+    return bookmarkService.importBookmarks(docStr);
   }
 }

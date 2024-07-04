@@ -5,17 +5,23 @@ import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.repository.BookmarkRepository;
 import jakarta.validation.constraints.NotNull;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
 import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 @Service
+@Slf4j
 public class BookmarkService {
 
   @Autowired private BookmarkRepository bookmarkRepository;
@@ -109,7 +115,24 @@ public class BookmarkService {
   public Flux<Bookmark> importBookmarks(String htmlFile) {
     var doc = Jsoup.parse(htmlFile);
     System.out.println(doc.title());
+    var dts = doc.getElementsByTag("DT");
+    var hrefs = doc.getElementsByAttribute("href");
+    log.debug(dts.text());
+    hrefs.stream().forEach(e -> log.debug(e.attributes().get("href")));
 
-    return stream();
+    return Flux.fromStream(hrefs.stream()).map(el -> { 
+      var url = el.attributes().get("href");
+      Document retDoc;
+      
+      try {
+        retDoc = Jsoup.connect(url).get();
+        log.debug(retDoc.title());
+        return new Bookmark(retDoc.title(), url);
+        // return bookmarkRepository.save(new Bookmark(retDoc.title(), url));
+      } catch (IOException e1) {
+        e1.printStackTrace();
+      }
+     return new Bookmark(url, url); 
+    });
   }
 }

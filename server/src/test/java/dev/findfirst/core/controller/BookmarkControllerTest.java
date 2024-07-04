@@ -310,7 +310,9 @@ public class BookmarkControllerTest {
         .bodyValue(bodyBuilder.build())
         .exchange()
         .expectStatus()
-        .isOk();
+        .isOk()
+        .expectBodyList(Bookmark.class).hasSize(4);
+        
   }
 
   private List<Bookmark> saveBookmarks(AddBkmkReq... newBkmks) {
