@@ -52,6 +52,8 @@ repositories {
 }
 
 dependencies {
+	compileOnly 'org.projectlombok:lombok'
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.2.0'
 	implementation 'org.springframework.boot:spring-boot-starter-data-rest:3.2.0'
 	implementation 'org.springframework.boot:spring-boot-starter-validation:3.2.0'
@@ -63,9 +65,6 @@ dependencies {
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
 	implementation 'org.jsoup:jsoup:1.17.2'
 
-
-
-	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'org.postgresql:postgresql'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
@@ -73,17 +72,15 @@ dependencies {
 
 	annotationProcessor 'org.projectlombok:lombok'
 
-
 	testCompileOnly 'org.projectlombok:lombok'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:3.2.0'
 	testImplementation 'org.springframework.security:spring-security-test:6.2.0'
-
 	testImplementation 'org.testcontainers:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
 	testImplementation "org.testcontainers:junit-jupiter:1.19.3"
-
-
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
+
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")

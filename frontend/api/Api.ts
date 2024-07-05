@@ -5,9 +5,10 @@ const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/api";
 export const instance = axios.create({
   withCredentials: true,
   baseURL: SERVER_URL,
-  timeout: 3000,
+  timeout: 10000,
   transformResponse: [
     function (data: any) {
+      console.log(data)
       return parseData(data);
     },
   ],
@@ -62,7 +63,9 @@ const api = {
     return instance.post("bookmark/addBookmarks", bkmks);
   },
   importBookmarks(htmlFile: File) { 
-    return instance.post("bookmark/import", htmlFile)
+    return instance.postForm("bookmark/import", {
+      file: htmlFile
+    })
   },
   // Adds a tag to an existing bookmark by bookmark Id with just string title of tag.
   addBookmarkTag(bkmkId: number, title: string) {

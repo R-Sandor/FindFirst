@@ -1,22 +1,21 @@
 package dev.findfirst.core.service;
 
+import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
+import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.AddBkmkReq;
 import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.repository.BookmarkRepository;
 import jakarta.validation.constraints.NotNull;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
-import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -36,15 +35,18 @@ public class BookmarkService {
     return id == null ? Optional.ofNullable(null) : bookmarkRepository.findById(id);
   }
 
-  public Bookmark addBookmark(AddBkmkReq reqBkmk) throws Exception {
+  public Bookmark addBookmark(AddBkmkReq reqBkmk)
+      throws BookmarkAlreadyExistsException, TagNotFoundException {
     var tags = new HashSet<Tag>();
 
     if (bookmarkRepository.findByUrl(reqBkmk.url()).isPresent()) {
-      throw new Exception("bookmark exists");
+      throw new BookmarkAlreadyExistsException();
     }
 
-    for (var t : reqBkmk.tagIds()) {
-      tags.add(tagService.findById(t).orElseThrow(() -> new Exception("No such tag exists")));
+    if (reqBkmk.tagIds() != null) {
+      for (var t : reqBkmk.tagIds()) {
+        tags.add(tagService.findById(t).orElseThrow(() -> new TagNotFoundException()));
+      }
     }
 
     var newBkmk = new Bookmark(reqBkmk.title(), reqBkmk.url());
@@ -74,9 +76,9 @@ public class BookmarkService {
           bookmarkRepository.flush();
 
         } catch (ObjectOptimisticLockingFailureException exception) {
-          // I don't know a fool proof way of preventing this error other than blocking on
-          // the method.
-          // Which would not be ideal given its a controller and the error itself
+          // I don't know a fool proof way of preventing this error
+          // other than blocking on the method.  Which would not
+          // be ideal given its a controller and the error itself
           // resolves.
         }
       }
@@ -84,7 +86,7 @@ public class BookmarkService {
   }
 
   public void deleteAllBookmarks() {
-    // finds all that belong to the user and deletes them.
+    // Finds all that belong to the user and deletes them.
     // Otherwise the @preRemove throws an execption as it should.
     bookmarkRepository.deleteAll(bookmarkRepository.findAll());
   }
@@ -106,33 +108,25 @@ public class BookmarkService {
     return tag;
   }
 
-  public Flux<Bookmark> stream() {
-    return Flux.range(1, 3)
-        .delayElements(Duration.ofSeconds(1))
-        .map(i -> new Bookmark("bk" + i, i.toString()));
-  }
-
   public Flux<Bookmark> importBookmarks(String htmlFile) {
     var doc = Jsoup.parse(htmlFile);
-    System.out.println(doc.title());
-    var dts = doc.getElementsByTag("DT");
     var hrefs = doc.getElementsByAttribute("href");
-    log.debug(dts.text());
     hrefs.stream().forEach(e -> log.debug(e.attributes().get("href")));
-
-    return Flux.fromStream(hrefs.stream()).map(el -> { 
-      var url = el.attributes().get("href");
-      Document retDoc;
-      
-      try {
-        retDoc = Jsoup.connect(url).get();
-        log.debug(retDoc.title());
-        return new Bookmark(retDoc.title(), url);
-        // return bookmarkRepository.save(new Bookmark(retDoc.title(), url));
-      } catch (IOException e1) {
-        e1.printStackTrace();
-      }
-     return new Bookmark(url, url); 
-    });
+    var sec = SecurityContextHolder.getContext();
+    return Flux.fromStream(hrefs.stream())
+        .map(
+            el -> {
+              var url = el.attributes().get("href");
+              try {
+                var retDoc = Jsoup.connect(url).get();
+                log.debug(retDoc.title());
+                // Issues with the context being lost between requests and database write.
+                SecurityContextHolder.setContext(sec);
+                return addBookmark(new AddBkmkReq(retDoc.title(), url, null));
+              } catch (IOException | BookmarkAlreadyExistsException | TagNotFoundException ex) {
+                log.error(ex.getMessage());
+              }
+              return new Bookmark();
+            });
   }
 }

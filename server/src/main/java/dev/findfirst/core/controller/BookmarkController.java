@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Consumer;
-import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -169,7 +168,7 @@ public class BookmarkController {
     String docStr = new String(fBytes, StandardCharsets.UTF_8);
 
     // TODO: If the filename doesn't end with .html then throw.
-    // TODO: Check if the file is too big! 
+    // TODO: Check if the file is too big!
 
     return bookmarkService.importBookmarks(docStr);
   }
