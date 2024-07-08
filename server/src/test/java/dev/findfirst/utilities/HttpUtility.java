@@ -34,11 +34,11 @@ public class HttpUtility {
 
     // Get the cookie from signin.
     var cookieOpt = Optional.ofNullable(signResp.getHeaders().get("Set-Cookie"));
-    var cookie = cookieOpt.orElseThrow();
+    var cookie = cookieOpt.orElseThrow().get(0);
 
     // Add the cookie to next request.
     headers = new HttpHeaders();
-    headers.add("Cookie", cookie.get(0));
+    headers.add("Cookie", cookie);
     return new HttpEntity<>(body, headers);
   }
 }
