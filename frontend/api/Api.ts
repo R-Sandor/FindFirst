@@ -1,5 +1,7 @@
 import { NewBookmarkRequest } from "@type/Bookmarks/NewBookmark";
 import axios from "axios";
+import { fromFetch } from 'rxjs/fetch';
+import { switchMap, of, catchError } from 'rxjs';
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/api";
 
 export const instance = axios.create({
@@ -8,7 +10,6 @@ export const instance = axios.create({
   timeout: 10000,
   transformResponse: [
     function (data: any) {
-      console.log(data)
       return parseData(data);
     },
   ],
@@ -32,6 +33,7 @@ const api = {
       method: method,
       url: resource,
       data,
+      ...config
     });
   },
   // Get all bookmarks.
@@ -62,10 +64,55 @@ const api = {
   addBookmarks(bkmks: NewBookmarkRequest[]) {
     return instance.post("bookmark/addBookmarks", bkmks);
   },
-  importBookmarks(htmlFile: File) { 
-    return instance.postForm("bookmark/import", {
-      file: htmlFile
+  importBookmarks(htmlFile: File) {
+    const formdata = new FormData();
+    formdata.append("file", htmlFile, "bookmarks-test.html");
+
+    // const reqHeaders = new Headers();
+
+    // A cached response is okay unless it's more than a week old.
+    // reqHeaders.set("Content-Type", "multipart/form-data");
+
+
+    const requestOptions = {
+      method: "POST",
+      body: formdata,
+      // headers: reqHeaders,
+      credentials: 'include'
+    
+    };
+
+
+    const req = new Request(SERVER_URL + "/bookmark/import", {
+      method: "POST",
+      body: formdata,
+      // headers: reqHeaders,
+      credentials: 'include',
+      redirect: 'follow'
     })
+
+    const data$ = fromFetch(req).pipe(
+      switchMap(response => {
+        if (response.ok) {
+          // OK return data
+          console.log(response)
+          return response.text();
+        } else {
+          // Server is returning a status requiring the client to try something else.
+          return of({ error: true, message: `Error ${response.status}` });
+        }
+      }),
+      catchError(err => {
+        // Network or other error, handle appropriately
+        console.error(err);
+        return of({ error: true, message: err.message })
+      })
+    );
+
+    data$.subscribe({
+      next: result => console.log(result),
+      complete: () => console.log('done')
+    });
   },
   // Adds a tag to an existing bookmark by bookmark Id with just string title of tag.
   addBookmarkTag(bkmkId: number, title: string) {

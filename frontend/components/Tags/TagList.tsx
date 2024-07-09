@@ -53,15 +53,17 @@ const TagList = () => {
   let groupItems: any = [];
   tagMap.forEach((tagCnt, key) => {
     groupItems.push(
-      <ListGroup.Item key={key} className="w-full m-0 p-0">
+      <ListGroup.Item key={`${key}-item`} className="w-full m-0 p-0">
         <button
           onClick={(event) => selectTag(event, tagCnt.tagTitle)}
           data-testid={`${tagCnt.tagTitle}-list-item`}
+          key={`${tagCnt.tagTitle}-list-item`}
           className={`d-flex m-0 w-full btn ${styles.btn} justify-content-between align-items-start`}
         >
           {tagCnt.tagTitle}
           <Badge bg="primary" pill>
-            <div data-testid={`${tagCnt.tagTitle}-list-item-cnt`}>
+            <div data-testid={`${tagCnt.tagTitle}-list-item-cnt`}
+            key={`${tagCnt.tagTitle}-list-item-badge`}>
               {tagCnt.count}
             </div>
           </Badge>

@@ -8,6 +8,7 @@ import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.repository.BookmarkRepository;
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -127,6 +128,6 @@ public class BookmarkService {
                 log.error(ex.getMessage());
               }
               return new Bookmark();
-            });
+            }).delayElements(Duration.ofSeconds(5));
   }
 }
