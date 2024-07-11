@@ -1,5 +1,17 @@
 package dev.findfirst.core.service;
 
+import java.io.IOException;
+import java.time.Duration;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+
+import org.jsoup.Jsoup;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+
 import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.AddBkmkReq;
@@ -7,17 +19,7 @@ import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.repository.BookmarkRepository;
 import jakarta.validation.constraints.NotNull;
-import java.io.IOException;
-import java.time.Duration;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 @Service
@@ -123,11 +125,12 @@ public class BookmarkService {
                 log.debug(retDoc.title());
                 // Issues with the context being lost between requests and database write.
                 SecurityContextHolder.setContext(sec);
-                return addBookmark(new AddBkmkReq(retDoc.title(), url, null));
+                String title = retDoc.title().strip();
+                return addBookmark(new AddBkmkReq(title, url, null));
               } catch (IOException | BookmarkAlreadyExistsException | TagNotFoundException ex) {
                 log.error(ex.getMessage());
               }
               return new Bookmark();
-            }).delayElements(Duration.ofSeconds(5));
+            }).delayElements(Duration.ofMillis(300));
   }
 }

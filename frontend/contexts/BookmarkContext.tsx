@@ -1,3 +1,5 @@
+'use client';
+
 import api from "@/api/Api";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 import Bookmark from "@type/Bookmarks/Bookmark";
@@ -58,6 +60,7 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
 function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
   switch (action.type) {
     case "add": {
+      console.log("adding")
       return [...bookmarkList, ...action.bookmarks];
     }
     case "delete": {

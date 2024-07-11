@@ -74,7 +74,7 @@ const TagList = () => {
 
   if (groupItems.length == 0) {
     groupItems.push(
-      <ListGroup.Item className="h-10 d-flex justify-content-between align-items-start">
+      <ListGroup.Item key="no-items" className="h-10 d-flex justify-content-between align-items-start">
         Tag List
         <Badge bg="primary" pill>
           Count

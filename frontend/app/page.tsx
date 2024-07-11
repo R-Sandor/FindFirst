@@ -17,9 +17,6 @@ export default function App() {
    * the regular landing.
    */
   return userAuth ? (
-    <BookmarkProvider>
-      <TagCntProvider>
-        <SelectedTagProvider>
           <div className="container-fluid">
             <div className="row">
               <div className={`col-md-4 col-lg-3 ${tagStyles.tagList}`}>
@@ -30,9 +27,6 @@ export default function App() {
               </div>
             </div>
           </div>
-        </SelectedTagProvider>
-      </TagCntProvider>
-    </BookmarkProvider>
   ) : (
     <div></div>
   );

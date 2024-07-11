@@ -9,8 +9,10 @@ import {
 
 export default function FilePicker({
   setUpload,
+  setFile
 }: {
   setUpload: Dispatch<SetStateAction<string>>;
+  setFile: Dispatch<SetStateAction<File | undefined>>;
 }) {
   const { openFilePicker, filesContent, loading, errors } = useFilePicker({
     readAs: "DataURL",
@@ -26,9 +28,7 @@ export default function FilePicker({
       setUpload(userFile.name);
       // API call to add the html file of bookmarks
       // api.import()...
-      api.importBookmarks(userFile);
-      
-
+      setFile(userFile)
       // handle adding each bookmark returned to frontend or rerender
     },
   });
