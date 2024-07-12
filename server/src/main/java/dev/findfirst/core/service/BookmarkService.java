@@ -119,18 +119,18 @@ public class BookmarkService {
     return Flux.fromStream(hrefs.stream())
         .map(
             el -> {
-              var url = el.attributes().get("href");
+              String url = el.attributes().get("href");
               try {
                 var retDoc = Jsoup.connect(url).get();
                 log.debug(retDoc.title());
                 // Issues with the context being lost between requests and database write.
                 SecurityContextHolder.setContext(sec);
-                String title = retDoc.title().strip();
+                String title = retDoc.title();
                 return addBookmark(new AddBkmkReq(title, url, null));
               } catch (IOException | BookmarkAlreadyExistsException | TagNotFoundException ex) {
                 log.error(ex.getMessage());
               }
               return new Bookmark();
-            }).delayElements(Duration.ofMillis(300));
+            }).delayElements(Duration.ofMillis(200));
   }
 }

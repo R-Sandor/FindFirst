@@ -20,11 +20,11 @@ export default function ImportModal(props: any) {
 
   useEffect(() => { importFile ? importBookmarks(importFile) : () => { } }, [importFile])
   useEffect(() => {
-    // let action: BookmarkAction = {
-    //   type: "add",
-    //   bookmarks: imported,
-    // }
-    // bkmkDispatch(action);
+    let action: BookmarkAction = {
+       type: "add",
+       bookmarks: imported,
+     }
+     bkmkDispatch(action);
     console.log(done)
 
   }, [done])
@@ -53,22 +53,22 @@ export default function ImportModal(props: any) {
     const response = await fetch(req)
     const reader = response.body!.getReader();
     const decoder = new TextDecoder();
+    const bkmks: Bookmark[] = [];
     while (true) {
       const { done, value } = await reader.read();
       if (done) {
-        // Do something with last chunk of data then exit reader
         console.log(done)
+        setDone(true);
         return;
       }
       const chunk = await decoder.decode(value);
-      if (chunk) { 
+      if (chunk.length > 1) { 
+        console.log(chunk)
         const obj = JSON.parse(chunk);
-        console.log(obj)
+        bkmks.push(obj)
+        setImported([...bkmks]);
       }
-      console.log(chunk) 
-      // Otherwise do something here to process current chunk
     }
-    
   }
 
   const handleClose = () => setModalShow(false);
