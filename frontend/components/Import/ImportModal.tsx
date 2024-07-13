@@ -18,54 +18,48 @@ export default function ImportModal(props: any) {
   const [done, setDone] = useState(false);
   const bkmkDispatch = useBookmarkDispatch();
 
-  useEffect(() => { importFile ? importBookmarks(importFile) : () => { } }, [importFile])
   useEffect(() => {
-    let action: BookmarkAction = {
-       type: "add",
-       bookmarks: imported,
-     }
-     bkmkDispatch(action);
-    console.log(done)
+    importFile ? importBookmarks(importFile) : () => {};
+  }, [importFile]);
 
-  }, [done])
+  useEffect(() => {
+    if (done) {
+      let action: BookmarkAction = {
+        type: "add",
+        bookmarks: imported,
+      };
+      bkmkDispatch(action);
+    }
+  }, [bkmkDispatch, done, imported]);
 
   async function importBookmarks(htmlFile: File) {
     const formdata = new FormData();
     formdata.append("file", htmlFile, "bookmarks-test.html");
 
-    const requestOptions = {
-      method: "POST",
-      body: formdata,
-      // headers: reqHeaders,
-      credentials: 'include'
-    };
-
     const req = new Request(SERVER_URL + "/bookmark/import", {
       method: "POST",
       body: formdata,
       // headers: reqHeaders,
-      credentials: 'include',
-      redirect: 'follow'
-    })
+      credentials: "include",
+      redirect: "follow",
+    });
 
-
-
-    const response = await fetch(req)
+    const response = await fetch(req);
     const reader = response.body!.getReader();
     const decoder = new TextDecoder();
     const bkmks: Bookmark[] = [];
     while (true) {
       const { done, value } = await reader.read();
       if (done) {
-        console.log(done)
+        console.log(done);
         setDone(true);
         return;
       }
-      const chunk = await decoder.decode(value);
-      if (chunk.length > 1) { 
+      const chunk = decoder.decode(value);
+      if (chunk.length > 1) {
         const obj = JSON.parse(chunk);
-        if (obj.id) { 
-          bkmks.push(obj)
+        if (obj.id) {
+          bkmks.push(obj);
           setImported([...bkmks]);
         }
       }
@@ -107,22 +101,32 @@ export default function ImportModal(props: any) {
             <FilePicker setUpload={setUploadFileName} setFile={setFile} />
           </div>
           <hr />
-          {imported.map(bkmk => {
+          {imported.map((bkmk) => {
             return (
               <div key={bkmk.title}>
                 <div className="import-item">
                   <div className="import-text">
-                    <p >{bkmk.title}</p>
+                    <p>{bkmk.title}</p>
                   </div>
                   <div className="import-check">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" className="bi bi-bookmark-check-fill import-check" viewBox="0 0 16 16">
-                      <path fillRule="evenodd" d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5m8.854-9.646a.5.5 0 0 0-.708-.708L7.5 7.793 6.354 6.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z" />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="22"
+                      height="22"
+                      fill="currentColor"
+                      className="bi bi-bookmark-check-fill import-check"
+                      viewBox="0 0 16 16"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M2 15.5V2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.74.439L8 13.069l-5.26 2.87A.5.5 0 0 1 2 15.5m8.854-9.646a.5.5 0 0 0-.708-.708L7.5 7.793 6.354 6.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0z"
+                      />
                     </svg>
                   </div>
                 </div>
                 <hr></hr>
               </div>
-            )
+            );
           })}
         </Modal.Body>
         <Modal.Footer>

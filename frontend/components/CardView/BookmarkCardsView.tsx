@@ -5,6 +5,7 @@ import { useBookmarks } from "@/contexts/BookmarkContext";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import { useTags } from "@/contexts/TagContext";
 import { TagWithCnt } from "@type/Bookmarks/Tag";
+import cardView from "styles/cardView.module.scss";
 
 function getTagId(map: Map<number, TagWithCnt>, tagTitle: string) {
   for (let [k, v] of map) {
@@ -51,8 +52,8 @@ export default function BookmarkCardsView() {
   return (
     <div>
       {!bookmarks.loading ? (
-        <div className="row pt-3">
-          <div className="col-6 col-sm-12 col-md-12 col-lg-4">
+        <div className={`${cardView.content} max-h-inherit row pt-3`}>
+          <div className="col-sm-12 col-md-12 col-lg-4">
             <NewBookmarkCard />
           </div>
           {filterBookmarks(bookmarks.values).map((b, i) => {

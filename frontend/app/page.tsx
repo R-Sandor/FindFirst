@@ -1,10 +1,7 @@
 "use client";
-import { TagCntProvider } from "contexts/TagContext";
-import { BookmarkProvider } from "@/contexts/BookmarkContext";
 import UseAuth from "@components/UseAuth";
 import TagList from "@components/Tags/TagList";
 import tagStyles from "@/styles/tag.module.scss";
-import { SelectedTagProvider } from "@/contexts/SelectedContext";
 import BookmarkCardsView from "@components/CardView/BookmarkCardsView";
 
 export default function App() {
@@ -17,16 +14,16 @@ export default function App() {
    * the regular landing.
    */
   return userAuth ? (
-          <div className="container-fluid">
-            <div className="row">
-              <div className={`col-md-4 col-lg-3 ${tagStyles.tagList}`}>
-                <TagList />
-              </div>
-              <div className={`col-md-8 col-lg-9`}>
-                <BookmarkCardsView />
-              </div>
-            </div>
-          </div>
+    <div className="container-fluid">
+      <div className="row">
+        <div className={`col-md-4 col-lg-3 ${tagStyles.tagList}`}>
+          <TagList />
+        </div>
+        <div className="col-md-8 col-lg-9">
+          <BookmarkCardsView />
+        </div>
+      </div>
+    </div>
   ) : (
     <div></div>
   );

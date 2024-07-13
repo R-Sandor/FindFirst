@@ -45,7 +45,7 @@ const GlobalNavbar: React.FC = () => {
   return (
     <Navbar
       expand="lg"
-      style={{ borderBottom: "1px solid" }}
+      style={{ borderBottom: "1px solid", height: "60px" }}
       className="bg-body-tertiary"
     >
       <Container>
@@ -57,10 +57,7 @@ const GlobalNavbar: React.FC = () => {
         </Navbar.Brand>
         <div className="mx-3">
           <LightDarkToggle />
-          {
-            userAuth? 
-            <ImportModal />: <></>
-          }
+          {userAuth ? <ImportModal /> : <></>}
           {authButton()}
         </div>
       </Container>

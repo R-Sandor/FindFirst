@@ -1,9 +1,11 @@
 .tagList {
-  min-height: calc(100vh - 70px);
+  min-height: 20vh;
   margin-top: 5px;
+  padding-bottom: 5px;
   border-radius: 10px;
 
   background-color: var(--tag-list-bg);
+  overflow: scroll;
 
   @media screen and (max-width: 800px) {
     .title {
@@ -12,5 +14,13 @@
     p {
       font-size: 20px;
     }
+  }
+
+  @media screen and (max-height: 700px) {
+    max-height: 35vh;
+  }
+
+  @media screen and (min-width: 750px) {
+    max-height: unset;
   }
 }
