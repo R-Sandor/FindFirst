@@ -2,6 +2,7 @@
 
 import api from "@/api/Api";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
+import UseAuth from "@components/UseAuth";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import {
   Dispatch,
@@ -37,16 +38,17 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
   const [bookmarks, dispatch] = useReducer(bookmarkReducer, []);
   const [isLoading, setIsLoading] = useState(true);
   const hasFetched = useRef(false);
+  const userAuth = UseAuth()
 
   useEffect(() => {
-    if (bookmarks.length == 0 && !hasFetched.current) {
+    if (userAuth && bookmarks.length == 0 && !hasFetched.current) {
       hasFetched.current = true;
       api.getAllBookmarks().then((resp) => {
         dispatch({ type: "add", bookmarks: resp.data as Bookmark[] });
         setIsLoading(false);
       });
     }
-  }, [bookmarks.length]);
+  }, [bookmarks.length, userAuth]);
 
   return (
     <BookmarkContext.Provider value={{ values: bookmarks, loading: isLoading }}>

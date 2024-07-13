@@ -63,10 +63,11 @@ export default function ImportModal(props: any) {
       }
       const chunk = await decoder.decode(value);
       if (chunk.length > 1) { 
-        console.log(chunk)
         const obj = JSON.parse(chunk);
-        bkmks.push(obj)
-        setImported([...bkmks]);
+        if (obj.id) { 
+          bkmks.push(obj)
+          setImported([...bkmks]);
+        }
       }
     }
   }

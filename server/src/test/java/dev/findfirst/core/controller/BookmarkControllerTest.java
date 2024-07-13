@@ -6,12 +6,19 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.core.model.AddBkmkReq;
+import dev.findfirst.core.model.Bookmark;
+import dev.findfirst.core.model.BookmarkTagPair;
+import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.repository.BookmarkRepository;
+import dev.findfirst.security.jwt.TenantAuthenticationToken;
+import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -35,15 +42,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import dev.findfirst.core.annotations.IntegrationTest;
-import dev.findfirst.core.model.AddBkmkReq;
-import dev.findfirst.core.model.Bookmark;
-import dev.findfirst.core.model.BookmarkTagPair;
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.repository.BookmarkRepository;
-import dev.findfirst.security.jwt.TenantAuthenticationToken;
-import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 
 @Testcontainers
 @IntegrationTest
@@ -300,10 +298,11 @@ public class BookmarkControllerTest {
     Authentication authentication = Mockito.mock(Authentication.class);
     Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
     SecurityContextHolder.setContext(securityContext);
-    Mockito.when(securityContext.getAuthentication()).thenReturn(new TenantAuthenticationToken(authentication, 0, null, 1));
+    Mockito.when(securityContext.getAuthentication())
+        .thenReturn(new TenantAuthenticationToken(authentication, 0, null, 1));
 
     bodyBuilder.part("file", fileContent).filename("BookmarksExample.html");
-       HttpHeaders headers = new HttpHeaders();
+    HttpHeaders headers = new HttpHeaders();
     // test user
     headers.setBasicAuth("jsmith", "test");
     HttpEntity<String> entity = new HttpEntity<>(headers);
@@ -316,9 +315,7 @@ public class BookmarkControllerTest {
         .post()
         .uri("/api/bookmark/import")
         .accept(MediaType.APPLICATION_NDJSON)
-        .cookie(
-            "findfirst",
-            cookie)
+        .cookie("findfirst", cookie)
         .bodyValue(bodyBuilder.build())
         .exchange()
         .expectStatus()
