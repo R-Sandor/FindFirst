@@ -10,6 +10,7 @@ import Navbar from "@components/Navbar/Navbar";
 import { hitEnter } from "./utilities/fireEvents";
 import { TagReqPayload } from "@type/Bookmarks/Tag";
 import Bookmark from "@type/Bookmarks/Bookmark";
+import { Providers } from "@/app/providers";
 const userEvnt = userEvent.setup();
 
 const data = JSON.stringify(bkmkResp, null, 2);
@@ -28,8 +29,10 @@ beforeEach(async () => {
   await act(async () => {
     render(
       <div>
-        <Navbar />
-        <Page />
+        <Providers>
+          <Navbar />
+          <Page />
+        </Providers>
       </div>,
     );
   });
