@@ -7,16 +7,23 @@
   width: 100%;
 }
 
-.import-text { 
+.import-text {
   width: 80%;
 }
 
-.import-check { 
+.import-check {
   display: inline;
   margin-left: 10%;
-  color: green;
+  color: #29b5bf;
 }
 
-.import-item { 
+.import-item {
   display: flex;
 }
+
+.modal-container {
+  margin-top: 10vh;
+  max-height: 80vh;
+  overflow: scroll;
+}
+

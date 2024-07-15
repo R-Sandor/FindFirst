@@ -36,10 +36,10 @@ public class Bookmark extends Tenantable {
   @Column(name = "id", updatable = false, nullable = false)
   private Long id;
 
-  @NonNull @Column(length = 255)
+  @NonNull @Column(length = 512)
   private String title;
 
-  @NonNull @Column(length = 255)
+  @NonNull @Column(length = 1024)
   private String url;
 
   @PreRemove

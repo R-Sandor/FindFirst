@@ -5,7 +5,7 @@ import { useTags } from "@/contexts/TagContext";
 import useAuth from "@components/UseAuth";
 import api from "@/api/Api";
 import { TagReqPayload, TagWithCnt } from "@/types/Bookmarks/Tag";
-import styles from "./tag.module.scss";
+import styles from "./tag-pill.module.scss";
 import { useSelectedTags } from "@/contexts/SelectedContext";
 
 const TagList = () => {
@@ -62,8 +62,10 @@ const TagList = () => {
         >
           {tagCnt.tagTitle}
           <Badge bg="primary" pill>
-            <div data-testid={`${tagCnt.tagTitle}-list-item-cnt`}
-            key={`${tagCnt.tagTitle}-list-item-badge`}>
+            <div
+              data-testid={`${tagCnt.tagTitle}-list-item-cnt`}
+              key={`${tagCnt.tagTitle}-list-item-badge`}
+            >
               {tagCnt.count}
             </div>
           </Badge>
@@ -74,7 +76,10 @@ const TagList = () => {
 
   if (groupItems.length == 0) {
     groupItems.push(
-      <ListGroup.Item key="no-items" className="h-10 d-flex justify-content-between align-items-start">
+      <ListGroup.Item
+        key="no-items"
+        className="h-10 d-flex justify-content-between align-items-start"
+      >
         Tag List
         <Badge bg="primary" pill>
           Count

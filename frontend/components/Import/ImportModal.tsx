@@ -51,7 +51,6 @@ export default function ImportModal(props: any) {
     while (true) {
       const { done, value } = await reader.read();
       if (done) {
-        console.log(done);
         setDone(true);
         return;
       }
@@ -82,6 +81,8 @@ export default function ImportModal(props: any) {
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
+        scrollable={true}
+        className="modal-container"
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">

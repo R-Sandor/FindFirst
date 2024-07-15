@@ -1,5 +1,5 @@
 .tagList {
-  min-height: 20vh;
+  min-height: calc(100vh - 70px);
   margin-top: 5px;
   padding-bottom: 5px;
   border-radius: 10px;
@@ -16,11 +16,11 @@
     }
   }
 
-  @media screen and (max-height: 700px) {
-    max-height: 35vh;
+  @media screen and (max-width: 780px) {
+    min-height: 35vh;
   }
 
-  @media screen and (min-width: 750px) {
+  @media screen and (min-width: 760px) {
     max-height: unset;
   }
 }
