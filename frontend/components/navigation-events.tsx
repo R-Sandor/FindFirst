@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import authService, { AuthObserver, AuthStatus } from "@services/auth.service";
+import authService, { AuthStatus } from "@services/auth.service";
 import UseAuth from "./UseAuth";
 
 export function NavigationEvents() {
@@ -12,7 +12,7 @@ export function NavigationEvents() {
   const router = useRouter();
 
   useEffect(() => {
-      if (authService.authCheck(pathname) == AuthStatus.Unauthorized) {
+    if (authService.authCheck(pathname) == AuthStatus.Unauthorized) {
       // do the reroute here.
       router.push("/account/login");
     }

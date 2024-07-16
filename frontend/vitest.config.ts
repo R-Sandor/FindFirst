@@ -19,7 +19,9 @@ export default defineConfig({
         "types/**",
         "*.config.js",
         "components/Logo.js",
-        "components/Import/FilePicker.tsx", // uses native browser to select files.
+        // uses native browser to select files.
+        // ReadableStreams also are difficult if at all possible to test.
+        "components/Import",
         "*/**/index.js",
         "api",
         ...defaults,
