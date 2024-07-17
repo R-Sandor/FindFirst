@@ -21,7 +21,7 @@ export default defineConfig({
         "components/Logo.js",
         // uses native browser to select files.
         // ReadableStreams also are difficult if at all possible to test.
-        "components/Import",
+        // "components/Import",
         "*/**/index.js",
         "api",
         ...defaults,

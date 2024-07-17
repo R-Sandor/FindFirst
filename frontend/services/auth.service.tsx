@@ -56,8 +56,9 @@ class AuthService {
           username: credentials.username,
           refreshToken: response.data.refreshToken,
         };
-        this.notify((this.authorizedState = AuthStatus.Authorized));
         localStorage.setItem("user", JSON.stringify(signedinUser));
+        this.notify((this.authorizedState = AuthStatus.Authorized));
+        console.log(signedinUser);
         success = true;
       }
     });

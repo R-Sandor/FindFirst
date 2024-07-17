@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import api from "@/api/Api";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
@@ -38,10 +38,11 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
   const [bookmarks, dispatch] = useReducer(bookmarkReducer, []);
   const [isLoading, setIsLoading] = useState(true);
   const hasFetched = useRef(false);
-  const userAuth = UseAuth()
+  const userAuth = UseAuth();
 
   useEffect(() => {
     if (userAuth && bookmarks.length == 0 && !hasFetched.current) {
+      console.log("Bookmarks being fetched");
       hasFetched.current = true;
       api.getAllBookmarks().then((resp) => {
         dispatch({ type: "add", bookmarks: resp.data as Bookmark[] });
@@ -62,7 +63,7 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
 function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
   switch (action.type) {
     case "add": {
-      console.log("adding")
+      console.log("adding");
       return [...bookmarkList, ...action.bookmarks];
     }
     case "delete": {
