@@ -26,15 +26,11 @@ export default function ImportModal({
   const bkmkDispatch = useBookmarkDispatch();
 
   useEffect(() => {
-    console.log(file);
-    console.log("SHOULD I import?", !!importFile);
     importFile ? importBookmarks(importFile) : () => {};
   }, [importFile]);
 
   useEffect(() => {
-    console.log("DONE", done);
     if (done) {
-      console.log("DONE");
       let action: BookmarkAction = {
         type: "add",
         bookmarks: imported,
@@ -44,7 +40,6 @@ export default function ImportModal({
   }, [bkmkDispatch, done, imported]);
 
   async function importBookmarks(htmlFile: Blob) {
-    console.log("importing bookmarks");
     const formdata = new FormData();
     formdata.append("file", htmlFile, "bookmarks-test.html");
 
@@ -63,7 +58,6 @@ export default function ImportModal({
     while (true) {
       const { done, value } = await reader.read();
       if (done) {
-        console.log("DONE");
         setDone(true);
         return;
       }
@@ -71,8 +65,7 @@ export default function ImportModal({
       if (chunk.length > 1) {
         const obj = JSON.parse(chunk);
         if (obj.id) {
-          console.log(obj);
-          bkmks.push(obj);
+          bkmks.push(obj as Bookmark);
           setImported([...bkmks]);
         }
       }
@@ -116,9 +109,8 @@ export default function ImportModal({
           </div>
           <hr />
           {imported.map((bkmk) => {
-            console.log(bkmk);
             return (
-              <div key={bkmk.title}>
+              <div data-testid={`imported-bkmk-${bkmk.title}`} key={bkmk.title}>
                 <div className="import-item">
                   <div className="import-text">
                     <p>{bkmk.title}</p>

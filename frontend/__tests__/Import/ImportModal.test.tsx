@@ -1,12 +1,8 @@
 import { beforeAll, beforeEach, describe, expect, it, test, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
-import { act } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import authService, { User } from "@services/auth.service";
-import Navbar from "@components/Navbar/Navbar";
 import { bkmkResp } from "../data/SampleData";
 import ImportModal from "@components/Import/ImportModal";
-import { debug } from "vitest-preview";
 
 beforeEach(async () => {
   const user: User = { username: "jsmith", refreshToken: "blahblajhdfh34234" };
@@ -14,13 +10,6 @@ beforeEach(async () => {
   // arguments for reply are (status, data, headers)
   vi.spyOn(authService, "getUser").mockImplementation(() => user);
   vi.spyOn(authService, "getAuthorized").mockImplementation(() => 1);
-  await act(async () => {
-    render(
-      <div>
-        <Navbar />
-      </div>,
-    );
-  });
 });
 
 describe("Reads from Stream", async () => {
@@ -41,18 +30,22 @@ describe("Reads from Stream", async () => {
     });
   };
 
-  it("should have 4 bookmarks", async () => {
-    console.log("Testing loading bookmarks");
-    let modal;
+  it("should have 3 bookmarks", async () => {
+    // Not really reading the contents of the file. We could
+    // but for the purpose of this test a file needed to be passed
+    // to force an import.
     await readFile("./README.md", (data: File) => {
-      console.log(data);
       const blob = new Blob([data], {});
-      console.log(blob);
-      modal = <ImportModal file={blob} show={true} />;
-      console.log("modal", modal);
-      render(<div>{modal}</div>);
+      render(
+        <div>
+          <ImportModal file={blob} show={true} />
+        </div>,
+      );
     });
-    debug();
+    await waitFor(() => {
+      expect(screen.getByText(bkmkResp[0].title)).toBeInTheDocument();
+    });
+    expect(screen.getAllByTestId(/imported-bkmk-/i).length).toEqual(3);
   });
 });
 
