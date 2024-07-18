@@ -180,36 +180,46 @@ describe("Testing that user submits work with correct messages.", () => {
       render(<Page />);
     });
   });
+
   test("Good submission, no error.", async () => {
     const uep = await typeUEP(goodUsername, goodEmail, goodPassword);
     expect(screen.queryByText(/please complete/i)).toBe(null);
+
     vi.stubGlobal("fetch", async (url: string, options: any) => {
       return {
         ok: true,
         text: async () => "Success message",
       };
     });
+
     const submitBtn = submitDisabled(false);
+
     await act(async () => {
       await user.click(submitBtn);
     });
+
     const goodMsg = await screen.findByText(/please complete/i);
     expect(goodMsg).toBeInTheDocument();
     // all the fields should be reset after submit.
     expect(uep.emailInput.value).toBe("");
   });
+
   test("Bad Response, should see the error message from the response.", async () => {
     await typeUEP("TakenUsername", goodEmail, goodPassword);
+
     vi.stubGlobal("fetch", async (url: string, options: any) => {
       return {
         ok: false,
         text: async () => "Username is already taken.",
       };
     });
+
     const submitBtn = submitDisabled(false);
+
     await act(async () => {
       await user.click(submitBtn);
     });
+
     const takenUsernameMsg = await screen.findByText(
       /Username is already taken/i,
     );

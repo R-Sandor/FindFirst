@@ -57,7 +57,7 @@ const GlobalNavbar: React.FC = () => {
         </Navbar.Brand>
         <div className="mx-3">
           <LightDarkToggle />
-          {userAuth ? <ImportModal /> : <></>}
+          {userAuth ? <ImportModal file={undefined} /> : <></>}
           {authButton()}
         </div>
       </Container>

@@ -5,25 +5,36 @@ import FilePicker from "./FilePicker";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import BookmarkAction from "@type/Bookmarks/BookmarkAction";
 import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
+import { bkmkResp } from "@/__tests__/data/SampleData";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/api";
 
-export default function ImportModal(props: any) {
-  const [modalShow, setModalShow] = useState(false);
+export default function ImportModal({
+  file,
+  show,
+}: {
+  file: Blob | undefined;
+  show: boolean | undefined;
+}) {
+  const [modalShow, setModalShow] = useState(show);
   const [uploadFileName, setUploadFileName] = useState(
     "Import your bookmarks from a .html.",
   );
-  const [importFile, setFile] = useState<File | undefined>();
+  const [importFile, setFile] = useState<Blob | undefined>(file);
   const [imported, setImported] = useState<Bookmark[]>([]);
   const [done, setDone] = useState(false);
   const bkmkDispatch = useBookmarkDispatch();
 
   useEffect(() => {
+    console.log(file);
+    console.log("SHOULD I import?", !!importFile);
     importFile ? importBookmarks(importFile) : () => {};
   }, [importFile]);
 
   useEffect(() => {
+    console.log("DONE", done);
     if (done) {
+      console.log("DONE");
       let action: BookmarkAction = {
         type: "add",
         bookmarks: imported,
@@ -32,7 +43,8 @@ export default function ImportModal(props: any) {
     }
   }, [bkmkDispatch, done, imported]);
 
-  async function importBookmarks(htmlFile: File) {
+  async function importBookmarks(htmlFile: Blob) {
+    console.log("importing bookmarks");
     const formdata = new FormData();
     formdata.append("file", htmlFile, "bookmarks-test.html");
 
@@ -51,6 +63,7 @@ export default function ImportModal(props: any) {
     while (true) {
       const { done, value } = await reader.read();
       if (done) {
+        console.log("DONE");
         setDone(true);
         return;
       }
@@ -58,6 +71,7 @@ export default function ImportModal(props: any) {
       if (chunk.length > 1) {
         const obj = JSON.parse(chunk);
         if (obj.id) {
+          console.log(obj);
           bkmks.push(obj);
           setImported([...bkmks]);
         }
@@ -75,7 +89,6 @@ export default function ImportModal(props: any) {
       </button>
 
       <Modal
-        {...props}
         show={modalShow}
         onHide={handleClose}
         size="lg"
@@ -103,6 +116,7 @@ export default function ImportModal(props: any) {
           </div>
           <hr />
           {imported.map((bkmk) => {
+            console.log(bkmk);
             return (
               <div key={bkmk.title}>
                 <div className="import-item">
