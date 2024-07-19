@@ -5,6 +5,7 @@ import authService, { AuthStatus } from "@services/auth.service";
 import useAuth from "@components/UseAuth";
 import LightDarkToggle from "./LightDarkToggle";
 import ImportModal from "@components/Import/ImportModal";
+import Export from "./Export";
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
@@ -56,8 +57,9 @@ const GlobalNavbar: React.FC = () => {
           FindFirst
         </Navbar.Brand>
         <div className="mx-3">
+          {userAuth ? <ImportModal file={undefined} show={false} /> : <></>}
+          {userAuth ? <Export /> : <></>}
           <LightDarkToggle />
-          {userAuth ? <ImportModal file={undefined} /> : <></>}
           {authButton()}
         </div>
       </Container>

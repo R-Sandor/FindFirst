@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, it, test, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import authService, { User } from "@services/auth.service";
 import { bkmkResp } from "../data/SampleData";
@@ -13,7 +13,7 @@ beforeEach(async () => {
 });
 
 describe("Reads from Stream", async () => {
-  vi.stubGlobal("fetch", async (url: string, options: any) => {
+  vi.stubGlobal("fetch", async () => {
     return {
       body: new CustomReadable(bkmkResp).getStream(),
     };
@@ -61,7 +61,7 @@ class CustomReadable {
 
   getStream() {
     return new ReadableStream({
-      start: (controller) => {
+      start: () => {
         this.index = 0;
       },
       pull: (controller) => {

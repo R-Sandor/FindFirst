@@ -1,6 +1,5 @@
 // adapted from https://github.com/Jaaneek/useFilePicker
-import api from "@/api/Api";
-import { Dispatch, SetStateAction, useContext } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { useFilePicker } from "use-file-picker";
 import {
   FileAmountLimitValidator,
@@ -14,7 +13,7 @@ export default function FilePicker({
   setUpload: Dispatch<SetStateAction<string>>;
   setFile: Dispatch<SetStateAction<Blob | undefined>>;
 }) {
-  const { openFilePicker, filesContent, loading, errors } = useFilePicker({
+  const { openFilePicker, loading, errors } = useFilePicker({
     readAs: "DataURL",
     accept: [".html"],
     multiple: false,
@@ -22,7 +21,7 @@ export default function FilePicker({
       new FileAmountLimitValidator({ max: 1 }),
       new FileSizeValidator({ maxFileSize: 2 * 1024 * 1024 /* 2 MB */ }),
     ],
-    onFilesSuccessfullySelected: ({ plainFiles, filesContent }) => {
+    onFilesSuccessfullySelected: ({ plainFiles }) => {
       // this callback is called when there were no validation errors
       const userFile = plainFiles[0];
       setUpload(userFile.name);

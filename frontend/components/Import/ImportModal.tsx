@@ -5,7 +5,6 @@ import FilePicker from "./FilePicker";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import BookmarkAction from "@type/Bookmarks/BookmarkAction";
 import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
-import { bkmkResp } from "@/__tests__/data/SampleData";
 
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/api";
 
