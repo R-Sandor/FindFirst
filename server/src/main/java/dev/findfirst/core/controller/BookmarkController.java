@@ -39,11 +39,9 @@ import reactor.core.publisher.Flux;
 @RequestMapping("/api")
 public class BookmarkController {
 
-  @Autowired
-  private BookmarkService bookmarkService;
+  @Autowired private BookmarkService bookmarkService;
 
-  @Autowired
-  private TagService tagService;
+  @Autowired private TagService tagService;
 
   @GetMapping("/bookmarks")
   public ResponseEntity<List<Bookmark>> getAllBookmarks() {
@@ -51,8 +49,8 @@ public class BookmarkController {
   }
 
   @GetMapping(value = "/bookmarks/export", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-  public ResponseEntity<String> exportAllBookmarks() {
-    return ResponseEntity.ok("Cool");
+  public ResponseEntity<byte[]> exportAllBookmarks() {
+    return ResponseEntity.ok("Cool".getBytes());
   }
 
   @DeleteMapping(value = "/bookmarks")
@@ -110,9 +108,10 @@ public class BookmarkController {
     }
     var bookmark = bkmkOpt.get();
 
-    Consumer<Tag> action = (t) -> {
-      bookmarkService.addTagToBookmark(bookmark, t);
-    };
+    Consumer<Tag> action =
+        (t) -> {
+          bookmarkService.addTagToBookmark(bookmark, t);
+        };
 
     // Check if there is a tag by the given title.
     Tag tag;
@@ -129,9 +128,10 @@ public class BookmarkController {
     var bookmark = bookmarkService.findById(bookmarkId);
     var tag = tagService.findById(tagId);
 
-    Consumer<BookmarkTagPair> action = (BookmarkTagPair bt) -> {
-      bookmarkService.addTagToBookmark(bt.bkmk(), bt.tag());
-    };
+    Consumer<BookmarkTagPair> action =
+        (BookmarkTagPair bt) -> {
+          bookmarkService.addTagToBookmark(bt.bkmk(), bt.tag());
+        };
 
     if (bookmark.isPresent() && tag.isPresent()) {
       var resp = new Response<BookmarkTagPair>();

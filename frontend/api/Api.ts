@@ -1,8 +1,5 @@
 import { NewBookmarkRequest } from "@type/Bookmarks/NewBookmark";
 import axios from "axios";
-import { fromFetch } from 'rxjs/fetch';
-import { switchMap, of, catchError } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/api";
 
 export const instance = axios.create({
@@ -34,7 +31,7 @@ const api = {
       method: method,
       url: resource,
       data,
-      ...config
+      ...config,
     });
   },
   // Get all bookmarks.
@@ -51,6 +48,28 @@ const api = {
       params: { id: id },
     });
   },
+  exportAllBookmarks() {
+    return axios({
+      method: "GET",
+      url: SERVER_URL + "/bookmarks/export",
+      responseType: "blob",
+      withCredentials: true,
+    }).then((response) => {
+      console.log(response);
+      const href = URL.createObjectURL(response.data);
+
+      // create "a" HTML element with href to file & click
+      const link = document.createElement("a");
+      link.href = href;
+      link.setAttribute("download", "findfirst-bookmarks.html"); //or any other extension
+      document.body.appendChild(link);
+      link.click();
+
+      // clean up "a" element & remove ObjectURL
+      document.body.removeChild(link);
+      URL.revokeObjectURL(href);
+    });
+  },
   // Adds a bookmark containing a list of tag Ids if any.
   addBookmark(bkmkReq: NewBookmarkRequest) {
     return instance.post("bookmark", bkmkReq);
@@ -65,7 +84,7 @@ const api = {
   addBookmarks(bkmks: NewBookmarkRequest[]) {
     return instance.post("bookmark/addBookmarks", bkmks);
   },
-  
+
   // Adds a tag to an existing bookmark by bookmark Id with just string title of tag.
   addBookmarkTag(bkmkId: number, title: string) {
     return instance.post(`bookmark/${bkmkId}/tag?tag=${title}`);
