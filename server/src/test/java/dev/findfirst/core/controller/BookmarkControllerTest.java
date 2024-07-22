@@ -6,12 +6,20 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.core.model.AddBkmkReq;
+import dev.findfirst.core.model.Bookmark;
+import dev.findfirst.core.model.BookmarkTagPair;
+import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.repository.BookmarkRepository;
+import dev.findfirst.security.jwt.TenantAuthenticationToken;
+import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -35,16 +43,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import dev.findfirst.core.annotations.IntegrationTest;
-import dev.findfirst.core.model.AddBkmkReq;
-import dev.findfirst.core.model.Bookmark;
-import dev.findfirst.core.model.BookmarkTagPair;
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.repository.BookmarkRepository;
-import dev.findfirst.security.jwt.TenantAuthenticationToken;
-import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
-import java.nio.charset.StandardCharsets;
 
 @Testcontainers
 @IntegrationTest
@@ -121,8 +119,8 @@ public class BookmarkControllerTest {
     var response =
         restTemplate.exchange(
             "/api/bookmarks/export", HttpMethod.GET, getHttpEntity(restTemplate), byte[].class);
-            String docStr = new String(response.getBody(), StandardCharsets.UTF_8);
-      assertEquals(docStr, "Cool");
+    String docStr = new String(response.getBody(), StandardCharsets.UTF_8);
+    assertEquals(docStr, "Cool");
   }
 
   @Test
