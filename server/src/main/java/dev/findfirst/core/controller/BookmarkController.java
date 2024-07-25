@@ -50,9 +50,10 @@ public class BookmarkController {
 
   @GetMapping(value = "/bookmarks/export", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
   public ResponseEntity<byte[]> exportAllBookmarks() {
+    var exported = bookmarkService.export();
     return ResponseEntity.ok()
         .header("Content-Disposition", "attachment; filename=findfirst-bookmarks.html")
-        .body("Cool".getBytes());
+        .body(exported.getBytes());
   }
 
   @DeleteMapping(value = "/bookmarks")

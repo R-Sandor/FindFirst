@@ -4,11 +4,16 @@ import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.AddBkmkReq;
 import dev.findfirst.core.model.Bookmark;
+import dev.findfirst.core.model.ExportBookmark;
 import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.model.TagBookmarks;
 import dev.findfirst.core.repository.BookmarkRepository;
 import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +73,39 @@ public class BookmarkService {
         .toList();
   }
 
+  public String export() {
+    var tags = tagService.getTags();
+    var bkmkMap = new HashMap<Long, Long>();
+    var uniqueBkmkWithTags = new ArrayList<TagBookmarks>();
+    tags.sort(
+        new Comparator<Tag>() {
+          @Override
+          public int compare(Tag lTag, Tag rTag) {
+            return lTag.getBookmarks().size() - rTag.getBookmarks().size();
+          }
+        });
+    // streams the sorted list
+    tags.stream()
+        .forEach(
+            t -> {
+              var unique = new ArrayList<Bookmark>();
+              t.getBookmarks().stream()
+                  .forEach(
+                      b -> {
+                        var found = bkmkMap.get(b.getId());
+                        if (found == null) {
+                          bkmkMap.put(b.getId(), t.getId());
+                          unique.add(b);
+                        }
+                      });
+              if (unique.size() > 0) {
+                uniqueBkmkWithTags.add(new TagBookmarks(t.getTag_title(), unique));
+              }
+            });
+    var exporter = new ExportBookmark(uniqueBkmkWithTags);
+    return exporter.toString();
+  }
+
   public void deleteBookmark(Long bookmarkId) {
     if (bookmarkId != null) {
       Optional<Bookmark> bookmark = bookmarkRepository.findById(bookmarkId);
@@ -78,7 +116,7 @@ public class BookmarkService {
 
         } catch (ObjectOptimisticLockingFailureException exception) {
           // I don't know a fool proof way of preventing this error
-          // other than blocking on the method.  Which would not
+          // other than blocking on the method. Which would not
           // be ideal given its a controller and the error itself
           // resolves.
         }
