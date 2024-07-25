@@ -43,7 +43,7 @@ public class ExportBookmark {
   private String getCat(TagBookmarks tb) {
     Date date = tb.bookmarks().get(0).getCreatedDate();
     Long time = 0l;
-    if (date != null) { 
+    if (date != null) {
       time = date.getTime();
     }
     return """
@@ -57,24 +57,32 @@ public class ExportBookmark {
     return "\t</DL><p>";
   }
 
-  private String endOfContent() { 
+  private String endOfContent() {
     return "\n</DL>";
   }
 
-  private StringBuilder getLinks(List<Bookmark> bkmks) { 
+  private StringBuilder getLinks(List<Bookmark> bkmks) {
     var links = new StringBuilder();
-    bkmks.forEach(bkmk -> { 
-    Long addedTime = 0l;
-    Long modTime = 0l;
-    Date date = bkmk.getCreatedDate();
-    if (date != null) { 
-      addedTime = bkmk.getCreatedDate().getTime();
-      modTime = bkmk.getLastModifiedDate().getTime();
-    }
-      links.append("""
+    bkmks.forEach(
+        bkmk -> {
+          Long addedTime = 0l;
+          Long modTime = 0l;
+          Date date = bkmk.getCreatedDate();
+          if (date != null) {
+            addedTime = bkmk.getCreatedDate().getTime();
+            modTime = bkmk.getLastModifiedDate().getTime();
+          }
+          links.append(
+              """
               <DT><A HREF="%s" ADD_DATE=%s LAST_MODIFIED=%s ICON_URI="%s">%s</A>
-          """.formatted(bkmk.getUrl(), addedTime.toString(), modTime.toString(), bkmk.getUrl(), bkmk.getTitle()));
-    });
+          """
+                  .formatted(
+                      bkmk.getUrl(),
+                      addedTime.toString(),
+                      modTime.toString(),
+                      bkmk.getUrl(),
+                      bkmk.getTitle()));
+        });
 
     return links;
   }
