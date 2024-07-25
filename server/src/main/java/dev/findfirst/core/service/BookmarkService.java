@@ -81,7 +81,7 @@ public class BookmarkService {
         new Comparator<Tag>() {
           @Override
           public int compare(Tag lTag, Tag rTag) {
-            return lTag.getBookmarks().size() - rTag.getBookmarks().size();
+            return rTag.getBookmarks().size() - lTag.getBookmarks().size();
           }
         });
     // streams the sorted list
