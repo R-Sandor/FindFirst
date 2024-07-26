@@ -25,7 +25,7 @@ public class RegistrationService extends AccountService {
     String confirmationUrl = domain + "/user/regitrationConfirm?token=" + token;
     String message =
         """
-            Please finish registring your account with the given url:
+            Please finish registering your account with the given url:
             %s
 
             Sincerly,
