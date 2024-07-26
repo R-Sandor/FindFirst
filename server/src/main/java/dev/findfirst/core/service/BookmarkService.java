@@ -16,6 +16,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -73,10 +74,19 @@ public class BookmarkService {
         .toList();
   }
 
+  /**
+   * Exports bookmarks by their tag groups. 
+   * The largest tag groups are exported first. Any bookmark already
+   * accounted for in that group will be excluded from any other group
+   * that it was also tagged.
+   * @return String representing HTLM file.
+   */
   public String export() {
     var tags = tagService.getTags();
-    var bkmkMap = new HashMap<Long, Long>();
-    var uniqueBkmkWithTags = new ArrayList<TagBookmarks>();
+    var foundMap = new HashMap<Long, Long>();
+    var uniqueBkmksWithTag = new ArrayList<TagBookmarks>();
+
+    // Sort by the largest tags set. 
     tags.sort(
         new Comparator<Tag>() {
           @Override
@@ -84,26 +94,46 @@ public class BookmarkService {
             return rTag.getBookmarks().size() - lTag.getBookmarks().size();
           }
         });
+
     // streams the sorted list
     tags.stream()
         .forEach(
             t -> {
-              var unique = new ArrayList<Bookmark>();
-              t.getBookmarks().stream()
-                  .forEach(
-                      b -> {
-                        var found = bkmkMap.get(b.getId());
-                        if (found == null) {
-                          bkmkMap.put(b.getId(), t.getId());
-                          unique.add(b);
-                        }
-                      });
-              if (unique.size() > 0) {
-                uniqueBkmkWithTags.add(new TagBookmarks(t.getTag_title(), unique));
+              var uniques = new ArrayList<Bookmark>();
+              addUniqueBookmarks(t, uniques, foundMap, uniqueBkmksWithTag);
+            });
+    var exporter = new ExportBookmark(uniqueBkmksWithTag);
+    return exporter.toString();
+  }
+
+  /**
+   * Checks if a bookmark has already been found in previous tag group. 
+   * If it has not it is added to uniques, and the id added to map for fast
+   * lookups. Finally record that contains the title of the tag `cooking`
+   * `docs` for example is created with it associated bookmarks. The record
+   * is added to uniqueBkmkWithTags.
+   * @param t Tag
+   * @param uniques List<Bookmark> of uniques
+   * @param alreadyFound Map<Long, Long> for fast lookup
+   * @param uniqueBkmksWithTag Record of Tag Title with Bookmark.
+   */
+  private void addUniqueBookmarks(
+      Tag t,
+      List<Bookmark> uniques,
+      Map<Long, Long> alreadyFound,
+      List<TagBookmarks> uniqueBkmksWithTag) {
+    t.getBookmarks().stream()
+        .forEach(
+            bkmk -> {
+              var found = alreadyFound.get(bkmk.getId());
+              if (found == null) {
+                alreadyFound.put(bkmk.getId(), bkmk.getId());
+                uniques.add(bkmk);
               }
             });
-    var exporter = new ExportBookmark(uniqueBkmkWithTags);
-    return exporter.toString();
+    if (uniques.size() > 0) {
+      uniqueBkmksWithTag.add(new TagBookmarks(t.getTag_title(), uniques));
+    }
   }
 
   public void deleteBookmark(Long bookmarkId) {
