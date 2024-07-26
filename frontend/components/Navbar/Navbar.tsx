@@ -6,6 +6,7 @@ import useAuth from "@components/UseAuth";
 import LightDarkToggle from "./LightDarkToggle";
 import ImportModal from "@components/Import/ImportModal";
 import Export from "./Export";
+import Image from "next/image";
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
@@ -54,6 +55,13 @@ const GlobalNavbar: React.FC = () => {
           onClick={() => router.push("/")}
           className="mx-3 cursor-pointer"
         >
+          <Image
+            src="/basic-f-v2-dark-mode-v2-fav.png"
+            width="38"
+            height="30"
+            className="d-inline-block align-top"
+            alt="React Bootstrap logo"
+          />
           FindFirst
         </Navbar.Brand>
         <div className="mx-3">
