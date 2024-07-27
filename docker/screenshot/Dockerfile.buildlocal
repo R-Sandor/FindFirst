@@ -1,4 +1,4 @@
 FROM openjdk:21-oracle
 WORKDIR /app
-COPY ./build/libs/app.jar screenshot.jar
+COPY ./app/build/libs/app.jar screenshot.jar
 ENTRYPOINT ["java", "-jar", "screenshot.jar"]
