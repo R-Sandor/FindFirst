@@ -23,6 +23,19 @@ services:
     depends_on:
       - db
     restart: always
+  screenshot:
+    build:
+      args:
+        - BUILDENV=prod
+      dockerfile: ../docker/screenshot/Dockerfile
+      context: ./screenshot
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+    volumes:
+      - ./server/prod.yml:/app/prod.yml
+    restart: always
   db:
     build:
       context: ./docker/postgres

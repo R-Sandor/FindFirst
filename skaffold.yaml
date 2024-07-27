@@ -4,6 +4,10 @@ metadata:
   name: findfirstapp
 build:
   artifacts:
+    - image: screenshot
+      context: screenshot
+      buildpacks:
+        builder: gcr.io/buildpacks/builder:v1
     - image: backend
       context: server
       buildpacks:
@@ -15,4 +19,5 @@ build:
 manifests:
   rawYaml:
     - frontend/k8s/deploy.yaml
+    - screenshot/k8s/deploy.yaml
     - server/k8s/deploy.yaml
