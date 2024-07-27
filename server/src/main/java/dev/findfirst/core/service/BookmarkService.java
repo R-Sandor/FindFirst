@@ -75,10 +75,10 @@ public class BookmarkService {
   }
 
   /**
-   * Exports bookmarks by their tag groups. 
-   * The largest tag groups are exported first. Any bookmark already
-   * accounted for in that group will be excluded from any other group
-   * that it was also tagged.
+   * Exports bookmarks by their tag groups. The largest tag groups are exported first. Any bookmark
+   * already accounted for in that group will be excluded from any other group that it was also
+   * tagged.
+   *
    * @return String representing HTLM file.
    */
   public String export() {
@@ -86,7 +86,7 @@ public class BookmarkService {
     var foundMap = new HashMap<Long, Long>();
     var uniqueBkmksWithTag = new ArrayList<TagBookmarks>();
 
-    // Sort by the largest tags set. 
+    // Sort by the largest tags set.
     tags.sort(
         new Comparator<Tag>() {
           @Override
@@ -107,11 +107,11 @@ public class BookmarkService {
   }
 
   /**
-   * Checks if a bookmark has already been found in previous tag group. 
-   * If it has not it is added to uniques, and the id added to map for fast
-   * lookups. Finally record that contains the title of the tag `cooking`
-   * `docs` for example is created with it associated bookmarks. The record
-   * is added to uniqueBkmkWithTags.
+   * Checks if a bookmark has already been found in previous tag group. If it has not it is added to
+   * uniques, and the id added to map for fast lookups. Finally record that contains the title of
+   * the tag `cooking` `docs` for example is created with it associated bookmarks. The record is
+   * added to uniqueBkmkWithTags.
+   *
    * @param t Tag
    * @param uniques List<Bookmark> of uniques
    * @param alreadyFound Map<Long, Long> for fast lookup
