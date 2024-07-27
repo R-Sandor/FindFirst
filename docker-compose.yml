@@ -16,6 +16,16 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/findfirst
       - SPRING_PROFILES_ACTIVE=dev
+  screenshot:
+    build:
+      args:
+        - BUILDENV=dev
+      dockerfile: ../docker/screenshot/Dockerfile
+      context: ./screenshot
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
   db:
     image: postgres:16.2-alpine
     environment:

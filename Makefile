@@ -1,10 +1,11 @@
-.PHONY= build_server build_frontend run_local run_test stop test_run db
+.PHONY= build_server build_screenshot build_frontend run_local run_test stop test_run db
 .DEFAULT_GOAL := default 
 CERT_FILE = ./server/src/main/resources/app.key
 ENV?=dev
 
 default: 
 	$(MAKE) build_server
+	$(MAKE) build_screenshot
 	$(MAKE) build_frontend
 	$(MAKE) db
 
@@ -15,6 +16,10 @@ ifeq ( ,$(wildcard $(CERT_FILE)))
 endif
 	cd ./server && ./gradlew clean build
 	docker build -t findfirst-server -f ./docker/server/Dockerfile.buildlocal ./server
+
+build_screenshot:
+	cd ./screenshot && ./gradlew clean build
+	docker build -t findfirst-screenshot -f ./docker/screenshot/Dockerfile.buildlocal ./screenshot
 
 build_frontend: 
 	docker build -t findfirst-frontend -f ./docker/frontend/Dockerfile --build-arg BUILDENV=$(ENV) ./frontend 
@@ -50,6 +55,12 @@ endif
 	cd server && nohup ./gradlew bootrun > application.log 2>&1 & echo "$$!" > backend.pid
 	@echo "==============================================================================\n"
 
+	@echo ">>>>>>> Screenshot"
+	@echo "=============================================================================="
+	@echo ">> Building and running screenshot"
+	cd screenshot && nohup ./gradlew bootrun > application.log 2>&1 & echo "$$!" > screenshot.pid
+	@echo "==============================================================================\n"
+
 	@echo "=============================================================================="
 	@echo "WELCOME: navigate to localhost:3000"
 	@echo "==============================================================================\n"
@@ -59,6 +70,7 @@ endif
 
 clean: 
 	cd server; ./gradlew clean; 
+	cd screenshot; ./gradlew clean; 
 	cd client; pnpm install --frozen-lockfile;
 
 stop: 
@@ -67,6 +79,11 @@ stop:
 ifneq (,$(wildcard backend.pid)) 
 	kill $(file < backend.pid)
 	rm -f backend.pid
+endif
+
+ifneq (,$(wildcard screenshot.pid))
+	kill $(file < screenshot.pid)
+	rm -f screenshot.pid
 endif
 
 	@-kill -9 $$(pgrep node) $$(pgrep "next-server") $$(pgrep -f "next dev")
