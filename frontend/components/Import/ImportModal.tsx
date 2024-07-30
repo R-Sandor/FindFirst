@@ -11,9 +11,11 @@ const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/api";
 export default function ImportModal({
   file,
   show,
+  'data-testid': dataTestId,
 }: {
   file: Blob | undefined;
   show: boolean | undefined;
+  'data-testid'?: string;
 }) {
   const [modalShow, setModalShow] = useState(show);
   const [uploadFileName, setUploadFileName] = useState(
@@ -45,7 +47,6 @@ export default function ImportModal({
     const req = new Request(SERVER_URL + "/bookmark/import", {
       method: "POST",
       body: formdata,
-      // headers: reqHeaders,
       credentials: "include",
       redirect: "follow",
     });
@@ -75,7 +76,7 @@ export default function ImportModal({
   const handleShow = () => setModalShow(true);
 
   return (
-    <div className="float-left mr-4">
+    <div className="float-left mr-4" data-testid={dataTestId}>
       <button className="btn" data-testid="import-btn" onClick={handleShow}>
         <i className="bi bi-file-earmark-arrow-up-fill"></i>
       </button>

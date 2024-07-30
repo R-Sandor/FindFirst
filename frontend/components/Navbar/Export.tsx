@@ -1,6 +1,6 @@
 import api from "@api/Api";
 
-export default function Export() {
+export default function Export({ 'data-testid': dataTestId }: { 'data-testid'?: string }) {
   const exportAllBookmarks = () => {
     api.exportAllBookmarks();
   };
@@ -8,7 +8,7 @@ export default function Export() {
   return (
     <button
       className="btn float-left mr-4"
-      data-testid="export-button"
+      data-testid={dataTestId}
       data-bs-placement="bottom"
       title="Export Bookmarks"
       onClick={exportAllBookmarks}
