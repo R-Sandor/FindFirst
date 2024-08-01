@@ -65,8 +65,8 @@ const GlobalNavbar: React.FC = () => {
           FindFirst
         </Navbar.Brand>
         <div className="mx-3">
-          {userAuth === AuthStatus.Authorized ? <ImportModal file={undefined} show={false} data-testid="import-modal" /> : null}
-          {userAuth === AuthStatus.Authorized ? <Export data-testid="export-component" /> : null}
+          {userAuth ? <ImportModal file={undefined} show={false} data-testid="import-modal" /> : null}
+          {userAuth ? <Export data-testid="export-button" /> : null}  // Ensure correct data-testid
           <LightDarkToggle />
           {authButton()}
         </div>
