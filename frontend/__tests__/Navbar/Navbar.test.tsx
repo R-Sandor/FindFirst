@@ -1,11 +1,12 @@
 /// <reference types="vitest" />
 import { vi, beforeEach, afterEach, describe, expect, it } from "vitest";
-import { render, screen, act } from "@testing-library/react";
+import { render, screen, act, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import GlobalNavbar from "@components/Navbar/Navbar";
 import { useRouter } from "next/navigation";
 import useAuth from "@components/UseAuth";
 import authService, { AuthStatus } from "@services/auth.service";
+import exp from "node:constants";
 
 const user = userEvent.setup();
 
@@ -115,26 +116,34 @@ describe('GlobalNavbar', () => {
     expect(mockPush).toHaveBeenCalledWith('/account/login');
   });
 
-  it('renders ImportModal and Export components when user is authorized', () => {
+  it('renders ImportModal, Export, and Search Bar components when user is authorized', () => {
     (useAuth as MockedFunction<typeof useAuth>).mockReturnValue(AuthStatus.Authorized);
     act(() => {
       render(<GlobalNavbar />);
     });
     const importModal = screen.getByTestId('import-modal'); // Test ID for ImportModal
-    const exportComponent = screen.getByTestId('export-component'); // Test ID for Export
+    const exportComponent = screen.getByTestId('export-button'); // Test ID for Export
+    const searchBar = screen.getByTestId('search-input'); // Test ID for Search Bar
+    const searchButton = screen.getByTestId('search-button'); // Test ID for Search Button
     expect(importModal).toBeInTheDocument();
     expect(exportComponent).toBeInTheDocument();
+    expect(searchBar).toBeInTheDocument();
+    expect(searchButton).toBeInTheDocument();
   });
 
-  it('does not render ImportModal and Export components when user is unauthorized', () => {
+  it('does not render ImportModal, Export, and Search Bar components when user is unauthorized', () => {
     (useAuth as MockedFunction<typeof useAuth>).mockReturnValue(AuthStatus.Unauthorized);
     act(() => {
       render(<GlobalNavbar />);
     });
     const importModal = screen.queryByTestId('import-modal'); // Test ID for ImportModal
-    const exportComponent = screen.queryByTestId('export-component'); // Test ID for Export
+    const exportComponent = screen.queryByTestId('export-button'); // Test ID for Export
+    const searchBar = screen.queryByTestId('search-input'); // Test ID for Search Bar 
+    const searchButton = screen.queryByTestId('search-button'); // Test ID for Search Button
     expect(importModal).toBeNull();
     expect(exportComponent).toBeNull();
+    expect(searchBar).toBeNull();
+    expect(searchButton).toBeNull();
   });
 
   it('calls router.push on brand logo click', async () => {
@@ -147,5 +156,23 @@ describe('GlobalNavbar', () => {
       await user.click(brandLogo);
     });
     expect(mockPush).toHaveBeenCalledWith('/');
+  });
+
+  it("renders the search bar", () => {
+    render(<GlobalNavbar />);
+    const searchInput = screen.getByTestId("search-input");
+    const searchButton = screen.getByTestId("search-button");
+
+    expect(searchInput).toBeInTheDocument();
+    expect(searchButton).toBeInTheDocument();
+  });
+
+  it("calls the search function when the search button is clicked", () => {
+    render(<GlobalNavbar />);
+    const searchInput = screen.getByTestId("search-input");
+    const searchButton = screen.getByTestId("search-button");
+
+    fireEvent.change(searchInput, { target: { value: "test search" } });
+    fireEvent.click(searchButton);
   });
 });

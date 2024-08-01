@@ -8,7 +8,7 @@ export default function Export({ 'data-testid': dataTestId }: { 'data-testid'?: 
   return (
     <button
       className="btn float-left mr-4"
-      data-testid={dataTestId}
+      data-testid={dataTestId || "export-button"}  // Set default data-testid to export-button      
       data-bs-placement="bottom"
       title="Export Bookmarks"
       onClick={exportAllBookmarks}
