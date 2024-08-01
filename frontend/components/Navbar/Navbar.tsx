@@ -6,13 +6,18 @@ import useAuth from "@components/UseAuth";
 import LightDarkToggle from "./LightDarkToggle";
 import ImportModal from "@components/Import/ImportModal";
 import Export from "./Export";
+import SearchBar from "./SearchBar";
 import Image from "next/image";
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
-
   const router = useRouter();
-  // TODO: Refactor into its own component.
+
+  const handleSearch = (query: string) => {
+    console.log("Search query:", query);
+    // Implement search functionality here
+  };
+
   function authButton() {
     if (userAuth == AuthStatus.Unauthorized || userAuth === undefined) {
       return (
@@ -39,6 +44,7 @@ const GlobalNavbar: React.FC = () => {
       );
     }
   }
+
   const handleLogoutClick = () => {
     authService.logout();
     router.push("/account/login");
@@ -64,9 +70,10 @@ const GlobalNavbar: React.FC = () => {
           />
           FindFirst
         </Navbar.Brand>
-        <div className="mx-3">
+        <div className="mx-3 d-flex align-items-center">
+          <SearchBar />
           {userAuth ? <ImportModal file={undefined} show={false} data-testid="import-modal" /> : null}
-          {userAuth ? <Export data-testid="export-button" /> : null}  // Ensure correct data-testid
+          {userAuth ? <Export data-testid="export-button" /> : null}
           <LightDarkToggle />
           {authButton()}
         </div>
