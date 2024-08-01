@@ -1,11 +1,10 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { render, screen, act } from "@testing-library/react";
 import Page from "../app/page";
 import authService, { User } from "@services/auth.service";
 import { instance } from "@api/Api";
 import { bkmkResp, tagsData } from "./data/SampleData";
 import userEvent from "@testing-library/user-event";
-import { act } from "react-dom/test-utils";
 import Navbar from "@components/Navbar/Navbar";
 import { hitEnter } from "./utilities/fireEvents";
 import { TagReqPayload } from "@type/Bookmarks/Tag";

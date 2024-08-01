@@ -8,6 +8,7 @@ import RootLayout from "@/app/layout";
 import { submitDisabled } from "@/__tests__/utilities/TestingUtilities";
 import { bkmkResp } from "@/__tests__/data/SampleData";
 import { instance } from "@api/Api";
+import authService from "@services/auth.service";
 const user = userEvent.setup();
 
 describe("Login events.", () => {
@@ -35,6 +36,7 @@ describe("Login events.", () => {
       );
     });
   });
+
   test("User can login with a valid username password", async () => {
     // Mock recieving a 200 on the return from the server.
     const axiosMock = new MockAdapter(instance);
@@ -68,10 +70,32 @@ describe("Login events.", () => {
     });
   });
 
-  // test("User login failed  invalid username password"),
-  //   () => {
-  //     // Mock recieving a 400 on the return from the server.
-  //   };
+  test("User login failed invalid username password", async () => {
+      // Mock recieving a 200 on the return from the server.
+      const axiosMock = new MockAdapter(instance);
+      // Create a custom response
+
+      const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+      axiosMock.onGet().reply(401, "Invalid username or password");
+
+      vi.spyOn(authService, "getAuthorized").mockImplementation(() => 0);
+      vi.spyOn(authService, "login").mockImplementation(async () => false);
+
+
+      const submitBtn = screen.getAllByRole("button", {
+        name: "Login",
+      })[1];
+      await act(async () => {
+        await typeUsername("j-dog");
+        await typePassword("$t3ves_$uperh@rd_P@$$w0rd");
+      });
+      await user.click(submitBtn);
+      await user.click(submitBtn);
+      await user.click(submitBtn);
+      const forgot = screen.getByText("Forgot Password?")
+      expect(forgot).toBeInTheDocument();
+      await user.click(forgot);
+    });
 });
 
 describe("Errors on fields.", () => {

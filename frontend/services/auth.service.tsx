@@ -50,6 +50,7 @@ class AuthService {
         password: credentials.password,
       },
     }).then((response) => {
+      console.log(response)
       console.log("signin attempt");
       if (response.status == 200) {
         let signedinUser: User = {
@@ -61,8 +62,8 @@ class AuthService {
         console.log(signedinUser);
         success = true;
       }
-    });
-    return success;
+    }).catch((recject) => { });
+    return success
   }
 
   public logout() {
@@ -73,11 +74,14 @@ class AuthService {
 
   public authCheck(url: string): AuthStatus {
     // redirect to login page if accessing a private page and not logged in
-    const publicPaths = ["/account/login", "/account/signup"];
+    const publicPaths = ["/account/", "/about"];
     const path = url.split("?")[0];
-    return !this.getUser() && !publicPaths.includes(path)
-      ? AuthStatus.Unauthorized
-      : AuthStatus.Authorized;
+    let found = publicPaths.find((p) => {
+      return path.startsWith(p)
+    })
+    return this.getUser() || found ?
+      AuthStatus.Authorized
+      : AuthStatus.Unauthorized;
   }
 
   private notify(authorizedState: AuthStatus) {
