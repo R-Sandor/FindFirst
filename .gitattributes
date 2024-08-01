@@ -1,0 +1,8 @@
+* linguist-vendored
+*.tsx linguist-vendored=false
+*.js linguist-vendored=false
+*.java linguist-vendored=false
+*.sh linguist-vendored=false
+Dockerfile linguist-vendored=false
+*.yaml linguist-vendored=false
+
