@@ -29,7 +29,7 @@ beforeEach(async () => {
 
 describe("Test Export", () => {
   it("User can download bookmarks", () => {
-    const exportButton = screen.getByTestId(/export-button/i);
+    const exportButton = screen.getByTestId(/export-component/i);
     expect(exportButton).toBeInTheDocument();
     user.click(exportButton);
   });

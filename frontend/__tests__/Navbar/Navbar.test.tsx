@@ -54,7 +54,7 @@ describe('GlobalNavbar', () => {
     act(() => {
       render(<GlobalNavbar />);
     });
-    const brandLogo = screen.getByAltText('React Bootstrap logo');
+    const brandLogo = screen.getByAltText('Find First logo');
     expect(brandLogo).toBeInTheDocument();
   });
 
@@ -142,7 +142,7 @@ describe('GlobalNavbar', () => {
     act(() => {
       render(<GlobalNavbar />);
     });
-    const brandLogo = screen.getByAltText('React Bootstrap logo');
+    const brandLogo = screen.getByAltText('Find First logo');
     await act(async () => {
       await user.click(brandLogo);
     });
