@@ -11,9 +11,14 @@
   }
 }
 
+.resetForm { 
+  max-width: 350px;
+}
+
 %message {
   text-align: center;
-  height: 75px;
+  min-height: 50px;
+  margin-bottom: 10px;
   border-radius: 10px;
   justify-content: center; /* Align horizontal */
   align-items: center; /* Align vertical */
