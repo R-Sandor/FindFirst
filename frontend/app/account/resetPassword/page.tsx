@@ -14,6 +14,17 @@ const emailValidationSchema = Yup.object().shape({
     email: Yup.string().email("Invalid email").required("Required"),
 });
 
+
+function validateEmail(value: string | undefined) {
+    let error;
+    if (!value) {
+        error = 'Required';
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
+        error = 'Invalid email address';
+    }
+    return error;
+}
+
 function submitSuccessDisplay(submissionMessage: string) {
     return (
         <div className={styles.success}>
@@ -87,6 +98,7 @@ export default function Page() {
                                     placeholder="Email"
                                     type="email"
                                     value={values.email}
+                                    validate={validateEmail}
                                     onChange={(e: any) => setFieldValue("email", e.target.value)}
                                 />
                                 {errors.email && touched.email ? (
