@@ -6,7 +6,6 @@ import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
 import { act } from "react-dom/test-utils";
 import { beforeEach, beforeAll, vi, describe, it, expect } from "vitest";
-import { debug } from "vitest-preview";
 const user = userEvent.setup();
 
 beforeEach(async () => {
