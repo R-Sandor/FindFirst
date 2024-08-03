@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Page from "app/account/signup/page";
-import { submitDisabled } from "@/__tests__/utilities/TestingUtilities";
+import { clickAway, submitDisabled } from "@/__tests__/utilities/TestingUtilities";
 
 const user = userEvent.setup();
 const goodEmail = "jsmith@gmail.com";
@@ -28,13 +28,6 @@ function getUsernameEmailPassword(): UEP {
     emailInput: emailInput,
     passwordInput: passwordInput,
   } as UEP;
-}
-
-export async function clickAway() {
-  const rootElement = document.documentElement;
-  await act(async () => {
-    await user.click(rootElement);
-  });
 }
 
 export async function typeUsername(
@@ -156,7 +149,7 @@ describe("Errors on fields.", () => {
       await user.type(uep.passwordInput, "testtest");
     });
     // to simulate user clicking off of textfield
-    await clickAway();
+    await clickAway(user);
 
     pwdErr = screen.getByText(/special character/i);
     expect(pwdErr).toBeInTheDocument();
@@ -167,7 +160,7 @@ describe("Errors on fields.", () => {
 
     const usernameError = screen.getByText(/username too short/i);
     expect(usernameError).toBeInTheDocument();
-    await clickAway();
+    await clickAway(user);
     const emailError = screen.getByText(/Invalid email/i);
     expect(emailError).toBeInTheDocument();
     submitDisabled(true);

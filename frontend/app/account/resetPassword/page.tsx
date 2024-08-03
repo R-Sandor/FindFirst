@@ -3,6 +3,7 @@ import { Formik, Field, Form } from "formik";
 import styles from '../accountForm.module.scss'
 import * as Yup from "yup";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 export interface ForgotPasswordRequest {
     email: string;
@@ -62,17 +63,15 @@ export default function Page() {
     }, [submitSuccess]);
 
     const handleOnSubmit = async (forgot: ForgotPasswordRequest, actions: any) => {
-        const response = await fetch(resetUrl + "?email=" + forgot.email, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-        })
-        if (!response.ok) {
-            setSubmitMessage(await response.text());
-            setSubmitSuccess(false);
-        } else {
-            setSubmitSuccess(true)
-        }
-        actions.resetForm();
+        axios.post(resetUrl + "?email=" + forgot.email)
+            .then((response) => {
+                if (response.status == 200)
+                    setSubmitSuccess(true);
+            }).catch((rejected) => {
+                setSubmitMessage(rejected.response.data);
+                setSubmitSuccess(false);
+                actions.resetForm();
+            })
     };
     return (
         <div className="grid h-screen place-items-center">
