@@ -79,7 +79,7 @@ export default function Page() {
     actions.resetForm();
   };
   return (
-    <div className="grid h-screen place-items-center">
+    <div className={`grid ${styles.center}`}>
       <div className={"content-center " + " p-3"}>
         <h1 className="display-6 mb-3">Sign up</h1>
         <Formik

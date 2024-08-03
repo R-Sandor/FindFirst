@@ -74,7 +74,7 @@ export default function Page() {
             })
     };
     return (
-        <div className="grid h-screen place-items-center">
+        <div className={`grid ${styles.center}`}>
             <div className={`content-center p-3 ${styles.resetForm}`}>
                 <h1 className="display-6 mb-3">Reset Password</h1>
                 <p>
