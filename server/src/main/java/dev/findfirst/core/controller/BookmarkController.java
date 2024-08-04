@@ -68,7 +68,7 @@ public class BookmarkController {
   }
 
   @PostMapping(value = "/bookmark")
-  public ResponseEntity<Bookmark> addBookmarks(@RequestBody AddBkmkReq req) {
+  public ResponseEntity<Bookmark> addBookmark(@RequestBody AddBkmkReq req) {
     Bookmark createdBookmark;
     var response = new Response<Bookmark>();
     try {
