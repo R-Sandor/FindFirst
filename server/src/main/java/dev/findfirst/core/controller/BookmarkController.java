@@ -90,7 +90,8 @@ public class BookmarkController {
   }
 
   @PostMapping(value = "/bookmark/addBookmarks")
-  public ResponseEntity<List<Bookmark>> addBookmarks(@RequestBody List<AddBkmkReq> bookmarks) {
+  public ResponseEntity<List<Bookmark>> addBookmarks(
+      @RequestBody @Size(min = 1, max = 100) List<AddBkmkReq> bookmarks) {
     try {
       return new ResponseEntity<List<Bookmark>>(
           bookmarkService.addBookmarks(bookmarks), HttpStatus.OK);
