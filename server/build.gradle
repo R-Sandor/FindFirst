@@ -2,6 +2,7 @@ plugins {
 	id 'application'
 	id 'org.springframework.boot' version '3.3.2'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'org.flywaydb.flyway' version "10.17.0"
 	id "com.diffplug.spotless" version "6.11.0"
 	id 'java'
 	id 'jacoco'
@@ -9,6 +10,7 @@ plugins {
 
 group = 'dev.findfirst'
 version = '1.0.0'
+
 java {
 	sourceCompatibility = JavaVersion.VERSION_17
 }
@@ -88,7 +90,7 @@ dependencies {
 }
 
 application {
-mainClass = 'dev.findfirst.FindFirstApplication'
+	mainClass = 'dev.findfirst.FindFirstApplication'
 }
 
 test {
@@ -104,5 +106,14 @@ jacocoTestReport {
 		csv.required = true
 		xml.destination = file("$buildDir/reports/coverage.xml")
 	}
-
 }
+
+flyway {
+	// Get the system property or use the default, i.e. development defaults.
+	url = System.getProperty("SPRING_DATASOURCE_URL", "jdbc:postgresql://db:5432/findfirst")
+    user = System.getProperty("POSTGRES_USER", "postgres")
+    password = System.getProperty("POSTGRES_PASSWORD", "admin")
+    locations = ['classpath:db/migration']
+}
+
+flywayMigrate.dependsOn classes
