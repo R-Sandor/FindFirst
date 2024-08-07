@@ -11,8 +11,11 @@ plugins {
 group = 'dev.findfirst'
 version = '1.0.0'
 
+// Apply a specific Java toolchain to ease working on different environments.
 java {
-	sourceCompatibility = JavaVersion.VERSION_17
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
 spotless {
