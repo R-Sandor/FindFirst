@@ -1,14 +1,14 @@
-FROM ubuntu:20.04 as linux
-RUN apt update -y && apt install -y openssl openjdk-17-jdk
+FROM alpine:3.20.2 AS linux
+RUN apk add openjdk17 
 
-FROM openjdk:21-oracle AS builder
-WORKDIR /app
+FROM openjdk:17-slim AS builder
+WORKDIR /appHome
 COPY . .
 RUN ./gradlew assemble
 
-FROM linux as runner
+FROM linux AS runner
 WORKDIR /app
-COPY --from=builder /app/build/libs/app.jar screenshot.jar
+COPY --from=builder /appHome/app/build/libs/app.jar screenshot.jar
 COPY scripts/ scripts/
 RUN chmod u+x scripts/*
 
