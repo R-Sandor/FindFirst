@@ -1,12 +1,18 @@
+buildscript {
+  repositories { mavenCentral() }
+  dependencies { classpath("org.flywaydb:flyway-database-postgresql:10.1.0") }
+}
+
 plugins {
 	id 'application'
 	id 'org.springframework.boot' version '3.3.2'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'org.flywaydb.flyway' version "10.17.0"
 	id "com.diffplug.spotless" version "6.11.0"
+	id "org.flywaydb.flyway" version "10.1.0" 
 	id 'java'
 	id 'jacoco'
 }
+
 
 group = 'dev.findfirst'
 version = '1.0.0'
@@ -70,10 +76,9 @@ dependencies {
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
 	implementation 'org.jsoup:jsoup:1.17.2'
 
-	runtimeOnly 'org.postgresql:postgresql'
+	runtimeOnly 'org.postgresql:postgresql:42.7.3'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
-	runtimeOnly 'org.postgresql:postgresql'
 
 	annotationProcessor 'org.projectlombok:lombok'
 
@@ -89,7 +94,6 @@ dependencies {
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
-	developmentOnly("org.springframework.boot:spring-boot-docker-compose")
 }
 
 application {
@@ -97,7 +101,7 @@ application {
 }
 
 test {
-	systemProperty 'spring.profiles.active', 'integration'
+	systemProperty 'spring.profiles.active', 'dev'
 	useJUnitPlatform()
 	testLogging.showStandardStreams = true
 	finalizedBy jacocoTestReport // report is always generated after tests run
@@ -113,10 +117,11 @@ jacocoTestReport {
 
 flyway {
 	// Get the system property or use the default, i.e. development defaults.
-	url = System.getProperty("SPRING_DATASOURCE_URL", "jdbc:postgresql://db:5432/findfirst")
+	url = System.getProperty("SPRING_DATASOURCE_URL", "jdbc:postgresql://localhost:5432/findfirst")
     user = System.getProperty("POSTGRES_USER", "postgres")
     password = System.getProperty("POSTGRES_PASSWORD", "admin")
-    locations = ['classpath:db/migration']
+	driver = "org.postgresql.Driver"
+	locations = ["classpath:db/migration"]
 }
 
 flywayMigrate.dependsOn classes
