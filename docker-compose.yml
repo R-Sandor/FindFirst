@@ -7,8 +7,6 @@ services:
       - "3000:3000"
   server:
     build:
-      args:
-        - BUILDENV=dev
       dockerfile: ../docker/server/Dockerfile
       context: ./server
     ports:
@@ -18,8 +16,6 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
   screenshot:
     build:
-      args:
-        - BUILDENV=dev
       dockerfile: ../docker/screenshot/Dockerfile
       context: ./screenshot
     ports:

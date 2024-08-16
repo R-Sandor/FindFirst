@@ -7,8 +7,6 @@ services:
       - "3000:3000"
   server:
     build:
-      args:
-        - BUILDENV=prod
       dockerfile: ../docker/server/Dockerfile
       context: ./server
     ports:
@@ -25,8 +23,6 @@ services:
     restart: always
   screenshot:
     build:
-      args:
-        - BUILDENV=prod
       dockerfile: ../docker/screenshot/Dockerfile
       context: ./screenshot
     ports:
