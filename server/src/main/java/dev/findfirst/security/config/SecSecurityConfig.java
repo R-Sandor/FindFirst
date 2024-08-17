@@ -1,16 +1,8 @@
 package dev.findfirst.security.config;
 
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
-import dev.findfirst.security.filters.CookieAuthenticationFilter;
-import dev.findfirst.security.jwt.AuthEntryPointJwt;
-import dev.findfirst.security.userAuth.service.UserDetailsServiceImpl;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,6 +25,16 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
+
+import dev.findfirst.security.filters.CookieAuthenticationFilter;
+import dev.findfirst.security.jwt.AuthEntryPointJwt;
+import dev.findfirst.security.userAuth.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -44,9 +46,11 @@ public class SecSecurityConfig {
 
   @Value("${jwt.private.key}") private RSAPrivateKey priv;
 
-  @Autowired UserDetailsServiceImpl userDetailsService;
+  @Autowired
+  UserDetailsServiceImpl userDetailsService;
 
-  @Autowired private AuthEntryPointJwt unauthorizedHandler;
+  @Autowired
+  private AuthEntryPointJwt unauthorizedHandler;
 
   @Bean
   public CookieAuthenticationFilter cookieJWTAuthFilter() {
@@ -76,19 +80,14 @@ public class SecSecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(
-        (authorize) ->
-            authorize.requestMatchers("/user/**").permitAll().anyRequest().authenticated());
-    http.csrf((csrf) -> csrf.disable())
-        .httpBasic(Customizer.withDefaults())
+    http.authorizeHttpRequests((authorize) -> authorize.requestMatchers("/user/**").permitAll()
+        .anyRequest().authenticated());
+    http.csrf((csrf) -> csrf.disable()).httpBasic(Customizer.withDefaults())
         .oauth2ResourceServer((rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder())))
         .sessionManagement(
             (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .exceptionHandling(
-            (exceptions) ->
-                exceptions
-                    .authenticationEntryPoint(unauthorizedHandler)
-                    .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
+        .exceptionHandling((exceptions) -> exceptions.authenticationEntryPoint(unauthorizedHandler)
+            .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
     http.authenticationProvider(authenticationProvider());
     http.addFilterBefore(cookieJWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
     return http.build();

@@ -1,14 +1,5 @@
 package dev.findfirst.core.service;
 
-import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
-import dev.findfirst.core.exceptions.TagNotFoundException;
-import dev.findfirst.core.model.AddBkmkReq;
-import dev.findfirst.core.model.Bookmark;
-import dev.findfirst.core.model.ExportBookmark;
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.model.TagBookmarks;
-import dev.findfirst.core.repository.BookmarkRepository;
-import jakarta.validation.constraints.NotNull;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -18,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +18,26 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import jakarta.validation.constraints.NotNull;
+
+import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
+import dev.findfirst.core.exceptions.TagNotFoundException;
+import dev.findfirst.core.model.AddBkmkReq;
+import dev.findfirst.core.model.Bookmark;
+import dev.findfirst.core.model.ExportBookmark;
+import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.model.TagBookmarks;
+import dev.findfirst.core.repository.BookmarkRepository;
+
 @Service
 @Slf4j
 public class BookmarkService {
 
-  @Autowired private BookmarkRepository bookmarkRepository;
+  @Autowired
+  private BookmarkRepository bookmarkRepository;
 
-  @Autowired private TagService tagService;
+  @Autowired
+  private TagService tagService;
 
   public List<Bookmark> list() {
     return bookmarkRepository.findAll();
@@ -62,16 +67,13 @@ public class BookmarkService {
   }
 
   public List<Bookmark> addBookmarks(List<AddBkmkReq> bookmarks) throws Exception {
-    return bookmarks.stream()
-        .map(
-            t -> {
-              try {
-                return addBookmark(t);
-              } catch (Exception e) {
-                return null;
-              }
-            })
-        .toList();
+    return bookmarks.stream().map(t -> {
+      try {
+        return addBookmark(t);
+      } catch (Exception e) {
+        return null;
+      }
+    }).toList();
   }
 
   /**
@@ -87,21 +89,18 @@ public class BookmarkService {
     var uniqueBkmksWithTag = new ArrayList<TagBookmarks>();
 
     // Sort by the largest tags set.
-    tags.sort(
-        new Comparator<Tag>() {
-          @Override
-          public int compare(Tag lTag, Tag rTag) {
-            return rTag.getBookmarks().size() - lTag.getBookmarks().size();
-          }
-        });
+    tags.sort(new Comparator<Tag>() {
+      @Override
+      public int compare(Tag lTag, Tag rTag) {
+        return rTag.getBookmarks().size() - lTag.getBookmarks().size();
+      }
+    });
 
     // streams the sorted list
-    tags.stream()
-        .forEach(
-            t -> {
-              var uniques = new ArrayList<Bookmark>();
-              addUniqueBookmarks(t, uniques, foundMap, uniqueBkmksWithTag);
-            });
+    tags.stream().forEach(t -> {
+      var uniques = new ArrayList<Bookmark>();
+      addUniqueBookmarks(t, uniques, foundMap, uniqueBkmksWithTag);
+    });
     var exporter = new ExportBookmark(uniqueBkmksWithTag);
     return exporter.toString();
   }
@@ -117,20 +116,15 @@ public class BookmarkService {
    * @param alreadyFound Map<Long, Long> for fast lookup
    * @param uniqueBkmksWithTag Record of Tag Title with Bookmark.
    */
-  private void addUniqueBookmarks(
-      Tag t,
-      List<Bookmark> uniques,
-      Map<Long, Long> alreadyFound,
+  private void addUniqueBookmarks(Tag t, List<Bookmark> uniques, Map<Long, Long> alreadyFound,
       List<TagBookmarks> uniqueBkmksWithTag) {
-    t.getBookmarks().stream()
-        .forEach(
-            bkmk -> {
-              var found = alreadyFound.get(bkmk.getId());
-              if (found == null) {
-                alreadyFound.put(bkmk.getId(), bkmk.getId());
-                uniques.add(bkmk);
-              }
-            });
+    t.getBookmarks().stream().forEach(bkmk -> {
+      var found = alreadyFound.get(bkmk.getId());
+      if (found == null) {
+        alreadyFound.put(bkmk.getId(), bkmk.getId());
+        uniques.add(bkmk);
+      }
+    });
     if (uniques.size() > 0) {
       uniqueBkmksWithTag.add(new TagBookmarks(t.getTag_title(), uniques));
     }
@@ -161,7 +155,8 @@ public class BookmarkService {
   }
 
   public Tag addTagToBookmark(Bookmark bookmark, Tag tag) {
-    if (bookmark == null || tag == null) throw new NoSuchFieldError();
+    if (bookmark == null || tag == null)
+      throw new NoSuchFieldError();
     bookmark.addTag(tag);
     bookmarkRepository.save(bookmark);
     return tag;
@@ -169,11 +164,10 @@ public class BookmarkService {
 
   public Tag deleteTag(long id, @NotNull Tag tag) {
     final var bkmk = bookmarkRepository.findById(id);
-    bkmk.ifPresent(
-        (b) -> {
-          b.removeTag(tag);
-          bookmarkRepository.save(b);
-        });
+    bkmk.ifPresent((b) -> {
+      b.removeTag(tag);
+      bookmarkRepository.save(b);
+    });
     return tag;
   }
 
@@ -182,25 +176,22 @@ public class BookmarkService {
     var hrefs = doc.getElementsByAttribute("href");
     hrefs.stream().forEach(e -> log.debug(e.attributes().get("href")));
     var sec = SecurityContextHolder.getContext();
-    return Flux.fromStream(hrefs.stream())
-        .map(
-            el -> {
-              String url = el.attributes().get("href");
-              try {
-                var retDoc = Jsoup.connect(url).get();
-                log.debug(retDoc.title());
-                // Issues with the context being lost between requests and database write.
-                SecurityContextHolder.setContext(sec);
-                String title = retDoc.title();
-                if (!url.equals("")) {
-                  title = title.equals("") ? url : title;
-                  return addBookmark(new AddBkmkReq(title, url, null));
-                }
-              } catch (IOException | BookmarkAlreadyExistsException | TagNotFoundException ex) {
-                log.error(ex.getMessage());
-              }
-              return new Bookmark();
-            })
-        .delayElements(Duration.ofMillis(100));
+    return Flux.fromStream(hrefs.stream()).map(el -> {
+      String url = el.attributes().get("href");
+      try {
+        var retDoc = Jsoup.connect(url).get();
+        log.debug(retDoc.title());
+        // Issues with the context being lost between requests and database write.
+        SecurityContextHolder.setContext(sec);
+        String title = retDoc.title();
+        if (!url.equals("")) {
+          title = title.equals("") ? url : title;
+          return addBookmark(new AddBkmkReq(title, url, null));
+        }
+      } catch (IOException | BookmarkAlreadyExistsException | TagNotFoundException ex) {
+        log.error(ex.getMessage());
+      }
+      return new Bookmark();
+    }).delayElements(Duration.ofMillis(100));
   }
 }

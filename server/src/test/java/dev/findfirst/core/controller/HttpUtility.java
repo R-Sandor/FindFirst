@@ -1,10 +1,12 @@
 package dev.findfirst.core.controller;
 
-import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 import java.util.Optional;
+
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+
+import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 
 public class HttpUtility {
 

@@ -1,8 +1,10 @@
 package dev.findfirst.users.repository;
 
-import dev.findfirst.users.model.user.User;
 import java.util.Optional;
+
 import org.springframework.data.repository.CrudRepository;
+
+import dev.findfirst.users.model.user.User;
 
 public interface UserRepo extends CrudRepository<User, Integer> {
 

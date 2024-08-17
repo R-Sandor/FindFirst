@@ -1,7 +1,10 @@
 package dev.findfirst.users.model.user;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,19 +17,16 @@ import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
 
 @Data
 @Entity
-@Table(
-    name = "users",
-    uniqueConstraints = {
-      @UniqueConstraint(columnNames = "username"),
-      @UniqueConstraint(columnNames = "email")
-    })
+@Table(name = "users",
+    uniqueConstraints = {@UniqueConstraint(columnNames = "username"),
+        @UniqueConstraint(columnNames = "email")})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

@@ -2,8 +2,8 @@ package dev.findfirst.users.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import dev.findfirst.core.annotations.IntegrationTest;
 import java.util.Properties;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +18,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
+import dev.findfirst.core.annotations.IntegrationTest;
+
 @Testcontainers
 @IntegrationTest
 @TestPropertySource(locations = "classpath:application-test.yml")
@@ -28,7 +30,8 @@ public class DefaultEmailServiceTest {
 
   @Value("${spring.mail.host}") String host;
 
-  @Autowired DefaultEmailService emailService;
+  @Autowired
+  DefaultEmailService emailService;
 
   @Container
   public static GenericContainer<?> mailhog =

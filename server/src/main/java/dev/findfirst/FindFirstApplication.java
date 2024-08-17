@@ -2,6 +2,7 @@ package dev.findfirst;
 
 import java.util.Arrays;
 import java.util.Collections;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,8 +22,7 @@ public class FindFirstApplication {
     try {
       SpringApplication.run(FindFirstApplication.class, args);
     } catch (ApplicationContextException ude) {
-      log.error(
-          """
+      log.error("""
           \n\n
           ==============================================
           Check that the app.key, app.pub are generated.
@@ -39,13 +39,8 @@ public class FindFirstApplication {
     config.setAllowCredentials(true);
     // *** URL below needs to match the Vue client URL and port ***
     // Local host and 127.0.0.1 are the same
-    config.setAllowedOrigins(
-        Arrays.asList(
-            "https://localhost:3000",
-            "http://localhost:3000",
-            "https://findfirst.dev",
-            "http://localhost",
-            "http://127.0.0.1"));
+    config.setAllowedOrigins(Arrays.asList("https://localhost:3000", "http://localhost:3000",
+        "https://findfirst.dev", "http://localhost", "http://127.0.0.1"));
     config.setAllowedMethods(Collections.singletonList("*"));
     config.setAllowedHeaders(Collections.singletonList("*"));
     source.registerCorsConfiguration("/**", config);

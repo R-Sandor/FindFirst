@@ -1,16 +1,19 @@
 package dev.findfirst.security.userAuth.tenant.listeners;
 
-import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
-import dev.findfirst.security.userAuth.tenant.model.Tenantable;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
+import dev.findfirst.security.userAuth.tenant.model.Tenantable;
 
 public class TenantEntityListener {
 
-  @Autowired private TenantContext tenantContext;
+  @Autowired
+  private TenantContext tenantContext;
 
   @PrePersist
   @PreUpdate

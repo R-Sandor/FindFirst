@@ -1,14 +1,17 @@
 package dev.findfirst.security.userAuth.tenant.data;
 
-import dev.findfirst.security.userAuth.tenant.model.Tenant;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import jakarta.transaction.Transactional;
+
+import dev.findfirst.security.userAuth.tenant.model.Tenant;
 
 @Service
 public class TenantService {
 
-  @Autowired private TenantRepository tenantRepository;
+  @Autowired
+  private TenantRepository tenantRepository;
 
   public Tenant create(String name) {
     var tenant = new Tenant();

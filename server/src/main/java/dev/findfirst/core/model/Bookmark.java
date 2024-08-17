@@ -1,6 +1,13 @@
 package dev.findfirst.core.model;
 
-import dev.findfirst.security.userAuth.tenant.model.Tenantable;
+import java.util.HashSet;
+import java.util.Set;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,12 +19,8 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+
+import dev.findfirst.security.userAuth.tenant.model.Tenantable;
 
 @Entity
 @Table(name = "bookmark")
@@ -51,9 +54,7 @@ public class Bookmark extends Tenantable {
   }
 
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-  @JoinTable(
-      name = "bookmark_tag",
-      joinColumns = @JoinColumn(name = "bookmark_id"),
+  @JoinTable(name = "bookmark_tag", joinColumns = @JoinColumn(name = "bookmark_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private Set<Tag> tags = new HashSet<>();
 

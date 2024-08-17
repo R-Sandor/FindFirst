@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class DefaultEmailService {
 
-  @Autowired public JavaMailSender emailSender;
+  @Autowired
+  public JavaMailSender emailSender;
 
   @Value("${spring.mail.username:findfirst@localmail.com}") String webhost;
 

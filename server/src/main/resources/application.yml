@@ -6,3 +6,7 @@ jwt:
   # or do something like https://medium.com/developervisits/hiding-encrypting-database-password-in-the-application-properties-34d59fe104eb
   private.key: classpath:app.key
   public.key: classpath:app.pub
+
+spring: 
+  flyway:
+    clean-disabled: true

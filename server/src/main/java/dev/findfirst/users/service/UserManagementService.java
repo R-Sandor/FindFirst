@@ -1,5 +1,20 @@
 package dev.findfirst.users.service;
 
+import java.nio.charset.StandardCharsets;
+import java.rmi.UnexpectedException;
+import java.time.Instant;
+import java.util.Base64;
+import java.util.NoSuchElementException;
+import java.util.UUID;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.stereotype.Service;
+
 import dev.findfirst.security.jwt.service.RefreshTokenService;
 import dev.findfirst.security.userAuth.models.RefreshToken;
 import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
@@ -16,19 +31,6 @@ import dev.findfirst.users.repository.PasswordTokenRepository;
 import dev.findfirst.users.repository.RoleRepository;
 import dev.findfirst.users.repository.UserRepo;
 import dev.findfirst.users.repository.VerificationTokenRepository;
-import java.nio.charset.StandardCharsets;
-import java.rmi.UnexpectedException;
-import java.time.Instant;
-import java.util.Base64;
-import java.util.NoSuchElementException;
-import java.util.UUID;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -135,17 +137,10 @@ public class UserManagementService {
     Integer roleId = user.getRole().getRole_id();
     String roleName = user.getRole().getName().name();
     Integer tenantId = user.getTenantId();
-    JwtClaimsSet claims =
-        JwtClaimsSet.builder()
-            .issuer("self")
-            .issuedAt(Instant.now())
-            .expiresAt(now.plusSeconds(jwtExpirationMs))
-            .subject(email)
-            .claim("scope", email)
-            .claim(Constants.ROLE_ID_CLAIM, roleId)
-            .claim(Constants.ROLE_NAME_CLAIM, roleName)
-            .claim(Constants.TENANT_ID_CLAIM, tenantId)
-            .build();
+    JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self").issuedAt(Instant.now())
+        .expiresAt(now.plusSeconds(jwtExpirationMs)).subject(email).claim("scope", email)
+        .claim(Constants.ROLE_ID_CLAIM, roleId).claim(Constants.ROLE_NAME_CLAIM, roleName)
+        .claim(Constants.TENANT_ID_CLAIM, tenantId).build();
     return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
   }
 

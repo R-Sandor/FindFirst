@@ -1,6 +1,7 @@
 package dev.findfirst.security.jwt;
 
 import java.util.Collection;
+
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -10,11 +11,8 @@ public class TenantAuthenticationToken extends AbstractAuthenticationToken {
   private final int tenantId;
   private final int roleId;
 
-  public TenantAuthenticationToken(
-      Object principal,
-      int roleId,
-      Collection<? extends GrantedAuthority> authorities,
-      int tenantId) {
+  public TenantAuthenticationToken(Object principal, int roleId,
+      Collection<? extends GrantedAuthority> authorities, int tenantId) {
     super(authorities);
     setAuthenticated(true);
     this.principal = principal;

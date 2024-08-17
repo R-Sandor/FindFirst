@@ -1,21 +1,9 @@
 package dev.findfirst.security.filters;
 
-import dev.findfirst.security.jwt.JwtService;
-import dev.findfirst.security.jwt.TenantAuthenticationToken;
-import dev.findfirst.security.userAuth.utils.Constants;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +12,28 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import dev.findfirst.security.jwt.JwtService;
+import dev.findfirst.security.jwt.TenantAuthenticationToken;
+import dev.findfirst.security.userAuth.utils.Constants;
+
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.SignatureException;
+
 public class CookieAuthenticationFilter extends OncePerRequestFilter {
 
   private static final Logger logger = LoggerFactory.getLogger(CookieAuthenticationFilter.class);
 
-  @Autowired private JwtService jwtUtils;
+  @Autowired
+  private JwtService jwtUtils;
 
   private String parseJwt(HttpServletRequest request) {
     return jwtUtils.getJwtFromCookies(request);
@@ -53,11 +58,8 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
       int tenantId = jwsClaims.getBody().get(Constants.TENANT_ID_CLAIM, Integer.class);
       tenantAuthenticationToken =
           new TenantAuthenticationToken(email, roleId, authorities, tenantId);
-    } catch (ExpiredJwtException
-        | UnsupportedJwtException
-        | MalformedJwtException
-        | SignatureException
-        | IllegalArgumentException e) {
+    } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException
+        | SignatureException | IllegalArgumentException e) {
       logger.error("Problems with JWT", e);
     }
 
@@ -65,10 +67,8 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
   }
 
   @Override
-  protected void doFilterInternal(
-      @NonNull HttpServletRequest request,
-      @NonNull HttpServletResponse response,
-      @NonNull FilterChain filterChain)
+  protected void doFilterInternal(@NonNull HttpServletRequest request,
+      @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
       throws ServletException, IOException {
     try {
       String jwt = parseJwt(request);

@@ -1,12 +1,14 @@
 package dev.findfirst.users.service;
 
+import java.util.Calendar;
+
+import org.springframework.stereotype.Service;
+
 import dev.findfirst.users.exceptions.NoTokenFoundException;
 import dev.findfirst.users.exceptions.NoUserFoundException;
 import dev.findfirst.users.exceptions.TokenExpiredException;
 import dev.findfirst.users.model.user.Token;
 import dev.findfirst.users.model.user.User;
-import java.util.Calendar;
-import org.springframework.stereotype.Service;
 
 @Service
 public class RegistrationService extends AccountService {
@@ -23,15 +25,13 @@ public class RegistrationService extends AccountService {
   @Override
   void AccountEmailOp(String emailAddress, String token) {
     String confirmationUrl = domain + "/user/regitrationConfirm?token=" + token;
-    String message =
-        """
+    String message = """
             Please finish registering your account with the given url:
             %s
 
             Sincerly,
             Findfirst team!
-        """
-            .formatted(confirmationUrl);
+        """.formatted(confirmationUrl);
 
     emailService.sendSimpleEmail(emailAddress, "Account Registration", message);
   }

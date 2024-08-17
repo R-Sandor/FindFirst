@@ -4,14 +4,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.findfirst.core.annotations.IntegrationTest;
-import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
-import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
-import dev.findfirst.users.model.MailHogMessage;
-import dev.findfirst.users.model.user.TokenPassword;
 import java.util.Optional;
 import java.util.Properties;
+
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +27,13 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
+import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
+import dev.findfirst.users.model.MailHogMessage;
+import dev.findfirst.users.model.user.TokenPassword;
 
 @Testcontainers
 @IntegrationTest
@@ -39,15 +41,17 @@ import org.testcontainers.utility.DockerImageName;
 @TestPropertySource(locations = "classpath:application-test.yml")
 public class UserControllerTest {
 
-  @Autowired TestRestTemplate restTemplate;
+  @Autowired
+  TestRestTemplate restTemplate;
 
-  @Container @ServiceConnection
+  @Container
+  @ServiceConnection
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
   @Container
   public static GenericContainer<?> mailhog =
-      new GenericContainer<>(DockerImageName.parse("mailhog/mailhog:latest"))
-          .withExposedPorts(1025, 8025);
+      new GenericContainer<>(DockerImageName.parse("mailhog/mailhog:latest")).withExposedPorts(1025,
+          8025);
 
   @TestConfiguration
   public static class JavaMailSenderConfiguration {
@@ -78,9 +82,8 @@ public class UserControllerTest {
   @Test
   void userSignup() {
     var headers = new HttpHeaders();
-    var ent =
-        new HttpEntity<>(
-            new SignupRequest("Steve-Man", "steve@test.com", "$tev3s_sup3rH@rdPassword"), headers);
+    var ent = new HttpEntity<>(
+        new SignupRequest("Steve-Man", "steve@test.com", "$tev3s_sup3rH@rdPassword"), headers);
     var response = restTemplate.exchange(userUrl + "/signup", HttpMethod.POST, ent, String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -97,17 +100,14 @@ public class UserControllerTest {
   @Order(2)
   void completeSignupAndRegistration() {
     var headers = new HttpHeaders();
-    var ent =
-        new HttpEntity<>(
-            new SignupRequest("beardedMan", "j-dog@gmail.com", "$tev3s_sup3rH@rdPassword"),
-            headers);
+    var ent = new HttpEntity<>(
+        new SignupRequest("beardedMan", "j-dog@gmail.com", "$tev3s_sup3rH@rdPassword"), headers);
     var response = restTemplate.exchange(userUrl + "/signup", HttpMethod.POST, ent, String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     try {
       var token = getTokenFromEmail(0, 1);
-      var regResponse =
-          restTemplate.getForEntity(
-              userUrl + "/regitrationConfirm?token={token}", String.class, token);
+      var regResponse = restTemplate.getForEntity(userUrl + "/regitrationConfirm?token={token}",
+          String.class, token);
       assertEquals(HttpStatus.SEE_OTHER, regResponse.getStatusCode());
     } catch (Exception e) {
       // fail the test should show message
@@ -119,13 +119,8 @@ public class UserControllerTest {
   @Order(1)
   void resetPassword() {
     String token = "";
-    var response =
-        restTemplate.exchange(
-            userUrl + "/resetPassword?email={email}",
-            HttpMethod.POST,
-            new HttpEntity<>(new HttpHeaders()),
-            String.class,
-            "jsmith@google.com");
+    var response = restTemplate.exchange(userUrl + "/resetPassword?email={email}", HttpMethod.POST,
+        new HttpEntity<>(new HttpHeaders()), String.class, "jsmith@google.com");
     assertEquals(HttpStatus.OK, response.getStatusCode());
     try {
       token = getTokenFromEmail(0, 2);
@@ -133,13 +128,8 @@ public class UserControllerTest {
       // fail the test should show message
       assertTrue(false, e.getMessage());
     }
-    response =
-        restTemplate.exchange(
-            userUrl + "/changePassword?token={tkn}",
-            HttpMethod.GET,
-            new HttpEntity<>(new HttpHeaders()),
-            String.class,
-            token);
+    response = restTemplate.exchange(userUrl + "/changePassword?token={tkn}", HttpMethod.GET,
+        new HttpEntity<>(new HttpHeaders()), String.class, token);
     assertEquals(HttpStatus.SEE_OTHER, response.getStatusCode());
 
     var loc = Optional.ofNullable(response.getHeaders().get("Location")).orElseThrow().get(0);
@@ -147,14 +137,10 @@ public class UserControllerTest {
     // token is the last part of the string
     var tknParam = urlStruct[urlStruct.length - 1];
     assertNotNull(tknParam);
-    response =
-        restTemplate.exchange(
-            userUrl + "/changePassword?tokenPassword={tkn}",
-            HttpMethod.POST,
-            new HttpEntity<>(
-                new TokenPassword(tknParam, "jsmithsNewsPassword!"), new HttpHeaders()),
-            String.class,
-            token);
+    response = restTemplate.exchange(userUrl + "/changePassword?tokenPassword={tkn}",
+        HttpMethod.POST,
+        new HttpEntity<>(new TokenPassword(tknParam, "jsmithsNewsPassword!"), new HttpHeaders()),
+        String.class, token);
   }
 
   public String getTokenFromEmail(int emailIdx, int lineWithToken) throws Exception {
@@ -183,11 +169,7 @@ public class UserControllerTest {
     var signResp = restTemplate.postForEntity("/user/signin", entity, TokenRefreshResponse.class);
     var tknRefresh = Optional.ofNullable(signResp.getBody()).orElseThrow();
     var refreshTkn = tknRefresh.refreshToken();
-    restTemplate.exchange(
-        userUrl + "/refreshToken?token={refreshToken}",
-        HttpMethod.POST,
-        new HttpEntity<>(new HttpHeaders()),
-        String.class,
-        refreshTkn);
+    restTemplate.exchange(userUrl + "/refreshToken?token={refreshToken}", HttpMethod.POST,
+        new HttpEntity<>(new HttpHeaders()), String.class, refreshTkn);
   }
 }

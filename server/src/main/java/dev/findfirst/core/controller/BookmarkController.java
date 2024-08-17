@@ -1,22 +1,10 @@
 package dev.findfirst.core.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.findfirst.core.model.AddBkmkReq;
-import dev.findfirst.core.model.Bookmark;
-import dev.findfirst.core.model.BookmarkTagPair;
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.service.BookmarkService;
-import dev.findfirst.core.service.TagService;
-import dev.findfirst.core.utilies.Response;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.function.Consumer;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,14 +22,32 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import dev.findfirst.core.model.AddBkmkReq;
+import dev.findfirst.core.model.Bookmark;
+import dev.findfirst.core.model.BookmarkTagPair;
+import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.service.BookmarkService;
+import dev.findfirst.core.service.TagService;
+import dev.findfirst.core.utilies.Response;
+
 @RestController
 @Validated
 @RequestMapping("/api")
 public class BookmarkController {
 
-  @Autowired private BookmarkService bookmarkService;
+  @Autowired
+  private BookmarkService bookmarkService;
 
-  @Autowired private TagService tagService;
+  @Autowired
+  private TagService tagService;
 
   @GetMapping("/bookmarks")
   public ResponseEntity<List<Bookmark>> getAllBookmarks() {
@@ -93,8 +99,8 @@ public class BookmarkController {
   public ResponseEntity<List<Bookmark>> addBookmarks(
       @RequestBody @Size(min = 1, max = 100) List<AddBkmkReq> bookmarks) {
     try {
-      return new ResponseEntity<List<Bookmark>>(
-          bookmarkService.addBookmarks(bookmarks), HttpStatus.OK);
+      return new ResponseEntity<List<Bookmark>>(bookmarkService.addBookmarks(bookmarks),
+          HttpStatus.OK);
     } catch (Exception e) {
       return ResponseEntity.badRequest().build();
     }
@@ -102,8 +108,7 @@ public class BookmarkController {
 
   @PostMapping(value = "/bookmark/{bookmarkID}/tag")
   @ResponseBody
-  public ResponseEntity<Tag> addTag(
-      @PathVariable(value = "bookmarkID") @NotNull Long bookmarkId,
+  public ResponseEntity<Tag> addTag(@PathVariable(value = "bookmarkID") @NotNull Long bookmarkId,
       @RequestParam("tag") @Size(max = 50) @NotBlank String title) {
     final var bkmkOpt = bookmarkService.findById(bookmarkId);
 
@@ -112,10 +117,9 @@ public class BookmarkController {
     }
     var bookmark = bkmkOpt.get();
 
-    Consumer<Tag> action =
-        (t) -> {
-          bookmarkService.addTagToBookmark(bookmark, t);
-        };
+    Consumer<Tag> action = (t) -> {
+      bookmarkService.addTagToBookmark(bookmark, t);
+    };
 
     // Check if there is a tag by the given title.
     Tag tag;
@@ -132,10 +136,9 @@ public class BookmarkController {
     var bookmark = bookmarkService.findById(bookmarkId);
     var tag = tagService.findById(tagId);
 
-    Consumer<BookmarkTagPair> action =
-        (BookmarkTagPair bt) -> {
-          bookmarkService.addTagToBookmark(bt.bkmk(), bt.tag());
-        };
+    Consumer<BookmarkTagPair> action = (BookmarkTagPair bt) -> {
+      bookmarkService.addTagToBookmark(bt.bkmk(), bt.tag());
+    };
 
     if (bookmark.isPresent() && tag.isPresent()) {
       var resp = new Response<BookmarkTagPair>();
@@ -146,26 +149,24 @@ public class BookmarkController {
   }
 
   @DeleteMapping(value = "bookmark/{bookmarkID}/tag")
-  public ResponseEntity<Tag> deleteTagFromBookmark(
-      @Valid @PathVariable("bookmarkID") long id, @RequestParam("tag") @NotBlank String title) {
+  public ResponseEntity<Tag> deleteTagFromBookmark(@Valid @PathVariable("bookmarkID") long id,
+      @RequestParam("tag") @NotBlank String title) {
 
     var t = tagService.getTagByTitle(title);
     var b = bookmarkService.findById(id);
 
-    return b.isPresent()
-        ? new Response<Tag>((tag) -> bookmarkService.deleteTag(id, tag), t).get()
+    return b.isPresent() ? new Response<Tag>((tag) -> bookmarkService.deleteTag(id, tag), t).get()
         : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 
   @DeleteMapping(value = "bookmark/{bookmarkID}/tagId", produces = "application/json")
-  public ResponseEntity<Tag> deleteTagFromBookmarkById(
-      @Valid @PathVariable("bookmarkID") long id, @RequestParam("tagId") @Valid long tagId) {
+  public ResponseEntity<Tag> deleteTagFromBookmarkById(@Valid @PathVariable("bookmarkID") long id,
+      @RequestParam("tagId") @Valid long tagId) {
 
     var t = tagService.findById(tagId);
     var b = bookmarkService.findById(id);
 
-    return b.isPresent()
-        ? new Response<Tag>((tag) -> bookmarkService.deleteTag(id, tag), t).get()
+    return b.isPresent() ? new Response<Tag>((tag) -> bookmarkService.deleteTag(id, tag), t).get()
         : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 

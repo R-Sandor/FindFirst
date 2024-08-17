@@ -1,14 +1,17 @@
 package dev.findfirst.users.service;
 
+import java.util.Calendar;
+
+import org.springframework.stereotype.Service;
+
+import jakarta.validation.constraints.Email;
+
 import dev.findfirst.users.exceptions.NoTokenFoundException;
 import dev.findfirst.users.exceptions.NoUserFoundException;
 import dev.findfirst.users.exceptions.TokenExpiredException;
 import dev.findfirst.users.model.user.Token;
 import dev.findfirst.users.model.user.TokenPassword;
 import dev.findfirst.users.model.user.User;
-import jakarta.validation.constraints.Email;
-import java.util.Calendar;
-import org.springframework.stereotype.Service;
 
 @Service
 public class ForgotPasswordService extends AccountService {
@@ -36,8 +39,7 @@ public class ForgotPasswordService extends AccountService {
   @Override
   void AccountEmailOp(String emailAddress, String token) {
     String confirmationUrl = this.domain + "/user/changePassword?token=" + token;
-    String message =
-        """
+    String message = """
             You have requested password reset for your account.
             Please complete the password reset with the given url:
             %s
@@ -47,8 +49,7 @@ public class ForgotPasswordService extends AccountService {
 
             Sincerly,
             Findfirst team!
-        """
-            .formatted(confirmationUrl);
+        """.formatted(confirmationUrl);
 
     emailService.sendSimpleEmail(emailAddress, "Account Registration", message);
   }
@@ -56,7 +57,8 @@ public class ForgotPasswordService extends AccountService {
   public boolean validatePasswordResetToken(String token)
       throws NoTokenFoundException, TokenExpiredException {
     final Token passToken = userManagement.getPasswordToken(token);
-    if (!isTokenFound(passToken)) throw new NoTokenFoundException();
+    if (!isTokenFound(passToken))
+      throw new NoTokenFoundException();
     if (isTokenExpired(passToken)) {
       throw new TokenExpiredException();
     }

@@ -1,25 +1,29 @@
 package dev.findfirst.security.jwt.service;
 
-import dev.findfirst.security.jwt.exceptions.TokenRefreshException;
-import dev.findfirst.security.jwt.repo.RefreshTokenRepository;
-import dev.findfirst.security.userAuth.models.RefreshToken;
-import dev.findfirst.users.model.user.User;
-import dev.findfirst.users.repository.UserRepo;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import dev.findfirst.security.jwt.exceptions.TokenRefreshException;
+import dev.findfirst.security.jwt.repo.RefreshTokenRepository;
+import dev.findfirst.security.userAuth.models.RefreshToken;
+import dev.findfirst.users.model.user.User;
+import dev.findfirst.users.repository.UserRepo;
+
 @Service
 public class RefreshTokenService {
   @Value("${findfirst.app.jwtRefreshExpirationMs}") private Long refreshTokenDurationMs;
 
-  @Autowired private RefreshTokenRepository refreshTokenRepository;
+  @Autowired
+  private RefreshTokenRepository refreshTokenRepository;
 
-  @Autowired private UserRepo userRepository;
+  @Autowired
+  private UserRepo userRepository;
 
   public Optional<RefreshToken> findByToken(String token) {
     return refreshTokenRepository.findByToken(token);
@@ -39,8 +43,8 @@ public class RefreshTokenService {
   public RefreshToken verifyExpiration(RefreshToken token) {
     if (token.getExpiryDate().compareTo(Instant.now()) < 0) {
       refreshTokenRepository.delete(token);
-      throw new TokenRefreshException(
-          token.getToken(), "Refresh token was expired. Please make a new signin request");
+      throw new TokenRefreshException(token.getToken(),
+          "Refresh token was expired. Please make a new signin request");
     }
 
     return token;

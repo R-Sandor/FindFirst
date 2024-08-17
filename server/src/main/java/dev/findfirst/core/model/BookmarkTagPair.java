@@ -1,3 +1,4 @@
 package dev.findfirst.core.model;
 
-public record BookmarkTagPair(Bookmark bkmk, Tag tag) {}
+public record BookmarkTagPair(Bookmark bkmk, Tag tag) {
+}

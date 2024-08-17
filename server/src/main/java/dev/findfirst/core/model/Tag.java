@@ -1,7 +1,13 @@
 package dev.findfirst.core.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import dev.findfirst.security.userAuth.tenant.model.Tenantable;
+import java.util.HashSet;
+import java.util.Set;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,12 +16,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.Setter;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import dev.findfirst.security.userAuth.tenant.model.Tenantable;
 
 @Entity
 @Table(name = "tag")
@@ -56,7 +60,8 @@ public class Tag extends Tenantable {
     if (obj instanceof Tag) {
       Tag t = (Tag) obj;
       return t.tag_title.equals(this.tag_title);
-    } else return false;
+    } else
+      return false;
   }
 
   @Override

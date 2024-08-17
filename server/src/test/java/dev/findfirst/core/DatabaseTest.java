@@ -5,9 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import dev.findfirst.core.annotations.IntegrationTest;
-import dev.findfirst.core.repository.BookmarkRepository;
-import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -18,19 +15,26 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.core.repository.BookmarkRepository;
+import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
+
 @Testcontainers
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @IntegrationTest
 public class DatabaseTest {
 
-  @MockBean private TenantContext tenantContext;
+  @MockBean
+  private TenantContext tenantContext;
 
-  @Container @ServiceConnection
+  @Container
+  @ServiceConnection
   private static final PostgreSQLContainer<?> postgres =
       new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
-  @Autowired BookmarkRepository bkmkRepo;
+  @Autowired
+  BookmarkRepository bkmkRepo;
 
   @Test
   void connectionEstablish() {

@@ -1,20 +1,24 @@
 package dev.findfirst.core.service;
 
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.repository.BookmarkRepository;
-import dev.findfirst.core.repository.TagRepository;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
 import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.repository.BookmarkRepository;
+import dev.findfirst.core.repository.TagRepository;
+
 @Service
 public class TagService {
 
-  @Autowired TagRepository tagRepository;
-  @Autowired BookmarkRepository bkmkRepo;
+  @Autowired
+  TagRepository tagRepository;
+  @Autowired
+  BookmarkRepository bkmkRepo;
 
   public Tag addTag(String title) {
     return tagRepository.saveAndFlush(new Tag(title));

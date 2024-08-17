@@ -1,3 +1,4 @@
 package dev.findfirst.security.userAuth.models.payload.response;
 
-public record MessageResponse(String message) {}
+public record MessageResponse(String message) {
+}
