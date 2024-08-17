@@ -46,7 +46,7 @@ spotless {
 		removeUnusedImports()
 
 		// Choose one of these formatters.
-		googleJavaFormat()   // has its own section below
+		eclipse().configFile("eclipse-java-google-style.xml")
 
 		formatAnnotations()  // fixes formatting of type annotations, see below
 
@@ -122,6 +122,8 @@ flyway {
 	password = System.getProperty("POSTGRES_PASSWORD", "admin")
 	driver = "org.postgresql.Driver"
 	locations = ["classpath:db/migration"]
+// Ideally we should not do this.
+cleanDisabled = true
 }
 
 flywayMigrate.dependsOn classes
