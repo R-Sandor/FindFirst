@@ -5,6 +5,7 @@ services:
       context: ./frontend
     ports:
       - "3000:3000"
+    restart: always
   server:
     build:
       dockerfile: ../docker/server/Dockerfile
@@ -41,3 +42,4 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
     ports:
       - 5432:5432
+    restart: always
