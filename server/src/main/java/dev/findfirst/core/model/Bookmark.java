@@ -42,15 +42,14 @@ public class Bookmark extends Tenantable {
   @NonNull @Column(length = 1024)
   private String url;
 
+  @Column(name = "screenshot_url", nullable = true)
+  private String screenshotUrl;
+
   @PreRemove
   private void removeTagsFromBookmark() {
     tags.clear();
   }
 
-  // @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
-  // @ManyToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY)
-  // @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-  // @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
   @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   @JoinTable(
       name = "bookmark_tag",
