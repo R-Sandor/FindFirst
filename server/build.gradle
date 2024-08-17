@@ -1,6 +1,6 @@
 buildscript {
-  repositories { mavenCentral() }
-  dependencies { classpath("org.flywaydb:flyway-database-postgresql:10.1.0") }
+	repositories { mavenCentral() }
+	dependencies { classpath("org.flywaydb:flyway-database-postgresql:10.1.0") }
 }
 
 plugins {
@@ -8,7 +8,7 @@ plugins {
 	id 'org.springframework.boot' version '3.3.2'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id "com.diffplug.spotless" version "6.11.0"
-	id "org.flywaydb.flyway" version "10.1.0" 
+	id "org.flywaydb.flyway" version "10.1.0"
 	id 'java'
 	id 'jacoco'
 }
@@ -19,9 +19,9 @@ version = '1.0.0'
 
 // Apply a specific Java toolchain to ease working on different environments.
 java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(17)
-    }
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
 }
 
 spotless {
@@ -118,8 +118,8 @@ jacocoTestReport {
 flyway {
 	// Get the system property or use the default, i.e. development defaults.
 	url = System.getProperty("SPRING_DATASOURCE_URL", "jdbc:postgresql://localhost:5432/findfirst")
-    user = System.getProperty("POSTGRES_USER", "postgres")
-    password = System.getProperty("POSTGRES_PASSWORD", "admin")
+	user = System.getProperty("POSTGRES_USER", "postgres")
+	password = System.getProperty("POSTGRES_PASSWORD", "admin")
 	driver = "org.postgresql.Driver"
 	locations = ["classpath:db/migration"]
 }
