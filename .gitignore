@@ -60,6 +60,7 @@ pnpm-debug.log*
 application.log
 frontend.pid
 backend.pid
+*.log
 
 # Editor directories and files
 .idea
