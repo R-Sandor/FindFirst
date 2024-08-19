@@ -10,3 +10,4 @@ jwt:
 spring: 
   flyway:
     clean-disabled: true
+    baselineOnMigrate: true 
