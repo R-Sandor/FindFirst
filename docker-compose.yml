@@ -5,6 +5,8 @@ services:
       context: ./frontend
     ports:
       - "3000:3000"
+    volumes:
+      - screenshots-data:/app/public/screenshots
   server:
     build:
       dockerfile: ../docker/server/Dockerfile
@@ -14,6 +16,8 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/findfirst
       - SPRING_PROFILES_ACTIVE=dev
+    volumes:
+      - screenshots-data:/app/screenshots
   screenshot:
     build:
       dockerfile: ../docker/screenshot/Dockerfile
@@ -22,6 +26,8 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+    volumes:
+      - screenshots-data:/app/screenshots
   db:
     image: postgres:16.2-alpine
     environment:
@@ -35,3 +41,5 @@ services:
     ports:
       - 1025:1025
       - 8025:8025
+volumes:
+  screenshots-data:

@@ -7,7 +7,6 @@ default:
 	$(MAKE) build_server
 	$(MAKE) build_screenshot
 	$(MAKE) build_frontend
-	$(MAKE) db
 
 build_server: 
 ifeq ( ,$(wildcard $(CERT_FILE)))
@@ -23,9 +22,6 @@ build_screenshot:
 
 build_frontend: 
 	docker build -t findfirst-frontend -f ./docker/frontend/Dockerfile --build-arg BUILDENV=$(ENV) ./frontend 
-
-db: 
-	docker build -t findfirst-db ./docker/postgres
 
 run: 
 	docker compose up
