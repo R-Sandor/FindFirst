@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.nio.file.Paths;
+import java.nio.file.Path;
 
 @RestController
 public class ScreenshotController {
@@ -19,9 +19,9 @@ public class ScreenshotController {
             try (Browser browser = browserType.launch()) {
                 BrowserContext context = browser.newContext();
                 Page page = context.newPage();
-                page.navigate(url);
-                String filePath = "screenshot-" + System.currentTimeMillis() + ".png";
-                page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get(filePath)));
+                String cleanUrl = url.replace("/", "_");
+                Path filePath = Path.of("/app", "screenshots", cleanUrl + System.currentTimeMillis() + ".png");
+                page.screenshot(new Page.ScreenshotOptions().setPath(filePath));
                 return "Screenshot saved to: " + filePath;
             }
         } catch (PlaywrightException e) {
