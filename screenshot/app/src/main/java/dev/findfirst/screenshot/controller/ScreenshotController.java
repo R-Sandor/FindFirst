@@ -1,6 +1,8 @@
 package dev.findfirst.screenshot.controller;
 
 import com.microsoft.playwright.*;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -9,6 +11,9 @@ import java.nio.file.Path;
 
 @RestController
 public class ScreenshotController {
+
+    @Value("${findfirst.screenshot.location:./}")
+    private String screenshotSaveLoc;
 
     @GetMapping("/screenshot")
     public String takeScreenshot(@RequestParam String url) {
