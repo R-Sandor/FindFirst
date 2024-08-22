@@ -12,7 +12,7 @@ import java.nio.file.Path;
 @RestController
 public class ScreenshotController {
 
-    @Value("${findfirst.screenshot.location:./}")
+    @Value("${findfirst.screenshot.location:./app}")
     private String screenshotSaveLoc;
 
     @GetMapping("/screenshot")
@@ -25,7 +25,7 @@ public class ScreenshotController {
                 BrowserContext context = browser.newContext();
                 Page page = context.newPage();
                 String cleanUrl = url.replace("/", "_");
-                Path filePath = Path.of("/app", "screenshots", cleanUrl + System.currentTimeMillis() + ".png");
+                Path filePath = Path.of(screenshotSaveLoc, cleanUrl + System.currentTimeMillis() + ".png");
                 page.screenshot(new Page.ScreenshotOptions().setPath(filePath));
                 return "Screenshot saved to: " + filePath;
             }
