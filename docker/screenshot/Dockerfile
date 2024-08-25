@@ -1,12 +1,12 @@
-FROM alpine:3.20.2 AS linux
-RUN apk add openjdk17 
+FROM gradle:8.10.0-jdk17-alpine AS base
+FROM mcr.microsoft.com/playwright/java:jammy-amd64 as playwright
 
-FROM openjdk:17-slim AS builder
+FROM base AS builder
 WORKDIR /appHome
 COPY . .
-RUN ./gradlew assemble
+RUN gradle assemble
 
-FROM linux AS runner
+FROM playwright 
 WORKDIR /app
 COPY --from=builder /appHome/app/build/libs/app.jar screenshot.jar
 COPY scripts/ scripts/

@@ -1,2 +1,2 @@
 #!/bin/sh
-exec java screenshot.jar -Dfindfirst.screenshot.location=/app/screenshots
+exec java -jar screenshot.jar -Dfindfirst.screenshot.location=/app/screenshots
