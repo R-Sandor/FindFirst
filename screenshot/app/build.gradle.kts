@@ -25,6 +25,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     implementation("com.microsoft.playwright:playwright:1.41.0")
+    compileOnly("org.projectlombok:lombok:1.18.34")
+	  annotationProcessor("org.projectlombok:lombok")
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
