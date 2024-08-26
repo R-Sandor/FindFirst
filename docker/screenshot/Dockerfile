@@ -1,5 +1,5 @@
 FROM gradle:8.10.0-jdk17-alpine AS base
-FROM mcr.microsoft.com/playwright/java:jammy-amd64 as playwright
+FROM mcr.microsoft.com/playwright/java:jammy-amd64 AS playwright
 
 FROM base AS builder
 WORKDIR /appHome
