@@ -6,6 +6,8 @@ services:
     ports:
       - "3000:3000"
     restart: always
+    volumes:
+      - screenshots-data:/app/public/screenshots
   server:
     build:
       dockerfile: ../docker/server/Dockerfile
@@ -19,6 +21,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - ./server/prod.yml:/app/prod.yml
+      - screenshots-data:/app/screenshots
     depends_on:
       - db
     restart: always
@@ -31,7 +34,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
     volumes:
-      - ./server/prod.yml:/app/prod.yml
+      - screenshots-data:/app/screenshots
     restart: always
   db:
     build:
@@ -43,3 +46,5 @@ services:
     ports:
       - 5432:5432
     restart: always
+volumes:
+  screenshots-data:
