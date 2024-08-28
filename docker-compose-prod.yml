@@ -37,8 +37,6 @@ services:
       - screenshots-data:/app/screenshots
     restart: always
   db:
-    build:
-      context: ./docker/postgres
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
