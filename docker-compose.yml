@@ -16,6 +16,7 @@ services:
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/findfirst
       - SPRING_PROFILES_ACTIVE=dev
+      - SPRING_MAIL_HOST=mail
     volumes:
       - screenshots-data:/app/screenshots
   screenshot:
