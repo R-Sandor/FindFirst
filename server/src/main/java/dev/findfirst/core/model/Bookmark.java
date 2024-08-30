@@ -42,7 +42,7 @@ public class Bookmark extends Tenantable {
   @NonNull @Column(length = 512)
   private String title;
 
-  @NonNull @Column(length = 1024)
+  @NonNull @Column(length = 2048)
   private String url;
 
   @Column(name = "screenshot_url", nullable = true)
