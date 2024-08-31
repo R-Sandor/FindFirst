@@ -5,6 +5,8 @@ import java.net.URISyntaxException;
 import java.rmi.UnexpectedException;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -43,6 +45,7 @@ import dev.findfirst.users.service.UserManagementService;
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
   private final UserManagementService userService;
 
@@ -87,6 +90,7 @@ public class UserController {
   @PostMapping("/resetPassword")
   public ResponseEntity<String> resetPassword(@RequestParam @Email String email) {
     try {
+      log.debug("resetting password");
       pwdService.sendResetToken(email);
       return ResponseEntity.ok().body("Password Reset sent");
     } catch (NoUserFoundException e) {
