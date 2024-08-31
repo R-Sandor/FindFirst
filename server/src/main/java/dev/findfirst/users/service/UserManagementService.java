@@ -8,6 +8,8 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -34,6 +36,7 @@ import dev.findfirst.users.repository.VerificationTokenRepository;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserManagementService {
 
   private final UserRepo userRepo;
@@ -90,7 +93,13 @@ public class UserManagementService {
   public String createResetPwdToken(User user) {
     String token = UUID.randomUUID().toString();
     Token pwdToken = new Token(user, token);
+    log.debug("creating token for: {}", user);
+    var old = passwordTokenRepository.findByUser(user);
+    if(old != null) { 
+      passwordTokenRepository.delete(old);
+    }
     passwordTokenRepository.save(pwdToken);
+    log.debug("saving token");
     return token;
   }
 

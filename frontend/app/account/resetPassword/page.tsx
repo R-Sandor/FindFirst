@@ -68,7 +68,7 @@ export default function Page() {
                 if (response.status == 200)
                     setSubmitSuccess(true);
             }).catch((rejected) => {
-                setSubmitMessage(rejected.response.data);
+                setSubmitMessage(rejected.response.data.error);
                 setSubmitSuccess(false);
                 actions.resetForm();
             })
