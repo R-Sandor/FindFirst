@@ -3,6 +3,8 @@ services:
     build:
       dockerfile: ../docker/frontend/Dockerfile
       context: ./frontend
+      args:
+        BUILDENV: dev
     ports:
       - "3000:3000"
     volumes:
