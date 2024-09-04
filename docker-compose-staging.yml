@@ -23,12 +23,13 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=staging
   db: 
-    build: 
-      context: ./docker/postgres
+    image: postgres:16.2-alpine
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
     ports:
       - 5432:5432
   mail: 
@@ -36,3 +37,6 @@ services:
     ports: 
       - 1025:1025
       - 8025:8025
+volumes:
+  screenshots-data:
+  pgdata:
