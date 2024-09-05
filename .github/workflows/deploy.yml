@@ -1,6 +1,5 @@
 name: Deploy
 on: [push]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -9,7 +8,6 @@ jobs:
       uses: actions/checkout@v4
       with:
         path: main
-        ssh-key: ${{ secrets.SSHKEY }}
 
     - name: Executing remote command
       uses: appleboy/ssh-action@master
