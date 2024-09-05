@@ -1,0 +1,21 @@
+name: Deploy
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout FindFirst
+      uses: actions/checkout@v4
+      with:
+        path: main
+        ssh-key: ${{ secrets.SSHKEY }}
+
+    - name: Executing remote command
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.USERNAME }}
+        PORT: ${{ secrets.PORT }}
+        KEY: ${{ secrets.SSHKEY }}
+        script: ls
