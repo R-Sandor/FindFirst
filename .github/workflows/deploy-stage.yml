@@ -4,8 +4,10 @@ on:
     branches:
       - main
 jobs:
-  build:
-    - name: Re-Deploy Docker
+  deployment:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deploy Docker Compose
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
