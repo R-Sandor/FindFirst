@@ -125,6 +125,9 @@ describe("Fields logic", () => {
         );
       });
       isValid ? expect(submit).toBeEnabled() : expect(submit).toBeDisabled();
+      await act(async () => {
+        await user.click(screen.getByText(/reset/i));
+      })
     }
     const submit = screen.getByText("Submit");
     await checkDomain("facebook.whatever", submit, false);
@@ -132,6 +135,10 @@ describe("Fields logic", () => {
     await checkDomain("findfirst.dev/", submit, true);
     await checkDomain("findfirst.dev", submit, true);
     await checkDomain("sub.findfirst.dev", submit, true);
+    await checkDomain("http://sub.findfirst.dev", submit, true);
+    await checkDomain("https://sub.findfirst.dev", submit, true);
+    await checkDomain("https://sub.findfirst/dev", submit, false);
+    await checkDomain("sub/findfirst/dev", submit, false);
     await checkDomain("findfirst.dev/discover/blog.9.6.24", submit, true);
     await checkDomain("findfirst.dev/discover/blog.9.6.24.html", submit, true);
   });
