@@ -146,13 +146,24 @@ export default function NewBookmarkCard() {
     setField("tags", tags, true);
   };
 
+  function stripHttp(fullUrl: string) {
+    fullUrl = fullUrl.toLowerCase();
+    return fullUrl.startsWith("https://") ? fullUrl.replace("https://", '') : fullUrl.replace("http://", '')
+  }
+
+  function getRootUrl(url: string) { 
+    return url.split("/")[0]
+  }
+
   const bookmarkSchema = Yup.object().shape({
     url: Yup.string()
       .url()
       .required("Must be a valid URL")
       .min(3)
       .test("The TLD is valid", "The Domain must be valid.", (value) => {
-        const dots = value.split(".");
+        const url = stripHttp(value);
+        const mainUrl = getRootUrl(url);
+        const dots = mainUrl.split(".");
         const tld = dots[dots.length - 1];
         return tlds.includes(tld.toUpperCase());
       }),
