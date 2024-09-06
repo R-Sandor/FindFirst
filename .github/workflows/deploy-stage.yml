@@ -1,19 +1,15 @@
 name: Deploy
-on: [push]
+on: 
+  push:
+    branches:
+      - main
 jobs:
   build:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout FindFirst
-      uses: actions/checkout@v4
-      with:
-        path: main
-
-    - name: Executing remote command
+    - name: Re-Deploy Docker
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
         USERNAME: ${{ secrets.USERNAME }}
         PORT: ${{ secrets.PORT }}
         KEY: ${{ secrets.SSHKEY }}
-        script: ls
+        script: ./FindFirst/deploy/deploy.sh
