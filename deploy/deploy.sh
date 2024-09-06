@@ -1,5 +1,5 @@
 #!/bin/sh
-cd ../
+# Intended to be run from the project root directory.
 git pull
 docker compose -f docker-compose-prod.yml build
 docker compose down
