@@ -9,7 +9,10 @@ import { instance } from "@api/Api";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import { hitEnter, hitKey } from "../utilities/fireEvents";
 import { populateTags } from "../utilities/BookmarkUtils/BookmarkUtil";
+import { debug } from "vitest-preview";
 const user = userEvent.setup();
+
+
 
 describe("New Bookmark Card Renders", () => {
   beforeEach(() => {
@@ -112,15 +115,26 @@ describe("Fields logic", () => {
     expect(submit).toBeDisabled();
   });
 
-  it("Is a valid domain", async () => {
+
+
+  it("Valid Domains", async () => {
+    async function checkDomain(url: string, submit: HTMLElement, isValid: boolean) {
+      await act(async () => {
+        await user.type(
+          screen.getByPlaceholderText(/discover/i),
+          url,
+        );
+      });
+      isValid ? expect(submit).toBeEnabled() : expect(submit).toBeDisabled();
+    }
     const submit = screen.getByText("Submit");
-    await act(async () => {
-      await user.type(
-        screen.getByPlaceholderText(/discover/i),
-        "facebook.whatever",
-      );
-    });
-    expect(submit).toBeDisabled();
+    await checkDomain("facebook.whatever", submit, false);
+    await checkDomain("findfirst.dev/discover", submit, true);
+    await checkDomain("findfirst.dev/", submit, true);
+    await checkDomain("findfirst.dev", submit, true);
+    await checkDomain("sub.findfirst.dev", submit, true);
+    await checkDomain("findfirst.dev/discover/blog.9.6.24", submit, true);
+    await checkDomain("findfirst.dev/discover/blog.9.6.24.html", submit, true);
   });
 
   it("Reset option works", async () => {
@@ -271,6 +285,7 @@ describe("Tags Operations", () => {
 
   it("Back Space delete a Tag", async () => {
     const tags = screen.getByPlaceholderText("Enter a tag");
+
     await act(async () => {
       await populateTags(["Tag1", "Tag2"], user);
       hitKey(tags, "Backspace", "Backspace", 8, 8);
