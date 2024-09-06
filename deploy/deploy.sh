@@ -1,6 +1,7 @@
 #!/bin/sh
 # Intended to be run from the project root directory.
 cd $(dirname "$0")
+cd ..
 
 git pull
 docker compose -f docker-compose-prod.yml build
