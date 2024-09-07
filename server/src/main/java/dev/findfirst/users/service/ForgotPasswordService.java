@@ -2,10 +2,11 @@ package dev.findfirst.users.service;
 
 import java.util.Calendar;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import jakarta.validation.constraints.Email;
-import lombok.extern.slf4j.Slf4j;
+
 import dev.findfirst.users.exceptions.NoTokenFoundException;
 import dev.findfirst.users.exceptions.NoUserFoundException;
 import dev.findfirst.users.exceptions.TokenExpiredException;
@@ -22,7 +23,7 @@ public class ForgotPasswordService extends AccountService {
   }
 
   public void sendResetToken(@Email String email) throws NoUserFoundException {
-    log.debug("sending password reset for {}", email); 
+    log.debug("sending password reset for {}", email);
     User user = userManagement.getUserByEmail(email);
     if (user == null) {
       throw new NoUserFoundException();

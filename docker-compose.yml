@@ -2,6 +2,7 @@ services:
   frontend:
     build:
       dockerfile: ../docker/frontend/Dockerfile
+      image: ghcr.io/r-sandor/findfirst-frontend:latest
       context: ./frontend
       args:
         BUILDENV: dev
@@ -12,6 +13,7 @@ services:
   server:
     build:
       dockerfile: ../docker/server/Dockerfile
+      image: ghcr.io/r-sandor/findfirst-server:latest
       context: ./server
     ports:
       - "9000:9000"
@@ -24,6 +26,7 @@ services:
   screenshot:
     build:
       dockerfile: ../docker/screenshot/Dockerfile
+      image: ghcr.io/r-sandor/findfirst-screenshot:latest
       context: ./screenshot
     ports:
       - "8080:8080"
