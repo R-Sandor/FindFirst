@@ -25,7 +25,7 @@ jobs:
 
       - name: Build Java 17
         run: | 
-          make server
+          make build_server
           docker push ghcr.io/r-sandor/findfirst-server:latest
       # - name: Build
       #   run: |
