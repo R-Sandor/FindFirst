@@ -18,18 +18,24 @@ jobs:
           registry: ghcr.io
           username: ${{github.actor}}
           password: ${{secrets.GITHUB_TOKEN}}
-      - uses: actions/setup-java@v4
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build Java 17
+      - name: Build and Push Server Container
         run: | 
           make build_server
           docker push ghcr.io/r-sandor/findfirst-server:latest
-      # - name: Build
-      #   run: |
-      #     make
-      #     docker push ghcr.io/r-sandor/findfirst-frontend:latest
-      #     docker push ghcr.io/r-sandor/findfirst-server:latest
-      #     docker push ghcr.io/r-sandor/findfirst-screenshot:latest
+
+      - name: Build and Push Screenshot Container
+        run: | 
+          make build_screenshot
+          docker push ghcr.io/r-sandor/findfirst-screenshot:latest
+
+      - name: Build and Push Frontend Container
+        run: | 
+          make build_frontend
+          docker push ghcr.io/r-sandor/findfirst-frontend:latest
