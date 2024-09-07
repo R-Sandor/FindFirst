@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -95,7 +94,7 @@ public class UserManagementService {
     Token pwdToken = new Token(user, token);
     log.debug("creating token for: {}", user);
     var old = passwordTokenRepository.findByUser(user);
-    if(old != null) { 
+    if (old != null) {
       passwordTokenRepository.delete(old);
     }
     passwordTokenRepository.save(pwdToken);
