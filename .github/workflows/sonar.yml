@@ -7,7 +7,7 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   sonarCloudServer:
-    name: SonarCloudScan1
+    name: sonarCloudServer
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -21,7 +21,7 @@ jobs:
           projectBaseDir: server/
           
   sonarCloudScreentshoot:
-    name: SonarCloudScan2
+    name: sonarCloudScreentshoot
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
           projectBaseDir: screenshot/
 
   sonarCloudFrontend:
-    name: SonarCloudScan2
+    name: sonarCloudFrontend
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
