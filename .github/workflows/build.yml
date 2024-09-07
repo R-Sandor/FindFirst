@@ -8,9 +8,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: './Store'
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4

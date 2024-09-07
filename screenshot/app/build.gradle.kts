@@ -10,6 +10,7 @@ plugins {
     kotlin("plugin.spring") version "1.8.10" // For Spring support
     id("org.springframework.boot") version "3.2.4" // Adjust the Spring Boot version as needed
     id("io.spring.dependency-management") version "1.1.0" // For dependency management
+    id("org.sonarqube") version "4.4.1.3373"
     application
 }
 
@@ -34,6 +35,14 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+}
+
+sonar {
+  properties {
+    property("sonar.projectKey", "R-Sandor_FindFirst")
+    property("sonar.organization", "findfirst")
+    property("sonar.host.url", "https://sonarcloud.io")
+  }
 }
 
 application {
