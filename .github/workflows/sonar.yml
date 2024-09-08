@@ -39,4 +39,5 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
             cd server/
+            ./scripts/createServerKeys.sh  
             ./gradlew build sonar --info
