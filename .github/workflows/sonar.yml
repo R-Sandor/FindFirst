@@ -5,11 +5,13 @@ on:
       - main
       paths:
       - 'server/**'
+      - 'screeenshot/**'
+      - 'frontend/**'
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
   sonarCloudServer:
-    name: Server Scan
+    name: sonarCloudServer
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
