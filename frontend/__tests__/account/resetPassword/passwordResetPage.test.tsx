@@ -1,10 +1,9 @@
 import { clickAway } from "@/__tests__/utilities/TestingUtilities";
 import PasswordReset from "@/app/account/resetPassword/page";
-import { render, screen, waitFor } from "@testing-library/react";
+import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
-import { act } from "react-dom/test-utils";
 import { beforeEach, beforeAll, vi, describe, it, expect } from "vitest";
 import { debug } from "vitest-preview";
 const user = userEvent.setup();

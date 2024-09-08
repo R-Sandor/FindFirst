@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
-import { act } from "@testing-library/react";
+import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import BookmarkCard from "@components/Bookmark/BookmarkCard";
 import { populateTags } from "../utilities/BookmarkUtils/BookmarkUtil";
