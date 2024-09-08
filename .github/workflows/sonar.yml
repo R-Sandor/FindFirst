@@ -5,10 +5,8 @@ on:
       - main
       paths:
       - 'server/**'
-      - 'screeenshot/**'
-      - 'frontend/**'
-  # pull_request:
-  #   types: [opened, synchronize, reopened]
+  pull_request:
+    types: [opened, synchronize, reopened]
 jobs:
   sonarCloudServer:
     name: sonarCloudServer
@@ -17,10 +15,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  
-      - name: Setup Java 17
+      - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: 17
           distribution: 'temurin'
       - name: Cache SonarQube packages
         uses: actions/cache@v4
@@ -42,7 +40,7 @@ jobs:
             cd server/
             ./gradlew build sonar --info
         #Replace variable with the project path
-      - name: Sonarqube Scan
+      - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
