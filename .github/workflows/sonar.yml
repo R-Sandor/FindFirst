@@ -3,6 +3,8 @@ on:
   push:
       branches:
       - main
+      paths:
+      - 'server/**'
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
@@ -13,37 +15,33 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: 17
+      - name: Cache SonarQube packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Gradle packages
+        uses: actions/cache@v1
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
+      - name: sonarQube Scan 1
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # analysis token associated to your project
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+            cd server/
+            ./gradlew build sonar --info
+        #Replace variable with the project path
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         with:
           projectBaseDir: server/
-          
-  sonarCloudScreentshoot:
-    name: sonarCloudScreentshoot
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env: 
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: screenshot/
-
-  sonarCloudFrontend:
-    name: sonarCloudFrontend
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env: 
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          projectBaseDir: frontend/
