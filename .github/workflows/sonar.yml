@@ -7,8 +7,8 @@ on:
       - 'server/**'
       - 'screeenshot/**'
       - 'frontend/**'
-  pull_request:
-    types: [opened, synchronize, reopened]
+  # pull_request:
+  #   types: [opened, synchronize, reopened]
 jobs:
   sonarCloudServer:
     name: sonarCloudServer
