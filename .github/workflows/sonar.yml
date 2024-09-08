@@ -5,6 +5,7 @@ on:
       - main
       paths:
       - 'server/**'
+  workflow_dispatch:  # add ability to run workflow.
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
