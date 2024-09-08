@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'temurin'
+          distribution: 'zulu' # see if this makes a difference on the integration tests.
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
@@ -39,4 +39,4 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
             cd server/
-            ./gradlew build test sonar --info
+            ./gradlew build sonar --info
