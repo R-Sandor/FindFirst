@@ -9,7 +9,7 @@ on:
     types: [opened, synchronize, reopened]
 jobs:
   sonarCloudServer:
-    name: sonarCloudServer
+    name: Server Scan
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -40,7 +40,7 @@ jobs:
             cd server/
             ./gradlew build sonar --info
         #Replace variable with the project path
-      - name: SonarCloud Scan
+      - name: Sonarqube Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
