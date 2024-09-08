@@ -26,7 +26,7 @@ export default defineConfig({
       reporter: ['text', 'lcov'],
       reportOnFailure: true,
     },
-    testTimeout: 20000, // 20 seconds to run a test.
+    testTimeout: 40000, // 40 seconds to run a test.
   },
   resolve: {
     alias: {

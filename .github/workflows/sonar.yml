@@ -49,6 +49,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  
+      - name: Run coverage
+        run: |
+          cd frontend
+          pnpm run coverage
       - name: Scan Frontend
         uses: sonarsource/sonarqube-scan-action@master
         env:
