@@ -59,8 +59,8 @@ export default function Page() {
     useEffect(() => {
         if (submitSuccess) {
             setSubmitMessage("Reset token has been sent to your email.");
-        }
-    }, [submitSuccess]);
+        } 
+    }, [submitSuccess, submitMessage]);
 
     const handleOnSubmit = async (forgot: ForgotPasswordRequest, actions: any) => {
         axios.post(resetUrl + "?email=" + forgot.email)
@@ -68,9 +68,10 @@ export default function Page() {
                 if (response.status == 200)
                     setSubmitSuccess(true);
             }).catch((rejected) => {
+                console.log("REJECTED")
                 setSubmitMessage(rejected.response.data.error);
                 setSubmitSuccess(false);
-                actions.resetForm();
+                // actions.resetForm();
             })
     };
     return (

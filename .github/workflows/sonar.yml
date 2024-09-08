@@ -9,8 +9,8 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
 jobs:
-  sonarCloudServer:
-    name: sonarCloudServer
+  sonarQubeServer:
+    name: SonarQube Server
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,7 +20,7 @@ jobs:
         uses: actions/setup-java@v4
         with:
           java-version: 17
-          distribution: 'zulu' # see if this makes a difference on the integration tests.
+          distribution: 'temurin' 
       - name: Cache SonarQube packages
         uses: actions/cache@v4
         with:
@@ -33,7 +33,7 @@ jobs:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle
-      - name: sonarQube Scan 1
+      - name: Scan server
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # analysis token associated to your project
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
@@ -41,3 +41,17 @@ jobs:
             cd server/
             ./scripts/createServerKeys.sh  
             ./gradlew build sonar --info
+  sonarQubeFrontend:
+    name: sonarQube Frontend
+    runs-on: ubuntu-latest
+    steps: 
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  
+      - name: Scan Frontend
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }}  # analysis token associated to your project
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          projectBaseDir: frontend/
