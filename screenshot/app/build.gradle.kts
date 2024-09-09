@@ -39,7 +39,7 @@ java {
 
 sonar {
   properties {
-    property("sonar.projectKey", "R-Sandor_FindFirst")
+    property("sonar.projectKey", "findfirst_screenshot")
     property("sonar.organization", "findfirst")
     property("sonar.host.url", "https://sonarcloud.io")
   }

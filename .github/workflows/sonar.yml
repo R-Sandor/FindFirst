@@ -65,7 +65,7 @@ jobs:
         with:
           projectBaseDir: frontend/
   sonarQubeScreenshot:
-    name: SonarQube screenshot
+    name: SonarQube Screenshot
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
