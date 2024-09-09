@@ -11,7 +11,7 @@ plugins {
     id("org.springframework.boot") version "3.2.4" // Adjust the Spring Boot version as needed
     id("io.spring.dependency-management") version "1.1.0" // For dependency management
     id("org.sonarqube") version "4.4.1.3373"
-    id 'jacoco'
+    jacoco
     application
 }
 
@@ -31,19 +31,24 @@ dependencies {
 	  annotationProcessor("org.projectlombok:lombok")
 }
 
+tasks.test {
+    finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // tests are required to run before generating the report
+    reports {
+      xml.required = true
+      csv.required = true
+      xml.destination = file("$buildDir/reports/coverage.xml")
+    }
+}
+
 // Apply a specific Java toolchain to ease working on different environments.
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
-}
-
-jacocoTestReport {
-  reports {
-    xml.required = true
-    csv.required = true
-    xml.destination = file("$buildDir/reports/coverage.xml")
-  }
 }
 
 sonar {
