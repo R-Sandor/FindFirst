@@ -11,6 +11,7 @@ plugins {
     id("org.springframework.boot") version "3.2.4" // Adjust the Spring Boot version as needed
     id("io.spring.dependency-management") version "1.1.0" // For dependency management
     id("org.sonarqube") version "4.4.1.3373"
+    id 'jacoco'
     application
 }
 
@@ -35,6 +36,14 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
     }
+}
+
+jacocoTestReport {
+  reports {
+    xml.required = true
+    csv.required = true
+    xml.destination = file("$buildDir/reports/coverage.xml")
+  }
 }
 
 sonar {
