@@ -31,6 +31,11 @@ dependencies {
 	  annotationProcessor("org.projectlombok:lombok")
 }
 
+jacoco {
+    toolVersion = "0.8.12"
+    reportsDirectory = layout.buildDirectory.dir("reports")
+}
+
 tasks.test {
     finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
 }
@@ -40,7 +45,6 @@ tasks.jacocoTestReport {
     reports {
       xml.required = true
       csv.required = true
-      xml.destination = file("$buildDir/reports/coverage.xml")
     }
 }
 
