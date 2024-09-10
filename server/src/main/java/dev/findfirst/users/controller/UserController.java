@@ -132,7 +132,7 @@ public class UserController {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
 
-    ResponseCookie cookie = ResponseCookie.from("findfirst", tkns.jwt()).secure(false) // enable
+    ResponseCookie cookie = ResponseCookie.from("findfirst", tkns.jwt()).secure(true) // enable
                                                                                        // this when
                                                                                        // we are
                                                                                        // using
@@ -151,8 +151,8 @@ public class UserController {
         .map(refreshTokenService::verifyExpiration).map(RefreshToken::getUser).map(user -> {
           String token;
           token = userService.generateTokenFromUser(user);
-          ResponseCookie cookie = ResponseCookie.from("findfirst", token).secure(false)
-              // .sameSite("strict")
+          ResponseCookie cookie = ResponseCookie.from("findfirst", token).secure(true)
+              .sameSite("strict")
               .path("/").domain(domain).httpOnly(true).build();
           return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(token);
         }).orElseThrow(() -> new TokenRefreshException(jwt, "Refresh token is not in database!"));
