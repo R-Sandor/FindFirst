@@ -1,20 +1,12 @@
 services:
   frontend:
-    build:
-      dockerfile: ../docker/frontend/Dockerfile
-      image: ghcr.io/r-sandor/findfirst-frontend:latest
-      context: ./frontend
-      args:
-        BUILDENV: dev
+    image: ghcr.io/r-sandor/findfirst-frontend:latest
     ports:
       - "3000:3000"
     volumes:
       - screenshots-data:/app/public/screenshots
   server:
-    build:
-      dockerfile: ../docker/server/Dockerfile
-      image: ghcr.io/r-sandor/findfirst-server:latest
-      context: ./server
+    image: ghcr.io/r-sandor/findfirst-server:latest
     ports:
       - "9000:9000"
     environment:
@@ -24,10 +16,7 @@ services:
     volumes:
       - screenshots-data:/app/screenshots
   screenshot:
-    build:
-      dockerfile: ../docker/screenshot/Dockerfile
-      image: ghcr.io/r-sandor/findfirst-screenshot:latest
-      context: ./screenshot
+    image: ghcr.io/r-sandor/findfirst-screenshot:latest
     ports:
       - "8080:8080"
     environment:
