@@ -1,6 +1,9 @@
+import authService from "@services/auth.service";
 import { NewBookmarkRequest } from "@type/Bookmarks/NewBookmark";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/api";
+
+let failCount = 0;
 
 export const instance = axios.create({
   withCredentials: true,
@@ -12,6 +15,29 @@ export const instance = axios.create({
     },
   ],
 });
+
+instance.interceptors.response.use(
+  response => { 
+    failCount = 0;
+    return response;
+  }, 
+  error => {
+    if (error.response.status === 401) {
+      console.log("Error on fetch")
+      if (failCount > 1) {
+        authService.logout();
+        failCount = 0;
+        return error;
+      }
+      const user = authService.getUser() 
+      if(user == null) {
+        authService.logout();
+        failCount = 0;
+      }
+      failCount++;
+      api.refreshToken(user!.refreshToken)
+    }
+  });
 
 function parseData(data: string) {
   if (data.length != 0 || data || data != "") {
@@ -125,6 +151,12 @@ const api = {
   getAllTagsBelongingToBkmk(bkmkId: number) {
     return instance.get(`tag/bkmk?bookmarkId=${bkmkId}`);
   },
+  refreshToken(token: string) {
+    return instance.post(`refreshToken/token?token=${token}`)
+  }
 };
 
+
 export default api;
+
+
