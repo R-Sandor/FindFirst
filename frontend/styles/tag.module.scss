@@ -5,12 +5,13 @@
   border-radius: 10px;
 
   background-color: var(--tag-list-bg);
-  overflow: scroll;
+  overflow: auto;
 
   @media screen and (max-width: 800px) {
     .title {
       font-size: 12px;
     }
+
     p {
       font-size: 20px;
     }
@@ -21,6 +22,25 @@
   }
 
   @media screen and (min-width: 760px) {
-    max-height: unset;
+    max-height: calc(100vh - 70px);
   }
 }
+
+
+
+.scroller::-webkit-scrollbar {
+  width: 5px;
+  color: #6c757d;
+}
+
+.scroller::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 0 #6c757d;
+  border-radius: 10px;
+}
+
+.scroller::-webkit-scrollbar-thumb {
+  border-radius: 19px;
+  background: #29b5bf;
+}
+
+

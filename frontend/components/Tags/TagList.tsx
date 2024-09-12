@@ -91,7 +91,7 @@ const TagList = () => {
   return (
     <div>
       {!loading ? (
-        <ListGroup className="pt-3 w-full  ml-1 p-0">{groupItems}</ListGroup>
+        <ListGroup className="pt-3 w-full">{groupItems}</ListGroup>
       ) : (
         <div></div>
       )}
