@@ -13,6 +13,7 @@ services:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/findfirst
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_MAIL_HOST=mail
+      - SCREENSHOT_SERVICE_URL=http://screenshot:8080/
     volumes:
       - screenshots-data:/app/screenshots
   screenshot:

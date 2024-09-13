@@ -39,7 +39,7 @@ public class ScreenshotController {
         String cleanUrl = url.replace("/", "_");
         Path filePath = Path.of(screenshotSaveLoc, cleanUrl + System.currentTimeMillis() + ".png");
         page.screenshot(new Page.ScreenshotOptions().setPath(filePath));
-        return "Screenshot saved to: " + filePath;
+        return filePath.toString();
       }
     } catch (PlaywrightException e) {
       // Handle Playwright specific exceptions
