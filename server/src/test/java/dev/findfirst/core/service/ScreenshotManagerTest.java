@@ -19,11 +19,12 @@ public class ScreenshotManagerTest {
 
   @InjectMocks
   private ScreenshotManager screenshotManager = new ScreenshotManager();
-  
+
 
   @BeforeEach
   public void setUp() {
-    ReflectionTestUtils.setField(screenshotManager, "screenshotServiceUrl", "http://localhost:8080");
+    ReflectionTestUtils.setField(screenshotManager, "screenshotServiceUrl",
+        "http://localhost:8080");
   }
 
   @Test

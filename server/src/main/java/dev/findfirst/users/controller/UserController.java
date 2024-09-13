@@ -133,10 +133,10 @@ public class UserController {
     }
 
     ResponseCookie cookie = ResponseCookie.from("findfirst", tkns.jwt()).secure(true) // enable
-                                                                                       // this when
-                                                                                       // we are
-                                                                                       // using
-                                                                                       // https
+                                                                                      // this when
+                                                                                      // we are
+                                                                                      // using
+                                                                                      // https
         // .sameSite("strict")
         .path("/").domain(domain).httpOnly(true).build();
 
@@ -152,8 +152,7 @@ public class UserController {
           String token;
           token = userService.generateTokenFromUser(user);
           ResponseCookie cookie = ResponseCookie.from("findfirst", token).secure(true)
-              .sameSite("strict")
-              .path("/").domain(domain).httpOnly(true).build();
+              .sameSite("strict").path("/").domain(domain).httpOnly(true).build();
           return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(token);
         }).orElseThrow(() -> new TokenRefreshException(jwt, "Refresh token is not in database!"));
   }
