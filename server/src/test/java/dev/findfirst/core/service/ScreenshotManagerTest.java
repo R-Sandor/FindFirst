@@ -7,7 +7,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -18,11 +20,12 @@ public class ScreenshotManagerTest {
   private RestTemplate restTemplate;
 
   @InjectMocks
-  private ScreenshotManager screenshotManager = new ScreenshotManager();
-
+  private ScreenshotManager screenshotManager;
+  
 
   @BeforeEach
   public void setUp() {
+    screenshotManager = new ScreenshotManager(restTemplate);
     ReflectionTestUtils.setField(screenshotManager, "screenshotServiceUrl",
         "http://localhost:8080");
   }

@@ -1,17 +1,18 @@
 package dev.findfirst.core.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class ScreenshotManager {
 
   @Value("#{systemProperties['screenshot.service.url']}") private String screenshotServiceUrl;
 
-  @Autowired
-  private RestTemplate rest;
+  private final RestTemplate rest;
 
   public String getScreenshot(String reqUrl) {
     String url = screenshotServiceUrl + "/screenshot?url=" + reqUrl;
