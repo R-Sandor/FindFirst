@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class ScreenshotManager {
 
-  @Value("${screenshot.service.url:http://localhost:8080}") private String screenshotServiceUrl;
+  @Value("#{systemProperties['screenshot.service.url']}") private String screenshotServiceUrl;
 
   @Autowired
   private RestTemplate rest;
