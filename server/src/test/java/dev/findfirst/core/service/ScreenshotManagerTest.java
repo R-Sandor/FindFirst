@@ -7,14 +7,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
-public class ScreenshotManagerTest {
+class ScreenshotManagerTest {
 
   @Mock
   private RestTemplate restTemplate;
@@ -24,14 +22,14 @@ public class ScreenshotManagerTest {
   
 
   @BeforeEach
-  public void setUp() {
+  void setUp() {
     screenshotManager = new ScreenshotManager(restTemplate);
     ReflectionTestUtils.setField(screenshotManager, "screenshotServiceUrl",
         "http://localhost:8080");
   }
 
   @Test
-  public void returnMockedPath() {
+  void returnMockedPath() {
     var expectedUrl = "https:__findfirst.dev";
     Mockito
         .when(restTemplate.getForObject(
