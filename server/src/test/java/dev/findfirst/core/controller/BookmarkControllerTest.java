@@ -49,20 +49,22 @@ import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 @Testcontainers
 @IntegrationTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class BookmarkControllerTest {
+class BookmarkControllerTest {
 
   @Container
   @ServiceConnection
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
   @Autowired
-  BookmarkRepository bkmkRepo;
+  BookmarkControllerTest(BookmarkRepository bookmarkRepository, TestRestTemplate tRestTemplate, WebApplicationContext wContext) { 
+    this.bkmkRepo = bookmarkRepository; 
+    this.restTemplate = tRestTemplate;
+    this.wac = wContext;
+  }
 
-  @Autowired
-  TestRestTemplate restTemplate;
-
-  @Autowired
-  WebApplicationContext wac;
+  final BookmarkRepository bkmkRepo;
+  final TestRestTemplate restTemplate;
+  final WebApplicationContext wac;
 
   private WebTestClient client;
 

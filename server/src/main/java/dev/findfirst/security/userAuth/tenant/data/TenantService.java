@@ -4,14 +4,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
-
+import lombok.RequiredArgsConstructor;
 import dev.findfirst.security.userAuth.tenant.model.Tenant;
 
 @Service
+@RequiredArgsConstructor
 public class TenantService {
 
-  @Autowired
-  private TenantRepository tenantRepository;
+  private final TenantRepository tenantRepository;
 
   public Tenant create(String name) {
     var tenant = new Tenant();
