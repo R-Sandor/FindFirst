@@ -1,10 +1,12 @@
 package dev.findfirst.security.userAuth.tenant.listeners;
 
+import lombok.RequiredArgsConstructor;
+
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
 import jakarta.persistence.PreUpdate;
-import lombok.RequiredArgsConstructor;
+
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 import dev.findfirst.security.userAuth.tenant.model.Tenantable;
 

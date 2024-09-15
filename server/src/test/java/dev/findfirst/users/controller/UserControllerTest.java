@@ -44,7 +44,7 @@ class UserControllerTest {
   final TestRestTemplate restTemplate;
 
   @Autowired
-  UserControllerTest(TestRestTemplate tRestTemplate) { 
+  UserControllerTest(TestRestTemplate tRestTemplate) {
     this.restTemplate = tRestTemplate;
   }
 

@@ -2,6 +2,7 @@ package dev.findfirst.core.controller;
 
 import java.util.List;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.service.TagService;
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api")

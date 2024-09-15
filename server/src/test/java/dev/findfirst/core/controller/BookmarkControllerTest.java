@@ -56,8 +56,9 @@ class BookmarkControllerTest {
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
   @Autowired
-  BookmarkControllerTest(BookmarkRepository bookmarkRepository, TestRestTemplate tRestTemplate, WebApplicationContext wContext) { 
-    this.bkmkRepo = bookmarkRepository; 
+  BookmarkControllerTest(BookmarkRepository bookmarkRepository, TestRestTemplate tRestTemplate,
+      WebApplicationContext wContext) {
+    this.bkmkRepo = bookmarkRepository;
     this.restTemplate = tRestTemplate;
     this.wac = wContext;
   }

@@ -31,7 +31,7 @@ class DefaultEmailServiceTest {
   @Value("${spring.mail.host}") String host;
 
   @Autowired
-  DefaultEmailServiceTest(DefaultEmailService emailService) { 
+  DefaultEmailServiceTest(DefaultEmailService emailService) {
     this.emailService = emailService;
   }
 

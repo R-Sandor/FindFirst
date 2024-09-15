@@ -30,7 +30,7 @@ import dev.findfirst.core.repository.TagRepository;
 class TagControllerTest {
 
   @Autowired
-  TagControllerTest(TagRepository tgRepo, TestRestTemplate tRestTemplate) { 
+  TagControllerTest(TagRepository tgRepo, TestRestTemplate tRestTemplate) {
     this.tagRepo = tgRepo;
     this.restTemplate = tRestTemplate;
   }

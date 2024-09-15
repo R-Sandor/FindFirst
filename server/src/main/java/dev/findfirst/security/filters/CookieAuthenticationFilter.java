@@ -32,8 +32,12 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
 
   private static final Logger logger = LoggerFactory.getLogger(CookieAuthenticationFilter.class);
 
-  @Autowired
   private JwtService jwtUtils;
+
+  @Autowired
+  public void setJwtUtils(JwtService jwtUtils) {
+      this.jwtUtils = jwtUtils;
+  }
 
   private String parseJwt(HttpServletRequest request) {
     return jwtUtils.getJwtFromCookies(request);
