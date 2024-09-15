@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +15,12 @@ import dev.findfirst.core.repository.BookmarkRepository;
 import dev.findfirst.core.repository.TagRepository;
 
 @Service
+@RequiredArgsConstructor
 public class TagService {
 
-  @Autowired
-  TagRepository tagRepository;
-  @Autowired
-  BookmarkRepository bkmkRepo;
+  private final TagRepository tagRepository;
+
+  private final BookmarkRepository bkmkRepo;
 
   public Tag addTag(String title) {
     return tagRepository.saveAndFlush(new Tag(title));

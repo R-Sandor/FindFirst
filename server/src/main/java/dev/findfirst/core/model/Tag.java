@@ -32,9 +32,11 @@ public class Tag extends Tenantable {
   private Long id;
 
   @Column(length = 255)
-  @NonNull private String tag_title;
+  @NonNull
+  private String tag_title;
 
-  public Tag() {}
+  public Tag() {
+  }
 
   public Tag(String tagVal) {
     this.tag_title = tagVal;
@@ -62,6 +64,11 @@ public class Tag extends Tenantable {
       return t.tag_title.equals(this.tag_title);
     } else
       return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return id.intValue() * tag_title.hashCode();
   }
 
   @Override

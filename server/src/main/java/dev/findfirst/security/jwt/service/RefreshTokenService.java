@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,16 +13,16 @@ import dev.findfirst.security.jwt.repo.RefreshTokenRepository;
 import dev.findfirst.security.userAuth.models.RefreshToken;
 import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.repository.UserRepo;
+import lombok.RequiredArgsConstructor;
 
 @Service
+@RequiredArgsConstructor
 public class RefreshTokenService {
   @Value("${findfirst.app.jwtRefreshExpirationMs}") private Long refreshTokenDurationMs;
 
-  @Autowired
-  private RefreshTokenRepository refreshTokenRepository;
+  private final RefreshTokenRepository refreshTokenRepository;
 
-  @Autowired
-  private UserRepo userRepository;
+  private final UserRepo userRepository;
 
   public Optional<RefreshToken> findByToken(String token) {
     return refreshTokenRepository.findByToken(token);

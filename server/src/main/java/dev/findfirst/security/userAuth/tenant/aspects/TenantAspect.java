@@ -11,17 +11,17 @@ import org.springframework.stereotype.Component;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-
+import lombok.RequiredArgsConstructor;
 import dev.findfirst.core.annotations.DisableTenantFilter;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 import dev.findfirst.security.userAuth.utils.Constants;
 
 @Aspect
 @Component
+@RequiredArgsConstructor
 public class TenantAspect {
 
-  @Autowired
-  private TenantContext tenantContext;
+  private final TenantContext tenantContext;
 
   @PersistenceContext
   private EntityManager entityManager;

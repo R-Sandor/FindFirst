@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -31,13 +31,12 @@ import dev.findfirst.core.repository.BookmarkRepository;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class BookmarkService {
 
-  @Autowired
-  private BookmarkRepository bookmarkRepository;
+  private final BookmarkRepository bookmarkRepository;
 
-  @Autowired
-  private TagService tagService;
+  private final TagService tagService;
 
   public List<Bookmark> list() {
     return bookmarkRepository.findAll();
