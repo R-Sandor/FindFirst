@@ -27,17 +27,21 @@ import dev.findfirst.core.repository.TagRepository;
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @IntegrationTest
-public class TagControllerTest {
+class TagControllerTest {
+
+  @Autowired
+  TagControllerTest(TagRepository tgRepo, TestRestTemplate tRestTemplate) { 
+    this.tagRepo = tgRepo;
+    this.restTemplate = tRestTemplate;
+  }
 
   @Container
   @ServiceConnection
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
-  @Autowired
-  TagRepository tagRepo;
+  final TagRepository tagRepo;
 
-  @Autowired
-  TestRestTemplate restTemplate;
+  final TestRestTemplate restTemplate;
 
   @Test
   void addTags() {
