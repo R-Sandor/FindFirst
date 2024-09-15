@@ -26,6 +26,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.RequiredArgsConstructor;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,13 +42,12 @@ import dev.findfirst.core.utilies.Response;
 @RestController
 @Validated
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class BookmarkController {
 
-  @Autowired
-  private BookmarkService bookmarkService;
+  private final BookmarkService bookmarkService;
 
-  @Autowired
-  private TagService tagService;
+  private final TagService tagService;
 
   @GetMapping("/bookmarks")
   public ResponseEntity<List<Bookmark>> getAllBookmarks() {

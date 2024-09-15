@@ -24,14 +24,18 @@ import dev.findfirst.core.annotations.IntegrationTest;
 @IntegrationTest
 @TestPropertySource(locations = "classpath:application-test.yml")
 @WebServiceClientTest(DefaultEmailService.class)
-public class DefaultEmailServiceTest {
+class DefaultEmailServiceTest {
 
   @Value("${spring.mail.port}") int port;
 
   @Value("${spring.mail.host}") String host;
 
   @Autowired
-  DefaultEmailService emailService;
+  DefaultEmailServiceTest(DefaultEmailService emailService) { 
+    this.emailService = emailService;
+  }
+
+  final DefaultEmailService emailService;
 
   @Container
   public static GenericContainer<?> mailhog =

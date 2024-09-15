@@ -2,7 +2,6 @@ package dev.findfirst.core.controller;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,13 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.service.TagService;
+import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class TagController {
 
-  @Autowired
-  TagService tagService;
+  private final TagService tagService;
 
   @GetMapping(value = "/tags")
   public ResponseEntity<List<Tag>> getTags() {
