@@ -34,6 +34,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 
 import dev.findfirst.security.filters.CookieAuthenticationFilter;
 import dev.findfirst.security.jwt.AuthEntryPointJwt;
+import dev.findfirst.security.jwt.JwtService;
 import dev.findfirst.security.userAuth.service.UserDetailsServiceImpl;
 
 @Configuration
@@ -46,11 +47,9 @@ public class SecSecurityConfig {
 
   @Value("${jwt.private.key}") private RSAPrivateKey priv;
 
-  @Autowired
-  UserDetailsServiceImpl userDetailsService;
+  private final UserDetailsServiceImpl userDetailsService;
 
-  @Autowired
-  private AuthEntryPointJwt unauthorizedHandler;
+  private final AuthEntryPointJwt unauthorizedHandler;
 
   @Bean
   public CookieAuthenticationFilter cookieJWTAuthFilter() {

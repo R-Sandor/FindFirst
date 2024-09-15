@@ -39,10 +39,14 @@ import dev.findfirst.users.model.user.TokenPassword;
 @IntegrationTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.yml")
-public class UserControllerTest {
+class UserControllerTest {
+
+  final TestRestTemplate restTemplate;
 
   @Autowired
-  TestRestTemplate restTemplate;
+  UserControllerTest(TestRestTemplate tRestTemplate) { 
+    this.restTemplate = tRestTemplate;
+  }
 
   @Container
   @ServiceConnection
@@ -143,7 +147,7 @@ public class UserControllerTest {
         String.class, token);
   }
 
-  public String getTokenFromEmail(int emailIdx, int lineWithToken) throws Exception {
+  String getTokenFromEmail(int emailIdx, int lineWithToken) throws Exception {
     String host = mailhog.getHost();
     int port = mailhog.getMappedPort(8025);
 

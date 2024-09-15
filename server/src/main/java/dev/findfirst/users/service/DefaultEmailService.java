@@ -1,16 +1,17 @@
 package dev.findfirst.users.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class DefaultEmailService {
 
-  @Autowired
-  public JavaMailSender emailSender;
+  private final JavaMailSender emailSender;
 
   @Value("${spring.mail.username:findfirst@localmail.com}") String webhost;
 
