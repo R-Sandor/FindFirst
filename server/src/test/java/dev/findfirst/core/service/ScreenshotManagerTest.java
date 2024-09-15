@@ -19,7 +19,7 @@ class ScreenshotManagerTest {
 
   @InjectMocks
   private ScreenshotManager screenshotManager;
-  
+
 
   @BeforeEach
   void setUp() {

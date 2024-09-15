@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,7 +14,6 @@ import dev.findfirst.security.jwt.repo.RefreshTokenRepository;
 import dev.findfirst.security.userAuth.models.RefreshToken;
 import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.repository.UserRepo;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

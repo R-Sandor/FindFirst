@@ -32,11 +32,9 @@ public class Tag extends Tenantable {
   private Long id;
 
   @Column(length = 255)
-  @NonNull
-  private String tag_title;
+  @NonNull private String tag_title;
 
-  public Tag() {
-  }
+  public Tag() {}
 
   public Tag(String tagVal) {
     this.tag_title = tagVal;

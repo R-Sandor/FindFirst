@@ -1,5 +1,6 @@
 package dev.findfirst.security.userAuth.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -8,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.repository.UserRepo;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor

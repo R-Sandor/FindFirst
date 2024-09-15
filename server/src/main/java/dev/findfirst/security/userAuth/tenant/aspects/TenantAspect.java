@@ -1,17 +1,17 @@
 package dev.findfirst.security.userAuth.tenant.aspects;
 
+import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.hibernate.Session;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import lombok.RequiredArgsConstructor;
+
 import dev.findfirst.core.annotations.DisableTenantFilter;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 import dev.findfirst.security.userAuth.utils.Constants;

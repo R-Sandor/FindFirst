@@ -25,6 +25,11 @@ import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 @IntegrationTest
 public class DatabaseTest {
 
+  @Autowired
+  DatabaseTest(BookmarkRepository bkmkRepo) {
+    this.bkmkRepo = bkmkRepo;
+  }
+
   @MockBean
   private TenantContext tenantContext;
 
@@ -33,8 +38,7 @@ public class DatabaseTest {
   private static final PostgreSQLContainer<?> postgres =
       new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
-  @Autowired
-  BookmarkRepository bkmkRepo;
+  final BookmarkRepository bkmkRepo;
 
   @Test
   void connectionEstablish() {
