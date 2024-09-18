@@ -30,7 +30,7 @@ public class Response<T> {
    */
   public Response(Consumer<T> action, Optional<T> t) {
     t.ifPresentOrElse(action, () -> this.resp = new ResponseEntity<>(HttpStatus.BAD_REQUEST));
-    this.setResponse(t.get(), HttpStatus.OK);
+    this.setResponse(t.orElseThrow(), HttpStatus.OK);
   }
 
   /**
