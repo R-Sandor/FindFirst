@@ -23,7 +23,8 @@ public class FindFirstApplication {
       SpringApplication.run(FindFirstApplication.class, args);
     } catch (ApplicationContextException ude) {
       log.error("""
-          \n\n
+
+
           ==============================================
           Check that the app.key, app.pub are generated.
           To generate call ./scripts/createServerKeys.sh
@@ -44,8 +45,7 @@ public class FindFirstApplication {
     config.setAllowedMethods(Collections.singletonList("*"));
     config.setAllowedHeaders(Collections.singletonList("*"));
     source.registerCorsConfiguration("/**", config);
-    FilterRegistrationBean<CorsFilter> bean =
-        new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
+    FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
     bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
     return bean;
   }

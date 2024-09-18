@@ -54,9 +54,9 @@ public class UserController {
 
   private final RefreshTokenService refreshTokenService;
 
-  @Value("${findfirst.app.frontend-url:http://localhost:3000/}") private String frontendUrl;
+  @Value("${findfirst.app.frontend-url}") private String frontendUrl;
 
-  @Value("${findfirst.app.domain:localhost}") private String domain;
+  @Value("${findfirst.app.domain}") private String domain;
 
   @PostMapping("/signup")
   public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
