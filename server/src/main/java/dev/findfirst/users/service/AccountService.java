@@ -8,7 +8,7 @@ public abstract class AccountService {
 
   protected final DefaultEmailService emailService;
 
-  @Value("${findfirst.app.domain:http://localhost:9000}") protected String domain;
+  @Value("${findfirst.app.domain}") protected String domain;
 
   public AccountService(UserManagementService service, DefaultEmailService email) {
     this.userManagement = service;
