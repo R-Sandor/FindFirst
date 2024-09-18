@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class ScreenshotManager {
 
-  @Value("#{systemProperties['screenshot.service.url']}") private String screenshotServiceUrl;
+  @Value("${screenshot.service.url}") private String screenshotServiceUrl;
 
   private final RestTemplate rest;
 
