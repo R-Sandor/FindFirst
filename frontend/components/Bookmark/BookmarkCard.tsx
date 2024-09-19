@@ -169,7 +169,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
         />
         <Card.Body>
           <Card.Title>{bookmark.title}</Card.Title>
-          <Card.Link href={bookmark.url}>{bookmark.url}</Card.Link>
+          <Card.Link target="_blank" href={bookmark.url}>{bookmark.url}</Card.Link>
         </Card.Body>
         <Card.Footer className="card-footer">
           <div className="container">
