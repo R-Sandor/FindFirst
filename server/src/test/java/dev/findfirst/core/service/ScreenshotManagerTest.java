@@ -1,5 +1,6 @@
 package dev.findfirst.core.service;
 
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ class ScreenshotManagerTest {
         .thenReturn("https:__findfirst.dev");
     var pathUrl = screenshotManager.getScreenshot("https://findfirst.dev");
 
-    Assertions.assertEquals(pathUrl, expectedUrl);
+    Assertions.assertEquals(pathUrl.orElseThrow(), expectedUrl);
   }
 
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Service
@@ -17,7 +18,14 @@ public class ScreenshotManager {
 
   public Optional<String> getScreenshot(String reqUrl) {
     String url = screenshotServiceUrl + "/screenshot?url=" + reqUrl;
-    return Optional.ofNullable(rest.getForObject(url, String.class));
+    String screenshotUrl;
+    try {
+      screenshotUrl = rest.getForObject(url, String.class);
+    } catch (RestClientException ex) {
+      return Optional.ofNullable(null);
+    }
+
+    return Optional.ofNullable(screenshotUrl);
   }
 
 }
