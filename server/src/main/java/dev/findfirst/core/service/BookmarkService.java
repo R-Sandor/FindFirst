@@ -38,6 +38,8 @@ public class BookmarkService {
 
   private final TagService tagService;
 
+  private final ScreenshotManager sManager;
+
   public List<Bookmark> list() {
     return bookmarkRepository.findAll();
   }
@@ -60,7 +62,9 @@ public class BookmarkService {
       }
     }
 
-    var newBkmk = new Bookmark(reqBkmk.title(), reqBkmk.url());
+    var optUrl = sManager.getScreenshot(reqBkmk.url());
+
+    var newBkmk = new Bookmark(reqBkmk.title(), reqBkmk.url(), optUrl.orElseGet(() -> ""));
     newBkmk.setTags(tags);
     return bookmarkRepository.save(newBkmk);
   }

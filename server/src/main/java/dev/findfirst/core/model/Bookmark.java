@@ -34,6 +34,12 @@ public class Bookmark extends Tenantable {
     this.url = url;
   }
 
+  public Bookmark(String title, String url, String screenshotUrl) {
+    this.title = title;
+    this.url = url;
+    this.screenshotUrl = screenshotUrl;
+  }
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id", updatable = false, nullable = false)

@@ -74,10 +74,9 @@ public class BookmarkController {
 
   @PostMapping(value = "/bookmark")
   public ResponseEntity<Bookmark> addBookmark(@RequestBody AddBkmkReq req) {
-    Bookmark createdBookmark;
     var response = new Response<Bookmark>();
     try {
-      createdBookmark = bookmarkService.addBookmark(req);
+      Bookmark createdBookmark = bookmarkService.addBookmark(req);
       return response.setResponse(createdBookmark, HttpStatus.OK);
     } catch (Exception e) {
       e.printStackTrace();

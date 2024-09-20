@@ -36,7 +36,7 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
 
   @Autowired
   public void setJwtUtils(JwtService jwtUtils) {
-      this.jwtUtils = jwtUtils;
+    this.jwtUtils = jwtUtils;
   }
 
   private String parseJwt(HttpServletRequest request) {

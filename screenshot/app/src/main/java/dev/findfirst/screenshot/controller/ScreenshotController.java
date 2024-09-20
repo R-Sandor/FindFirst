@@ -43,12 +43,12 @@ public class ScreenshotController {
       }
     } catch (PlaywrightException e) {
       // Handle Playwright specific exceptions
-      e.printStackTrace();
-      return "Error taking screenshot: " + e.getMessage();
+      log.error("Error taking screenshot: " + e.getMessage());
+      return null;
     } catch (Exception e) {
       // Handle other exceptions
-      e.printStackTrace();
-      return "An unexpected error occurred: " + e.getMessage();
+      log.error("An unexpected error occurred: " + e.getMessage());
+      return null; 
     }
   }
 }

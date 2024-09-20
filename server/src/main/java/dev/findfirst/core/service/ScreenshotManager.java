@@ -1,5 +1,7 @@
 package dev.findfirst.core.service;
 
+import java.util.Optional;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,9 +15,9 @@ public class ScreenshotManager {
 
   private final RestTemplate rest;
 
-  public String getScreenshot(String reqUrl) {
+  public Optional<String> getScreenshot(String reqUrl) {
     String url = screenshotServiceUrl + "/screenshot?url=" + reqUrl;
-    return rest.getForObject(url, String.class);
+    return Optional.ofNullable(rest.getForObject(url, String.class));
   }
 
 }
