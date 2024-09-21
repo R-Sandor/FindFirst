@@ -16,7 +16,7 @@ import java.nio.file.Path;
 @Slf4j
 public class ScreenshotController {
 
-  @Value("${findfirst.screenshot.location:./screenshots}")
+  @Value("${findfirst.screenshot.location}")
   private String screenshotSaveLoc;
 
   @PostConstruct
