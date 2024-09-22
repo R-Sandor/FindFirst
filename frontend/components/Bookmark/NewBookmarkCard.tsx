@@ -77,6 +77,7 @@ export default function NewBookmarkCard() {
       id: -1,
       title: submittedBmk.title,
       url: submittedBmk.url,
+      screenshotUrl: "",
       tags: tags,
     };
 

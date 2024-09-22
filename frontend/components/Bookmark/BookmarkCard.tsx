@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Card, CloseButton } from "react-bootstrap";
 import { useTagsDispatch } from "@/contexts/TagContext";
 import Bookmark from "@/types/Bookmarks/Bookmark";
@@ -152,6 +152,33 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
     }
   }
 
+  function resolveCardType(): ReactNode {
+    return bookmark.screenshotUrl ? overlayCard() : plainCard();
+  }
+
+  function overlayCard(): ReactNode {
+    console.log("display overlayCard")
+    return (
+
+      <div className="card">
+        <img className="card-img-top" src={"/screenshots/" + bookmark.screenshotUrl} alt="Card image cap" />
+        <div className="card-body">
+          <h5 className="card-title">{bookmark.title}</h5>
+          <a className="card-link" target="_blank" href={bookmark.url}>{bookmark.url}</a>
+        </div>
+      </div>
+    )
+  }
+
+  function plainCard(): ReactNode {
+    return (
+      <Card.Body>
+        <Card.Title>{bookmark.title}</Card.Title>
+        <Card.Link target="_blank" href={bookmark.url}>{bookmark.url}</Card.Link>
+      </Card.Body>
+    )
+  }
+
   return (
     <div data-testid={`bookmark-${bookmark.title}`} className="mx-2">
       <Card className="bookmark-card">
@@ -167,10 +194,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
           handleClose={handleClose}
           deleteBkmk={deleteBkmk}
         />
-        <Card.Body>
-          <Card.Title>{bookmark.title}</Card.Title>
-          <Card.Link target="_blank" href={bookmark.url}>{bookmark.url}</Card.Link>
-        </Card.Body>
+        {resolveCardType()}
         <Card.Footer className="card-footer">
           <div className="container">
             {strTags.map((tag, id) => (

@@ -53,7 +53,6 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
 
 
   useEffect(() => {
-    console.log("clean up")
     return () => {
       hasFetched.current = false
       dispatch({
