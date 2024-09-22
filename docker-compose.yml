@@ -3,8 +3,10 @@ services:
     image: ghcr.io/r-sandor/findfirst-frontend:latest
     ports:
       - "3000:3000"
+    environment:
+      - IMAGE_DIR=screenshots
     volumes:
-      - screenshots-data:/app/public/screenshots
+      - ./data/screenshots:/app/public/screenshots
   server:
     image: ghcr.io/r-sandor/findfirst-server:latest
     ports:
@@ -14,16 +16,15 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_MAIL_HOST=mail
       - SCREENSHOT_SERVICE_URL=http://screenshot:8080/
-    volumes:
-      - screenshots-data:/app/screenshots
   screenshot:
     image: ghcr.io/r-sandor/findfirst-screenshot:latest
     ports:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+      - FINDFIRST_SCREENSHOT_LOCATION=/app/screenshots
     volumes:
-      - screenshots-data:/app/screenshots
+      - ./data/screenshots:/app/screenshots
   db:
     image: postgres:16.2-alpine
     environment:
@@ -41,5 +42,4 @@ services:
       - 1025:1025
       - 8025:8025
 volumes:
-  screenshots-data:
   pgdata:
