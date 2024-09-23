@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/playwright/java:jammy-amd64 AS playwright
 
 FROM base AS builder
 WORKDIR /appHome
-COPY . .
+COPY --exclude=app/build/ . .
 RUN gradle assemble
 
 FROM playwright 

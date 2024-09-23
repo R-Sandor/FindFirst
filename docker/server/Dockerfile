@@ -3,7 +3,8 @@ RUN apk add openssl openjdk17
 
 FROM openjdk:17-slim AS builder
 WORKDIR /app
-COPY . .
+# syntax=docker.io/docker/dockerfile:1.7-labs
+COPY --exclude=build/ . .
 RUN ./gradlew assemble
 
 FROM linux AS runner
