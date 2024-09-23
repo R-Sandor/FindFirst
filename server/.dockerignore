@@ -1,3 +1,4 @@
 .git
 prod.yml
 prod.properties
+build/libs/
