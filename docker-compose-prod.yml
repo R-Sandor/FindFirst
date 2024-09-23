@@ -23,7 +23,6 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
     volumes:
       - ./server/prod.yml:/app/prod.yml
-      - screenshots-data:/app/screenshots
     depends_on:
       - db
     restart: always
