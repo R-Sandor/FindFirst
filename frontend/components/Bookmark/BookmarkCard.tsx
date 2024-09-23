@@ -10,6 +10,8 @@ import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 import Tag from "@/types/Bookmarks/Tag";
 import api from "@/api/Api";
 
+const IMAGE_DIR = process.env.IMAGE_DIR;
+
 interface BookmarkProp {
   bookmark: Bookmark;
 }
@@ -30,6 +32,7 @@ async function addTagToBookmark(
     tagTitle: "",
     bookmark: bookmark,
   };
+
   await api.addBookmarkTag(bookmark?.id, trimmedInput).then((response) => {
     // It will always be the last index since it was the last added.
     // let index = response.data.length - 1;
@@ -37,6 +40,7 @@ async function addTagToBookmark(
     action.tagTitle = response.data.tag_title;
     bookmark.tags.push({ id: action.tagId, tag_title: action.tagTitle });
   });
+
   return action;
 }
 
@@ -156,12 +160,11 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
     return bookmark.screenshotUrl ? overlayCard() : plainCard();
   }
 
-  function overlayCard(): ReactNode {
-    console.log("display overlayCard")
-    return (
 
+  function overlayCard(): ReactNode {
+    return (
       <div className="card">
-        <img className="card-img-top" src={"/screenshots/" + bookmark.screenshotUrl} alt="Card image cap" />
+        <img className="card-img-top" src={IMAGE_DIR + bookmark.screenshotUrl} alt="Card image cap" />
         <div className="card-body">
           <h5 className="card-title">{bookmark.title}</h5>
           <a className="card-link" target="_blank" href={bookmark.url}>{bookmark.url}</a>

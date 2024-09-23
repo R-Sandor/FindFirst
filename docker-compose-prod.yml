@@ -6,8 +6,10 @@ services:
     ports:
       - "3000:3000"
     restart: always
+    environment:
+      - IMAGE_DIR=screenshots/
     volumes:
-      - screenshots-data:/app/public/screenshots
+      - ./data/screenshots:/app/public/screenshots
   server:
     build:
       dockerfile: ../docker/server/Dockerfile
@@ -34,7 +36,7 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
     volumes:
-      - screenshots-data:/app/screenshots
+      - ./data/screenshots:/app/screenshots
     restart: always
   db:
     image: postgres:16.2-alpine
@@ -49,5 +51,4 @@ services:
       - 5432:5432
     restart: always
 volumes:
-  screenshots-data:
   pgdata:
