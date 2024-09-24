@@ -1,9 +1,10 @@
+#syntax=docker/dockerfile:1.7-labs
 FROM gradle:8.10.0-jdk17-alpine AS base
 FROM mcr.microsoft.com/playwright/java:jammy-amd64 AS playwright
 
 FROM base AS builder
 WORKDIR /appHome
-COPY --exclude=app/build/ . .
+COPY --exclude=app/build/* --exclude=data . . 
 RUN gradle assemble
 
 FROM playwright 
