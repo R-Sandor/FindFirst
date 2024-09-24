@@ -38,9 +38,9 @@ public class ScreenshotController {
         Page page = context.newPage();
         page.navigate(url);
         String cleanUrl = url.replace("/", "_");
-        Path filePath = Path.of(cleanUrl + ".png");
+        Path filePath = Path.of(screenshotSaveLoc, cleanUrl + ".png");
         page.screenshot(new Page.ScreenshotOptions().setPath(filePath));
-        return filePath.toString();
+        return filePath.getFileName().toString();
       }
     } catch (PlaywrightException e) {
       // Handle Playwright specific exceptions
