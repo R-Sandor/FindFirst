@@ -29,6 +29,7 @@ public class ScreenshotController {
   @GetMapping("/screenshot")
   public String takeScreenshot(@RequestParam String url) {
     // Use a try-with-resources block to manage the Playwright resources
+    log.debug("Recieving request")
     try (Playwright playwright = Playwright.create()) {
       // Use Chromium for this example; you can choose another browser type
       BrowserType browserType = playwright.chromium();
