@@ -110,7 +110,7 @@ application {
 }
 
 test {
-  systemProperty 'spring.profiles.active', 'integration'
+  systemProperty 'spring.profiles.active', 'dev'
   useJUnitPlatform()
   testLogging.showStandardStreams = true
   finalizedBy jacocoTestReport // report is always generated after tests run

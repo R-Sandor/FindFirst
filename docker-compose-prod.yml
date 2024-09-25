@@ -21,6 +21,7 @@ services:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SCREENSHOT_SERVICE_URL=http://screenshot:8080/
     volumes:
       - ./server/prod.yml:/app/prod.yml
     depends_on:
@@ -43,7 +44,6 @@ services:
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
       - POSTGRES_DB=${POSTGRES_DB}
-      - SCREENSHOT_SERVICE_URL=http://screenshot:8080/
     volumes:
       - pgdata:/var/lib/postgresql/data
     ports:
