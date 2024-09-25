@@ -3,7 +3,13 @@
 CERT_FILE = ./server/src/main/resources/app.key
 ENV?=dev
 
-default: build_server build_screenshot build_frontend @wait
+default:
+	$(MAKE) build_server & PID1=$$!
+	$(MAKE) build_screenshot & PID2=$$!
+	$(MAKE) build_frontend & PID3=$$!
+	@wait $$PID1
+	@wait $$PID2
+	@wait $$PID3
 
 build_server: 
 ifeq ( ,$(wildcard $(CERT_FILE)))
@@ -11,14 +17,14 @@ ifeq ( ,$(wildcard $(CERT_FILE)))
 	cd ./server/scripts && ./createServerKeys.sh
 endif
 	cd ./server && ./gradlew clean build
-	docker build -t ghcr.io/r-sandor/findfirst-server -f ./docker/server/Dockerfile.buildlocal ./server &
+	docker build -t ghcr.io/r-sandor/findfirst-server -f ./docker/server/Dockerfile.buildlocal ./server
 
 build_screenshot:
 	cd ./screenshot && ./gradlew clean build
-	docker build -t ghcr.io/r-sandor/findfirst-screenshot -f ./docker/screenshot/Dockerfile.buildlocal ./screenshot &
+	docker build -t ghcr.io/r-sandor/findfirst-screenshot -f ./docker/screenshot/Dockerfile.buildlocal ./screenshot
 
 build_frontend: 
-	docker build -t ghcr.io/r-sandor/findfirst-frontend -f ./docker/frontend/Dockerfile --build-arg BUILDENV=$(ENV) ./frontend &
+	docker build -t ghcr.io/r-sandor/findfirst-frontend -f ./docker/frontend/Dockerfile --build-arg BUILDENV=$(ENV) ./frontend
 
 run: 
 	docker compose up
