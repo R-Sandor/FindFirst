@@ -10,7 +10,7 @@ import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 import Tag from "@/types/Bookmarks/Tag";
 import api from "@/api/Api";
 
-const IMAGE_DIR = process.env.IMAGE_DIR;
+const IMAGE_DIR = process.env.NEXT_PUBLIC_IMAGE_DIR;
 
 interface BookmarkProp {
   bookmark: Bookmark;
