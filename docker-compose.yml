@@ -4,7 +4,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - IMAGE_DIR=screenshots/
+      - NEXT_PUBLIC_IMAGE_DIR=screenshots/
     volumes:
       - ./data/screenshots:/app/public/screenshots
   server:
