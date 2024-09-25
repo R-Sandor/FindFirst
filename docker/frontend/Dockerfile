@@ -1,3 +1,4 @@
+#syntax=docker/dockerfile:1.7-labs
 FROM node:20.5-alpine AS base
 
 # Install dependencies only when needed
@@ -15,7 +16,7 @@ RUN corepack enable pnpm && pnpm i --frozen-lockfile
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY --exclude=public/screenshots  . .
 
 ARG BUILDENV=prod
 
