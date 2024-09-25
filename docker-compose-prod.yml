@@ -35,6 +35,7 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILES_ACTIVE}
+      - FINDFIRST_SCREENSHOT_LOCATION=/app/screenshots
     volumes:
       - ./data/screenshots:/app/screenshots
     restart: always
