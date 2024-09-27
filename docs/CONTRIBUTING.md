@@ -176,6 +176,12 @@ that one is comfortable with solving.
 Next step is to look at the Developers [documentation](./README.dev.md), which will
 describe the ways in which to build and debug the application.
 
+Note: that FindFirst has a concerted effort to maintain code coverage.
+A stipulation of a successful PR is maintaining 80% on new/existing
+code. More on the topic is covered in the developers guide. Some
+pieces maybe lacking adequate coverage presently and we
+greatly appreciate help in improving the test suite.
+
 ### Improving The Documentation
 
 ## Styleguides
