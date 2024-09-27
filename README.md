@@ -1,4 +1,5 @@
 ![FindFirst Logo](./docs/assets/images/findFirstlogo-light.png#gh-light-mode-only)
+![FindFirst Logo](./docs/assets/images/findFirstlogo-dark.png#gh-dark-mode-only)
 
 <br>
 
@@ -13,7 +14,7 @@ searched not only by keyword but semantic meaning.
 Create organization to the copious amount of knowledge available, for students,
 devs, teachers, and the common person.
 
-## Features
+## Key Features
 
 ### Easy Searching
 
@@ -37,7 +38,7 @@ this solves two problems at once.
 
 ### Reading list
 
-A hit list of read laters.
+A hit list of read later pages.
 
 ## Running the Application
 
@@ -46,7 +47,7 @@ test user credentials:
 
 Docker:
 
-``` sh
+```sh
 docker compose up
 ```
 
