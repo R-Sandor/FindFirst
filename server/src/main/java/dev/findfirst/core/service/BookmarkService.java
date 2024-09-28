@@ -183,12 +183,14 @@ public class BookmarkService {
       String url = el.attributes().get("href");
       try {
         var retDoc = Jsoup.connect(url).get();
+        log.debug("Response {}",  retDoc.connection().response().statusMessage());
         log.debug(retDoc.title());
         // Issues with the context being lost between requests and database write.
         SecurityContextHolder.setContext(sec);
         String title = retDoc.title();
-        if (!url.equals("")) {
-          title = title.equals("") ? url : title;
+        if (!url.equals("") || url == null) {
+          title = (title.equals("") || title == null) ? url : title;
+          log.debug("Bookmark contains: \n\t{},\n\t{}", title, url);
           return addBookmark(new AddBkmkReq(title, url, null));
         }
       } catch (IOException | BookmarkAlreadyExistsException | TagNotFoundException ex) {

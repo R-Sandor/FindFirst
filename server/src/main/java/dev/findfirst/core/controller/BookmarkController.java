@@ -107,7 +107,7 @@ public class BookmarkController {
   @PostMapping(value = "/bookmark/{bookmarkID}/tag")
   @ResponseBody
   public ResponseEntity<Tag> addTag(@PathVariable(value = "bookmarkID") @NotNull Long bookmarkId,
-      @RequestParam("tag") @Size(max = 50) @NotBlank String title) {
+      @RequestParam("tag") @Size(max = 512) @NotBlank String title) {
     final var bkmkOpt = bookmarkService.findById(bookmarkId);
 
     if (!bkmkOpt.isPresent()) {

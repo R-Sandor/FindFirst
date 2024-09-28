@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.NonNull;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,7 +14,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import lombok.extern.slf4j.Slf4j;
 import dev.findfirst.security.jwt.JwtService;
 import dev.findfirst.security.jwt.TenantAuthenticationToken;
 import dev.findfirst.security.userAuth.utils.Constants;
@@ -28,9 +26,8 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SignatureException;
 
+@Slf4j
 public class CookieAuthenticationFilter extends OncePerRequestFilter {
-
-  private static final Logger logger = LoggerFactory.getLogger(CookieAuthenticationFilter.class);
 
   private JwtService jwtUtils;
 
@@ -64,7 +61,7 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
           new TenantAuthenticationToken(email, roleId, authorities, tenantId);
     } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException
         | SignatureException | IllegalArgumentException e) {
-      logger.error("Problems with JWT", e);
+      log.error("Problems with JWT", e);
     }
 
     return tenantAuthenticationToken;
@@ -81,7 +78,7 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(tenantAuthenticationToken);
       }
     } catch (Exception e) {
-      logger.error("Cannot set user authentication: {}", e);
+      log.error("Cannot set user authentication: {}", e);
     }
 
     filterChain.doFilter(request, response);

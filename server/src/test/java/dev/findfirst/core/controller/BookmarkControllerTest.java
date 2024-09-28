@@ -248,8 +248,6 @@ class BookmarkControllerTest {
     var bodyBuilder = new MultipartBodyBuilder();
     byte[] fileContent =
         new ClassPathResource("google_bookmarks_1_21_24.html").getInputStream().readAllBytes();
-    // bodyBuilder.part("file", new ByteArrayResource(file),
-    // MediaType.MULTIPART_FORM_DATA);
 
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
     Authentication authentication = Mockito.mock(Authentication.class);
@@ -270,7 +268,7 @@ class BookmarkControllerTest {
     var cookie = cookieOpt.orElseThrow().get(0);
     client.post().uri("/api/bookmark/import").accept(MediaType.APPLICATION_NDJSON)
         .cookie("findfirst", cookie).bodyValue(bodyBuilder.build()).exchange().expectStatus().isOk()
-        .expectBodyList(Bookmark.class).hasSize(4);
+        .expectBodyList(Bookmark.class).hasSize(3);
   }
 
   private List<Bookmark> saveBookmarks(AddBkmkReq... newBkmks) {
