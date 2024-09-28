@@ -16,6 +16,8 @@ services:
       - SPRING_PROFILES_ACTIVE=dev
       - SPRING_MAIL_HOST=mail
       - SCREENSHOT_SERVICE_URL=http://screenshot:8080/
+    volumes:
+      - ./data/screenshots:/app/screenshots
   screenshot:
     image: ghcr.io/r-sandor/findfirst-screenshot:latest
     ports:
