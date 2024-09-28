@@ -133,19 +133,14 @@ public class UserController {
       return ResponseEntity.badRequest().body(e.getMessage());
     }
 
-    ResponseCookie cookie = ResponseCookie.from("findfirst", tkns.jwt()).secure(true) // enable
-                                                                                      // this when
-                                                                                      // we are
-                                                                                      // using
-                                                                                      // https
-        // .sameSite("strict")
-        .path("/").domain(domain).httpOnly(true).build();
+    ResponseCookie cookie = ResponseCookie.from("findfirst", tkns.jwt()).secure(true).path("/")
+        .domain(domain).httpOnly(true).build();
 
     return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
         .body(new TokenRefreshResponse(tkns.refreshToken()));
   }
 
-  @PostMapping("/refreshtoken")
+  @PostMapping("/refreshToken")
   public ResponseEntity<String> refreshToken(
       @RequestParam("token") TokenRefreshRequest refreshRequest) {
     String jwt = refreshRequest.refreshToken();
@@ -153,7 +148,7 @@ public class UserController {
         .map(RefreshToken::getUser).map(user -> {
           String token = userService.generateTokenFromUser(user);
           ResponseCookie cookie = ResponseCookie.from("findfirst", token).secure(true)
-              .sameSite("Strict").path("/").domain(domain).httpOnly(true).build();
+              .sameSite("strict").path("/").domain(domain).httpOnly(true).build();
           return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(token);
         }).orElseThrow(() -> new TokenRefreshException(jwt, "Refresh token is not in database!"));
   }
