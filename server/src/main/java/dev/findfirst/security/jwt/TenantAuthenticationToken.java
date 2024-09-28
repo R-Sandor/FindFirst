@@ -7,7 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 public class TenantAuthenticationToken extends AbstractAuthenticationToken {
 
-  private final Object principal;
+  private final transient Object principal;
   private final int tenantId;
   private final int roleId;
 

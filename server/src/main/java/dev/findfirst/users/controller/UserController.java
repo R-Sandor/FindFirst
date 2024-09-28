@@ -59,7 +59,7 @@ public class UserController {
   @Value("${findfirst.app.domain}") private String domain;
 
   @PostMapping("/signup")
-  public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+  public ResponseEntity<String> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
     User user;
     try {
       user = userService.createNewUserAccount(signUpRequest);
@@ -68,7 +68,8 @@ public class UserController {
     }
 
     regService.sendRegistration(user);
-    return ResponseEntity.ok(new MessageResponse("User Account Created, Complete Registration!"));
+    return ResponseEntity
+        .ok(new MessageResponse("User Account Created, Complete Registration!").toString());
   }
 
   @GetMapping("/regitrationConfirm")
@@ -144,15 +145,15 @@ public class UserController {
         .body(new TokenRefreshResponse(tkns.refreshToken()));
   }
 
-  @PostMapping("/refreshToken")
-  public ResponseEntity<?> refreshToken(@RequestParam("token") TokenRefreshRequest refreshRequest) {
+  @PostMapping("/refreshtoken")
+  public ResponseEntity<String> refreshToken(
+      @RequestParam("token") TokenRefreshRequest refreshRequest) {
     String jwt = refreshRequest.refreshToken();
-    return (ResponseEntity<?>) refreshTokenService.findByToken(jwt)
-        .map(refreshTokenService::verifyExpiration).map(RefreshToken::getUser).map(user -> {
-          String token;
-          token = userService.generateTokenFromUser(user);
+    return refreshTokenService.findByToken(jwt).map(refreshTokenService::verifyExpiration)
+        .map(RefreshToken::getUser).map(user -> {
+          String token = userService.generateTokenFromUser(user);
           ResponseCookie cookie = ResponseCookie.from("findfirst", token).secure(true)
-              .sameSite("strict").path("/").domain(domain).httpOnly(true).build();
+              .sameSite("Strict").path("/").domain(domain).httpOnly(true).build();
           return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(token);
         }).orElseThrow(() -> new TokenRefreshException(jwt, "Refresh token is not in database!"));
   }

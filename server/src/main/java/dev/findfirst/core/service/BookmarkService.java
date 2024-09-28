@@ -183,7 +183,7 @@ public class BookmarkService {
       String url = el.attributes().get("href");
       try {
         var retDoc = Jsoup.connect(url).get();
-        log.debug("Response {}",  retDoc.connection().response().statusMessage());
+        log.debug("Response {}", retDoc.connection().response().statusMessage());
         log.debug(retDoc.title());
         // Issues with the context being lost between requests and database write.
         SecurityContextHolder.setContext(sec);

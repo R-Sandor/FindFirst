@@ -45,8 +45,7 @@ public class FindFirstApplication {
     config.setAllowedMethods(Collections.singletonList("*"));
     config.setAllowedHeaders(Collections.singletonList("*"));
     source.registerCorsConfiguration("/**", config);
-    FilterRegistrationBean<CorsFilter> bean =
-        new FilterRegistrationBean<CorsFilter>(new CorsFilter(source));
+    FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
     bean.setOrder(Ordered.HIGHEST_PRECEDENCE);
     return bean;
   }
