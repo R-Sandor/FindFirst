@@ -4,12 +4,12 @@ CERT_FILE = ./server/src/main/resources/app.key
 ENV?=dev
 
 default:
-	$(MAKE) build_server & PID1=$$!
-	$(MAKE) build_screenshot & PID2=$$!
-	$(MAKE) build_frontend & PID3=$$!
-	@wait $$PID1
-	@wait $$PID2
-	@wait $$PID3
+	$(MAKE) build_server & PID1=$$!; \
+	$(MAKE) build_screenshot & PID2=$$!; \
+	$(MAKE) build_frontend & PID3=$$!; \
+	wait $$PID1 $$PID2 $$PID3; \
+	echo 'DONE!'
+
 
 build_server: 
 ifeq ( ,$(wildcard $(CERT_FILE)))
