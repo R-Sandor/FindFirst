@@ -22,8 +22,10 @@ services:
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - SCREENSHOT_SERVICE_URL=http://screenshot:8080/
+      - FINDFIRST_SCREENSHOT_LOCATION=/app/screenshots
     volumes:
       - ./server/prod.yml:/app/prod.yml
+      - ./data/screenshots:/app/screenshots
     depends_on:
       - db
     restart: always
