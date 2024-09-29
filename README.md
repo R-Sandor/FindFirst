@@ -57,6 +57,11 @@ Local Stack:
 make run
 ```
 
+## Developers
+
+- If you're interested in contributing please do: [Contributing.md](/docs/CONTRIBUTING.md)
+- Developers Guide: [Developers Guide](/docs/README.dev.md)
+
 ## Architecture
 
 About the [Architecture](./docs/Architecture.md)
