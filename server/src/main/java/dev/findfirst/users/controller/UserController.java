@@ -125,12 +125,13 @@ public class UserController {
   }
 
   @PostMapping("/signin")
-  public ResponseEntity<?> token(@RequestHeader(value = "Authorization") String authorization) {
+  public ResponseEntity<TokenRefreshResponse> token(
+      @RequestHeader(value = "Authorization") String authorization) {
     SigninTokens tkns;
     try {
       tkns = userService.signinUser(authorization);
     } catch (NoUserFoundException e) {
-      return ResponseEntity.badRequest().body(e.getMessage());
+      return ResponseEntity.badRequest().body(new TokenRefreshResponse(null, null, e.toString()));
     }
 
     ResponseCookie cookie = ResponseCookie.from("findfirst", tkns.jwt()).secure(true).path("/")
