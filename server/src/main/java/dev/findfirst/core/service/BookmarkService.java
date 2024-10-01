@@ -13,6 +13,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -61,10 +62,22 @@ public class BookmarkService {
         tags.add(tagService.findById(t).orElseThrow(() -> new TagNotFoundException()));
       }
     }
+    Document retDoc;
+    String title = "";
+    try {
+      retDoc = Jsoup.connect(reqBkmk.url()).get();
+      log.debug("Response: {}\tTitle: {}", retDoc.connection().response().statusMessage(),
+          retDoc.title());
+      title = retDoc.title().length() > 0 ? retDoc.title() : reqBkmk.title();
+    } catch (IOException e) {
+      log.error(e.toString());
+    }
+
+    title = title.length() > 0 ? title : reqBkmk.title();
 
     var optUrl = sManager.getScreenshot(reqBkmk.url());
 
-    var newBkmk = new Bookmark(reqBkmk.title(), reqBkmk.url(), optUrl.orElseGet(() -> ""));
+    var newBkmk = new Bookmark(title, reqBkmk.url(), optUrl.orElseGet(() -> ""));
     newBkmk.setTags(tags);
     return bookmarkRepository.save(newBkmk);
   }

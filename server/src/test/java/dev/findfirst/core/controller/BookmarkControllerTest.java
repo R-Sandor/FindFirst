@@ -107,7 +107,7 @@ class BookmarkControllerTest {
 
   @Test
   void addBookmark() {
-    var ent = getHttpEntity(restTemplate, new AddBkmkReq("Facebook", "facebook.com", List.of()));
+    var ent = getHttpEntity(restTemplate, new AddBkmkReq("Facebook", "https://facebook.com", List.of()));
     var response = restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent, Bookmark.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var bkmk = Optional.ofNullable(response.getBody());
@@ -116,8 +116,8 @@ class BookmarkControllerTest {
 
   @Test
   void addAllBookmarks() {
-    saveBookmarks(new AddBkmkReq("Test", "Test.com", List.of()),
-        new AddBkmkReq("Integration test", "IntegrationTesting.com", List.of()));
+    saveBookmarks(new AddBkmkReq("", "https://example.com", List.of()),
+        new AddBkmkReq("goolgleExample", "https://google.com", List.of()));
   }
 
   @Test
@@ -149,8 +149,7 @@ class BookmarkControllerTest {
 
   @Test
   void deleteTagFromBookmarkByTagTitle() {
-    var bkmkResp =
-        saveBookmarks(new AddBkmkReq("Web Color Picker", "htmlcolorcodes.com", List.of()));
+    var bkmkResp = saveBookmarks(new AddBkmkReq("Web Color Picker", "https://htmlcolorcodes.com", List.of()));
     var bkmk = bkmkResp.get(0);
 
     // Add web_dev to bookmark
@@ -179,7 +178,7 @@ class BookmarkControllerTest {
 
   @Test
   void deleteTagFromBookmarkById() {
-    var bkmkResp = saveBookmarks(new AddBkmkReq("Color Picker2", "htmlcolorcodes2.com", List.of()));
+    var bkmkResp = saveBookmarks(new AddBkmkReq("Color Picker2", "https://htmlcolorcodes2.com", List.of()));
     var bkmk = bkmkResp.get(0);
 
     // Add Tag web_dev
@@ -190,9 +189,8 @@ class BookmarkControllerTest {
     // Add Tag design
     // Store tag response to delete the tag next
     ent = getHttpEntity(restTemplate);
-    var tagOpt =
-        Optional.ofNullable(restTemplate.exchange("/api/bookmark/{bookmarkID}/tag?tag={title}",
-            HttpMethod.POST, ent, Tag.class, bkmk.getId(), "design").getBody());
+    var tagOpt = Optional.ofNullable(restTemplate.exchange("/api/bookmark/{bookmarkID}/tag?tag={title}",
+        HttpMethod.POST, ent, Tag.class, bkmk.getId(), "design").getBody());
     long tagId = tagOpt.orElseThrow().getId();
 
     // Delete by the id.
@@ -211,11 +209,9 @@ class BookmarkControllerTest {
 
   @Test
   void addTagToBookmarkById() {
-    var bkmk =
-        saveBookmarks(new AddBkmkReq("Spring Docs 3.2", "Spring.io/docs/3.2", List.of((long) 1)));
-    var tagReq =
-        restTemplate.exchange("/api/bookmark/{bookmarkID}/tagId?tagId={id}", HttpMethod.POST,
-            getHttpEntity(restTemplate), BookmarkTagPair.class, bkmk.get(0).getId(), 5);
+    var bkmk = saveBookmarks(new AddBkmkReq("Spring Docs 3.2", "https://Spring.io/docs/3.2", List.of((long) 1)));
+    var tagReq = restTemplate.exchange("/api/bookmark/{bookmarkID}/tagId?tagId={id}", HttpMethod.POST,
+        getHttpEntity(restTemplate), BookmarkTagPair.class, bkmk.get(0).getId(), 5);
     var btPairOpt = Optional.ofNullable(tagReq.getBody());
     var tags = btPairOpt.orElseThrow().bkmk().getTags();
 
@@ -246,8 +242,7 @@ class BookmarkControllerTest {
   void importBookmarks() throws IOException, InterruptedException {
     assertNotNull(new File("google_bookmarks_1_21_24.html"));
     var bodyBuilder = new MultipartBodyBuilder();
-    byte[] fileContent =
-        new ClassPathResource("google_bookmarks_1_21_24.html").getInputStream().readAllBytes();
+    byte[] fileContent = new ClassPathResource("google_bookmarks_1_21_24.html").getInputStream().readAllBytes();
 
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
     Authentication authentication = Mockito.mock(Authentication.class);
@@ -273,14 +268,14 @@ class BookmarkControllerTest {
 
   private List<Bookmark> saveBookmarks(AddBkmkReq... newBkmks) {
     HttpEntity<?> ent;
+    // Test can not handle covariant return type of [] vs a single Bookmark.
     if (newBkmks.length == 1) {
       ent = getHttpEntity(restTemplate, newBkmks[0]);
       var bkmkResp = restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent, Bookmark.class);
       return List.of(bkmkResp.getBody());
     }
     ent = getHttpEntity(restTemplate, Arrays.asList(newBkmks));
-    var blResp =
-        restTemplate.exchange("/api/bookmark/addBookmarks", HttpMethod.POST, ent, Bookmark[].class);
+    var blResp = restTemplate.exchange("/api/bookmark/addBookmarks", HttpMethod.POST, ent, Bookmark[].class);
     assertEquals(HttpStatus.OK, blResp.getStatusCode());
     return List.of(blResp.getBody());
   }
