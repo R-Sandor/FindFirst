@@ -173,7 +173,8 @@ class UserControllerTest {
     var signResp = restTemplate.postForEntity("/user/signin", entity, TokenRefreshResponse.class);
     var tknRefresh = Optional.ofNullable(signResp.getBody()).orElseThrow();
     var refreshTkn = tknRefresh.refreshToken();
-    restTemplate.exchange(userUrl + "/refreshToken?token={refreshToken}", HttpMethod.POST,
+    var resp = restTemplate.exchange(userUrl + "/refreshToken?token={refreshToken}", HttpMethod.POST,
         new HttpEntity<>(new HttpHeaders()), String.class, refreshTkn);
+    assertEquals(HttpStatus.OK, resp.getStatusCode());
   }
 }
