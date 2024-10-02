@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/screenshots")
+@RequestMapping("api/screenshots")
 @Slf4j
 public class ImageController {
 
