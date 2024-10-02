@@ -12,6 +12,6 @@ public class PasswordEncryptTest {
     BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     String testPasswordEncoded = passwordEncoder.encode(password);
     System.out.println("encoded password = " + testPasswordEncoded);
-    Assertions.assertNotEquals(passwordEncoder.encode(password+" "), testPasswordEncoded);
+    Assertions.assertNotEquals(passwordEncoder.encode(password + " "), testPasswordEncoded);
   }
 }
