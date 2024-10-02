@@ -7,7 +7,7 @@ services:
       - "3000:3000"
     restart: always
     environment:
-      - NEXT_PUBLIC_IMAGE_DIR=https://findfirst.dev/screenshots/
+      - NEXT_PUBLIC_IMAGE_DIR=http://server:9000/screenshots/
     volumes:
       - ./data/screenshots:/app/public/screenshots
   server:
