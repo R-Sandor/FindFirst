@@ -8,8 +8,6 @@ services:
     restart: always
     environment:
       - NEXT_PUBLIC_IMAGE_DIR=http://server:9000/screenshots/
-    volumes:
-      - ./data/screenshots:/app/public/screenshots
   server:
     build:
       dockerfile: ../docker/server/Dockerfile
