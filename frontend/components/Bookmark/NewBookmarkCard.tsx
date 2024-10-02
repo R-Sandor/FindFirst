@@ -37,6 +37,7 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
   await api.addBookmark(newBkmkRequest).then((response) => {
     createBmk.id = response.data.id;
     createBmk.tags = response.data.tags;
+    createBmk.screenshotUrl = response.data.screenshotUrl;
   });
   return createBmk;
 }
@@ -81,6 +82,7 @@ export default function NewBookmarkCard() {
       tags: tags,
     };
 
+    actions.resetForm({ newcard }, setStrTags([]), setTagInput(""));
     let retBkmk = await makeNewBookmark(newBkmk);
     // if adding the bookmark was successful.
     if (retBkmk) {
@@ -101,7 +103,6 @@ export default function NewBookmarkCard() {
       };
       bkmkDispatch(action);
     }
-    actions.resetForm({ newcard }, setStrTags([]), setTagInput(""));
   };
 
   const handleOnReset = async ({ tagTitles, title, url }: NewBookmarkForm) => {
@@ -152,7 +153,7 @@ export default function NewBookmarkCard() {
     return fullUrl.startsWith("https://") ? fullUrl.replace("https://", '') : fullUrl.replace("http://", '')
   }
 
-  function getRootUrl(url: string) { 
+  function getRootUrl(url: string) {
     return url.split("/")[0]
   }
 
