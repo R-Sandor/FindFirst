@@ -1,6 +1,6 @@
 [data-bs-theme="light"] {
   --tag-list-bg: #d6e6f2;
-  --card-bg: #d9e9e6;
+  --card-bg: #fff;
 }
 
 [data-bs-theme="dark"] {
@@ -38,6 +38,7 @@
   color: mintcream;
   border-color: aliceblue;
 }
+
 .container {
   flex-wrap: wrap;
   align-items: center;

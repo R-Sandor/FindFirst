@@ -1,5 +1,5 @@
 "use client";
-import { Navbar, Button, ButtonGroup, Container } from "react-bootstrap";
+import { Nav, Navbar, Button, ButtonGroup, Container } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import authService, { AuthStatus } from "@services/auth.service";
 import useAuth from "@components/UseAuth";
@@ -47,7 +47,7 @@ const GlobalNavbar: React.FC = () => {
   return (
     <Navbar
       expand="lg"
-      style={{ borderBottom: "1px solid", height: "60px" }}
+      style={{ borderBottom: "1px solid", height: "60px", zIndex: "1030" }}
       className="bg-body-tertiary"
     >
       <Container>
@@ -64,12 +64,15 @@ const GlobalNavbar: React.FC = () => {
           />
           FindFirst
         </Navbar.Brand>
-        <div className="mx-3">
-          {userAuth === AuthStatus.Authorized ? <ImportModal file={undefined} show={false} data-testid="import-modal" /> : null}
-          {userAuth === AuthStatus.Authorized ? <Export data-testid="export-component" /> : null}
-          <LightDarkToggle />
-          {authButton()}
-        </div>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse>
+          <Nav style={{ background: '#ffffff' }} className="float-right">
+            {userAuth === AuthStatus.Authorized ? <Nav.Link><ImportModal file={undefined} show={false} data-testid="import-modal" /></Nav.Link> : null}
+            {userAuth === AuthStatus.Authorized ? <Nav.Link><Export data-testid="export-component" /></Nav.Link> : null}
+            <Nav.Link><LightDarkToggle /></Nav.Link>
+            <Nav.Link>{authButton()}</Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
       </Container>
     </Navbar>
   );
