@@ -164,7 +164,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   function overlayCard(): ReactNode {
     return (
       <div className="card">
-        <img className="card-img-top" src={IMAGE_DIR + bookmark.screenshotUrl} alt={"screenshot of: " + bookmark.url} />
+        <img className="card-img-top" src={IMAGE_DIR + bookmark.screenshotUrl} alt="screenshot preview" />
         <div className="card-body">
           <h5 className="card-title">{bookmark.title}</h5>
           <a className="card-link" target="_blank" href={bookmark.url}>{bookmark.url}</a>
