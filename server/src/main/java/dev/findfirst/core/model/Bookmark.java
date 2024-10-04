@@ -34,10 +34,11 @@ public class Bookmark extends Tenantable {
     this.url = url;
   }
 
-  public Bookmark(String title, String url, String screenshotUrl) {
+  public Bookmark(String title, String url, String screenshotUrl, Boolean scrapable) {
     this.title = title;
     this.url = url;
     this.screenshotUrl = screenshotUrl;
+    this.scrapable = scrapable;
   }
 
   @Id
@@ -53,6 +54,9 @@ public class Bookmark extends Tenantable {
 
   @Column(name = "screenshot_url", nullable = true)
   private String screenshotUrl;
+
+  @Column(name = "scrapable", nullable = true)
+  private Boolean scrapable;
 
   @PreRemove
   private void removeTagsFromBookmark() {
