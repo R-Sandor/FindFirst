@@ -77,7 +77,7 @@ public class BookmarkService {
 
     var optUrl = sManager.getScreenshot(reqBkmk.url());
 
-    var newBkmk = new Bookmark(title, reqBkmk.url(), optUrl.orElseGet(() -> ""));
+    var newBkmk = new Bookmark(title, reqBkmk.url(), optUrl.orElseGet(() -> ""), true);
     newBkmk.setTags(tags);
     return bookmarkRepository.save(newBkmk);
   }
