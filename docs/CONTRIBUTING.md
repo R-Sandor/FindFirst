@@ -199,7 +199,7 @@ greatly appreciate help in improving the test suite.
 
 ## Join The Project Team
 
-[Discord](https://discord.gg/rvPbAcFE) - _link expires: 10.03.24_
+[Discord](https://discord.gg/trNnpqweMH) - _Link Never Expires_
 
 ## Attribution
 
