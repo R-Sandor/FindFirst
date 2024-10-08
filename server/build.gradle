@@ -92,6 +92,7 @@ dependencies {
   runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
   annotationProcessor 'org.projectlombok:lombok'
+  testAnnotationProcessor 'org.projectlombok:lombok'
 
   testCompileOnly 'org.projectlombok:lombok'
 
