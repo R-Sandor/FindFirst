@@ -30,8 +30,13 @@ class ImageControllerTest {
 
   @Test
   void imageRequest() {
-    var resp = restTemplate.exchange("/api/screenshots", HttpMethod.GET, getHttpEntity(restTemplate), byte[].class);
+    String filename = "https:__facebook.com.png";
+    var resp = restTemplate.exchange("/api/screenshots/" + filename, HttpMethod.GET, getHttpEntity(restTemplate), byte[].class);
     Assertions.assertTrue(resp.getBody().length > 0);
+
+
+    resp = restTemplate.exchange("/api/screenshots/" + filename + "fake", HttpMethod.GET, getHttpEntity(restTemplate), byte[].class);
+    Assertions.assertTrue(resp.getBody() == null);
   }
 
 }
