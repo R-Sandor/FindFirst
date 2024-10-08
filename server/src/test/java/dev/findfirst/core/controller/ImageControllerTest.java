@@ -26,11 +26,6 @@ class ImageControllerTest {
   @ServiceConnection
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
-  // @Autowired
-  // ImageControllerTest(TestRestTemplate restTemplate) { 
-  //   this.restTemplate = restTemplate;
-  // }
-
   final TestRestTemplate restTemplate;
 
   @Test
