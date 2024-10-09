@@ -2,6 +2,7 @@ package dev.findfirst.core.controller;
 
 import static dev.findfirst.utilities.HttpUtility.getHttpEntity;
 
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import dev.findfirst.core.annotations.IntegrationTest;
-import lombok.RequiredArgsConstructor;
 
 @Testcontainers
 @IntegrationTest
@@ -31,11 +31,13 @@ class ImageControllerTest {
   @Test
   void imageRequest() {
     String filename = "https:__facebook.com.png";
-    var resp = restTemplate.exchange("/api/screenshots/" + filename, HttpMethod.GET, getHttpEntity(restTemplate), byte[].class);
+    var resp = restTemplate.exchange("/api/screenshots/" + filename, HttpMethod.GET,
+        getHttpEntity(restTemplate), byte[].class);
     Assertions.assertTrue(resp.getBody().length > 0);
 
 
-    resp = restTemplate.exchange("/api/screenshots/" + filename + "fake", HttpMethod.GET, getHttpEntity(restTemplate), byte[].class);
+    resp = restTemplate.exchange("/api/screenshots/" + filename + "fake", HttpMethod.GET,
+        getHttpEntity(restTemplate), byte[].class);
     Assertions.assertTrue(resp.getBody() == null);
   }
 

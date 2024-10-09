@@ -150,8 +150,7 @@ class BookmarkControllerTest {
 
   @Test
   void deleteTagFromBookmarkByTagTitle() {
-    var bkmkResp =
-        saveBookmarks(new AddBkmkReq("Web Color Picker", "https://htmlcolorcodes.com", List.of()));
+    var bkmkResp = saveBookmarks(new AddBkmkReq("yahoo", "https://yahoo.com", List.of()));
     var bkmk = bkmkResp.get(0);
 
     // Add web_dev to bookmark
@@ -213,8 +212,8 @@ class BookmarkControllerTest {
 
   @Test
   void addTagToBookmarkById() {
-    var bkmk = saveBookmarks(
-        new AddBkmkReq("Spring Docs 3.2", "https://Spring.io/docs/3.2", List.of((long) 1)));
+    var bkmk =
+        saveBookmarks(new AddBkmkReq("duckduckgo", "https://duckduckgo.com", List.of((long) 1)));
     var tagReq =
         restTemplate.exchange("/api/bookmark/{bookmarkID}/tagId?tagId={id}", HttpMethod.POST,
             getHttpEntity(restTemplate), BookmarkTagPair.class, bkmk.get(0).getId(), 5);
@@ -226,8 +225,8 @@ class BookmarkControllerTest {
 
   @Test
   void deleteBookmarkById() {
-    saveBookmarks(new AddBkmkReq("color theory for designers",
-        "https://webflow.com/blog/color-theory", List.of(1L, 6L)));
+    saveBookmarks(
+        new AddBkmkReq("web scraping", "https://www.scrapethissite.com", List.of(1L, 6L)));
     var response = restTemplate.exchange(baseUrl, HttpMethod.GET, getHttpEntity(restTemplate),
         Bookmark[].class);
     var bkmkOpt = Optional.ofNullable(response.getBody());

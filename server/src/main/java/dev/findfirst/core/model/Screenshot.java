@@ -17,6 +17,6 @@ public class Screenshot {
   private int captureAttemptsFailed;
   private boolean disabled;
   private boolean manuallyCaptured;
-  private Date lastUpdated; 
+  private Date lastUpdated;
   private List<Bookmark> bookmarksWithScreenshot;
 }
