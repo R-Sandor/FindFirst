@@ -31,6 +31,7 @@ class ImageControllerTest {
   @Test
   void imageRequest() {
     String filename = "https:__facebook.com.png";
+    Assertions.assertTrue(restTemplate != null);
     var resp = restTemplate.exchange("/api/screenshots/" + filename, HttpMethod.GET,
         getHttpEntity(restTemplate), byte[].class);
     Assertions.assertTrue(resp.getBody().length > 0);
