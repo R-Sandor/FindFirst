@@ -204,7 +204,7 @@ public class BookmarkService {
         if (!url.equals("") || url == null) {
           title = (title.equals("") || title == null) ? url : title;
           log.debug("Bookmark contains: \n\t{},\n\t{}", title, url);
-          return addBookmark(new AddBkmkReq(title, url, null));
+          return addBookmark(new AddBkmkReq(title, url, null, true));
         }
       } catch (IOException | BookmarkAlreadyExistsException | TagNotFoundException ex) {
         log.error(ex.getMessage());
