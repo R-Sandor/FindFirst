@@ -19,8 +19,12 @@ import dev.findfirst.core.annotations.IntegrationTest;
 @Testcontainers
 @IntegrationTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class ImageControllerTest {
+
+  @Autowired
+  ImageControllerTest(TestRestTemplate testRestTemplate) { 
+    this.restTemplate = testRestTemplate;
+  }
 
   @Container
   @ServiceConnection
