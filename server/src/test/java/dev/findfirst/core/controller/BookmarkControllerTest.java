@@ -6,6 +6,7 @@ import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.BookmarkTagPair;
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.repository.BookmarkRepository;
+import dev.findfirst.core.service.BookmarkService;
 import dev.findfirst.security.jwt.TenantAuthenticationToken;
 import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,6 +50,8 @@ class BookmarkControllerTest {
   @Container
   @ServiceConnection
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
+  @Autowired
+  private BookmarkService bookmarkService;
 
   @Autowired
   BookmarkControllerTest(BookmarkRepository bookmarkRepository, TestRestTemplate tRestTemplate,
@@ -102,12 +105,20 @@ class BookmarkControllerTest {
 
   @Test
   void addBookmark() {
-    var ent =
-        getHttpEntity(restTemplate, new AddBkmkReq("Facebook", "https://facebook.com", List.of(), true));
+    // Test with Scrapping (default behavior)
+    var ent = getHttpEntity(restTemplate, new AddBkmkReq("Facebook", "https://facebook.com", List.of(), true));
     var response = restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent, Bookmark.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var bkmk = Optional.ofNullable(response.getBody());
     assertEquals("Facebook", bkmk.orElseThrow().getTitle());
+
+    // Test without scrapping
+    var entNoScrape = getHttpEntity(restTemplate, new AddBkmkReq("Wikipedia", "https://wikipedia.org", List.of(), false));
+    var noScrapeResponse = restTemplate.exchange("/api/bookmark", HttpMethod.POST, entNoScrape, Bookmark.class);
+    assertEquals(HttpStatus.OK, noScrapeResponse.getStatusCode());
+
+    var noScrapeBkmk = Optional.ofNullable(noScrapeResponse.getBody());
+    assertEquals("", noScrapeBkmk.orElseThrow().getScreenshotUrl());
   }
 
   @Test

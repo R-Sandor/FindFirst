@@ -59,25 +59,31 @@ public class BookmarkService {
 
     if (reqBkmk.tagIds() != null) {
       for (var t : reqBkmk.tagIds()) {
-        tags.add(tagService.findById(t).orElseThrow(() -> new TagNotFoundException()));
+        tags.add(tagService.findById(t).orElseThrow(TagNotFoundException::new));
       }
     }
+
     Document retDoc;
     String title = "";
-    try {
-      retDoc = Jsoup.connect(reqBkmk.url()).get();
-      log.debug("Response: {}\tTitle: {}", retDoc.connection().response().statusMessage(),
-          retDoc.title());
-      title = retDoc.title().length() > 0 ? retDoc.title() : reqBkmk.title();
-    } catch (IOException e) {
-      log.error(e.toString());
+    var optUrl = Optional.<String>empty();
+
+    if (reqBkmk.scrapable()) {
+      log.debug("Scrapable: true.\tScrapping URL and taking screenshot.");
+
+      try {
+        retDoc = Jsoup.connect(reqBkmk.url()).get();
+        log.debug("Response: {}\tTitle: {}", retDoc.connection().response().statusMessage(), retDoc.title());
+        title = !retDoc.title().isEmpty() ? retDoc.title() : reqBkmk.title();
+
+      } catch (IOException e) {
+        log.error(e.toString());
+      }
+
+      title = !title.isEmpty() ? title : reqBkmk.title();
+      optUrl = sManager.getScreenshot(reqBkmk.url());
     }
 
-    title = title.length() > 0 ? title : reqBkmk.title();
-
-    var optUrl = sManager.getScreenshot(reqBkmk.url());
-
-    var newBkmk = new Bookmark(title, reqBkmk.url(), optUrl.orElseGet(() -> ""), true);
+    var newBkmk = new Bookmark(title, reqBkmk.url(), optUrl.orElse(""), true);
     newBkmk.setTags(tags);
     return bookmarkRepository.save(newBkmk);
   }
