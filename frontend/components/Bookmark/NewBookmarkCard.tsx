@@ -23,6 +23,7 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
     title: createBmk.title,
     url: createBmk.url,
     tagIds: [],
+    scrapable: createBmk.scrapable,
   };
   let tagTitles: string[] = createBmk.tags.map((t) => {
     return t.tag_title;
@@ -74,12 +75,14 @@ export default function NewBookmarkCard() {
       tags.push({ tag_title: tagInput, id: -1 });
     }
     submittedBmk.title = submittedBmk.url;
+    // TODO: set scrapable from toggle Issue #222
     let newBkmk: Bookmark = {
       id: -1,
       title: submittedBmk.title,
       url: submittedBmk.url,
       screenshotUrl: "",
       tags: tags,
+      scrapable: true,
     };
 
     actions.resetForm({ newcard }, setStrTags([]), setTagInput(""));
