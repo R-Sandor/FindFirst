@@ -50,14 +50,5 @@ public class WebCheckService {
   }
 
 
-  private class RobotsTxtResponse {
-
-    final private int statusCode;
-    final private String text;
-
-    private RobotsTxtResponse(int statusCode, String text) {
-      this.statusCode = statusCode;
-      this.text = text;
-    }
-  }
+  private record RobotsTxtResponse(int statusCode, String text) {}
 }
