@@ -1,5 +1,18 @@
 package dev.findfirst.core.controller;
 
+import static dev.findfirst.utilities.HttpUtility.getHttpEntity;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.model.AddBkmkReq;
 import dev.findfirst.core.model.Bookmark;
@@ -9,6 +22,7 @@ import dev.findfirst.core.repository.BookmarkRepository;
 import dev.findfirst.core.service.BookmarkService;
 import dev.findfirst.security.jwt.TenantAuthenticationToken;
 import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -28,19 +42,6 @@ import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static dev.findfirst.utilities.HttpUtility.getHttpEntity;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Testcontainers
 @IntegrationTest
@@ -106,15 +107,28 @@ class BookmarkControllerTest {
   @Test
   void addBookmark() {
     // Test with Scrapping (default behavior)
-    var ent = getHttpEntity(restTemplate, new AddBkmkReq("Facebook", "https://facebook.com", List.of(), true));
+    var ent = getHttpEntity(restTemplate,
+        new AddBkmkReq("Stack Overflow", "https://stackoverflow.com", List.of(), true));
     var response = restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent, Bookmark.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var bkmk = Optional.ofNullable(response.getBody());
-    assertEquals("Facebook", bkmk.orElseThrow().getTitle());
+    assertEquals("Stack Overflow - Where Developers Learn, Share, & Build Careers",
+        bkmk.orElseThrow().getTitle());
+
+    // Test with scraping (but not allowed as per robot.txt)
+    var entFailScrape = getHttpEntity(restTemplate,
+        new AddBkmkReq("Facebook", "https://facebook.com", List.of(), true));
+    var responseFailScrape =
+        restTemplate.exchange("/api/bookmark", HttpMethod.POST, entFailScrape, Bookmark.class);
+    assertEquals(HttpStatus.OK, responseFailScrape.getStatusCode());
+    var bkmkFailScrape = Optional.ofNullable(responseFailScrape.getBody());
+    assertEquals("", bkmkFailScrape.orElseThrow().getTitle());
 
     // Test without scrapping
-    var entNoScrape = getHttpEntity(restTemplate, new AddBkmkReq("Wikipedia", "https://wikipedia.org", List.of(), false));
-    var noScrapeResponse = restTemplate.exchange("/api/bookmark", HttpMethod.POST, entNoScrape, Bookmark.class);
+    var entNoScrape = getHttpEntity(restTemplate,
+        new AddBkmkReq("Wikipedia", "https://wikipedia.org", List.of(), false));
+    var noScrapeResponse =
+        restTemplate.exchange("/api/bookmark", HttpMethod.POST, entNoScrape, Bookmark.class);
     assertEquals(HttpStatus.OK, noScrapeResponse.getStatusCode());
 
     var noScrapeBkmk = Optional.ofNullable(noScrapeResponse.getBody());
@@ -185,8 +199,8 @@ class BookmarkControllerTest {
 
   @Test
   void deleteTagFromBookmarkById() {
-    var bkmkResp =
-        saveBookmarks(new AddBkmkReq("Color Picker2", "https://htmlcolorcodes2.com", List.of(), true));
+    var bkmkResp = saveBookmarks(
+        new AddBkmkReq("Color Picker2", "https://htmlcolorcodes2.com", List.of(), true));
     var bkmk = bkmkResp.get(0);
 
     // Add Tag web_dev
