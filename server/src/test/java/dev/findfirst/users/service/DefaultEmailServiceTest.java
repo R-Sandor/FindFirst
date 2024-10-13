@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Properties;
 
+import dev.findfirst.core.annotations.IntegrationTest;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,17 +20,17 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import dev.findfirst.core.annotations.IntegrationTest;
-
 @Testcontainers
 @IntegrationTest
 @TestPropertySource(locations = "classpath:application-test.yml")
 @WebServiceClientTest(DefaultEmailService.class)
 class DefaultEmailServiceTest {
 
-  @Value("${spring.mail.port}") int port;
+  @Value("${spring.mail.port}")
+  int port;
 
-  @Value("${spring.mail.host}") String host;
+  @Value("${spring.mail.host}")
+  String host;
 
   @Autowired
   DefaultEmailServiceTest(DefaultEmailService emailService) {

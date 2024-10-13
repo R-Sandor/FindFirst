@@ -2,6 +2,9 @@ package dev.findfirst.core.controller;
 
 import java.util.List;
 
+import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.service.TagService;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -12,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.service.TagService;
 
 @RestController
 @RequestMapping("/api")

@@ -2,9 +2,6 @@ package dev.findfirst.users.service;
 
 import java.util.Calendar;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 import jakarta.validation.constraints.Email;
 
 import dev.findfirst.users.exceptions.NoTokenFoundException;
@@ -13,6 +10,9 @@ import dev.findfirst.users.exceptions.TokenExpiredException;
 import dev.findfirst.users.model.user.Token;
 import dev.findfirst.users.model.user.TokenPassword;
 import dev.findfirst.users.model.user.User;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j

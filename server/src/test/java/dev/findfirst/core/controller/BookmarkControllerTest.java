@@ -1,14 +1,28 @@
 package dev.findfirst.core.controller;
 
+import static dev.findfirst.utilities.HttpUtility.getHttpEntity;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.model.AddBkmkReq;
 import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.BookmarkTagPair;
 import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.repository.BookmarkJDBCRepository;
 import dev.findfirst.core.repository.BookmarkRepository;
-import dev.findfirst.core.service.BookmarkService;
 import dev.findfirst.security.jwt.TenantAuthenticationToken;
 import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -29,19 +43,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-
-import static dev.findfirst.utilities.HttpUtility.getHttpEntity;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @Testcontainers
 @IntegrationTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -50,18 +51,20 @@ class BookmarkControllerTest {
   @Container
   @ServiceConnection
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
-  @Autowired
-  private BookmarkService bookmarkService;
 
   @Autowired
-  BookmarkControllerTest(BookmarkRepository bookmarkRepository, TestRestTemplate tRestTemplate,
+  BookmarkControllerTest(BookmarkRepository bookmarkRepository,
+      BookmarkJDBCRepository bookmarkJDBCRepository, TestRestTemplate tRestTemplate,
       WebApplicationContext wContext) {
     this.bkmkRepo = bookmarkRepository;
+    this.bookmarkJDBCRepository = bookmarkJDBCRepository;
     this.restTemplate = tRestTemplate;
     this.wac = wContext;
   }
 
+
   final BookmarkRepository bkmkRepo;
+  final BookmarkJDBCRepository bookmarkJDBCRepository;
   final TestRestTemplate restTemplate;
   final WebApplicationContext wac;
 
@@ -106,15 +109,18 @@ class BookmarkControllerTest {
   @Test
   void addBookmark() {
     // Test with Scrapping (default behavior)
-    var ent = getHttpEntity(restTemplate, new AddBkmkReq("Facebook", "https://facebook.com", List.of(), true));
+    var ent = getHttpEntity(restTemplate,
+        new AddBkmkReq("Facebook", "https://facebook.com", List.of(), true));
     var response = restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent, Bookmark.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var bkmk = Optional.ofNullable(response.getBody());
     assertEquals("Facebook", bkmk.orElseThrow().getTitle());
 
     // Test without scrapping
-    var entNoScrape = getHttpEntity(restTemplate, new AddBkmkReq("Wikipedia", "https://wikipedia.org", List.of(), false));
-    var noScrapeResponse = restTemplate.exchange("/api/bookmark", HttpMethod.POST, entNoScrape, Bookmark.class);
+    var entNoScrape = getHttpEntity(restTemplate,
+        new AddBkmkReq("Wikipedia", "https://wikipedia.org", List.of(), false));
+    var noScrapeResponse =
+        restTemplate.exchange("/api/bookmark", HttpMethod.POST, entNoScrape, Bookmark.class);
     assertEquals(HttpStatus.OK, noScrapeResponse.getStatusCode());
 
     var noScrapeBkmk = Optional.ofNullable(noScrapeResponse.getBody());
@@ -185,8 +191,8 @@ class BookmarkControllerTest {
 
   @Test
   void deleteTagFromBookmarkById() {
-    var bkmkResp =
-        saveBookmarks(new AddBkmkReq("Color Picker2", "https://htmlcolorcodes2.com", List.of(), true));
+    var bkmkResp = saveBookmarks(
+        new AddBkmkReq("Color Picker2", "https://htmlcolorcodes2.com", List.of(), true));
     var bkmk = bkmkResp.get(0);
 
     // Add Tag web_dev
@@ -276,6 +282,14 @@ class BookmarkControllerTest {
     client.post().uri("/api/bookmark/import").accept(MediaType.APPLICATION_NDJSON)
         .cookie("findfirst", cookie).bodyValue(bodyBuilder.build()).exchange().expectStatus().isOk()
         .expectBodyList(Bookmark.class).hasSize(3);
+  }
+
+  @Test
+  void jdbcRepo() {
+    long count = bookmarkJDBCRepository.count();
+    assertTrue(count > 0);
+    System.out.println("The count is " + count);
+    System.out.println(bookmarkJDBCRepository.findAll());
   }
 
   private List<Bookmark> saveBookmarks(AddBkmkReq... newBkmks) {

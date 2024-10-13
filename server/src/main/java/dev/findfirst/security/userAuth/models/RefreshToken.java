@@ -2,8 +2,6 @@ package dev.findfirst.security.userAuth.models;
 
 import java.time.Instant;
 
-import lombok.Data;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +11,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
 import dev.findfirst.users.model.user.User;
+
+import lombok.Data;
 
 @Data
 @Entity(name = "refreshtoken")

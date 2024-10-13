@@ -2,6 +2,8 @@ package dev.findfirst.core.controller;
 
 import static dev.findfirst.utilities.HttpUtility.getHttpEntity;
 
+import dev.findfirst.core.annotations.IntegrationTest;
+
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,8 +15,6 @@ import org.springframework.http.HttpMethod;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-
-import dev.findfirst.core.annotations.IntegrationTest;
 
 @Testcontainers
 @IntegrationTest

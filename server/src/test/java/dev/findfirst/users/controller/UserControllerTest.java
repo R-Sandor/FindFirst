@@ -7,6 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Optional;
 import java.util.Properties;
 
+import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
+import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
+import dev.findfirst.users.model.MailHogMessage;
+import dev.findfirst.users.model.user.TokenPassword;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +34,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import dev.findfirst.core.annotations.IntegrationTest;
-import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
-import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
-import dev.findfirst.users.model.MailHogMessage;
-import dev.findfirst.users.model.user.TokenPassword;
 
 @Testcontainers
 @IntegrationTest

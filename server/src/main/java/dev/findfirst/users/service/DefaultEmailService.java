@@ -12,7 +12,8 @@ public class DefaultEmailService {
 
   private final JavaMailSender emailSender;
 
-  @Value("${spring.mail.username:findfirst@localmail.com}") String webhost;
+  @Value("${spring.mail.username:findfirst@localmail.com}")
+  String webhost;
 
   public void sendSimpleEmail(String toAddress, String subject, String message) {
     SimpleMailMessage simpleMailMessage = new SimpleMailMessage();

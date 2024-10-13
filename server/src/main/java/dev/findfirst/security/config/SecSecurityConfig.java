@@ -3,6 +3,16 @@ package dev.findfirst.security.config;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
+import dev.findfirst.security.filters.CookieAuthenticationFilter;
+import dev.findfirst.security.jwt.AuthEntryPointJwt;
+import dev.findfirst.security.userAuth.service.UserDetailsServiceImpl;
+
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -24,16 +34,6 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import com.nimbusds.jose.jwk.JWK;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
-
-import dev.findfirst.security.filters.CookieAuthenticationFilter;
-import dev.findfirst.security.jwt.AuthEntryPointJwt;
-import dev.findfirst.security.userAuth.service.UserDetailsServiceImpl;
 
 @Configuration
 @EnableWebSecurity
@@ -41,9 +41,11 @@ import dev.findfirst.security.userAuth.service.UserDetailsServiceImpl;
 @RequiredArgsConstructor
 public class SecSecurityConfig {
 
-  @Value("${jwt.public.key}") private RSAPublicKey key;
+  @Value("${jwt.public.key}")
+  private RSAPublicKey key;
 
-  @Value("${jwt.private.key}") private RSAPrivateKey priv;
+  @Value("${jwt.private.key}")
+  private RSAPrivateKey priv;
 
   private final UserDetailsServiceImpl userDetailsService;
 

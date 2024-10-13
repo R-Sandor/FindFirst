@@ -10,15 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-
 import jakarta.validation.constraints.NotNull;
 
 import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
@@ -29,6 +20,15 @@ import dev.findfirst.core.model.ExportBookmark;
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.model.TagBookmarks;
 import dev.findfirst.core.repository.BookmarkRepository;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 @Service
 @Slf4j
@@ -72,7 +72,8 @@ public class BookmarkService {
 
       try {
         retDoc = Jsoup.connect(reqBkmk.url()).get();
-        log.debug("Response: {}\tTitle: {}", retDoc.connection().response().statusMessage(), retDoc.title());
+        log.debug("Response: {}\tTitle: {}", retDoc.connection().response().statusMessage(),
+            retDoc.title());
         title = !retDoc.title().isEmpty() ? retDoc.title() : reqBkmk.title();
 
       } catch (IOException e) {

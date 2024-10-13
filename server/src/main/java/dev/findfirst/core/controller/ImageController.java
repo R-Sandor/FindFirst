@@ -17,7 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class ImageController {
 
-  @Value("${findfirst.screenshot.location}") private String screenshotSaveLoc;
+  @Value("${findfirst.screenshot.location}")
+  private String screenshotSaveLoc;
 
   @GetMapping("{fileName}")
   public byte[] getImage(@PathVariable String fileName) {
