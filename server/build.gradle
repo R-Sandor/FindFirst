@@ -85,6 +85,7 @@ dependencies {
   implementation 'org.flywaydb:flyway-core:10.17.1'
   // https://mvnrepository.com/artifact/org.springframework.data/spring-data-jdbc
   implementation 'org.springframework.data:spring-data-jdbc:3.3.4'
+  implementation group: 'com.github.crawler-commons', name: 'crawler-commons', version: '1.4'
 
   runtimeOnly "org.flywaydb:flyway-database-postgresql:10.1.0"
   runtimeOnly 'org.postgresql:postgresql:42.7.3'
