@@ -3,11 +3,6 @@ package dev.findfirst.core.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,6 +16,11 @@ import jakarta.persistence.PreRemove;
 import jakarta.persistence.Table;
 
 import dev.findfirst.security.userAuth.tenant.model.Tenantable;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 @Entity
 @Table(name = "bookmark")

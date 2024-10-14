@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.repository.TagRepository;
+
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.repository.TagRepository;
 
 @Service
 @RequiredArgsConstructor

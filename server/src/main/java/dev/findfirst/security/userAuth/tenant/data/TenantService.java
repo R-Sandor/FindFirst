@@ -1,11 +1,11 @@
 package dev.findfirst.security.userAuth.tenant.data;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import jakarta.transaction.Transactional;
 
 import dev.findfirst.security.userAuth.tenant.model.Tenant;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor

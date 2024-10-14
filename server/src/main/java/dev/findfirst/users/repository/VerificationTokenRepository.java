@@ -1,9 +1,9 @@
 package dev.findfirst.users.repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-
 import dev.findfirst.users.model.user.Token;
 import dev.findfirst.users.model.user.User;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VerificationTokenRepository extends JpaRepository<Token, Long> {
 

@@ -1,18 +1,17 @@
 package dev.findfirst.security.userAuth.tenant.model;
 
-import lombok.Data;
-import org.hibernate.annotations.Filter;
-import org.hibernate.annotations.FilterDef;
-import org.hibernate.annotations.ParamDef;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import dev.findfirst.security.userAuth.tenant.listeners.TenantEntityListener;
 import dev.findfirst.security.userAuth.utils.Constants;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Data;
+import org.hibernate.annotations.Filter;
+import org.hibernate.annotations.FilterDef;
+import org.hibernate.annotations.ParamDef;
 
 @Data
 @MappedSuperclass

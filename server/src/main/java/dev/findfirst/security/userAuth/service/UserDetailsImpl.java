@@ -4,12 +4,12 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import dev.findfirst.users.model.user.User;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import dev.findfirst.users.model.user.User;
 
 public class UserDetailsImpl implements UserDetails {
   private static final long serialVersionUID = 1L;

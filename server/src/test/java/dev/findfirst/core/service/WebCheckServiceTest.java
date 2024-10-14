@@ -3,6 +3,8 @@ package dev.findfirst.core.service;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
+import dev.findfirst.core.annotations.IntegrationTest;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +13,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
+@Testcontainers
+@IntegrationTest
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
 public class WebCheckServiceTest {
@@ -22,6 +30,9 @@ public class WebCheckServiceTest {
   @Autowired
   WebCheckService webCheckService;
 
+  @Container
+  @ServiceConnection
+  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
   @Test
   public void isScrapable() {
