@@ -16,4 +16,7 @@ public interface TagRepository extends TenantableRepository<Tag> {
 
   @Query("SELECT b.tags FROM Bookmark b WHERE b.id =?1")
   List<Tag> findTagsByBookmarkId(long Id);
+
+  @Query("SELECT t FROM Tag t WHERE t.tag_title IN ?1")
+  List<Tag> findByTagTitles(List<String> tagTitles);
 }
