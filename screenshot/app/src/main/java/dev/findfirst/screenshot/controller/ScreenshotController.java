@@ -37,7 +37,7 @@ public class ScreenshotController {
         BrowserContext context = browser.newContext();
         Page page = context.newPage();
         page.navigate(url);
-        String cleanUrl = url.replace("/", "_");
+        String cleanUrl = url.replaceAll("http[s]://", "").replace("/", "_");
         Path filePath = Path.of(screenshotSaveLoc, cleanUrl + ".png");
         page.screenshot(new Page.ScreenshotOptions().setPath(filePath));
         return filePath.getFileName().toString();
