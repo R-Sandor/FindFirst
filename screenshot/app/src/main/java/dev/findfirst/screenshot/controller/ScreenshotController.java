@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 
 @RestController
@@ -33,23 +36,29 @@ public class ScreenshotController {
     try (Playwright playwright = Playwright.create()) {
       // Use Chromium for this example; you can choose another browser type
       BrowserType browserType = playwright.chromium();
+
       try (Browser browser = browserType.launch()) {
         BrowserContext context = browser.newContext();
         Page page = context.newPage();
         page.navigate(url);
+
+        url = URLDecoder.decode(url, StandardCharsets.UTF_8);
         String cleanUrl = url.replaceAll("http[s]://", "").replace("/", "_");
+
         Path filePath = Path.of(screenshotSaveLoc, cleanUrl + ".png");
         page.screenshot(new Page.ScreenshotOptions().setPath(filePath));
+
         return filePath.getFileName().toString();
       }
     } catch (PlaywrightException e) {
       // Handle Playwright specific exceptions
       log.error("Error taking screenshot: " + e.getMessage());
       return null;
+
     } catch (Exception e) {
       // Handle other exceptions
       log.error("An unexpected error occurred: " + e.getMessage());
-      return null; 
+      return null;
     }
   }
 }
