@@ -40,7 +40,7 @@ public class TagController {
 
   @PostMapping(value = "/tag")
   public ResponseEntity<Tag> addTag(@RequestParam("tag") String tag) {
-    return ResponseEntity.ok(tagService.addTag(tag));
+    return ResponseEntity.ok(tagService.findOrCreateTag(tag));
   }
 
   /**
