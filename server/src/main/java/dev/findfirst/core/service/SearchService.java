@@ -1,13 +1,14 @@
 package dev.findfirst.core.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.repository.TagRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 public class SearchService {
