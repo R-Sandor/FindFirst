@@ -13,6 +13,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.core.model.AddBkmkReq;
+import dev.findfirst.core.model.Bookmark;
+import dev.findfirst.core.model.BookmarkTagPair;
+import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.repository.BookmarkRepository;
+import dev.findfirst.core.service.BookmarkService;
+import dev.findfirst.security.jwt.TenantAuthenticationToken;
+import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -21,11 +31,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -37,15 +43,6 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import dev.findfirst.core.annotations.IntegrationTest;
-import dev.findfirst.core.model.AddBkmkReq;
-import dev.findfirst.core.model.Bookmark;
-import dev.findfirst.core.model.BookmarkTagPair;
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.repository.BookmarkRepository;
-import dev.findfirst.security.jwt.TenantAuthenticationToken;
-import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
-
 @Testcontainers
 @IntegrationTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -54,6 +51,8 @@ class BookmarkControllerTest {
   @Container
   @ServiceConnection
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
+  @Autowired
+  private BookmarkService bookmarkService;
 
   @Autowired
   BookmarkControllerTest(BookmarkRepository bookmarkRepository, TestRestTemplate tRestTemplate,
@@ -107,18 +106,39 @@ class BookmarkControllerTest {
 
   @Test
   void addBookmark() {
-    var ent =
-        getHttpEntity(restTemplate, new AddBkmkReq("Facebook", "https://facebook.com", List.of()));
+    // Test with Scrapping (default behavior)
+    var ent = getHttpEntity(restTemplate,
+        new AddBkmkReq("Stack Overflow", "https://stackoverflow.com", List.of(), true));
     var response = restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent, Bookmark.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var bkmk = Optional.ofNullable(response.getBody());
-    assertEquals("Facebook", bkmk.orElseThrow().getTitle());
+    assertEquals("Stack Overflow - Where Developers Learn, Share, & Build Careers",
+        bkmk.orElseThrow().getTitle());
+
+    // Test with scraping (but not allowed as per robot.txt)
+    var entFailScrape = getHttpEntity(restTemplate,
+        new AddBkmkReq("Facebook", "https://facebook.com", List.of(), true));
+    var responseFailScrape =
+        restTemplate.exchange("/api/bookmark", HttpMethod.POST, entFailScrape, Bookmark.class);
+    assertEquals(HttpStatus.OK, responseFailScrape.getStatusCode());
+    var bkmkFailScrape = Optional.ofNullable(responseFailScrape.getBody());
+    assertEquals("", bkmkFailScrape.orElseThrow().getTitle());
+
+    // Test without scrapping
+    var entNoScrape = getHttpEntity(restTemplate,
+        new AddBkmkReq("Wikipedia", "https://wikipedia.org", List.of(), false));
+    var noScrapeResponse =
+        restTemplate.exchange("/api/bookmark", HttpMethod.POST, entNoScrape, Bookmark.class);
+    assertEquals(HttpStatus.OK, noScrapeResponse.getStatusCode());
+
+    var noScrapeBkmk = Optional.ofNullable(noScrapeResponse.getBody());
+    assertEquals("", noScrapeBkmk.orElseThrow().getScreenshotUrl());
   }
 
   @Test
   void addAllBookmarks() {
-    saveBookmarks(new AddBkmkReq("", "https://example.com", List.of()),
-        new AddBkmkReq("goolgleExample", "https://google.com", List.of()));
+    saveBookmarks(new AddBkmkReq("", "https://example.com", List.of(), true),
+        new AddBkmkReq("goolgleExample", "https://google.com", List.of(), true));
   }
 
   @Test
@@ -150,8 +170,7 @@ class BookmarkControllerTest {
 
   @Test
   void deleteTagFromBookmarkByTagTitle() {
-    var bkmkResp =
-        saveBookmarks(new AddBkmkReq("Web Color Picker", "https://htmlcolorcodes.com", List.of()));
+    var bkmkResp = saveBookmarks(new AddBkmkReq("yahoo", "https://yahoo.com", List.of(), true));
     var bkmk = bkmkResp.get(0);
 
     // Add web_dev to bookmark
@@ -180,8 +199,8 @@ class BookmarkControllerTest {
 
   @Test
   void deleteTagFromBookmarkById() {
-    var bkmkResp =
-        saveBookmarks(new AddBkmkReq("Color Picker2", "https://htmlcolorcodes2.com", List.of()));
+    var bkmkResp = saveBookmarks(
+        new AddBkmkReq("Color Picker2", "https://htmlcolorcodes2.com", List.of(), true));
     var bkmk = bkmkResp.get(0);
 
     // Add Tag web_dev
@@ -213,8 +232,8 @@ class BookmarkControllerTest {
 
   @Test
   void addTagToBookmarkById() {
-    var bkmk = saveBookmarks(
-        new AddBkmkReq("Spring Docs 3.2", "https://Spring.io/docs/3.2", List.of((long) 1)));
+    var bkmk =
+        saveBookmarks(new AddBkmkReq("duckduckgo", "https://duckduckgo.com", List.of(1L), true));
     var tagReq =
         restTemplate.exchange("/api/bookmark/{bookmarkID}/tagId?tagId={id}", HttpMethod.POST,
             getHttpEntity(restTemplate), BookmarkTagPair.class, bkmk.get(0).getId(), 5);
@@ -226,8 +245,8 @@ class BookmarkControllerTest {
 
   @Test
   void deleteBookmarkById() {
-    saveBookmarks(new AddBkmkReq("color theory for designers",
-        "https://webflow.com/blog/color-theory", List.of(1L, 6L)));
+    saveBookmarks(
+        new AddBkmkReq("web scraping", "https://www.scrapethissite.com", List.of(1L, 6L), true));
     var response = restTemplate.exchange(baseUrl, HttpMethod.GET, getHttpEntity(restTemplate),
         Bookmark[].class);
     var bkmkOpt = Optional.ofNullable(response.getBody());

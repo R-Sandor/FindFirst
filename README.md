@@ -61,6 +61,7 @@ make run
 
 - If you're interested in contributing please do: [Contributing.md](/docs/CONTRIBUTING.md)
 - Developers Guide: [Developers Guide](/docs/README.dev.md)
+- Join the Discord: [FindFirst Discord](https://discord.gg/trNnpqweMH)
 
 ## Architecture
 

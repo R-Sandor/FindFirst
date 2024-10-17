@@ -14,7 +14,8 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class ScreenshotManager {
 
-  @Value("${screenshot.service.url}") private String screenshotServiceUrl;
+  @Value("${screenshot.service.url}")
+  private String screenshotServiceUrl;
 
   private final RestTemplate rest;
 

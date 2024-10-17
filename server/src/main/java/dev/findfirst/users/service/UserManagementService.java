@@ -7,15 +7,6 @@ import java.util.Base64;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-import org.springframework.stereotype.Service;
-
 import dev.findfirst.security.jwt.service.RefreshTokenService;
 import dev.findfirst.security.userAuth.models.RefreshToken;
 import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
@@ -33,6 +24,15 @@ import dev.findfirst.users.repository.RoleRepository;
 import dev.findfirst.users.repository.UserRepo;
 import dev.findfirst.users.repository.VerificationTokenRepository;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.stereotype.Service;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -47,7 +47,8 @@ public class UserManagementService {
   private final TenantService tenantService;
   private final JwtEncoder encoder;
 
-  @Value("${findfirst.app.jwtExpirationMs}") private int jwtExpirationMs;
+  @Value("${findfirst.app.jwtExpirationMs}")
+  private int jwtExpirationMs;
 
   public User getUserByEmail(String email) throws NoUserFoundException {
     return userRepo.findByEmail(email).orElseThrow(NoUserFoundException::new);

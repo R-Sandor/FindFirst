@@ -3,11 +3,6 @@ package dev.findfirst.core.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,6 +17,11 @@ import jakarta.persistence.Table;
 
 import dev.findfirst.security.userAuth.tenant.model.Tenantable;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+
 @Entity
 @Table(name = "bookmark")
 @Data
@@ -34,10 +34,11 @@ public class Bookmark extends Tenantable {
     this.url = url;
   }
 
-  public Bookmark(String title, String url, String screenshotUrl) {
+  public Bookmark(String title, String url, String screenshotUrl, Boolean scrapable) {
     this.title = title;
     this.url = url;
     this.screenshotUrl = screenshotUrl;
+    this.scrapable = scrapable;
   }
 
   @Id
@@ -53,6 +54,9 @@ public class Bookmark extends Tenantable {
 
   @Column(name = "screenshot_url", nullable = true)
   private String screenshotUrl;
+
+  @Column(name = "scrapable", nullable = true)
+  private Boolean scrapable;
 
   @PreRemove
   private void removeTagsFromBookmark() {

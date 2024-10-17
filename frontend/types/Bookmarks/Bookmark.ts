@@ -6,4 +6,5 @@ export default interface Bookmark {
   url: string;
   screenshotUrl: string;
   tags: Tag[];
+  scrapable: boolean;
 }

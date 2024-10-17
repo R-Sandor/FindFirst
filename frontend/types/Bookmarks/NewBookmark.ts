@@ -15,6 +15,7 @@ export interface NewBookmarkRequest {
   title: string;
   url: string;
   tagIds: number[];
+  scrapable: boolean
 }
 
 /**

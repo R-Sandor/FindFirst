@@ -10,15 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-
 import jakarta.validation.constraints.NotNull;
 
 import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
@@ -30,6 +21,15 @@ import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.model.TagBookmarks;
 import dev.findfirst.core.repository.BookmarkRepository;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -38,6 +38,8 @@ public class BookmarkService {
   private final BookmarkRepository bookmarkRepository;
 
   private final TagService tagService;
+
+  private final WebCheckService webCheckService;
 
   private final ScreenshotManager sManager;
 
@@ -59,25 +61,32 @@ public class BookmarkService {
 
     if (reqBkmk.tagIds() != null) {
       for (var t : reqBkmk.tagIds()) {
-        tags.add(tagService.findById(t).orElseThrow(() -> new TagNotFoundException()));
+        tags.add(tagService.findById(t).orElseThrow(TagNotFoundException::new));
       }
     }
+
     Document retDoc;
     String title = "";
-    try {
-      retDoc = Jsoup.connect(reqBkmk.url()).get();
-      log.debug("Response: {}\tTitle: {}", retDoc.connection().response().statusMessage(),
-          retDoc.title());
-      title = retDoc.title().length() > 0 ? retDoc.title() : reqBkmk.title();
-    } catch (IOException e) {
-      log.error(e.toString());
+    var optUrl = Optional.<String>empty();
+
+    if (reqBkmk.scrapable() && webCheckService.isScrapable(reqBkmk.url())) {
+      log.debug("Scrapable: true.\tScrapping URL and taking screenshot.");
+
+      try {
+        retDoc = Jsoup.connect(reqBkmk.url()).get();
+        log.debug("Response: {}\tTitle: {}", retDoc.connection().response().statusMessage(),
+            retDoc.title());
+        title = !retDoc.title().isEmpty() ? retDoc.title() : reqBkmk.title();
+
+      } catch (IOException e) {
+        log.error(e.toString());
+      }
+
+      title = !title.isEmpty() ? title : reqBkmk.title();
+      optUrl = sManager.getScreenshot(reqBkmk.url());
     }
 
-    title = title.length() > 0 ? title : reqBkmk.title();
-
-    var optUrl = sManager.getScreenshot(reqBkmk.url());
-
-    var newBkmk = new Bookmark(title, reqBkmk.url(), optUrl.orElseGet(() -> ""));
+    var newBkmk = new Bookmark(title, reqBkmk.url(), optUrl.orElse(""), true);
     newBkmk.setTags(tags);
     return bookmarkRepository.save(newBkmk);
   }
@@ -204,7 +213,7 @@ public class BookmarkService {
         if (!url.equals("") || url == null) {
           title = (title.equals("") || title == null) ? url : title;
           log.debug("Bookmark contains: \n\t{},\n\t{}", title, url);
-          return addBookmark(new AddBkmkReq(title, url, null));
+          return addBookmark(new AddBkmkReq(title, url, null, true));
         }
       } catch (IOException | BookmarkAlreadyExistsException | TagNotFoundException ex) {
         log.error(ex.getMessage());

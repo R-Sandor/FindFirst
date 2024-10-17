@@ -8,7 +8,7 @@ plugins {
   id 'org.springframework.boot' version '3.3.2'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
   id "org.sonarqube" version "4.4.1.3373"
-  id "com.diffplug.spotless" version "6.11.0"
+  id "com.diffplug.spotless" version "6.19.0"
   id "org.flywaydb.flyway" version "10.1.0"
   id 'java'
   id 'jacoco'
@@ -83,6 +83,9 @@ dependencies {
   implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
   implementation 'org.jsoup:jsoup:1.17.2'
   implementation 'org.flywaydb:flyway-core:10.17.1'
+  // https://mvnrepository.com/artifact/org.springframework.data/spring-data-jdbc
+  implementation 'org.springframework.data:spring-data-jdbc:3.3.4'
+  implementation group: 'com.github.crawler-commons', name: 'crawler-commons', version: '1.4'
 
   runtimeOnly "org.flywaydb:flyway-database-postgresql:10.1.0"
   runtimeOnly 'org.postgresql:postgresql:42.7.3'
@@ -90,6 +93,7 @@ dependencies {
   runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
   annotationProcessor 'org.projectlombok:lombok'
+  testAnnotationProcessor 'org.projectlombok:lombok'
 
   testCompileOnly 'org.projectlombok:lombok'
 
