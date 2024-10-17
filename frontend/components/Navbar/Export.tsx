@@ -7,13 +7,13 @@ export default function Export({ 'data-testid': dataTestId }: { 'data-testid'?: 
 
   return (
     <button
-      className="btn float-left mr-4"
+      className="btn"
       data-testid={dataTestId}
       data-bs-placement="bottom"
       title="Export Bookmarks"
       onClick={exportAllBookmarks}
     >
-      <i className="bi bi-download"></i>
+      <i className="bi bi-download" style={{ border: "solid", borderRadius: "10px", padding: "10px", color: "#717a83" }}></i>
     </button>
   );
 }

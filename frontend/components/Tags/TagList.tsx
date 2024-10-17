@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Badge, ListGroup } from "react-bootstrap";
+import { ArrowsCollapseVertical } from 'react-bootstrap-icons';
+import { Badge, Button, ListGroup } from "react-bootstrap";
 import { useTags } from "@/contexts/TagContext";
 import useAuth from "@components/UseAuth";
 import api from "@/api/Api";
@@ -61,7 +62,7 @@ const TagList = () => {
           className={`d-flex m-0 w-full btn ${styles.btn} justify-content-between align-items-start`}
         >
           {tagCnt.tagTitle}
-          <Badge bg="primary" pill>
+          <Badge pill bg="" style={{ backgroundColor: '#717a83', color: 'white' }}>
             <div
               data-testid={`${tagCnt.tagTitle}-list-item-cnt`}
               key={`${tagCnt.tagTitle}-list-item-badge`}
@@ -91,7 +92,7 @@ const TagList = () => {
   return (
     <div>
       {!loading ? (
-        <ListGroup className="pt-3 w-full">{groupItems}</ListGroup>
+        <><ListGroup className="pt-3 w-full">{groupItems}</ListGroup></>
       ) : (
         <div></div>
       )}

@@ -76,9 +76,9 @@ export default function ImportModal({
   const handleShow = () => setModalShow(true);
 
   return (
-    <div className="float-left mr-4" data-testid={dataTestId}>
+    <div data-testid={dataTestId}>
       <button className="btn" data-testid="import-btn" onClick={handleShow}>
-        <i className="bi bi-file-earmark-arrow-up-fill"></i>
+        <i className="bi bi-file-earmark-arrow-up-fill" style={{ border: "solid", borderRadius: "10px", padding: "10px", color: "#717a83" }}></i>
       </button>
 
       <Modal

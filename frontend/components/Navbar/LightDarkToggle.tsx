@@ -28,9 +28,9 @@ export default function LightDarkToggle() {
   }, [theme]);
 
   return (
-    <div className="float-left text-center items-center mr-5 ">
+    <div className="text-center items-center mr-5 ">
       <button className="btn" data-testid="light-dark" onClick={changeTheme}>
-        <i className="bi bi-lamp-fill"></i>
+        <i className="bi bi-lamp-fill" style={{ border: "solid", borderRadius: "10px", padding: "10px", color: "#717a83" }}></i>
       </button>
     </div>
   );
