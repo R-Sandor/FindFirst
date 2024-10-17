@@ -39,6 +39,7 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
     createBmk.id = response.data.id;
     createBmk.tags = response.data.tags;
     createBmk.screenshotUrl = response.data.screenshotUrl;
+    createBmk.title = response.data.title;
   });
   return createBmk;
 }
