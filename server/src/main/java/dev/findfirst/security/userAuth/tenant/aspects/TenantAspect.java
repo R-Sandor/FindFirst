@@ -32,7 +32,7 @@ public class TenantAspect {
     MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
 
     if (AnnotationUtils.getAnnotation(methodSignature.getMethod(),
-        DisableTenantFilter.class) == null) {
+        DisableTenantFilter.class) == null || tenantContext.getTenantId() == -1000 ) {
       entityManager.unwrap(Session.class).enableFilter(Constants.TENANT_FILTER_NAME)
           .setParameter(Constants.TENANT_PARAMETER_NAME, tenantContext.getTenantId());
     }

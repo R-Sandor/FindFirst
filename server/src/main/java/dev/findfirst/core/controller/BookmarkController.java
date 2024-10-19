@@ -2,9 +2,11 @@ package dev.findfirst.core.controller;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,6 +19,7 @@ import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.service.BookmarkService;
 import dev.findfirst.core.service.TagService;
 import dev.findfirst.core.utilies.Response;
+import dev.findfirst.security.jwt.TenantAuthenticationToken;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -24,6 +27,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -46,6 +51,22 @@ public class BookmarkController {
   private final BookmarkService bookmarkService;
 
   private final TagService tagService;
+
+  /**
+   * TODO: this is an example on how to set TenantContext
+   * running admin actions DB.
+   * We could use this or something similar to reset test USERS,
+   * and cron jobs.
+   **/
+  @PostConstruct
+  private void getAllUsersBookmarks() {
+    var simpleGrantedAuthority = new SimpleGrantedAuthority("admin");
+    var grantedAuthList = Collections.singletonList(simpleGrantedAuthority);
+    TenantAuthenticationToken tenantAuthenticationToken = new TenantAuthenticationToken("admin@findfirst.dev", 2,
+        grantedAuthList, -1000);
+    SecurityContextHolder.getContext().setAuthentication(tenantAuthenticationToken);
+    SecurityContextHolder.clearContext();
+  }
 
   @GetMapping("/bookmarks")
   public ResponseEntity<List<Bookmark>> getAllBookmarks() {
