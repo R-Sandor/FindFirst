@@ -7,7 +7,7 @@ plugins {
   id 'application'
   id 'org.springframework.boot' version '3.3.2'
   id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-  id "org.sonarqube" version "4.4.1.3373"
+  id "org.sonarqube" version "5.1.0.4882"
   id "com.diffplug.spotless" version "6.19.0"
   id "org.flywaydb.flyway" version "10.1.0"
   id 'java'
@@ -62,7 +62,7 @@ tasks.named("build") {
 }
 
 tasks.named("bootRun") {
-dependsOn('flywayMigrate')
+  dependsOn('flywayMigrate')
 }
 
 repositories {
