@@ -7,7 +7,7 @@ import LightDarkToggle from "./LightDarkToggle";
 import ImportModal from "@components/Import/ImportModal";
 import Export from "./Export";
 import Image from "next/image";
-import navbarView from "styles/navbar.module.scss"
+import navbarView from "styles/navbar.module.scss";
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
@@ -71,13 +71,24 @@ const GlobalNavbar: React.FC = () => {
             className={`${navbarView.searchBarInput}`}
             placeholder="Search"
           />
-          <button className={`btn ms-2 ${navbarView.searchBarBtn}`} type="submit">
+          <button
+            className={`btn ms-2 ${navbarView.searchBarBtn}`}
+            type="submit"
+          >
             <i className="bi bi-search"></i>
           </button>
         </div>
         <div className={`mx-3 ${navbarView.navBtns}`}>
-          {userAuth === AuthStatus.Authorized ? <ImportModal file={undefined} show={false} data-testid="import-modal" /> : null}
-          {userAuth === AuthStatus.Authorized ? <Export data-testid="export-component" /> : null}
+          {userAuth === AuthStatus.Authorized ? (
+            <ImportModal
+              file={undefined}
+              show={false}
+              data-testid="import-modal"
+            />
+          ) : null}
+          {userAuth === AuthStatus.Authorized ? (
+            <Export data-testid="export-component" />
+          ) : null}
           <LightDarkToggle />
           {authButton()}
         </div>
