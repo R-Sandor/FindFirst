@@ -1,0 +1,76 @@
+.navContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.searchBar {
+    border: 1px solid grey;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    flex-grow: 1;
+}
+
+.searchBarInput {
+    border: none !important;
+    outline: none !important;
+    height: 100%;
+    padding: 0.375rem 0.75rem;
+    flex-grow: 1;
+}
+
+.searchBar>.searchBarBtn {
+    margin-left: -35px !important;
+    border: none;
+
+    &:hover {
+        color: #29b5bf;
+    }
+}
+
+@media (max-width: 480px) {
+    .navBtns {
+        margin: 0;
+        padding: 0 
+    }
+
+    .navBtns div {
+        margin: 0
+    }
+
+    .navBtns button {
+        margin: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .navContainer {
+
+        .navBrand{
+            flex-grow: 1;
+            order: 1;
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+    
+        .searchBar {
+            order: 3; 
+            flex-basis: 100%;
+            margin-top: 15px;
+            background-color: var(--bs-body-bg);
+        }
+    
+        .navBtns {
+            order: 2; 
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }        
+    }
+
+    .containerFluid {
+        margin-top: 40px;
+    }
+}
+
+
