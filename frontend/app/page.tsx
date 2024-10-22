@@ -15,7 +15,7 @@ export default function App() {
    * the regular landing.
    */
   return userAuth ? (
-    <div className={`${navStyles.containerFluid}`}>
+    <div className={`${navStyles.containerFluid} container-fluid`}>
       <div className="row">
         <div className={`col-md-4 col-lg-3 ${tagStyles.scroller} ${tagStyles.tagList}`}>
           <TagList />
