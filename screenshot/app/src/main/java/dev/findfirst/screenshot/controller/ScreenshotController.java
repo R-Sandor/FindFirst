@@ -44,6 +44,7 @@ public class ScreenshotController {
 
         url = URLDecoder.decode(url, StandardCharsets.UTF_8);
         String cleanUrl = url.replaceAll("http[s]://", "").replace("/", "_");
+        cleanUrl = cleanUrl.replaceAll("[*\"/\\<>:|?]+", "");
 
         Path filePath = Path.of(screenshotSaveLoc, cleanUrl + ".png");
         page.screenshot(new Page.ScreenshotOptions().setPath(filePath));

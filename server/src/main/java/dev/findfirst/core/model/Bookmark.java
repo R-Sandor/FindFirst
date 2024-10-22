@@ -3,9 +3,12 @@ package dev.findfirst.core.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.hibernate.FetchMode;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -63,7 +66,7 @@ public class Bookmark extends Tenantable {
     tags.clear();
   }
 
-  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+  @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.EAGER)
   @JoinTable(name = "bookmark_tag", joinColumns = @JoinColumn(name = "bookmark_id"),
       inverseJoinColumns = @JoinColumn(name = "tag_id"))
   private Set<Tag> tags = new HashSet<>();

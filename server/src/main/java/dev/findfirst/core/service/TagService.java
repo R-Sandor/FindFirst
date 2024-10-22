@@ -17,7 +17,7 @@ public class TagService {
 
   private final TagRepository tagRepository;
 
-  public Tag addTag(String title) {
+  private Tag addTag(String title) {
     return tagRepository.saveAndFlush(new Tag(title));
   }
 
