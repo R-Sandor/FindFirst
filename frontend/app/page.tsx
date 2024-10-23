@@ -2,6 +2,7 @@
 import UseAuth from "@components/UseAuth";
 import TagList from "@components/Tags/TagList";
 import tagStyles from "@/styles/tag.module.scss";
+import navStyles from "@/styles/navbar.module.scss"
 import BookmarkCardsView from "@components/CardView/BookmarkCardsView";
 
 export default function App() {
@@ -14,7 +15,7 @@ export default function App() {
    * the regular landing.
    */
   return userAuth ? (
-    <div className="container-fluid">
+    <div className={`${navStyles.containerFluid} container-fluid`}>
       <div className="row">
         <div className={`col-md-4 col-lg-3 ${tagStyles.scroller} ${tagStyles.tagList}`}>
           <TagList />

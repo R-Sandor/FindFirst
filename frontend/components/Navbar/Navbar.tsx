@@ -7,6 +7,7 @@ import LightDarkToggle from "./LightDarkToggle";
 import ImportModal from "@components/Import/ImportModal";
 import Export from "./Export";
 import Image from "next/image";
+import navbarView from "styles/navbar.module.scss";
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
@@ -50,10 +51,10 @@ const GlobalNavbar: React.FC = () => {
       style={{ borderBottom: "1px solid", height: "60px" }}
       className="bg-body-tertiary"
     >
-      <Container>
+      <Container className={`${navbarView.navContainer}`}>
         <Navbar.Brand
           onClick={() => router.push("/")}
-          className="mx-3 cursor-pointer"
+          className={`mx-3 cursor-pointer ${navbarView.navBrand}`}
         >
           <Image
             src="/basic-f-v2-dark-mode-v2-fav.png"
@@ -64,9 +65,30 @@ const GlobalNavbar: React.FC = () => {
           />
           FindFirst
         </Navbar.Brand>
-        <div className="mx-3">
-          {userAuth === AuthStatus.Authorized ? <ImportModal file={undefined} show={false} data-testid="import-modal" /> : null}
-          {userAuth === AuthStatus.Authorized ? <Export data-testid="export-component" /> : null}
+        <div className={`d-flex flex-grow-1 mx-3 ${navbarView.searchBar}`}>
+          <input
+            type="text"
+            className={`${navbarView.searchBarInput}`}
+            placeholder="Search"
+          />
+          <button
+            className={`btn ms-2 ${navbarView.searchBarBtn}`}
+            type="submit"
+          >
+            <i className="bi bi-search"></i>
+          </button>
+        </div>
+        <div className={`mx-3 ${navbarView.navBtns}`}>
+          {userAuth === AuthStatus.Authorized ? (
+            <ImportModal
+              file={undefined}
+              show={false}
+              data-testid="import-modal"
+            />
+          ) : null}
+          {userAuth === AuthStatus.Authorized ? (
+            <Export data-testid="export-component" />
+          ) : null}
           <LightDarkToggle />
           {authButton()}
         </div>
