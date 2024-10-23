@@ -18,8 +18,8 @@ import dev.findfirst.core.model.AddBkmkReq;
 import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.BookmarkTagPair;
 import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.repository.BookmarkJDBCRepository;
 import dev.findfirst.core.repository.BookmarkRepository;
-import dev.findfirst.core.service.BookmarkService;
 import dev.findfirst.security.jwt.TenantAuthenticationToken;
 import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 
@@ -51,18 +51,20 @@ class BookmarkControllerTest {
   @Container
   @ServiceConnection
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
-  @Autowired
-  private BookmarkService bookmarkService;
 
   @Autowired
-  BookmarkControllerTest(BookmarkRepository bookmarkRepository, TestRestTemplate tRestTemplate,
+  BookmarkControllerTest(BookmarkRepository bookmarkRepository,
+      BookmarkJDBCRepository bookmarkJDBCRepository, TestRestTemplate tRestTemplate,
       WebApplicationContext wContext) {
     this.bkmkRepo = bookmarkRepository;
+    this.bookmarkJDBCRepository = bookmarkJDBCRepository;
     this.restTemplate = tRestTemplate;
     this.wac = wContext;
   }
 
+
   final BookmarkRepository bkmkRepo;
+  final BookmarkJDBCRepository bookmarkJDBCRepository;
   final TestRestTemplate restTemplate;
   final WebApplicationContext wac;
 
@@ -290,6 +292,14 @@ class BookmarkControllerTest {
     client.post().uri("/api/bookmark/import").accept(MediaType.APPLICATION_NDJSON)
         .cookie("findfirst", cookie).bodyValue(bodyBuilder.build()).exchange().expectStatus().isOk()
         .expectBodyList(Bookmark.class).hasSize(3);
+  }
+
+  @Test
+  void jdbcRepo() {
+    long count = bookmarkJDBCRepository.count();
+    assertTrue(count > 0);
+    System.out.println("The count is " + count);
+    System.out.println(bookmarkJDBCRepository.findAll());
   }
 
   private List<Bookmark> saveBookmarks(AddBkmkReq... newBkmks) {

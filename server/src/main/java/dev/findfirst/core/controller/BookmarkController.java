@@ -53,17 +53,15 @@ public class BookmarkController {
   private final TagService tagService;
 
   /**
-   * TODO: this is an example on how to set TenantContext
-   * running admin actions DB.
-   * We could use this or something similar to reset test USERS,
-   * and cron jobs.
+   * TODO: this is an example on how to set TenantContext running admin actions DB. We could use
+   * this or something similar to reset test USERS, and cron jobs.
    **/
   @PostConstruct
   private void getAllUsersBookmarks() {
     var simpleGrantedAuthority = new SimpleGrantedAuthority("admin");
     var grantedAuthList = Collections.singletonList(simpleGrantedAuthority);
-    TenantAuthenticationToken tenantAuthenticationToken = new TenantAuthenticationToken("admin@findfirst.dev", 2,
-        grantedAuthList, -1000);
+    TenantAuthenticationToken tenantAuthenticationToken =
+        new TenantAuthenticationToken("admin@findfirst.dev", 2, grantedAuthList, -1000);
     SecurityContextHolder.getContext().setAuthentication(tenantAuthenticationToken);
     SecurityContextHolder.clearContext();
   }
