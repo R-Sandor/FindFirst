@@ -10,7 +10,7 @@ import java.util.UUID;
 import dev.findfirst.security.jwt.service.RefreshTokenService;
 import dev.findfirst.security.userAuth.models.RefreshToken;
 import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
-import dev.findfirst.security.userAuth.tenant.data.TenantService;
+import dev.findfirst.security.userAuth.tenant.service.TenantService;
 import dev.findfirst.security.userAuth.utils.Constants;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
 import dev.findfirst.users.exceptions.NoUserFoundException;

@@ -14,6 +14,8 @@ import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.hibernate.Session;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.data.relational.core.query.Criteria;
+import org.springframework.data.relational.core.query.Query;
 import org.springframework.stereotype.Component;
 
 @Aspect
@@ -35,6 +37,15 @@ public class TenantAspect {
         DisableTenantFilter.class) == null || tenantContext.getTenantId() == -1000) {
       entityManager.unwrap(Session.class).enableFilter(Constants.TENANT_FILTER_NAME)
           .setParameter(Constants.TENANT_PARAMETER_NAME, tenantContext.getTenantId());
+    }
+  }
+
+  @Before("execution(* org.springframework.data.repository.CrudRepository.*(..))")
+  public void addUserIdToQuery(JoinPoint joinPoint) {
+    if (joinPoint.getArgs().length > 0 && joinPoint.getArgs()[0] instanceof Query) {
+      Criteria criteria = Criteria.where("tenant_id").is(tenantContext.getTenantId());
+      Query updatedQuery = Query.query(criteria); // Assuming your query needs to be created this way
+      joinPoint.getArgs()[0] = updatedQuery; // Replacing the old query with the new one
     }
   }
 }

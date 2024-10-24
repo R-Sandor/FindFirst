@@ -5,8 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.model.TagJDBC;
+import dev.findfirst.core.repository.TagJDBCRepository;
 import dev.findfirst.core.repository.TagRepository;
-
+import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
+import dev.findfirst.security.userAuth.tenant.repository.TenantRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,14 +18,30 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TagService {
 
+  private final TagJDBCRepository tagRepositoryJDBC;
+
   private final TagRepository tagRepository;
+
+  private final TenantContext tenantContext;
+
+  private TenantRepository tRepository;
 
   private Tag addTag(String title) {
     return tagRepository.saveAndFlush(new Tag(title));
   }
 
+  private TagJDBC addTagJDBC(String title) {
+    var tenantId = tenantContext.getTenantId();
+    var tenant = tRepository.findById(tenantId).orElseThrow();
+
+    var tag = new TagJDBC(tenantId, tenant.getCreatedDate(), tenant.getCreatedBy(), tenant.getLastModifiedBy(),
+        tenant.getLastModifiedDate(), title);
+    return tagRepositoryJDBC.save(tag);
+  }
+
   /**
-   * Simple checks if there is a tag with given tag title if not creates one and returns the Tag.
+   * Simple checks if there is a tag with given tag title if not creates one and
+   * returns the Tag.
    *
    * @param title
    * @return Tag existing tag with ID or a new Tag with the given title.
@@ -32,13 +51,36 @@ public class TagService {
   }
 
   /**
-   * Create List of tags by titles. Creating a new tags for ones that do not exist and returning
+   * Simple checks if there is a tag with given tag title if not creates one and
+   * returns the Tag.
+   *
+   * @param title
+   * @return Tag existing tag with ID or a new Tag with the given title.
+   */
+  public TagJDBC findOrCreateTagJDBC(String title) {
+    return findByTagTitleJDBC(title).orElseGet(() -> addTagJDBC(title));
+  }
+
+  /**
+   * Create List of tags by titles. Creating a new tags for ones that do not exist
+   * and returning
    * list of existing tags.
    *
    * @param titles List of strings
    */
   public List<Tag> addAll(String... titles) {
     return Arrays.stream(titles).map(t -> findOrCreateTag(t)).toList();
+  }
+
+  /**
+   * Create List of tags by titles. Creating a new tags for ones that do not exist
+   * and returning
+   * list of existing tags.
+   *
+   * @param titles List of strings
+   */
+  public List<TagJDBC> addAllJDBC(String... titles) {
+    return Arrays.stream(titles).map(t -> findOrCreateTagJDBC(t)).toList();
   }
 
   public List<Tag> deleteAllTags() {
@@ -61,6 +103,10 @@ public class TagService {
 
   public Optional<Tag> findById(Long id) {
     return tagRepository.findById(id);
+  }
+
+  public Optional<TagJDBC> findByTagTitleJDBC(@NonNull String tag_title) {
+    return tagRepositoryJDBC.findByTagTitle(tag_title);
   }
 
   public Optional<Tag> findByTagTitle(@NonNull String tag_title) {
