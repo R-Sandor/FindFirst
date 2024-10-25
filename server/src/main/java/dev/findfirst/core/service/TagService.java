@@ -10,6 +10,7 @@ import dev.findfirst.core.repository.TagJDBCRepository;
 import dev.findfirst.core.repository.TagRepository;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 import dev.findfirst.security.userAuth.tenant.repository.TenantRepository;
+
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,14 +35,13 @@ public class TagService {
     var tenantId = tenantContext.getTenantId();
     var tenant = tRepository.findById(tenantId).orElseThrow();
 
-    var tag = new TagJDBC(tenantId, tenant.getCreatedDate(), tenant.getCreatedBy(), tenant.getLastModifiedBy(),
-        tenant.getLastModifiedDate(), title);
+    var tag = new TagJDBC(tenantId, tenant.getCreatedDate(), tenant.getCreatedBy(),
+        tenant.getLastModifiedBy(), tenant.getLastModifiedDate(), title);
     return tagRepositoryJDBC.save(tag);
   }
 
   /**
-   * Simple checks if there is a tag with given tag title if not creates one and
-   * returns the Tag.
+   * Simple checks if there is a tag with given tag title if not creates one and returns the Tag.
    *
    * @param title
    * @return Tag existing tag with ID or a new Tag with the given title.
@@ -51,8 +51,7 @@ public class TagService {
   }
 
   /**
-   * Simple checks if there is a tag with given tag title if not creates one and
-   * returns the Tag.
+   * Simple checks if there is a tag with given tag title if not creates one and returns the Tag.
    *
    * @param title
    * @return Tag existing tag with ID or a new Tag with the given title.
@@ -62,8 +61,7 @@ public class TagService {
   }
 
   /**
-   * Create List of tags by titles. Creating a new tags for ones that do not exist
-   * and returning
+   * Create List of tags by titles. Creating a new tags for ones that do not exist and returning
    * list of existing tags.
    *
    * @param titles List of strings
@@ -73,8 +71,7 @@ public class TagService {
   }
 
   /**
-   * Create List of tags by titles. Creating a new tags for ones that do not exist
-   * and returning
+   * Create List of tags by titles. Creating a new tags for ones that do not exist and returning
    * list of existing tags.
    *
    * @param titles List of strings

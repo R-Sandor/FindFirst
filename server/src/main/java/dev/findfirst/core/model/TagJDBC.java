@@ -4,11 +4,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Table("tag")
 public record TagJDBC(

@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 
 import dev.findfirst.security.userAuth.tenant.model.Tenant;
 import dev.findfirst.security.userAuth.tenant.repository.TenantRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
