@@ -7,7 +7,6 @@ import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.repository.TagRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +14,6 @@ public class SearchService {
 
   private final TagRepository tagRepository;
 
-  @Autowired
   public SearchService(TagRepository tagRepository) {
     this.tagRepository = tagRepository;
   }

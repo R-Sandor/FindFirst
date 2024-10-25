@@ -24,7 +24,7 @@ public class TagService {
 
   private final TenantContext tenantContext;
 
-  private TenantRepository tRepository;
+  private final TenantRepository tRepository;
 
   private Tag addTag(String title) {
     return tagRepository.saveAndFlush(new Tag(title));
@@ -105,8 +105,8 @@ public class TagService {
     return tagRepository.findById(id);
   }
 
-  public Optional<TagJDBC> findByTagTitleJDBC(@NonNull String tag_title) {
-    return tagRepositoryJDBC.findByTagTitle(tag_title);
+  public Optional<TagJDBC> findByTagTitleJDBC(@NonNull String title) {
+    return tagRepositoryJDBC.findByTitle(title);
   }
 
   public Optional<Tag> findByTagTitle(@NonNull String tag_title) {

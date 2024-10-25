@@ -3,6 +3,7 @@ package dev.findfirst.core.controller;
 import java.util.List;
 
 import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.model.TagJDBC;
 import dev.findfirst.core.service.TagService;
 
 import lombok.RequiredArgsConstructor;
@@ -39,8 +40,8 @@ public class TagController {
   }
 
   @PostMapping(value = "/tag")
-  public ResponseEntity<Tag> addTag(@RequestParam("tag") String tag) {
-    return ResponseEntity.ok(tagService.findOrCreateTag(tag));
+  public ResponseEntity<TagJDBC> addTag(@RequestParam("tag") String tag) {
+    return ResponseEntity.ok(tagService.findOrCreateTagJDBC(tag));
   }
 
   /**

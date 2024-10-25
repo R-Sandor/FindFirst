@@ -8,15 +8,17 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Table("tag")
 public record TagJDBC(
     @Id Long id,
-    Integer tenantId,
-    Date createdDate,
-    String createdBy,
-    String lastModifiedBy,
-    Date lastModifiedDate,
-    String title,
+    @JsonIgnore Integer tenantId,
+    @JsonIgnore Date createdDate,
+    @JsonIgnore String createdBy,
+    @JsonIgnore String lastModifiedBy,
+    @JsonIgnore Date lastModifiedDate,
+    String tag_title,
     @MappedCollection(idColumn = "tag_id") Set<BookmarkTag> bookmarks) {
 
   public TagJDBC(
