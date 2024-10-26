@@ -11,11 +11,11 @@ const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/api";
 export default function ImportModal({
   file,
   show,
-  'data-testid': dataTestId,
+  "data-testid": dataTestId,
 }: {
   file: Blob | undefined;
   show: boolean | undefined;
-  'data-testid'?: string;
+  "data-testid"?: string;
 }) {
   const [modalShow, setModalShow] = useState(show);
   const [uploadFileName, setUploadFileName] = useState(
@@ -58,12 +58,15 @@ export default function ImportModal({
     while (true) {
       const { done, value } = await reader.read();
       if (done) {
+        console.log("DONE");
         setDone(true);
         return;
       }
       const chunk = decoder.decode(value);
       if (chunk.length > 1) {
+        console.log("Parse Chunk");
         const obj = JSON.parse(chunk);
+        console.log(obj);
         if (obj.id) {
           bkmks.push(obj as Bookmark);
           setImported([...bkmks]);
