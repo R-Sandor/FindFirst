@@ -3,8 +3,6 @@ package dev.findfirst.core.model;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.hibernate.FetchMode;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

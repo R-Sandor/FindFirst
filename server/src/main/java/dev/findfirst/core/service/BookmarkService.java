@@ -1,6 +1,8 @@
 package dev.findfirst.core.service;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -213,7 +215,8 @@ public class BookmarkService {
         if (!url.equals("") || url == null) {
           title = (title.equals("") || title == null) ? url : title;
           log.debug("Bookmark contains: \n\t{},\n\t{}", title, url);
-          return addBookmark(new AddBkmkReq(title, url, null, true));
+          return addBookmark(
+              new AddBkmkReq(title, URLDecoder.decode(url, StandardCharsets.UTF_8), null, true));
         }
       } catch (IOException | BookmarkAlreadyExistsException | TagNotFoundException ex) {
         log.error(ex.getMessage());
