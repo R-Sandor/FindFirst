@@ -63,6 +63,7 @@ export default function ImportModal({
         return;
       }
       const chunk = decoder.decode(value);
+      console.log(chunk);
       if (chunk.length > 1) {
         console.log("Parse Chunk");
         const obj = JSON.parse(chunk);
