@@ -1,9 +1,11 @@
 package dev.findfirst.core.service;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import dev.findfirst.core.model.BookmarkTag;
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.model.TagJDBC;
 import dev.findfirst.core.repository.TagJDBCRepository;
@@ -34,14 +36,19 @@ public class TagService {
   private TagJDBC addTagJDBC(String title) {
     var tenantId = tenantContext.getTenantId();
     var tenant = tRepository.findById(tenantId).orElseThrow();
+    System.out.println(tagRepositoryJDBC.count());
 
-    var tag = new TagJDBC(tenantId, tenant.getCreatedDate(), tenant.getCreatedBy(),
-        tenant.getLastModifiedBy(), tenant.getLastModifiedDate(), title);
-    return tagRepositoryJDBC.save(tag);
+    System.out.println(List.of(tagRepositoryJDBC.findAll()));
+    var tag = new TagJDBC(null, tenantId, tenant.getCreatedDate(), tenant.getCreatedBy(),
+        tenant.getLastModifiedBy(), tenant.getLastModifiedDate(), title,
+        new HashSet<BookmarkTag>());
+    tag = tagRepositoryJDBC.save(tag);
+    return tag;
   }
 
   /**
-   * Simple checks if there is a tag with given tag title if not creates one and returns the Tag.
+   * Simple checks if there is a tag with given tag title if not creates one and
+   * returns the Tag.
    *
    * @param title
    * @return Tag existing tag with ID or a new Tag with the given title.
@@ -51,7 +58,8 @@ public class TagService {
   }
 
   /**
-   * Simple checks if there is a tag with given tag title if not creates one and returns the Tag.
+   * Simple checks if there is a tag with given tag title if not creates one and
+   * returns the Tag.
    *
    * @param title
    * @return Tag existing tag with ID or a new Tag with the given title.
@@ -61,7 +69,8 @@ public class TagService {
   }
 
   /**
-   * Create List of tags by titles. Creating a new tags for ones that do not exist and returning
+   * Create List of tags by titles. Creating a new tags for ones that do not exist
+   * and returning
    * list of existing tags.
    *
    * @param titles List of strings
@@ -71,7 +80,8 @@ public class TagService {
   }
 
   /**
-   * Create List of tags by titles. Creating a new tags for ones that do not exist and returning
+   * Create List of tags by titles. Creating a new tags for ones that do not exist
+   * and returning
    * list of existing tags.
    *
    * @param titles List of strings

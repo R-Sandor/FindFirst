@@ -11,4 +11,5 @@ import org.springframework.data.repository.query.Param;
 public interface TagJDBCRepository extends CrudRepository<TagJDBC, Long> {
   @Query("SELECT t FROM Tag t WHERE t.tag_title = :title")
   Optional<TagJDBC> findByTitle(@Param("title") String title);
+
 }

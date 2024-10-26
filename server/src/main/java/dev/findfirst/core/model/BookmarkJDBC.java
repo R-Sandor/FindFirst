@@ -25,6 +25,7 @@ public class BookmarkJDBC {
   private String url;
   private String screenshotUrl;
   private Boolean scrapable;
+
   @MappedCollection(idColumn = "bookmark_id")
   Set<BookmarkTag> tags = new HashSet<>();
 

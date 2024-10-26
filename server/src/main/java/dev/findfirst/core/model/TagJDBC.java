@@ -5,30 +5,40 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.MappedCollection;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Table("tag")
-public record TagJDBC(
-    @Id Long id,
-    @JsonIgnore Integer tenantId,
-    @JsonIgnore Date createdDate,
-    @JsonIgnore String createdBy,
-    @JsonIgnore String lastModifiedBy,
-    @JsonIgnore Date lastModifiedDate,
-    String tag_title,
-    @MappedCollection(idColumn = "tag_id") Set<BookmarkTag> bookmarks) {
+public class TagJDBC {
+  @Id
+  private Long id;
 
-  public TagJDBC(
-      Integer tenantId,
-      Date createdDate,
-      String createdBy,
-      String lastModifiedBy,
-      Date lastModifiedDate,
-      String title) {
-    this(null, tenantId, createdDate, createdBy, lastModifiedBy, lastModifiedDate, title, new HashSet<>());
+  @JsonIgnore
+  private int tenantId;
 
-  }
+  @JsonIgnore
+  private Date createdDate = new Date();
 
+  @JsonIgnore
+  private String createdBy = "system";
+
+  @JsonIgnore
+  private String lastModifiedBy = "system";
+
+  @JsonIgnore
+  private Date lastModifiedDate = new Date();
+
+  @Column("tag_title")
+  private String title;
+
+  @Transient
+  private Set<BookmarkTag> bookmarks = new HashSet<>();
 }
