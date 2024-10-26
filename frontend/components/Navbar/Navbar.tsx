@@ -65,19 +65,21 @@ const GlobalNavbar: React.FC = () => {
           />
           FindFirst
         </Navbar.Brand>
-        <div className={`d-flex flex-grow-1 mx-3 ${navbarView.searchBar}`}>
-          <input
-            type="text"
-            className={`${navbarView.searchBarInput}`}
-            placeholder="Search"
-          />
-          <button
-            className={`btn ms-2 ${navbarView.searchBarBtn}`}
-            type="submit"
-          >
-            <i className="bi bi-search"></i>
-          </button>
-        </div>
+        {userAuth === AuthStatus.Authorized ? (
+          <div className={`d-flex flex-grow-1 mx-3 ${navbarView.searchBar}`}>
+            <input
+              type="text"
+              className={`${navbarView.searchBarInput}`}
+              placeholder="Search"
+            />
+            <button
+              className={`btn ms-2 ${navbarView.searchBarBtn}`}
+              type="submit"
+            >
+              <i className="bi bi-search"></i>
+            </button>
+          </div>
+        ) : null}
         <div className={`mx-3 ${navbarView.navBtns}`}>
           {userAuth === AuthStatus.Authorized ? (
             <ImportModal
