@@ -66,6 +66,9 @@ export default function ImportModal({
       console.log(chunk);
       if (chunk.length > 1) {
         console.log("Parse Chunk");
+        const strs = JSON.stringify(chunk);
+        const obj2 = JSON.parse(strs);
+        console.log(obj2);
         const obj = JSON.parse(chunk);
         console.log(obj);
         if (obj.id) {
