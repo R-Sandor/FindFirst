@@ -10,6 +10,7 @@ import { hitEnter } from "./utilities/fireEvents";
 import { TagReqPayload } from "@type/Bookmarks/Tag";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import { Providers } from "@/app/providers";
+import { debug } from "vitest-preview";
 const userEvnt = userEvent.setup();
 
 const data = JSON.stringify(bkmkResp, null, 2);
@@ -222,13 +223,15 @@ describe("Bookmark Operation.", () => {
     const expectedBookmark: Bookmark = {
       id: 10,
       title: "foodnetwork.com",
-      url: "foodnetwork.com",
+      url: "https://foodnetwork.com",
+      screenshotUrl: "foodnetwork.com",
       tags: [
         {
           id: 1,
-          tag_title: "Cooking",
+          tag_title: "cooking",
         },
       ],
+      scrapable: true,
     };
 
     mock.onPost(tagsAPI, ["cooking"]).reply(() => {
@@ -240,6 +243,7 @@ describe("Bookmark Operation.", () => {
         title: "https://foodnetwork.com",
         url: "https://foodnetwork.com",
         tagIds: [1],
+        scrapable: true,
       })
       .reply(() => {
         return [200, JSON.stringify(expectedBookmark)];
