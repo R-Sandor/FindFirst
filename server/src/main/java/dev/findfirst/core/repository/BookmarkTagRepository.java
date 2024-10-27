@@ -22,6 +22,6 @@ public interface BookmarkTagRepository extends CrudRepository<BookmarkTag, Long>
       AND bk.id = :bkId
       """)
   List<Integer> getAllTagIdsForBookmark(@Param("bkId") Integer bookmark,
-      @Param(value = "tenantId") Integer tenantId);
+      @Param("tenantId") Integer tenantId);
 
 }
