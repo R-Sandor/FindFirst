@@ -4,9 +4,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.Transient;
+
 import lombok.Data;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("bookmark")
@@ -26,7 +27,7 @@ public class BookmarkJDBC {
   private String screenshotUrl;
   private Boolean scrapable;
 
-  @MappedCollection(idColumn = "bookmark_id")
+  @Transient
   Set<BookmarkTag> tags = new HashSet<>();
 
 }

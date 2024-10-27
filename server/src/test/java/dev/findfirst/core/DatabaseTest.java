@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.repository.BookmarkRepository;
+import dev.findfirst.core.repository.BookmarkTagRepository;
 import dev.findfirst.core.service.TagService;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 
@@ -33,11 +34,13 @@ public class DatabaseTest {
 
   final BookmarkRepository bkmkRepo;
   final TagService tagService;
+  final BookmarkTagRepository bookmarkTagRepository;
 
   @Autowired
-  DatabaseTest(BookmarkRepository bkmkRepo, TagService tagService) {
+  DatabaseTest(BookmarkRepository bkmkRepo, TagService tagService, BookmarkTagRepository btRepo) {
     this.bkmkRepo = bkmkRepo;
     this.tagService = tagService;
+    this.bookmarkTagRepository = btRepo;
   }
 
   @Test
@@ -57,7 +60,15 @@ public class DatabaseTest {
   @Test
   void getAllBookmarksForTag() {
     var tag = tagService.getTagWithBookmarks(1l);
-    System.out.println(tag.getBookmarks());
     assertEquals(2, tag.getBookmarks().size());
+  }
+
+  @Test
+  void getAllTagIdsForUsersBookmarks() {
+    int tenatId = 1;
+    var tags = bookmarkTagRepository.getUserAllTagIdsToBookmarks(tenatId);
+    assertEquals(4, tags.size());
+    tags = bookmarkTagRepository.getAllTagIdsForBookmark(1, tenatId);
+    assertEquals(2, tags.size());
   }
 }

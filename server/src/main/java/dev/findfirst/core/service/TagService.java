@@ -5,8 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
-
 import dev.findfirst.core.model.BookmarkTag;
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.model.TagJDBC;
@@ -15,8 +13,10 @@ import dev.findfirst.core.repository.TagJDBCRepository;
 import dev.findfirst.core.repository.TagRepository;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 import dev.findfirst.security.userAuth.tenant.repository.TenantRepository;
+
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -48,8 +48,7 @@ public class TagService {
   }
 
   /**
-   * Simple checks if there is a tag with given tag title if not creates one and
-   * returns the Tag.
+   * Simple checks if there is a tag with given tag title if not creates one and returns the Tag.
    *
    * @param title
    * @return Tag existing tag with ID or a new Tag with the given title.
@@ -59,8 +58,7 @@ public class TagService {
   }
 
   /**
-   * Simple checks if there is a tag with given tag title if not creates one and
-   * returns the Tag.
+   * Simple checks if there is a tag with given tag title if not creates one and returns the Tag.
    *
    * @param title
    * @return Tag existing tag with ID or a new Tag with the given title.
@@ -77,8 +75,7 @@ public class TagService {
   }
 
   /**
-   * Create List of tags by titles. Creating a new tags for ones that do not exist
-   * and returning
+   * Create List of tags by titles. Creating a new tags for ones that do not exist and returning
    * list of existing tags.
    *
    * @param titles List of strings
@@ -88,8 +85,7 @@ public class TagService {
   }
 
   /**
-   * Create List of tags by titles. Creating a new tags for ones that do not exist
-   * and returning
+   * Create List of tags by titles. Creating a new tags for ones that do not exist and returning
    * list of existing tags.
    *
    * @param titles List of strings
