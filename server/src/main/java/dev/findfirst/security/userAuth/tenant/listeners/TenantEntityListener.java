@@ -1,5 +1,6 @@
 package dev.findfirst.security.userAuth.tenant.listeners;
 
+
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreRemove;
@@ -18,6 +19,8 @@ public class TenantEntityListener {
   @PrePersist
   @PreUpdate
   public void prePersistAndUpdate(Object object) {
+    if (!isListenerEnabled.get())
+      return;
     if (object instanceof Tenantable) {
       ((Tenantable) object).setTenantId(tenantContext.getTenantId());
     }
@@ -25,9 +28,21 @@ public class TenantEntityListener {
 
   @PreRemove
   public void preRemove(Object object) {
+    if (!isListenerEnabled.get())
+      return;
     if (object instanceof Tenantable
         && ((Tenantable) object).getTenantId() != tenantContext.getTenantId()) {
       throw new EntityNotFoundException();
     }
+  }
+
+  private static final ThreadLocal<Boolean> isListenerEnabled = ThreadLocal.withInitial(() -> true);
+
+  public static void disableListener() {
+    isListenerEnabled.set(false);
+  }
+
+  public static void enableListener() {
+    isListenerEnabled.set(true);
   }
 }

@@ -16,4 +16,7 @@ public interface BookmarkRepository extends TenantableRepository<Bookmark> {
   List<Bookmark> findByTag(Tag tag);
 
   Optional<Bookmark> findByUrl(String url);
+
+  @Query("SELECT b FROM Bookmark b WHERE b.screenshotUrl IS NULL OR TRIM(b.screenshotUrl)=''")
+  List<Bookmark> findBookmarksWithEmptyOrBlankScreenShotUrl();
 }
