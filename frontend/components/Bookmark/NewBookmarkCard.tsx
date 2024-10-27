@@ -39,6 +39,7 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
     createBmk.id = response.data.id;
     createBmk.tags = response.data.tags;
     createBmk.screenshotUrl = response.data.screenshotUrl;
+    createBmk.scrapable = response.data.scrapable;
     createBmk.title = response.data.title;
   });
   return createBmk;
@@ -154,11 +155,13 @@ export default function NewBookmarkCard() {
 
   function stripHttp(fullUrl: string) {
     fullUrl = fullUrl.toLowerCase();
-    return fullUrl.startsWith("https://") ? fullUrl.replace("https://", '') : fullUrl.replace("http://", '')
+    return fullUrl.startsWith("https://")
+      ? fullUrl.replace("https://", "")
+      : fullUrl.replace("http://", "");
   }
 
   function getRootUrl(url: string) {
-    return url.split("/")[0]
+    return url.split("/")[0];
   }
 
   const bookmarkSchema = Yup.object().shape({

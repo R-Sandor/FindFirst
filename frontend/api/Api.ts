@@ -1,6 +1,6 @@
 import authService from "@services/auth.service";
 import { NewBookmarkRequest } from "@type/Bookmarks/NewBookmark";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/api";
 
 let failCount = 0;
@@ -17,27 +17,28 @@ export const instance = axios.create({
 });
 
 instance.interceptors.response.use(
-  response => { 
+  (response) => {
     failCount = 0;
     return response;
-  }, 
-  error => {
+  },
+  (error) => {
     if (error.response.status === 401) {
-      console.log("Error on fetch")
+      console.log("Error on fetch");
       if (failCount > 1) {
         authService.logout();
         failCount = 0;
         return error;
       }
-      const user = authService.getUser() 
-      if(user == null) {
+      const user = authService.getUser();
+      if (user == null) {
         authService.logout();
         failCount = 0;
       }
       failCount++;
-      api.refreshToken(user!.refreshToken)
+      api.refreshToken(user!.refreshToken);
     }
-  });
+  },
+);
 
 function parseData(data: string) {
   if (data.length != 0 || data || data != "") {
@@ -152,11 +153,8 @@ const api = {
     return instance.get(`tag/bkmk?bookmarkId=${bkmkId}`);
   },
   refreshToken(token: string) {
-    return instance.post(`refreshToken/token?token=${token}`)
-  }
+    return instance.post(`refreshToken/token?token=${token}`);
+  },
 };
 
-
 export default api;
-
-
