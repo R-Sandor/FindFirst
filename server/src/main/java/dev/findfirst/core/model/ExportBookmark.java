@@ -47,7 +47,7 @@ public class ExportBookmark {
       time = date.getTime();
     }
     return """
-          \n<DT><H3 ADD_DATE="%s" LAST_MODIFIED="%s">%s<H3>
+          \n<DT><H3 ADD_DATE="%s" LAST_MODIFIED="%s">%s</H3>
           <DL><p>
         """.formatted(time.toString(), time.toString(), tb.tagTitle());
   }
