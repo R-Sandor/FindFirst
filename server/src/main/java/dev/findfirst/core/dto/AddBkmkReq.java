@@ -1,4 +1,4 @@
-package dev.findfirst.core.model;
+package dev.findfirst.core.dto;
 
 import java.util.List;
 

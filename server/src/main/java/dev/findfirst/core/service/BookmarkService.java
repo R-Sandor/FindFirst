@@ -16,7 +16,7 @@ import jakarta.validation.constraints.NotNull;
 
 import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
-import dev.findfirst.core.model.AddBkmkReq;
+import dev.findfirst.core.dto.AddBkmkReq;
 import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.ExportBookmark;
 import dev.findfirst.core.model.Tag;

@@ -5,9 +5,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.BookmarkTag;
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.model.TagJDBC;
+import dev.findfirst.core.repository.BookmarkJDBCRepository;
+import dev.findfirst.core.repository.BookmarkRepository;
 import dev.findfirst.core.repository.BookmarkTagRepository;
 import dev.findfirst.core.repository.TagJDBCRepository;
 import dev.findfirst.core.repository.TagRepository;
@@ -25,6 +28,8 @@ public class TagService {
   private final TagJDBCRepository tagRepositoryJDBC;
 
   private final BookmarkTagRepository bookmarkTagRepository;
+
+  private final BookmarkJDBCRepository bookmarkRepo;
 
   private final TagRepository tagRepository;
 
@@ -53,8 +58,14 @@ public class TagService {
    * @param title
    * @return Tag existing tag with ID or a new Tag with the given title.
    */
-  public Tag findOrCreateTag(String title) {
-    return findByTagTitle(title).orElseGet(() -> addTag(title));
+  public TagDTO findOrCreateTag(String title) {
+    TagJDBC tagJDBC = findByTagTitleJDBC(title).orElseGet(() -> addTagJDBC(title));
+    // Find All Bookmarks for Tag
+
+    // bookmarkTagRepository.g
+    // bookmarkRepo.findAllById(tagJDBC.)
+    // return new TagDTO(tagJDBC.getId(), tagJDBC.getTitle(), )
+    return null;
   }
 
   /**
@@ -81,7 +92,8 @@ public class TagService {
    * @param titles List of strings
    */
   public List<Tag> addAll(String... titles) {
-    return Arrays.stream(titles).map(t -> findOrCreateTag(t)).toList();
+    // return Arrays.stream(titles).map(t -> findOrCreateTag(t)).toList();
+    return null;
   }
 
   /**

@@ -10,7 +10,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import dev.findfirst.core.model.AddBkmkReq;
+import dev.findfirst.core.dto.AddBkmkReq;
+import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.BookmarkTagPair;
 import dev.findfirst.core.model.Tag;
@@ -119,10 +120,11 @@ public class BookmarkController {
     };
 
     // Check if there is a tag by the given title.
-    Tag tag;
+    TagDTO tag;
     tag = tagService.findOrCreateTag(title);
 
-    return new Response<Tag>(action, tag).get();
+    // return new Response<Tag>(action, tag).get();
+    return null;
   }
 
   @PostMapping("/bookmark/{bookmarkID}/tagId")
