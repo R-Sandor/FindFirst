@@ -10,7 +10,6 @@ import dev.findfirst.core.model.BookmarkTag;
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.model.TagJDBC;
 import dev.findfirst.core.repository.BookmarkJDBCRepository;
-import dev.findfirst.core.repository.BookmarkRepository;
 import dev.findfirst.core.repository.BookmarkTagRepository;
 import dev.findfirst.core.repository.TagJDBCRepository;
 import dev.findfirst.core.repository.TagRepository;
