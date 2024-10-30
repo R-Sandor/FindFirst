@@ -2,6 +2,7 @@ package dev.findfirst.core.controller;
 
 import java.util.List;
 
+import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.model.TagJDBC;
 import dev.findfirst.core.service.TagService;
@@ -30,7 +31,7 @@ public class TagController {
   }
 
   @PostMapping("/tags")
-  public ResponseEntity<List<Tag>> addAllTags(@RequestBody String tags[]) {
+  public ResponseEntity<List<TagDTO>> addAllTags(@RequestBody String tags[]) {
     return ResponseEntity.ok(tagService.addAll(tags));
   }
 

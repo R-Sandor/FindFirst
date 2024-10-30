@@ -8,6 +8,7 @@ import jakarta.persistence.Transient;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("bookmark")
@@ -28,6 +29,7 @@ public class BookmarkJDBC {
   private Boolean scrapable;
 
   @Transient
+  @MappedCollection(idColumn = "bookmark_id")
   Set<BookmarkTag> tags = new HashSet<>();
 
 }

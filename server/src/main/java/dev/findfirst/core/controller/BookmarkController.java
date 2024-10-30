@@ -106,7 +106,7 @@ public class BookmarkController {
 
   @PostMapping(value = "/bookmark/{bookmarkID}/tag")
   @ResponseBody
-  public ResponseEntity<Tag> addTag(@PathVariable(value = "bookmarkID") @NotNull Long bookmarkId,
+  public ResponseEntity<TagDTO> addTag(@PathVariable(value = "bookmarkID") @NotNull Long bookmarkId,
       @RequestParam("tag") @Size(max = 512) @NotBlank String title) {
     final var bkmkOpt = bookmarkService.findById(bookmarkId);
 
@@ -115,16 +115,17 @@ public class BookmarkController {
     }
     var bookmark = bkmkOpt.get();
 
-    Consumer<Tag> action = (t) -> {
-      bookmarkService.addTagToBookmark(bookmark, t);
-    };
 
     // Check if there is a tag by the given title.
-    TagDTO tag;
-    tag = tagService.findOrCreateTag(title);
+    TagDTO tagDTO;
+    tagDTO = tagService.findOrCreateTag(title);
 
-    // return new Response<Tag>(action, tag).get();
-    return null;
+    var tag = tagService.findById(tagDTO.id()).orElseThrow();
+    
+    bookmarkService.addTagToBookmark(bookmark, tag);
+
+    return ResponseEntity.ofNullable(tagDTO);
+
   }
 
   @PostMapping("/bookmark/{bookmarkID}/tagId")
