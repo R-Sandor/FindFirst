@@ -17,8 +17,7 @@ public class RobotsFetcher {
 
     try {
       URL urlObj = new URI(url).toURL();
-      URL robotsUrl =
-          new URL(urlObj.getProtocol(), urlObj.getHost(), urlObj.getPort(), "/robots.txt");
+      URL robotsUrl = new URL(urlObj.getProtocol(), urlObj.getHost(), urlObj.getPort(), "/robots.txt");
       HttpURLConnection conn = (HttpURLConnection) robotsUrl.openConnection();
       conn.setRequestMethod("GET");
       conn.setConnectTimeout(2000);
@@ -35,5 +34,28 @@ public class RobotsFetcher {
     }
   }
 
-  public record RobotsTxtResponse(int statusCode, byte[] text, String contentType) {}
+  public record RobotsTxtResponse(int statusCode, byte[] text, String contentType) {
+
+    @Override
+    public final boolean equals(Object obj) {
+      if (obj != null && obj instanceof RobotsTxtResponse robotTxt) {
+        return robotTxt.statusCode() == this.statusCode() && robotTxt.text().equals(this.text())
+            && robotTxt.contentType.equals(this.contentType());
+      } else {
+        return false;
+      }
+
+    }
+
+    @Override
+    public final int hashCode() {
+      return this.statusCode() + this.text().hashCode() + this.contentType().hashCode();
+    }
+
+    @Override 
+    public final String toString() {
+      return String.format("Status: %s, contentType: %s", this.statusCode(), this.contentType());
+    }
+
+  }
 }
