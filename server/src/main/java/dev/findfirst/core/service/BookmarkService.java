@@ -28,8 +28,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
 @Service
@@ -223,5 +225,20 @@ public class BookmarkService {
       }
       return new Bookmark();
     }).delayElements(Duration.ofMillis(100));
+  }
+
+  @Scheduled(cron = "0 * 2 * * *", zone = "America/New_York")
+  @Transactional
+  public void addMissingScreenShotUrlToBookMarks() {
+    log.info("Executing addMissingScreenShotUrlToBookMarks");
+    List<Bookmark> list = bookmarkRepository.findBookmarksWithEmptyOrBlankScreenShotUrl();
+    list.forEach((bookmark) -> {
+      if (bookmark.getScrapable() != null && bookmark.getScrapable()) {
+        sManager.getScreenshot(bookmark.getUrl()).ifPresentOrElse(bookmark::setScreenshotUrl,
+            () -> log.error("Failed to scrap bookmark with id: {}", bookmark.getId()));
+      }
+    });
+    bookmarkRepository.saveAll(list);
+    log.info("Finished addMissingScreenShotUrlToBookMarks");
   }
 }
