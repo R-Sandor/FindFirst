@@ -14,14 +14,14 @@ import java.util.Optional;
 
 import jakarta.validation.constraints.NotNull;
 
+import dev.findfirst.core.dto.AddBkmkReq;
 import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
-import dev.findfirst.core.dto.AddBkmkReq;
-import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.ExportBookmark;
-import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.model.TagBookmarks;
-import dev.findfirst.core.repository.BookmarkRepository;
+import dev.findfirst.core.model.jpa.Bookmark;
+import dev.findfirst.core.model.jpa.Tag;
+import dev.findfirst.core.repository.jpa.BookmarkRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,9 +37,10 @@ import reactor.core.publisher.Flux;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+// @Transactional(transactionManager = "jpaTransactionManager")
 public class BookmarkService {
 
-  private final BookmarkRepository bookmarkRepository;
+  private BookmarkRepository bookmarkRepository;
 
   private final TagService tagService;
 

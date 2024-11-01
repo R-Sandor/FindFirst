@@ -3,9 +3,9 @@ package dev.findfirst.core.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import dev.findfirst.core.model.Bookmark;
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.repository.TagRepository;
+import dev.findfirst.core.model.jpa.Bookmark;
+import dev.findfirst.core.model.jpa.Tag;
+import dev.findfirst.core.repository.jpa.TagRepository;
 
 import org.springframework.stereotype.Service;
 

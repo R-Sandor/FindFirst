@@ -1,4 +1,4 @@
-package dev.findfirst.core.model;
+package dev.findfirst.core.model.jdbc;
 
 import java.util.Date;
 import java.util.HashSet;

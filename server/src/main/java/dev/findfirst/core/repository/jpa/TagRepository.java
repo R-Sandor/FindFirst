@@ -1,9 +1,9 @@
-package dev.findfirst.core.repository;
+package dev.findfirst.core.repository.jpa;
 
 import java.util.List;
 import java.util.Optional;
 
-import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.model.jpa.Tag;
 import dev.findfirst.security.userAuth.tenant.repository.TenantableRepository;
 
 import org.springframework.data.jpa.repository.Query;

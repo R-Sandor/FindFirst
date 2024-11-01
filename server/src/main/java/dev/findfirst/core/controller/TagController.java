@@ -3,8 +3,8 @@ package dev.findfirst.core.controller;
 import java.util.List;
 
 import dev.findfirst.core.dto.TagDTO;
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.model.TagJDBC;
+import dev.findfirst.core.model.jdbc.TagJDBC;
+import dev.findfirst.core.model.jpa.Tag;
 import dev.findfirst.core.service.TagService;
 
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package dev.findfirst.core.model;
+package dev.findfirst.core.model.jpa;
 
 import java.util.HashSet;
 import java.util.Set;

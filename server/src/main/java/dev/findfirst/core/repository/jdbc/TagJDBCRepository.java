@@ -1,9 +1,9 @@
-package dev.findfirst.core.repository;
+package dev.findfirst.core.repository.jdbc;
 
 import java.util.List;
 import java.util.Optional;
 
-import dev.findfirst.core.model.TagJDBC;
+import dev.findfirst.core.model.jdbc.TagJDBC;
 
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.repository.CrudRepository;

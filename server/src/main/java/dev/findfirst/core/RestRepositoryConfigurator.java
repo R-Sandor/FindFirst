@@ -1,6 +1,6 @@
 package dev.findfirst.core;
 
-import dev.findfirst.core.model.Bookmark;
+import dev.findfirst.core.model.jpa.Bookmark;
 
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
 import org.springframework.data.rest.webmvc.config.RepositoryRestConfigurer;

@@ -3,9 +3,12 @@ package dev.findfirst.core.model;
 import java.sql.Date;
 import java.util.List;
 
+import dev.findfirst.core.model.jpa.Bookmark;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 @NoArgsConstructor
 @AllArgsConstructor

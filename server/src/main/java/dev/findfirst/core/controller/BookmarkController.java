@@ -12,9 +12,9 @@ import jakarta.validation.constraints.Size;
 
 import dev.findfirst.core.dto.AddBkmkReq;
 import dev.findfirst.core.dto.TagDTO;
-import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.BookmarkTagPair;
-import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.model.jpa.Bookmark;
+import dev.findfirst.core.model.jpa.Tag;
 import dev.findfirst.core.service.BookmarkService;
 import dev.findfirst.core.service.TagService;
 import dev.findfirst.core.utilies.Response;
@@ -121,7 +121,7 @@ public class BookmarkController {
     tagDTO = tagService.findOrCreateTag(title);
 
     var tag = tagService.findById(tagDTO.id()).orElseThrow();
-    
+
     bookmarkService.addTagToBookmark(bookmark, tag);
 
     return ResponseEntity.ofNullable(tagDTO);

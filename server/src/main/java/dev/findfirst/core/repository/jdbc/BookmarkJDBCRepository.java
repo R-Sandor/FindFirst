@@ -1,7 +1,7 @@
-package dev.findfirst.core.repository;
+package dev.findfirst.core.repository.jdbc;
 
 
-import dev.findfirst.core.model.BookmarkJDBC;
+import dev.findfirst.core.model.jdbc.BookmarkJDBC;
 
 import org.springframework.data.repository.CrudRepository;
 

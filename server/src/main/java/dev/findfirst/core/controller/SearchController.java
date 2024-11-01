@@ -4,10 +4,10 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 
-import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.SearchBkmkByTagReq;
 import dev.findfirst.core.model.SearchBkmkByTextReq;
 import dev.findfirst.core.model.SearchBkmkByTitleReq;
+import dev.findfirst.core.model.jpa.Bookmark;
 import dev.findfirst.core.utilies.Response;
 
 import org.springframework.http.HttpStatus;

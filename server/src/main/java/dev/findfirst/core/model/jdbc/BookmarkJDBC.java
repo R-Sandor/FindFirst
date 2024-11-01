@@ -1,22 +1,24 @@
-package dev.findfirst.core.model;
+package dev.findfirst.core.model.jdbc;
 
-import java.util.Date;
+import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.persistence.Transient;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.MappedCollection;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("bookmark")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Table("bookmark")
 public class BookmarkJDBC {
 
   @Id
-  Long id;
+  private Long id;
 
   private Integer tenantId;
   private Date createdDate;
@@ -28,8 +30,8 @@ public class BookmarkJDBC {
   private String screenshotUrl;
   private Boolean scrapable;
 
-  @Transient
   @MappedCollection(idColumn = "bookmark_id")
   Set<BookmarkTag> tags = new HashSet<>();
+
 
 }

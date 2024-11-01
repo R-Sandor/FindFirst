@@ -13,3 +13,15 @@ WHERE last_modified_by IS NULL;
 UPDATE tag
 SET created_by = 'system'
 WHERE created_by IS NULL;
+
+CREATE TABLE bookmark_jdbc AS
+SELECT * FROM bookmark;
+
+CREATE TABLE bookmark_tag_jdbc AS
+SELECT * FROM bookmark_tag;
+
+CREATE TABLE tag_jdbc AS
+SELECT * FROM tag;
+
+
+

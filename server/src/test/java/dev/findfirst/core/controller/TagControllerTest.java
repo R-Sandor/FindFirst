@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Optional;
 
 import dev.findfirst.core.annotations.IntegrationTest;
-import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.BookmarkTagPair;
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.repository.TagRepository;
+import dev.findfirst.core.model.jpa.Bookmark;
+import dev.findfirst.core.model.jpa.Tag;
+import dev.findfirst.core.repository.jpa.TagRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -8,29 +8,28 @@ import java.util.Optional;
 
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
-import dev.findfirst.core.model.BookmarkTag;
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.model.TagJDBC;
-import dev.findfirst.core.repository.BookmarkJDBCRepository;
-import dev.findfirst.core.repository.BookmarkTagRepository;
-import dev.findfirst.core.repository.TagJDBCRepository;
-import dev.findfirst.core.repository.TagRepository;
+import dev.findfirst.core.model.jdbc.BookmarkTag;
+import dev.findfirst.core.model.jdbc.TagJDBC;
+import dev.findfirst.core.model.jpa.Tag;
+import dev.findfirst.core.repository.jdbc.BookmarkTagRepository;
+import dev.findfirst.core.repository.jdbc.TagJDBCRepository;
+import dev.findfirst.core.repository.jpa.TagRepository;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 import dev.findfirst.security.userAuth.tenant.repository.TenantRepository;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+// import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+// @Transactional(transactionManager = "jpaTransactionManager")
 public class TagService {
 
   private final TagJDBCRepository tagRepositoryJDBC;
 
   private final BookmarkTagRepository bookmarkTagRepository;
-
-  private final BookmarkJDBCRepository bookmarkRepo;
 
   private final TagRepository tagRepository;
 
@@ -61,9 +60,9 @@ public class TagService {
    */
   public TagDTO findOrCreateTag(String title) {
     Tag t = findByTagTitle(title).orElseGet(() -> addTag(title));
-    
-    var tBkmks = t.getBookmarks().stream().map(b -> 
-      new BookmarkDTO(b.getId(), b.getTitle(), b.getUrl() , b.getScreenshotUrl() , b.getScrapable(), new ArrayList<TagDTO>())).toList();
+
+    var tBkmks = t.getBookmarks().stream().map(b -> new BookmarkDTO(b.getId(), b.getTitle(),
+        b.getUrl(), b.getScreenshotUrl(), b.getScrapable(), new ArrayList<TagDTO>())).toList();
 
 
 
@@ -82,7 +81,8 @@ public class TagService {
 
   public TagJDBC getTagWithBookmarks(Long tagId) {
     TagJDBC tag = tagRepositoryJDBC.findById(tagId).orElseThrow();
-    List<BookmarkTag> bookmarks = bookmarkTagRepository.findByTagId(tagId);
+    System.out.println(tag);
+    List<BookmarkTag> bookmarks = bookmarkTagRepository.findByTagId(tag.getId());
     tag.setBookmarks(new HashSet<>(bookmarks));
     return tag;
   }

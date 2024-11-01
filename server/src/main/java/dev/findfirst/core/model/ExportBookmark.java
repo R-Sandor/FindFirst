@@ -3,7 +3,10 @@ package dev.findfirst.core.model;
 import java.util.Date;
 import java.util.List;
 
+import dev.findfirst.core.model.jpa.Bookmark;
+
 import lombok.Data;
+
 
 /** Takes bookmarks and turns them into an html file in the form of a String. */
 @Data

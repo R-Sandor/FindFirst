@@ -15,11 +15,11 @@ import java.util.Optional;
 
 import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.dto.AddBkmkReq;
-import dev.findfirst.core.model.Bookmark;
 import dev.findfirst.core.model.BookmarkTagPair;
-import dev.findfirst.core.model.Tag;
-import dev.findfirst.core.repository.BookmarkJDBCRepository;
-import dev.findfirst.core.repository.BookmarkRepository;
+import dev.findfirst.core.model.jpa.Bookmark;
+import dev.findfirst.core.model.jpa.Tag;
+import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
+import dev.findfirst.core.repository.jpa.BookmarkRepository;
 import dev.findfirst.security.jwt.TenantAuthenticationToken;
 import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 
