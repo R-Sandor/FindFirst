@@ -2,11 +2,9 @@ package dev.findfirst.core.controller;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -19,7 +17,6 @@ import dev.findfirst.core.model.Tag;
 import dev.findfirst.core.service.BookmarkService;
 import dev.findfirst.core.service.TagService;
 import dev.findfirst.core.utilies.Response;
-import dev.findfirst.security.jwt.TenantAuthenticationToken;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,8 +24,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -157,7 +152,7 @@ public class BookmarkController {
     var t = tagService.getTagByTitle(title);
     var b = bookmarkService.findById(id);
 
-    return b.isPresent() ? new Response<Tag>((tag) -> bookmarkService.deleteTag(id, tag), t).get()
+    return b.isPresent() ? new Response<Tag>(tag -> bookmarkService.deleteTag(id, tag), t).get()
         : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 
@@ -168,7 +163,7 @@ public class BookmarkController {
     var t = tagService.findById(tagId);
     var b = bookmarkService.findById(id);
 
-    return b.isPresent() ? new Response<Tag>((tag) -> bookmarkService.deleteTag(id, tag), t).get()
+    return b.isPresent() ? new Response<Tag>(tag -> bookmarkService.deleteTag(id, tag), t).get()
         : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 

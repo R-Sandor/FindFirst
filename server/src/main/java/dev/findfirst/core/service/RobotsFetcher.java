@@ -18,7 +18,8 @@ public class RobotsFetcher {
 
     try {
       URL urlObj = new URI(url).toURL();
-      URL robotsUrl = new URL(urlObj.getProtocol(), urlObj.getHost(), urlObj.getPort(), "/robots.txt");
+      URL robotsUrl =
+          new URL(urlObj.getProtocol(), urlObj.getHost(), urlObj.getPort(), "/robots.txt");
       HttpURLConnection conn = (HttpURLConnection) robotsUrl.openConnection();
       conn.setRequestMethod("GET");
       conn.setConnectTimeout(2000);
