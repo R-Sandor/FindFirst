@@ -15,6 +15,8 @@ import java.util.Optional;
 import jakarta.validation.constraints.NotNull;
 
 import dev.findfirst.core.dto.AddBkmkReq;
+import dev.findfirst.core.dto.BookmarkDTO;
+import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.ExportBookmark;
@@ -40,7 +42,7 @@ import reactor.core.publisher.Flux;
 // @Transactional(transactionManager = "jpaTransactionManager")
 public class BookmarkService {
 
-  private BookmarkRepository bookmarkRepository;
+  private final BookmarkRepository bookmarkRepository;
 
   private final TagService tagService;
 
@@ -101,14 +103,17 @@ public class BookmarkService {
       try {
         return addBookmark(t);
       } catch (Exception e) {
+        log.debug(e.toString());
         return null;
       }
     }).toList();
   }
 
   /**
-   * Exports bookmarks by their tag groups. The largest tag groups are exported first. Any bookmark
-   * already accounted for in that group will be excluded from any other group that it was also
+   * Exports bookmarks by their tag groups. The largest tag groups are exported
+   * first. Any bookmark
+   * already accounted for in that group will be excluded from any other group
+   * that it was also
    * tagged.
    *
    * @return String representing HTLM file.
@@ -119,16 +124,16 @@ public class BookmarkService {
     var uniqueBkmksWithTag = new ArrayList<TagBookmarks>();
 
     // Sort by the largest tags set.
-    tags.sort(new Comparator<Tag>() {
+    tags.sort(new Comparator<TagDTO>() {
       @Override
-      public int compare(Tag lTag, Tag rTag) {
-        return rTag.getBookmarks().size() - lTag.getBookmarks().size();
+      public int compare(TagDTO lTag, TagDTO rTag) {
+        return rTag.bookmarks().size() - lTag.bookmarks().size();
       }
     });
 
     // streams the sorted list
     tags.stream().forEach(t -> {
-      var uniques = new ArrayList<Bookmark>();
+      var uniques = new ArrayList<BookmarkDTO>();
       addUniqueBookmarks(t, uniques, foundMap, uniqueBkmksWithTag);
     });
     var exporter = new ExportBookmark(uniqueBkmksWithTag);
@@ -136,27 +141,30 @@ public class BookmarkService {
   }
 
   /**
-   * Checks if a bookmark has already been found in previous tag group. If it has not it is added to
-   * uniques, and the id added to map for fast lookups. Finally record that contains the title of
-   * the tag `cooking` `docs` for example is created with it associated bookmarks. The record is
+   * Checks if a bookmark has already been found in previous tag group. If it has
+   * not it is added to
+   * uniques, and the id added to map for fast lookups. Finally record that
+   * contains the title of
+   * the tag `cooking` `docs` for example is created with it associated bookmarks.
+   * The record is
    * added to uniqueBkmkWithTags.
    *
-   * @param t Tag
-   * @param uniques List<Bookmark> of uniques
-   * @param alreadyFound Map<Long, Long> for fast lookup
+   * @param t                  Tag
+   * @param uniques            List<Bookmark> of uniques
+   * @param alreadyFound       Map<Long, Long> for fast lookup
    * @param uniqueBkmksWithTag Record of Tag Title with Bookmark.
    */
-  private void addUniqueBookmarks(Tag t, List<Bookmark> uniques, Map<Long, Long> alreadyFound,
+  private void addUniqueBookmarks(TagDTO t, List<BookmarkDTO> uniques, Map<Long, Long> alreadyFound,
       List<TagBookmarks> uniqueBkmksWithTag) {
-    t.getBookmarks().stream().forEach(bkmk -> {
-      var found = alreadyFound.get(bkmk.getId());
+    t.bookmarks().stream().forEach(bkmk -> {
+      var found = alreadyFound.get(bkmk.id());
       if (found == null) {
-        alreadyFound.put(bkmk.getId(), bkmk.getId());
+        alreadyFound.put(bkmk.id(), bkmk.id());
         uniques.add(bkmk);
       }
     });
     if (uniques.size() > 0) {
-      uniqueBkmksWithTag.add(new TagBookmarks(t.getTag_title(), uniques));
+      uniqueBkmksWithTag.add(new TagBookmarks(t.title(), uniques));
     }
   }
 

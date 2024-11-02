@@ -14,6 +14,10 @@ UPDATE tag
 SET created_by = 'system'
 WHERE created_by IS NULL;
 
+UPDATE bookmark 
+SET scrapable = true
+WHERE scrapable IS NULL;
+
 CREATE TABLE bookmark_jdbc AS
 SELECT * FROM bookmark;
 

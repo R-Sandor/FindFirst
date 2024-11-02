@@ -115,7 +115,6 @@ public class BookmarkController {
     }
     var bookmark = bkmkOpt.get();
 
-
     // Check if there is a tag by the given title.
     TagDTO tagDTO;
     tagDTO = tagService.findOrCreateTag(title);

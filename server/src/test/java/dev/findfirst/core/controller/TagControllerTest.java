@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.BookmarkTagPair;
 import dev.findfirst.core.model.jpa.Bookmark;
 import dev.findfirst.core.model.jpa.Tag;
@@ -48,7 +49,7 @@ class TagControllerTest {
     var count = getAllTags().length;
     var tagsToAddList = List.of("hobbies", "sports");
     var tagResp = restTemplate.exchange("/api/tags", HttpMethod.POST,
-        getHttpEntity(restTemplate, tagsToAddList), Tag[].class);
+        getHttpEntity(restTemplate, tagsToAddList), TagDTO[].class);
     var tagOpt = Optional.ofNullable(tagResp.getBody());
 
     // Test that all the tags added returned
@@ -70,7 +71,7 @@ class TagControllerTest {
 
     var tagCount = getAllTags().length;
     var tagResp = Optional.ofNullable(restTemplate
-        .exchange("/api/tags", HttpMethod.DELETE, getHttpEntity(restTemplate), Tag[].class)
+        .exchange("/api/tags", HttpMethod.DELETE, getHttpEntity(restTemplate), TagDTO[].class)
         .getBody());
 
     var deletedTag = tagResp.orElseThrow();
@@ -89,7 +90,7 @@ class TagControllerTest {
 
   @Test
   void getTagsByBookmarkId() {
-    long tagId = addTag("Testing").getId();
+    long tagId = addTag("Testing").id();
 
     restTemplate.exchange("/api/bookmark/{bookmarkID}/tagId?tagId={id}", HttpMethod.POST,
         getHttpEntity(restTemplate), BookmarkTagPair.class, 1, tagId);
@@ -101,20 +102,20 @@ class TagControllerTest {
     assertTrue(bkmk.getTags().stream().anyMatch(t -> t.getTag_title().equals("Testing")));
 
     var tagsOpt = Optional.ofNullable(restTemplate.exchange("/api/tag/bkmk?bookmarkId={id}",
-        HttpMethod.GET, getHttpEntity(restTemplate), Tag[].class, 1).getBody());
+        HttpMethod.GET, getHttpEntity(restTemplate), TagDTO[].class, 1).getBody());
     var tags = tagsOpt.orElseThrow();
     assertTrue(tags.length > 0);
   }
 
-  Tag addTag(String title) {
+  TagDTO addTag(String title) {
     var tagOpts = Optional.ofNullable(restTemplate.exchange("/api/tag?tag={title}", HttpMethod.POST,
-        getHttpEntity(restTemplate), Tag.class, title).getBody());
+        getHttpEntity(restTemplate), TagDTO.class, title).getBody());
     return tagOpts.orElseThrow();
   }
 
-  Tag[] getAllTags() {
+  TagDTO[] getAllTags() {
     var tagResp = restTemplate.exchange("/api/tags", HttpMethod.GET, getHttpEntity(restTemplate),
-        Tag[].class);
+        TagDTO[].class);
     var tagOpt = Optional.ofNullable(tagResp.getBody());
     var tags = tagOpt.orElseThrow();
     return tags;

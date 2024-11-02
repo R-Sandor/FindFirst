@@ -2,7 +2,7 @@ package dev.findfirst.core.model;
 
 import java.util.List;
 
-import dev.findfirst.core.model.jpa.Bookmark;
+import dev.findfirst.core.dto.BookmarkDTO;
 
-public record TagBookmarks(String tagTitle, List<Bookmark> bookmarks) {
+public record TagBookmarks(String tagTitle, List<BookmarkDTO> bookmarks) {
 }

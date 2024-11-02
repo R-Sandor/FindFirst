@@ -11,6 +11,7 @@ import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.jdbc.BookmarkTag;
 import dev.findfirst.core.model.jdbc.TagJDBC;
 import dev.findfirst.core.model.jpa.Tag;
+import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.core.repository.jdbc.BookmarkTagRepository;
 import dev.findfirst.core.repository.jdbc.TagJDBCRepository;
 import dev.findfirst.core.repository.jpa.TagRepository;
@@ -20,11 +21,9 @@ import dev.findfirst.security.userAuth.tenant.repository.TenantRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-// import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-// @Transactional(transactionManager = "jpaTransactionManager")
 public class TagService {
 
   private final TagJDBCRepository tagRepositoryJDBC;
@@ -36,6 +35,8 @@ public class TagService {
   private final TenantContext tenantContext;
 
   private final TenantRepository tRepository;
+
+  private final BookmarkJDBCRepository bookmarkRepo;
 
   private Tag addTag(String title) {
     return tagRepository.saveAndFlush(new Tag(title));
@@ -53,7 +54,8 @@ public class TagService {
   }
 
   /**
-   * Simple checks if there is a tag with given tag title if not creates one and returns the Tag.
+   * Simple checks if there is a tag with given tag title if not creates one and
+   * returns the Tag.
    *
    * @param title
    * @return Tag existing tag with ID or a new Tag with the given title.
@@ -61,16 +63,34 @@ public class TagService {
   public TagDTO findOrCreateTag(String title) {
     Tag t = findByTagTitle(title).orElseGet(() -> addTag(title));
 
-    var tBkmks = t.getBookmarks().stream().map(b -> new BookmarkDTO(b.getId(), b.getTitle(),
-        b.getUrl(), b.getScreenshotUrl(), b.getScrapable(), new ArrayList<TagDTO>())).toList();
-
-
+    var tBkmks = t.getBookmarks().stream().map(b -> new BookmarkDTO(b.getId(), b.getTitle(), b.getUrl(), b.getScreenshotUrl(), 
+      b.getScrapable(), b.getCreatedDate(), b.getLastModifiedDate(), new ArrayList<TagDTO>())).toList();
 
     return new TagDTO(t.getId(), t.getTag_title(), tBkmks);
   }
 
+  public List<TagDTO> convertTagJDBCToDTO(List<TagJDBC> tagEntities, int tenantId) {
+
+    // Get the bookmarks that are associated to the Tag.
+    return tagEntities.stream().map(ent -> {
+      var bkmkIds = bookmarkTagRepository.getAllBookmarkIdsForTag(ent.getId(), tenantId);
+      var bkmkEnts = bookmarkRepo.findAllById(bkmkIds);
+
+      List<BookmarkDTO> bookmarkDTOs = new ArrayList<>();
+
+      for (var b : bkmkEnts) {
+        bookmarkDTOs.add(new BookmarkDTO(b.getId(), b.getTitle(),
+            b.getUrl(), b.getScreenshotUrl(), b.getScrapable(), b.getCreatedDate(), b.getLastModifiedDate(),
+            new ArrayList<TagDTO>()));
+      }
+
+      return new TagDTO(ent.getId(), ent.getTitle(), bookmarkDTOs);
+    }).toList();
+  }
+
   /**
-   * Simple checks if there is a tag with given tag title if not creates one and returns the Tag.
+   * Simple checks if there is a tag with given tag title if not creates one and
+   * returns the Tag.
    *
    * @param title
    * @return Tag existing tag with ID or a new Tag with the given title.
@@ -88,7 +108,8 @@ public class TagService {
   }
 
   /**
-   * Create List of tags by titles. Creating a new tags for ones that do not exist and returning
+   * Create List of tags by titles. Creating a new tags for ones that do not exist
+   * and returning
    * list of existing tags.
    *
    * @param titles List of strings
@@ -98,7 +119,8 @@ public class TagService {
   }
 
   /**
-   * Create List of tags by titles. Creating a new tags for ones that do not exist and returning
+   * Create List of tags by titles. Creating a new tags for ones that do not exist
+   * and returning
    * list of existing tags.
    *
    * @param titles List of strings
@@ -113,8 +135,9 @@ public class TagService {
     return userTags;
   }
 
-  public List<Tag> getTags() {
-    return tagRepository.findAll();
+  public List<TagDTO> getTags() {
+    var tagsJDBC = tagRepositoryJDBC.findAllByTenantId(tenantContext.getTenantId());
+    return convertTagJDBCToDTO(tagsJDBC, tenantContext.getTenantId());
   }
 
   public List<Tag> getTagsByBookmarkId(long id) {

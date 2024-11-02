@@ -3,7 +3,7 @@ package dev.findfirst.core;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashSet;
 
 import dev.findfirst.core.annotations.IntegrationTest;
@@ -77,8 +77,8 @@ public class DatabaseTest {
   @Test
   void addTagToBookmark() {
     int tenantId = 1;
-    var bookmark = new BookmarkJDBC(null, tenantId, new Date(System.currentTimeMillis()), "test",
-        "test", new Date(System.currentTimeMillis()), "My very cool bookmark", "https://test.com",
+    var bookmark = new BookmarkJDBC(null, tenantId, new Date(), "test",
+        "test", new Date(), "My very cool bookmark", "https://test.com",
         "test.com", true, new HashSet<>());
     var bkmkEnt = bkmkJDBCRepo.save(bookmark);
     System.out.println(bkmkEnt);
