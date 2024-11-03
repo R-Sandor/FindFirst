@@ -5,6 +5,7 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Arrays;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -39,7 +40,7 @@ public class RobotsFetcher {
     @Override
     public final boolean equals(Object obj) {
       if (obj != null && obj instanceof RobotsTxtResponse robotTxt) {
-        return robotTxt.statusCode() == this.statusCode() && robotTxt.text().equals(this.text())
+        return robotTxt.statusCode() == this.statusCode() && robotTxt.text() == this.text()
             && robotTxt.contentType.equals(this.contentType());
       } else {
         return false;
@@ -49,7 +50,7 @@ public class RobotsFetcher {
 
     @Override
     public final int hashCode() {
-      return this.statusCode() + this.text().hashCode() + this.contentType().hashCode();
+      return this.statusCode() + Arrays.hashCode(this.text()) + this.contentType().hashCode();
     }
 
     @Override 
