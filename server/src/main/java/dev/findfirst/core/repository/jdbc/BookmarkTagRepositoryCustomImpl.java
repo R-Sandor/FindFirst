@@ -13,9 +13,7 @@ public class BookmarkTagRepositoryCustomImpl implements BookmarkTagRepositoryCus
 
   @Override
   public int update(BookmarkTag bookmarkTag) {
-    String sql =
-        "UPDATE bookmark_tag SET bookmark_id = ?, tag_id = ? WHERE bookmark_id = ? AND tag_id = ?";
-    return jdbcTemplate.update(sql, bookmarkTag.getBookmarkId(), bookmarkTag.getTagId(),
-        bookmarkTag.getBookmarkId(), bookmarkTag.getTagId());
+    String sql = "INSERT INTO bookmark_tag VALUES(?, ?)";
+    return jdbcTemplate.update(sql, bookmarkTag.getBookmarkId(), bookmarkTag.getTagId());
   }
 }

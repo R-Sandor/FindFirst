@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import dev.findfirst.core.dto.AddBkmkReq;
+import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.BookmarkTagPair;
 import dev.findfirst.core.model.jpa.Bookmark;
@@ -68,8 +69,8 @@ public class BookmarkController {
   }
 
   @GetMapping(value = "/bookmark")
-  public ResponseEntity<Bookmark> getBookmarkById(@RequestParam("id") long id) {
-    return new Response<Bookmark>(bookmarkService.findById(id)).get();
+  public ResponseEntity<BookmarkDTO> getBookmarkById(@RequestParam("id") long id) {
+    return new Response<BookmarkDTO>(bookmarkService.getBookmarkDTOById(id)).get();
   }
 
   @PostMapping(value = "/bookmark")
@@ -116,13 +117,11 @@ public class BookmarkController {
     var bookmark = bkmkOpt.get();
 
     // Check if there is a tag by the given title.
-    TagDTO tagDTO;
-    tagDTO = tagService.findOrCreateTag(title);
+    TagDTO tagDTO = tagService.findOrCreateTag(title);
 
-    var tag = tagService.findById(tagDTO.id()).orElseThrow();
+    var tag = tagService.findByIdJDBC(tagDTO.id()).orElseThrow();
 
-    bookmarkService.addTagToBookmark(bookmark, tag);
-
+    bookmarkService.addTagToBookmarkJDBC(bookmark, tag);
     return ResponseEntity.ofNullable(tagDTO);
 
   }

@@ -12,7 +12,6 @@ import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.BookmarkTagPair;
 import dev.findfirst.core.model.jpa.Bookmark;
-import dev.findfirst.core.model.jpa.Tag;
 import dev.findfirst.core.repository.jpa.TagRepository;
 
 import org.junit.jupiter.api.Test;

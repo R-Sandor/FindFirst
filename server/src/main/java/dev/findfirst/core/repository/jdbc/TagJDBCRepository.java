@@ -10,8 +10,11 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 public interface TagJDBCRepository extends CrudRepository<TagJDBC, Long> {
-  @Query("SELECT t FROM Tag t WHERE t.tag_title = :title AND t.tenant_id = :tenantId")
+  @Query("SELECT * FROM Tag t WHERE t.tag_title = :title AND t.tenant_id = :tenantId")
   Optional<TagJDBC> findByTitle(@Param("title") String title, @Param("tenantId") int tenantId);
+
+  @Query("SELECT id FROM tag WHERE tag_title = :title AND tenant_id = :tenantId")
+  Optional<Long> findIdByTitle(@Param("title") String title, @Param("tenantId") Integer tenantId);
 
   @Query("SELECT * FROM tag WHERE tag.tenant_id = :tenantId")
   List<TagJDBC> findAllByTenantId(@Param("tenantId") Integer tenantId);

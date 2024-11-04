@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 import dev.findfirst.core.dto.BookmarkDTO;
-import dev.findfirst.core.model.jpa.Bookmark;
 
 import lombok.Data;
 

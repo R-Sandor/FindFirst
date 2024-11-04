@@ -25,7 +25,7 @@ public class TagController {
 
   private final TagService tagService;
 
-  // JDBC in progress 
+  // JDBC in progress
   @GetMapping(value = "/tags")
   public ResponseEntity<List<TagDTO>> getTags() {
     return ResponseEntity.ok(tagService.getTags());
@@ -41,7 +41,7 @@ public class TagController {
     return ResponseEntity.ok().body(tagService.deleteAllTags());
   }
 
-  // JDBC 
+  // JDBC
   @PostMapping(value = "/tag")
   public ResponseEntity<TagJDBC> addTag(@RequestParam("tag") String tag) {
     return ResponseEntity.ok(tagService.findOrCreateTagJDBC(tag));

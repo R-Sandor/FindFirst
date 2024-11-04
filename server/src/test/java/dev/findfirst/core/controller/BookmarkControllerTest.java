@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.dto.AddBkmkReq;
+import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.model.BookmarkTagPair;
 import dev.findfirst.core.model.jpa.Bookmark;
 import dev.findfirst.core.model.jpa.Tag;
@@ -61,7 +62,6 @@ class BookmarkControllerTest {
     this.restTemplate = tRestTemplate;
     this.wac = wContext;
   }
-
 
   final BookmarkRepository bkmkRepo;
   final BookmarkJDBCRepository bookmarkJDBCRepository;
@@ -175,27 +175,36 @@ class BookmarkControllerTest {
     var bkmkResp = saveBookmarks(new AddBkmkReq("yahoo", "https://yahoo.com", List.of(), true));
     var bkmk = bkmkResp.get(0);
 
+    System.out.println("SAVED BOOKMARK");
+
+    System.out.println("FINDING TAG");
     // Add web_dev to bookmark
     var ent = getHttpEntity(restTemplate);
     restTemplate.exchange("/api/bookmark/{bookmarkID}/tag?tag={title}", HttpMethod.POST, ent,
         Tag.class, bkmk.getId(), "web_dev");
+
+    System.out.println("FOUND TAG");
 
     // Add design tag to bookmark.
     ent = getHttpEntity(restTemplate);
     restTemplate.exchange("/api/bookmark/{bookmarkID}/tag?tag={title}", HttpMethod.POST, ent,
         Tag.class, bkmk.getId(), "design");
 
+    var response = restTemplate.exchange("/api/bookmark?id={id}", HttpMethod.GET,
+        getHttpEntity(restTemplate), BookmarkDTO.class, bkmk.getId());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+
     // Delete first tag.
     restTemplate.exchange("/api/bookmark/{bookmarkID}/tag?tag={tagName}", HttpMethod.DELETE,
         getHttpEntity(restTemplate), Tag.class, bkmk.getId(), "web_dev");
 
-    var response = restTemplate.exchange("/api/bookmark?id={id}", HttpMethod.GET,
-        getHttpEntity(restTemplate), Bookmark.class, bkmk.getId());
+    response = restTemplate.exchange("/api/bookmark?id={id}", HttpMethod.GET,
+        getHttpEntity(restTemplate), BookmarkDTO.class, bkmk.getId());
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
     var bkmkOpt = Optional.ofNullable(response.getBody());
-    bkmk = bkmkOpt.orElseThrow();
-    assertEquals(1, bkmk.getTags().size());
+    var bkmkDto = bkmkOpt.orElseThrow();
+    assertEquals(1, bkmkDto.tags().size());
     assertFalse(bkmk.getTags().stream().anyMatch(t -> t.getTag_title().equals("web_dev")));
   }
 

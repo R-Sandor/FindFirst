@@ -26,12 +26,10 @@ public interface BookmarkTagRepository
   Set<BookmarkTag> getAllTagIdsForBookmark(@Param("bkId") Long bookmark,
       @Param("tenantId") Integer tenantId);
 
-
   @Query("""
       SELECT bt.bookmark_id from bookmark_tag bt
         join tag tg ON tg.id = bt.tag_id WHERE tg.tenant_id = :tenantId
       AND tg.id = :tgId
       """)
-  List<Long> getAllBookmarkIdsForTag(@Param("tgId") Long tag,
-      @Param("tenantId") Integer tenantId);
+  List<Long> getAllBookmarkIdsForTag(@Param("tgId") Long tag, @Param("tenantId") Integer tenantId);
 }
