@@ -40,6 +40,7 @@ public class TenantEntityListener {
 
   public static void disableListener() {
     isListenerEnabled.set(false);
+    isListenerEnabled.remove();
   }
 
   public static void enableListener() {
