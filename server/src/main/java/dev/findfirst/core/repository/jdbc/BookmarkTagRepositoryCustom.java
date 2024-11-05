@@ -4,4 +4,6 @@ import dev.findfirst.core.model.jdbc.BookmarkTag;
 
 public interface BookmarkTagRepositoryCustom {
   int update(BookmarkTag bookmarkTag);
+
+  int deleteBookmarkTag(BookmarkTag bookmarkTag);
 }

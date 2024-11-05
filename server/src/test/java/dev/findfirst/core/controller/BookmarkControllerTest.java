@@ -17,6 +17,7 @@ import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.dto.AddBkmkReq;
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.model.BookmarkTagPair;
+import dev.findfirst.core.model.jdbc.BookmarkTag;
 import dev.findfirst.core.model.jpa.Bookmark;
 import dev.findfirst.core.model.jpa.Tag;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
@@ -98,12 +99,12 @@ class BookmarkControllerTest {
   @Test
   void getBookmarkById() {
     var response = restTemplate.exchange("/api/bookmark?id=1", HttpMethod.GET,
-        getHttpEntity(restTemplate), Bookmark.class);
+        getHttpEntity(restTemplate), BookmarkDTO.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
     var bkmkOpt = Optional.ofNullable(response.getBody());
     var bkmk = bkmkOpt.orElseThrow();
-    assertEquals("Best Cheesecake Recipe", bkmk.getTitle());
+    assertEquals("Best Cheesecake Recipe", bkmk.title());
   }
 
   @Test
@@ -229,16 +230,16 @@ class BookmarkControllerTest {
 
     // Delete by the id.
     restTemplate.exchange("/api/bookmark/{bookmarkID}/tagId?tagId={id}", HttpMethod.DELETE,
-        getHttpEntity(restTemplate), Tag.class, bkmk.getId(), tagId);
+        getHttpEntity(restTemplate), BookmarkTag.class, bkmk.getId(), tagId);
 
     // See that one tag remains on the bookmark
     var response = restTemplate.exchange("/api/bookmark?id={id}", HttpMethod.GET,
-        getHttpEntity(restTemplate), Bookmark.class, bkmk.getId());
+        getHttpEntity(restTemplate), BookmarkDTO.class, bkmk.getId());
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
-    var bkmkOpt = Optional.ofNullable(response.getBody());
-    bkmk = bkmkOpt.orElseThrow();
-    assertFalse(bkmk.getTags().stream().anyMatch(t -> t.getId() == tagId));
+    var bkmkOptJDBC = Optional.ofNullable(response.getBody());
+    var bkmkDto = bkmkOptJDBC.orElseThrow();
+    assertFalse(bkmkDto.tags().stream().anyMatch(t -> t.id() == tagId));
   }
 
   @Test
@@ -307,8 +308,6 @@ class BookmarkControllerTest {
   void jdbcRepo() {
     long count = bookmarkJDBCRepository.count();
     assertTrue(count > 0);
-    System.out.println("The count is " + count);
-    System.out.println(bookmarkJDBCRepository.findAll());
   }
 
   private List<Bookmark> saveBookmarks(AddBkmkReq... newBkmks) {

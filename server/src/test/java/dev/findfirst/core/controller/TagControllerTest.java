@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.BookmarkTagPair;
 import dev.findfirst.core.model.jpa.Bookmark;
@@ -96,9 +97,9 @@ class TagControllerTest {
 
     // See that one tag remains on the bookmark
     var bkmk = Optional.ofNullable(restTemplate.exchange("/api/bookmark?id={id}", HttpMethod.GET,
-        getHttpEntity(restTemplate), Bookmark.class, 1).getBody()).orElseThrow();
+        getHttpEntity(restTemplate), BookmarkDTO.class, 1).getBody()).orElseThrow();
 
-    assertTrue(bkmk.getTags().stream().anyMatch(t -> t.getTag_title().equals("Testing")));
+    assertTrue(bkmk.tags().stream().anyMatch(t -> t.title().equals("Testing")));
 
     var tagsOpt = Optional.ofNullable(restTemplate.exchange("/api/tag/bkmk?bookmarkId={id}",
         HttpMethod.GET, getHttpEntity(restTemplate), TagDTO[].class, 1).getBody());

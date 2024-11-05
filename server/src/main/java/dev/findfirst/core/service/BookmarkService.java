@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import jakarta.validation.constraints.NotNull;
-
 import dev.findfirst.core.dto.AddBkmkReq;
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
@@ -69,11 +67,23 @@ public class BookmarkService {
     return id == null ? Optional.ofNullable(null) : bookmarkRepository.findById(id);
   }
 
+  public Optional<BookmarkDTO> getBookmarkById(long id) {
+    var bkOpt = bookmarkJDBCRepository.findById(id);
+
+    if (bkOpt.isPresent()) {
+      return Optional
+          .of(convertBookmarkJDBCToDTO(List.of(bkOpt.get()), tContext.getTenantId()).get(0));
+    }
+    return Optional.ofNullable(null);
+  }
+
+  public Optional<BookmarkJDBC> findByIdJDBC(long id) {
+    return bookmarkJDBCRepository.findById(id);
+  }
+
   public Optional<BookmarkDTO> getBookmarkDTOById(Long id) {
-    System.out.println("\n\n Getting Bookmark By ID \n\n");
     var ent = bookmarkJDBCRepository.findById(id);
     if (ent.isPresent()) {
-      System.out.println(ent.get());
       var bkmk = convertBookmarkJDBCToDTO(List.of(ent.get()), tContext.getTenantId()).get(0);
       return Optional.of(bkmk);
     } else {
@@ -87,10 +97,6 @@ public class BookmarkService {
     // Get the bookmarks that are associated to the Tag.
     return bookmarkEntities.stream().map(ent -> {
       var tagIds = bookmarkTagRepository.getAllTagIdsForBookmark(ent.getId(), tenantId);
-      System.out.println(tagIds);
-      for (var bt : bookmarkTagRepository.findAll()) {
-        System.out.println(bt);
-      }
 
       var tagEnts = tagService.findAllById(tagIds.stream().map(bkTg -> bkTg.getTagId()).toList());
 
@@ -246,16 +252,12 @@ public class BookmarkService {
     if (bookmark == null || tag == null)
       throw new NoSuchFieldError();
     bookmarkTagRepository.update(new BookmarkTag(bookmark.getId(), tag.getId()));
-    bookmarkTagRepository.findAll().forEach(System.out::println);
   }
 
-  public Tag deleteTag(long id, @NotNull Tag tag) {
-    final var bkmk = bookmarkRepository.findById(id);
-    bkmk.ifPresent((b) -> {
-      b.removeTag(tag);
-      bookmarkRepository.save(b);
-    });
-    return tag;
+  public BookmarkTag deleteTag(BookmarkTag bt) {
+    System.out.println("Deleting Tag");
+    bookmarkTagRepository.deleteBookmarkTag(bt);
+    return bt;
   }
 
   public Flux<Bookmark> importBookmarks(String htmlFile) {

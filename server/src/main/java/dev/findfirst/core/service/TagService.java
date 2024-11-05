@@ -101,7 +101,6 @@ public class TagService {
 
   public TagJDBC getTagWithBookmarks(Long tagId) {
     TagJDBC tag = tagRepositoryJDBC.findById(tagId).orElseThrow();
-    System.out.println(tag);
     List<BookmarkTag> bookmarks = bookmarkTagRepository.findByTagId(tag.getId());
     return tag;
   }
@@ -152,11 +151,11 @@ public class TagService {
     return tagRepository.findByTagTitle(title);
   }
 
-  public Optional<Tag> findById(Long id) {
+  public Optional<Tag> findById(long id) {
     return tagRepository.findById(id);
   }
 
-  public Optional<TagJDBC> findByIdJDBC(Long id) {
+  public Optional<TagJDBC> findByIdJDBC(long id) {
     return tagRepositoryJDBC.findById(id);
   }
 

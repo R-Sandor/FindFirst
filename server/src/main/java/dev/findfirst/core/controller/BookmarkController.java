@@ -14,8 +14,8 @@ import dev.findfirst.core.dto.AddBkmkReq;
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.BookmarkTagPair;
+import dev.findfirst.core.model.jdbc.BookmarkTag;
 import dev.findfirst.core.model.jpa.Bookmark;
-import dev.findfirst.core.model.jpa.Tag;
 import dev.findfirst.core.service.BookmarkService;
 import dev.findfirst.core.service.TagService;
 import dev.findfirst.core.utilies.Response;
@@ -147,24 +147,30 @@ public class BookmarkController {
   }
 
   @DeleteMapping(value = "bookmark/{bookmarkID}/tag")
-  public ResponseEntity<Tag> deleteTagFromBookmark(@Valid @PathVariable("bookmarkID") long id,
+  public ResponseEntity<BookmarkTag> deleteTagFromBookmark(
+      @Valid @PathVariable("bookmarkID") long bookmarkID,
       @RequestParam("tag") @NotBlank String title) {
 
-    var t = tagService.getTagByTitle(title);
-    var b = bookmarkService.findById(id);
+    var t = tagService.findIdByTagTitleJDBC(title);
+    var b = bookmarkService.findByIdJDBC(bookmarkID);
 
-    return b.isPresent() ? new Response<Tag>(tag -> bookmarkService.deleteTag(id, tag), t).get()
+    return b.isPresent() && t.isPresent()
+        ? new ResponseEntity<BookmarkTag>(
+            bookmarkService.deleteTag(new BookmarkTag(bookmarkID, t.get())), HttpStatus.OK)
         : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 
   @DeleteMapping(value = "bookmark/{bookmarkID}/tagId", produces = "application/json")
-  public ResponseEntity<Tag> deleteTagFromBookmarkById(@Valid @PathVariable("bookmarkID") long id,
+  public ResponseEntity<BookmarkTag> deleteTagFromBookmarkById(
+      @Valid @PathVariable("bookmarkID") long bookmarkID,
       @RequestParam("tagId") @Valid long tagId) {
 
-    var t = tagService.findById(tagId);
-    var b = bookmarkService.findById(id);
+    var t = tagService.findByIdJDBC(tagId);
+    var b = bookmarkService.findByIdJDBC(bookmarkID);
 
-    return b.isPresent() ? new Response<Tag>(tag -> bookmarkService.deleteTag(id, tag), t).get()
+    return b.isPresent() && t.isPresent()
+        ? new ResponseEntity<BookmarkTag>(
+            bookmarkService.deleteTag(new BookmarkTag(bookmarkID, t.get().getId())), HttpStatus.OK)
         : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 

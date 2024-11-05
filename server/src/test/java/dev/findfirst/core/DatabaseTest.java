@@ -87,7 +87,6 @@ public class DatabaseTest {
     var bookmark = new BookmarkJDBC(null, tenantId, new Date(), "test", "test", new Date(),
         "My very cool bookmark", "https://test.com", "test.com", true, new HashSet<>());
     var bkmkEnt = bkmkJDBCRepo.save(bookmark);
-    System.out.println(bkmkEnt);
 
     var tagEnt = tagRepo.save(new TagJDBC(null, tenantId, new Date(System.currentTimeMillis()),
         "test", "test", new Date(System.currentTimeMillis()), "TestTAG"));
