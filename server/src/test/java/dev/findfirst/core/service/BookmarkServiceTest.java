@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import dev.findfirst.core.model.Bookmark;
-import dev.findfirst.core.repository.BookmarkRepository;
+import dev.findfirst.core.model.jpa.Bookmark;
+import dev.findfirst.core.repository.jpa.BookmarkRepository;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
