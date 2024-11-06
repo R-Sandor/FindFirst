@@ -42,7 +42,7 @@ public class ScreenshotController {
         page.navigate(url);
 
         url = URLDecoder.decode(url, StandardCharsets.UTF_8);
-        String cleanUrl = url.replaceAll("http[s]://", "").replace("/", "_");
+        String cleanUrl = url.replaceAll("https?://", "").replace("/", "_");
         cleanUrl = cleanUrl.replaceAll("[*\"/\\<>:|?]+", "");
 
         Path filePath = Path.of(screenshotSaveLoc, cleanUrl + ".png");
