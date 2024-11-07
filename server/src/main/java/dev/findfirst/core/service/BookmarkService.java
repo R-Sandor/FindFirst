@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,9 +29,10 @@ import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.core.repository.jdbc.BookmarkTagRepository;
 import dev.findfirst.core.repository.jpa.BookmarkRepository;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
-
+import dev.findfirst.security.userAuth.tenant.repository.TenantRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -58,6 +60,8 @@ public class BookmarkService {
   private final ScreenshotManager sManager;
 
   private final TenantContext tContext;
+
+  private final TenantRepository tRepository;
 
   public List<Bookmark> list() {
     return bookmarkRepository.findAll();
@@ -111,17 +115,18 @@ public class BookmarkService {
     }).toList();
   }
 
-  public Bookmark addBookmark(AddBkmkReq reqBkmk)
+  public BookmarkDTO addBookmark(AddBkmkReq reqBkmk)
       throws BookmarkAlreadyExistsException, TagNotFoundException {
-    var tags = new HashSet<Tag>();
+    var tags = new ArrayList<Long>();
 
-    if (bookmarkRepository.findByUrl(reqBkmk.url()).isPresent()) {
+    if (bookmarkJDBCRepository.findByUrl(reqBkmk.url(), tContext.getTenantId()).isPresent()) {
       throw new BookmarkAlreadyExistsException();
     }
 
+    System.out.println("adding bookmark");
     if (reqBkmk.tagIds() != null) {
       for (var t : reqBkmk.tagIds()) {
-        tags.add(tagService.findById(t).orElseThrow(TagNotFoundException::new));
+        tags.add(tagService.findByIdJDBC(t).orElseThrow(TagNotFoundException::new).getId());
       }
     }
 
@@ -146,12 +151,26 @@ public class BookmarkService {
       optUrl = sManager.getScreenshot(reqBkmk.url());
     }
 
-    var newBkmk = new Bookmark(title, reqBkmk.url(), optUrl.orElse(""), true);
-    newBkmk.setTags(tags);
-    return bookmarkRepository.save(newBkmk);
+    var tenant = tRepository.findById(tContext.getTenantId()).orElseThrow();
+
+    var savedTags = new HashSet<BookmarkTag>();
+
+    var newBkmkJdbc = new BookmarkJDBC(null, tenant.getId(), new Date(), tenant.getName(), tenant.getName(),
+        new Date(), title, reqBkmk.url(), optUrl.orElse(""), true, savedTags);
+
+    var saved = bookmarkJDBCRepository.save(newBkmkJdbc);
+    for (var tag : tags) {
+      var bt = new BookmarkTag(saved.getId(), tag);
+      savedTags.add(bt);
+      bookmarkTagRepository.saveBookmarkTag(bt);
+    }
+
+    newBkmkJdbc.setTags(savedTags);
+    return convertBookmarkJDBCToDTO(List.of(newBkmkJdbc), tenant.getId()).get(0);
   }
 
-  public List<Bookmark> addBookmarks(List<AddBkmkReq> bookmarks) throws Exception {
+  public List<BookmarkDTO> addBookmarks(List<AddBkmkReq> bookmarks) throws Exception {
+    int tenantId = tContext.getTenantId();
     return bookmarks.stream().map(t -> {
       try {
         return addBookmark(t);
@@ -163,8 +182,10 @@ public class BookmarkService {
   }
 
   /**
-   * Exports bookmarks by their tag groups. The largest tag groups are exported first. Any bookmark
-   * already accounted for in that group will be excluded from any other group that it was also
+   * Exports bookmarks by their tag groups. The largest tag groups are exported
+   * first. Any bookmark
+   * already accounted for in that group will be excluded from any other group
+   * that it was also
    * tagged.
    *
    * @return String representing HTLM file.
@@ -192,14 +213,17 @@ public class BookmarkService {
   }
 
   /**
-   * Checks if a bookmark has already been found in previous tag group. If it has not it is added to
-   * uniques, and the id added to map for fast lookups. Finally record that contains the title of
-   * the tag `cooking` `docs` for example is created with it associated bookmarks. The record is
+   * Checks if a bookmark has already been found in previous tag group. If it has
+   * not it is added to
+   * uniques, and the id added to map for fast lookups. Finally record that
+   * contains the title of
+   * the tag `cooking` `docs` for example is created with it associated bookmarks.
+   * The record is
    * added to uniqueBkmkWithTags.
    *
-   * @param t Tag
-   * @param uniques List<Bookmark> of uniques
-   * @param alreadyFound Map<Long, Long> for fast lookup
+   * @param t                  Tag
+   * @param uniques            List<Bookmark> of uniques
+   * @param alreadyFound       Map<Long, Long> for fast lookup
    * @param uniqueBkmksWithTag Record of Tag Title with Bookmark.
    */
   private void addUniqueBookmarks(TagDTO t, List<BookmarkDTO> uniques, Map<Long, Long> alreadyFound,
@@ -251,7 +275,7 @@ public class BookmarkService {
   public void addTagToBookmarkJDBC(Bookmark bookmark, TagJDBC tag) {
     if (bookmark == null || tag == null)
       throw new NoSuchFieldError();
-    bookmarkTagRepository.update(new BookmarkTag(bookmark.getId(), tag.getId()));
+    bookmarkTagRepository.saveBookmarkTag(new BookmarkTag(bookmark.getId(), tag.getId()));
   }
 
   public BookmarkTag deleteTag(BookmarkTag bt) {
@@ -260,7 +284,7 @@ public class BookmarkService {
     return bt;
   }
 
-  public Flux<Bookmark> importBookmarks(String htmlFile) {
+  public Flux<BookmarkDTO> importBookmarks(String htmlFile) {
     var doc = Jsoup.parse(htmlFile);
     var hrefs = doc.getElementsByAttribute("href");
     hrefs.stream().forEach(e -> log.debug(e.attributes().get("href")));
@@ -283,7 +307,7 @@ public class BookmarkService {
       } catch (IOException | BookmarkAlreadyExistsException | TagNotFoundException ex) {
         log.error(ex.getMessage());
       }
-      return new Bookmark();
+      return new BookmarkDTO(0, null, null, null, false, null, null, null);
     }).delayElements(Duration.ofMillis(100));
   }
 

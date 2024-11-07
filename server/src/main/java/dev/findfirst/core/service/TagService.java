@@ -99,10 +99,9 @@ public class TagService {
     return findByTagTitleJDBC(title).orElseGet(() -> addTagJDBC(title));
   }
 
-  public TagJDBC getTagWithBookmarks(Long tagId) {
+  public TagDTO getTagWithBookmarks(Long tagId) {
     TagJDBC tag = tagRepositoryJDBC.findById(tagId).orElseThrow();
-    List<BookmarkTag> bookmarks = bookmarkTagRepository.findByTagId(tag.getId());
-    return tag;
+    return convertTagJDBCToDTO(List.of(tag), tenantContext.getTenantId(), true).get(0);
   }
 
   /**

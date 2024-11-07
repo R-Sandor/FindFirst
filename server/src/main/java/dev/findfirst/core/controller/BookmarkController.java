@@ -74,10 +74,10 @@ public class BookmarkController {
   }
 
   @PostMapping(value = "/bookmark")
-  public ResponseEntity<Bookmark> addBookmark(@RequestBody AddBkmkReq req) {
-    var response = new Response<Bookmark>();
+  public ResponseEntity<BookmarkDTO> addBookmark(@RequestBody AddBkmkReq req) {
+    var response = new Response<BookmarkDTO>();
     try {
-      Bookmark createdBookmark = bookmarkService.addBookmark(req);
+      BookmarkDTO createdBookmark = bookmarkService.addBookmark(req);
       return response.setResponse(createdBookmark, HttpStatus.OK);
     } catch (Exception e) {
       e.printStackTrace();
@@ -95,10 +95,10 @@ public class BookmarkController {
   }
 
   @PostMapping(value = "/bookmark/addBookmarks")
-  public ResponseEntity<List<Bookmark>> addBookmarks(
+  public ResponseEntity<List<BookmarkDTO>> addBookmarks(
       @RequestBody @Size(min = 1, max = 100) List<AddBkmkReq> bookmarks) {
     try {
-      return new ResponseEntity<List<Bookmark>>(bookmarkService.addBookmarks(bookmarks),
+      return new ResponseEntity<List<BookmarkDTO>>(bookmarkService.addBookmarks(bookmarks),
           HttpStatus.OK);
     } catch (Exception e) {
       return ResponseEntity.badRequest().build();
@@ -175,7 +175,7 @@ public class BookmarkController {
   }
 
   @PostMapping(value = "bookmark/import", produces = MediaType.APPLICATION_NDJSON_VALUE)
-  public Flux<Bookmark> importBookmarks(@RequestParam("file") MultipartFile file)
+  public Flux<BookmarkDTO> importBookmarks(@RequestParam("file") MultipartFile file)
       throws IOException {
 
     var fBytes = file.getBytes();

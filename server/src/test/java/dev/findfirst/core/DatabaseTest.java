@@ -18,6 +18,7 @@ import dev.findfirst.core.service.TagService;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
+import org.mockito.Mockito;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -66,8 +67,9 @@ public class DatabaseTest {
   @Test
   @Order(3)
   void getAllBookmarksForTag() {
+    Mockito.when(tenantContext.getTenantId()).thenReturn(1);
     var tag = tagService.getTagWithBookmarks(1l);
-    // assertEquals(2, tag.getBookmarks().size());
+    assertEquals(2, tag.bookmarks().size());
   }
 
   @Test
@@ -93,7 +95,7 @@ public class DatabaseTest {
 
     BookmarkTag bookmarkTag = new BookmarkTag(bkmkEnt.getId(), tagEnt.getId());
 
-    bookmarkTagRepository.update(bookmarkTag);
+    bookmarkTagRepository.saveBookmarkTag(bookmarkTag);
   }
 
 }
