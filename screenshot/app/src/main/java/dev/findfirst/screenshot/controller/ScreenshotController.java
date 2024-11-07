@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -28,8 +29,28 @@ public class ScreenshotController {
     }
   }
 
+  /* Returns true if url is valid */
+  public static boolean isValid(String url) {
+    /* Try creating a valid URL */
+    try {
+      new URL(url).toURI();
+      return true;
+    }
+
+    // If there was an Exception
+    // while creating URL object
+    catch (Exception e) {
+      return false;
+    }
+  }
+
   @GetMapping("/screenshot")
-  public String takeScreenshot(@RequestParam String url) {
+  public String takeScreenshot(
+      @RequestParam String url) {
+
+    if (!isValid(url)) { 
+      return null;
+    }
     // Use a try-with-resources block to manage the Playwright resources
     log.debug("Recieving request");
     try (Playwright playwright = Playwright.create()) {
@@ -41,7 +62,8 @@ public class ScreenshotController {
         Page page = context.newPage();
         page.navigate(url);
 
-        url = URLDecoder.decode(url, StandardCharsets.UTF_8);
+        var validated = new URL(url).toURI();
+        url = URLDecoder.decode(validated.toString(), StandardCharsets.UTF_8);
         String cleanUrl = url.replaceAll("https?://", "").replace("/", "_");
         cleanUrl = cleanUrl.replaceAll("[*\"/\\<>:|?]+", "");
 
