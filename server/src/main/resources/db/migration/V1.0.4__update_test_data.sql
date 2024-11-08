@@ -17,15 +17,3 @@ WHERE created_by IS NULL;
 UPDATE bookmark 
 SET scrapable = true
 WHERE scrapable IS NULL;
-
-CREATE TABLE bookmark_jdbc AS
-SELECT * FROM bookmark;
-
-CREATE TABLE bookmark_tag_jdbc AS
-SELECT * FROM bookmark_tag;
-
-CREATE TABLE tag_jdbc AS
-SELECT * FROM tag;
-
-
-
