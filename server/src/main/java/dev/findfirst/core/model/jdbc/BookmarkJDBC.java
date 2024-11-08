@@ -33,7 +33,7 @@ public class BookmarkJDBC {
   @MappedCollection(idColumn = "bookmark_id")
   Set<BookmarkTag> tags = new HashSet<>();
 
-  public Set<BookmarkTag> addTag(BookmarkTag bookmarkTag) { 
+  public Set<BookmarkTag> addTag(BookmarkTag bookmarkTag) {
     tags.add(new BookmarkTag(bookmarkTag.getBookmarkId(), bookmarkTag.getTagId()));
     return new HashSet<>(tags);
   }

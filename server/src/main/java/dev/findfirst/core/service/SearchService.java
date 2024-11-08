@@ -3,13 +3,12 @@ package dev.findfirst.core.service;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import org.springframework.stereotype.Service;
-
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.repository.jdbc.TagJDBCRepository;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
+
+import org.springframework.stereotype.Service;
 
 @Service
 public class SearchService {

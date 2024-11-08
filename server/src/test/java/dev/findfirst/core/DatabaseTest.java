@@ -17,10 +17,10 @@ import dev.findfirst.core.service.TagService;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
-import org.mockito.Mockito;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -48,9 +48,8 @@ public class DatabaseTest {
   final BookmarkTagRepository bookmarkTagRepository;
 
   @Autowired
-  DatabaseTest(TagService tagService,
-      BookmarkJDBCRepository bookmarkJDBCRepository, TagJDBCRepository tagRepo,
-      BookmarkTagRepository btRepo) {
+  DatabaseTest(TagService tagService, BookmarkJDBCRepository bookmarkJDBCRepository,
+      TagJDBCRepository tagRepo, BookmarkTagRepository btRepo) {
     this.bkmkJDBCRepo = bookmarkJDBCRepository;
     this.tagService = tagService;
     this.tagRepo = tagRepo;

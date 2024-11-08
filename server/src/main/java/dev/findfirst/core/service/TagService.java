@@ -19,7 +19,6 @@ import dev.findfirst.security.userAuth.tenant.repository.TenantRepository;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.stereotype.Service;
 
 @Service
@@ -144,9 +143,10 @@ public class TagService {
   }
 
   public List<TagDTO> getTagsByBookmarkId(long id) {
-    List<Long> tags = bookmarkTagRepository.findByBookmarkId(id).stream().map(bt -> bt.getTagId()).toList();
+    List<Long> tags =
+        bookmarkTagRepository.findByBookmarkId(id).stream().map(bt -> bt.getTagId()).toList();
     List<TagJDBC> tagEnts = new ArrayList<>();
-    tagRepositoryJDBC.findAllById(tags).forEach(tagEnts::add);  
+    tagRepositoryJDBC.findAllById(tags).forEach(tagEnts::add);
     return convertTagJDBCToDTO(tagEnts, tenantContext.getTenantId(), true);
   }
 

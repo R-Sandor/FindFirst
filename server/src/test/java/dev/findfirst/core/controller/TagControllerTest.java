@@ -12,8 +12,8 @@ import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.BookmarkTagPair;
-import lombok.extern.slf4j.Slf4j;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -61,16 +61,15 @@ class TagControllerTest {
   @Test
   void deleteAllTags() {
 
-    var bkmksOpts = Optional.ofNullable(restTemplate
-        .exchange("/api/bookmarks", HttpMethod.GET, getHttpEntity(restTemplate), BookmarkDTO[].class)
-        .getBody());
+    var bkmksOpts = Optional.ofNullable(restTemplate.exchange("/api/bookmarks", HttpMethod.GET,
+        getHttpEntity(restTemplate), BookmarkDTO[].class).getBody());
     var bkmks = bkmksOpts.orElseThrow();
     assertTrue(bkmks.length > 0, "There should be bookmarks already for this test...");
 
     var tagCount = getAllTags().length;
     log.debug("\n\n\nChecking current Tags\n");
     log.debug("\n\n\n " + tagCount + "\n");
-    for(var t: getAllTags()) { 
+    for (var t : getAllTags()) {
       log.debug(t.toString());
     }
     var tagResp = Optional.ofNullable(restTemplate
@@ -78,7 +77,7 @@ class TagControllerTest {
         .getBody());
 
     var deletedTags = tagResp.orElseThrow();
-    for(var del : deletedTags) {
+    for (var del : deletedTags) {
       log.debug(del.toString());
     }
     // Check that all the tags are deleted
@@ -86,9 +85,8 @@ class TagControllerTest {
     assertEquals(0, getAllTags().length);
 
     // Get all the bookmarks assert that there are no tags
-    bkmksOpts = Optional.ofNullable(restTemplate
-        .exchange("/api/bookmarks", HttpMethod.GET, getHttpEntity(restTemplate), BookmarkDTO[].class)
-        .getBody());
+    bkmksOpts = Optional.ofNullable(restTemplate.exchange("/api/bookmarks", HttpMethod.GET,
+        getHttpEntity(restTemplate), BookmarkDTO[].class).getBody());
     bkmks = bkmksOpts.orElseThrow();
     assertTrue(bkmks.length > 0, "Bookmarks should remain only tags should be deleted.");
     assertTrue(Arrays.stream(bkmks).allMatch(b -> b.tags().size() == 0));

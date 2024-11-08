@@ -27,9 +27,9 @@ import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.core.repository.jdbc.BookmarkTagRepository;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 import dev.findfirst.security.userAuth.tenant.repository.TenantRepository;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -59,7 +59,8 @@ public class BookmarkService {
   private final TenantRepository tRepository;
 
   public List<BookmarkDTO> listJDBC() {
-    return convertBookmarkJDBCToDTO(bookmarkJDBCRepository.findAllBookmarksByUser(tContext.getTenantId()),
+    return convertBookmarkJDBCToDTO(
+        bookmarkJDBCRepository.findAllBookmarksByUser(tContext.getTenantId()),
         tContext.getTenantId());
   }
 
@@ -146,8 +147,9 @@ public class BookmarkService {
 
     var savedTags = new HashSet<BookmarkTag>();
 
-    var newBkmkJdbc = new BookmarkJDBC(null, tenant.getId(), new Date(), tenant.getName(), tenant.getName(),
-        new Date(), title, reqBkmk.url(), screenshotUrlOpt.get(), true, savedTags);
+    var newBkmkJdbc =
+        new BookmarkJDBC(null, tenant.getId(), new Date(), tenant.getName(), tenant.getName(),
+            new Date(), title, reqBkmk.url(), screenshotUrlOpt.orElse(""), true, savedTags);
 
     var saved = bookmarkJDBCRepository.save(newBkmkJdbc);
     for (var tag : tags) {
@@ -178,10 +180,8 @@ public class BookmarkService {
   }
 
   /**
-   * Exports bookmarks by their tag groups. The largest tag groups are exported
-   * first. Any bookmark
-   * already accounted for in that group will be excluded from any other group
-   * that it was also
+   * Exports bookmarks by their tag groups. The largest tag groups are exported first. Any bookmark
+   * already accounted for in that group will be excluded from any other group that it was also
    * tagged.
    *
    * @return String representing HTLM file.
@@ -209,17 +209,14 @@ public class BookmarkService {
   }
 
   /**
-   * Checks if a bookmark has already been found in previous tag group. If it has
-   * not it is added to
-   * uniques, and the id added to map for fast lookups. Finally record that
-   * contains the title of
-   * the tag `cooking` `docs` for example is created with it associated bookmarks.
-   * The record is
+   * Checks if a bookmark has already been found in previous tag group. If it has not it is added to
+   * uniques, and the id added to map for fast lookups. Finally record that contains the title of
+   * the tag `cooking` `docs` for example is created with it associated bookmarks. The record is
    * added to uniqueBkmkWithTags.
    *
-   * @param t                  Tag
-   * @param uniques            List<Bookmark> of uniques
-   * @param alreadyFound       Map<Long, Long> for fast lookup
+   * @param t Tag
+   * @param uniques List<Bookmark> of uniques
+   * @param alreadyFound Map<Long, Long> for fast lookup
    * @param uniqueBkmksWithTag Record of Tag Title with Bookmark.
    */
   private void addUniqueBookmarks(TagDTO t, List<BookmarkDTO> uniques, Map<Long, Long> alreadyFound,
@@ -255,7 +252,8 @@ public class BookmarkService {
   public void deleteAllBookmarks() {
     // Finds all that belong to the user and deletes them.
     // Otherwise the @preRemove throws an execption as it should.
-    bookmarkJDBCRepository.deleteAll(bookmarkJDBCRepository.findAllBookmarksByUser(tContext.getTenantId()));
+    bookmarkJDBCRepository
+        .deleteAll(bookmarkJDBCRepository.findAllBookmarksByUser(tContext.getTenantId()));
   }
 
   public void addTagToBookmarkJDBC(BookmarkJDBC bookmark, TagJDBC tag) {

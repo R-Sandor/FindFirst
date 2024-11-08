@@ -21,7 +21,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -127,8 +126,7 @@ public class BookmarkController {
   }
 
   @PostMapping("/bookmark/{bookmarkID}/tagId")
-  public ResponseEntity<BookmarkDTO> addTagById(
-      @PathVariable(value = "bookmarkID") Long bookmarkId,
+  public ResponseEntity<BookmarkDTO> addTagById(@PathVariable(value = "bookmarkID") Long bookmarkId,
       @RequestParam(value = "tagId") Long tagId) {
 
     log.debug("Getting Bookmark");

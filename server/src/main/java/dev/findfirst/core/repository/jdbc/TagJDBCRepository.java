@@ -24,5 +24,6 @@ public interface TagJDBCRepository extends CrudRepository<TagJDBC, Long> {
   Integer countUserTags(@Param("tenantId") Integer tenantId);
 
   @Query("SELECT * FROM Tag t WHERE t.tenant_id = :tenantID AND t.tag_title IN :tagTitles ")
-  List<TagDTO> findByTagTitles(@Param("tagTitles") List<String> tagTitles, @Param("tenantID") int tenantID);
+  List<TagDTO> findByTagTitles(@Param("tagTitles") List<String> tagTitles,
+      @Param("tenantID") int tenantID);
 }
