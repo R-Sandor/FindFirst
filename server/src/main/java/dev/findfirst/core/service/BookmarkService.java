@@ -23,11 +23,8 @@ import dev.findfirst.core.model.TagBookmarks;
 import dev.findfirst.core.model.jdbc.BookmarkJDBC;
 import dev.findfirst.core.model.jdbc.BookmarkTag;
 import dev.findfirst.core.model.jdbc.TagJDBC;
-import dev.findfirst.core.model.jpa.Bookmark;
-import dev.findfirst.core.model.jpa.Tag;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.core.repository.jdbc.BookmarkTagRepository;
-import dev.findfirst.core.repository.jpa.BookmarkRepository;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 import dev.findfirst.security.userAuth.tenant.repository.TenantRepository;
 import lombok.RequiredArgsConstructor;
@@ -47,8 +44,6 @@ import reactor.core.publisher.Flux;
 @RequiredArgsConstructor
 public class BookmarkService {
 
-  private final BookmarkRepository bookmarkRepository;
-
   private final BookmarkJDBCRepository bookmarkJDBCRepository;
 
   private final BookmarkTagRepository bookmarkTagRepository;
@@ -63,12 +58,9 @@ public class BookmarkService {
 
   private final TenantRepository tRepository;
 
-  public List<Bookmark> list() {
-    return bookmarkRepository.findAll();
-  }
-
-  public Optional<Bookmark> findById(Long id) {
-    return id == null ? Optional.ofNullable(null) : bookmarkRepository.findById(id);
+  public List<BookmarkDTO> listJDBC() {
+    return convertBookmarkJDBCToDTO(bookmarkJDBCRepository.findAllBookmarksByUser(tContext.getTenantId()),
+        tContext.getTenantId());
   }
 
   public Optional<BookmarkDTO> getBookmarkById(long id) {
@@ -123,7 +115,6 @@ public class BookmarkService {
       throw new BookmarkAlreadyExistsException();
     }
 
-    System.out.println("adding bookmark");
     if (reqBkmk.tagIds() != null) {
       for (var t : reqBkmk.tagIds()) {
         tags.add(tagService.findByIdJDBC(t).orElseThrow(TagNotFoundException::new).getId());
@@ -132,7 +123,7 @@ public class BookmarkService {
 
     Document retDoc;
     String title = "";
-    var optUrl = Optional.<String>empty();
+    var screenshotUrlOpt = Optional.of("");
 
     if (reqBkmk.scrapable() && webCheckService.isScrapable(reqBkmk.url())) {
       log.debug("Scrapable: true.\tScrapping URL and taking screenshot.");
@@ -148,7 +139,7 @@ public class BookmarkService {
       }
 
       title = !title.isEmpty() ? title : reqBkmk.title();
-      optUrl = sManager.getScreenshot(reqBkmk.url());
+      screenshotUrlOpt = sManager.getScreenshot(reqBkmk.url());
     }
 
     var tenant = tRepository.findById(tContext.getTenantId()).orElseThrow();
@@ -156,7 +147,7 @@ public class BookmarkService {
     var savedTags = new HashSet<BookmarkTag>();
 
     var newBkmkJdbc = new BookmarkJDBC(null, tenant.getId(), new Date(), tenant.getName(), tenant.getName(),
-        new Date(), title, reqBkmk.url(), optUrl.orElse(""), true, savedTags);
+        new Date(), title, reqBkmk.url(), screenshotUrlOpt.get(), true, savedTags);
 
     var saved = bookmarkJDBCRepository.save(newBkmkJdbc);
     for (var tag : tags) {
@@ -170,7 +161,6 @@ public class BookmarkService {
   }
 
   public List<BookmarkDTO> addBookmarks(List<AddBkmkReq> bookmarks) throws Exception {
-    int tenantId = tContext.getTenantId();
     return bookmarks.stream().map(t -> {
       try {
         return addBookmark(t);
@@ -179,6 +169,12 @@ public class BookmarkService {
         return null;
       }
     }).toList();
+  }
+
+  public BookmarkDTO addTagById(BookmarkJDBC bk, long tagId) {
+    bk.addTag(new BookmarkTag(bk.getId(), tagId));
+    bookmarkJDBCRepository.save(bk);
+    return convertBookmarkJDBCToDTO(List.of(bk), tContext.getTenantId()).get(0);
   }
 
   /**
@@ -242,12 +238,10 @@ public class BookmarkService {
 
   public void deleteBookmark(Long bookmarkId) {
     if (bookmarkId != null) {
-      Optional<Bookmark> bookmark = bookmarkRepository.findById(bookmarkId);
-      if (bookmark.isPresent()) {
+      Optional<BookmarkJDBC> bookmark = bookmarkJDBCRepository.findById(bookmarkId);
+      if (bookmark.isPresent() && bookmark.get().getTenantId() == tContext.getTenantId()) {
         try {
-          bookmarkRepository.deleteById(bookmarkId);
-          bookmarkRepository.flush();
-
+          bookmarkJDBCRepository.deleteById(bookmarkId);
         } catch (ObjectOptimisticLockingFailureException exception) {
           // I don't know a fool proof way of preventing this error
           // other than blocking on the method. Which would not
@@ -261,25 +255,16 @@ public class BookmarkService {
   public void deleteAllBookmarks() {
     // Finds all that belong to the user and deletes them.
     // Otherwise the @preRemove throws an execption as it should.
-    bookmarkRepository.deleteAll(bookmarkRepository.findAll());
+    bookmarkJDBCRepository.deleteAll(bookmarkJDBCRepository.findAllBookmarksByUser(tContext.getTenantId()));
   }
 
-  public Tag addTagToBookmark(Bookmark bookmark, Tag tag) {
-    if (bookmark == null || tag == null)
-      throw new NoSuchFieldError();
-    bookmark.addTag(tag);
-    bookmarkRepository.save(bookmark);
-    return tag;
-  }
-
-  public void addTagToBookmarkJDBC(Bookmark bookmark, TagJDBC tag) {
+  public void addTagToBookmarkJDBC(BookmarkJDBC bookmark, TagJDBC tag) {
     if (bookmark == null || tag == null)
       throw new NoSuchFieldError();
     bookmarkTagRepository.saveBookmarkTag(new BookmarkTag(bookmark.getId(), tag.getId()));
   }
 
   public BookmarkTag deleteTag(BookmarkTag bt) {
-    System.out.println("Deleting Tag");
     bookmarkTagRepository.deleteBookmarkTag(bt);
     return bt;
   }
@@ -315,14 +300,15 @@ public class BookmarkService {
   @Transactional
   public void addMissingScreenShotUrlToBookMarks() {
     log.info("Executing addMissingScreenShotUrlToBookMarks");
-    List<Bookmark> list = bookmarkRepository.findBookmarksWithEmptyOrBlankScreenShotUrl();
+    List<BookmarkJDBC> list = bookmarkJDBCRepository.findBookmarksWithEmptyOrBlankScreenShotUrl();
     list.forEach((bookmark) -> {
       if (bookmark.getScrapable() != null && bookmark.getScrapable()) {
         sManager.getScreenshot(bookmark.getUrl()).ifPresentOrElse(bookmark::setScreenshotUrl,
             () -> log.error("Failed to scrap bookmark with id: {}", bookmark.getId()));
       }
     });
-    bookmarkRepository.saveAll(list);
+    bookmarkJDBCRepository.saveAll(list);
     log.info("Finished addMissingScreenShotUrlToBookMarks");
   }
+
 }

@@ -13,7 +13,6 @@ import dev.findfirst.core.model.jdbc.TagJDBC;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.core.repository.jdbc.BookmarkTagRepository;
 import dev.findfirst.core.repository.jdbc.TagJDBCRepository;
-import dev.findfirst.core.repository.jpa.BookmarkRepository;
 import dev.findfirst.core.service.TagService;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 
@@ -49,7 +48,7 @@ public class DatabaseTest {
   final BookmarkTagRepository bookmarkTagRepository;
 
   @Autowired
-  DatabaseTest(BookmarkRepository bkmkRepo, TagService tagService,
+  DatabaseTest(TagService tagService,
       BookmarkJDBCRepository bookmarkJDBCRepository, TagJDBCRepository tagRepo,
       BookmarkTagRepository btRepo) {
     this.bkmkJDBCRepo = bookmarkJDBCRepository;

@@ -12,8 +12,6 @@ import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.BookmarkTagPair;
-import dev.findfirst.core.model.jpa.Bookmark;
-import dev.findfirst.core.repository.jpa.TagRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +29,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 class TagControllerTest {
 
   @Autowired
-  TagControllerTest(TagRepository tgRepo, TestRestTemplate tRestTemplate) {
-    this.tagRepo = tgRepo;
+  TagControllerTest(TestRestTemplate tRestTemplate) {
     this.restTemplate = tRestTemplate;
   }
 
@@ -40,7 +37,6 @@ class TagControllerTest {
   @ServiceConnection
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
-  final TagRepository tagRepo;
 
   final TestRestTemplate restTemplate;
 
@@ -64,7 +60,7 @@ class TagControllerTest {
   void deleteAllTags() {
 
     var bkmksOpts = Optional.ofNullable(restTemplate
-        .exchange("/api/bookmarks", HttpMethod.GET, getHttpEntity(restTemplate), Bookmark[].class)
+        .exchange("/api/bookmarks", HttpMethod.GET, getHttpEntity(restTemplate), BookmarkDTO[].class)
         .getBody());
     var bkmks = bkmksOpts.orElseThrow();
     assertTrue(bkmks.length > 0, "There should be bookmarks already for this test...");
@@ -81,11 +77,11 @@ class TagControllerTest {
 
     // Get all the bookmarks assert that there are no tags
     bkmksOpts = Optional.ofNullable(restTemplate
-        .exchange("/api/bookmarks", HttpMethod.GET, getHttpEntity(restTemplate), Bookmark[].class)
+        .exchange("/api/bookmarks", HttpMethod.GET, getHttpEntity(restTemplate), BookmarkDTO[].class)
         .getBody());
     bkmks = bkmksOpts.orElseThrow();
     assertTrue(bkmks.length > 0, "Bookmarks should remain only tags should be deleted.");
-    assertTrue(Arrays.stream(bkmks).allMatch(b -> b.getTags().size() == 0));
+    assertTrue(Arrays.stream(bkmks).allMatch(b -> b.tags().size() == 0));
   }
 
   @Test

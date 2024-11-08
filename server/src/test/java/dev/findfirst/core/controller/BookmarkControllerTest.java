@@ -17,22 +17,17 @@ import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.dto.AddBkmkReq;
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
-import dev.findfirst.core.model.BookmarkTagPair;
 import dev.findfirst.core.model.jdbc.BookmarkTag;
-import dev.findfirst.core.model.jpa.Bookmark;
-import dev.findfirst.core.model.jpa.Tag;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
-import dev.findfirst.core.repository.jpa.BookmarkRepository;
 import dev.findfirst.security.jwt.TenantAuthenticationToken;
 import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
-import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
+import lombok.extern.slf4j.Slf4j;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.core.io.ClassPathResource;
@@ -51,6 +46,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @IntegrationTest
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Slf4j
 class BookmarkControllerTest {
 
   @Container
@@ -58,16 +54,14 @@ class BookmarkControllerTest {
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
   @Autowired
-  BookmarkControllerTest(BookmarkRepository bookmarkRepository,
+  BookmarkControllerTest(
       BookmarkJDBCRepository bookmarkJDBCRepository, TestRestTemplate tRestTemplate,
       WebApplicationContext wContext) {
-    this.bkmkRepo = bookmarkRepository;
     this.bookmarkJDBCRepository = bookmarkJDBCRepository;
     this.restTemplate = tRestTemplate;
     this.wac = wContext;
   }
 
-  final BookmarkRepository bkmkRepo;
   final BookmarkJDBCRepository bookmarkJDBCRepository;
   final TestRestTemplate restTemplate;
   final WebApplicationContext wac;
@@ -88,14 +82,14 @@ class BookmarkControllerTest {
 
   @Test
   void shouldFailBecauseNoOneIsAuthenticated() {
-    var response = restTemplate.getForEntity(baseUrl, Bookmark.class);
+    var response = restTemplate.getForEntity(baseUrl, BookmarkDTO.class);
     assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
   }
 
   @Test
   void shouldPassIsAuthenticated() {
     var response = restTemplate.exchange(baseUrl, HttpMethod.GET, getHttpEntity(restTemplate),
-        Bookmark[].class);
+        BookmarkDTO[].class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
@@ -115,28 +109,28 @@ class BookmarkControllerTest {
     // Test with Scrapping (default behavior)
     var ent = getHttpEntity(restTemplate,
         new AddBkmkReq("Stack Overflow", "https://stackoverflow.com", List.of(), true));
-    var response = restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent, Bookmark.class);
+    var response = restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent, BookmarkDTO.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var bkmk = Optional.ofNullable(response.getBody());
     assertEquals("Stack Overflow - Where Developers Learn, Share, & Build Careers",
-        bkmk.orElseThrow().getTitle());
+        bkmk.orElseThrow().title());
 
     // Test with scraping (but not allowed as per robot.txt)
     var entFailScrape = getHttpEntity(restTemplate,
         new AddBkmkReq("Facebook", "https://facebook.com", List.of(), true));
-    var responseFailScrape = restTemplate.exchange("/api/bookmark", HttpMethod.POST, entFailScrape, Bookmark.class);
+    var responseFailScrape = restTemplate.exchange("/api/bookmark", HttpMethod.POST, entFailScrape, BookmarkDTO.class);
     assertEquals(HttpStatus.OK, responseFailScrape.getStatusCode());
     var bkmkFailScrape = Optional.ofNullable(responseFailScrape.getBody());
-    assertEquals("", bkmkFailScrape.orElseThrow().getTitle());
+    assertEquals("", bkmkFailScrape.orElseThrow().title());
 
     // Test without scrapping
     var entNoScrape = getHttpEntity(restTemplate,
         new AddBkmkReq("Wikipedia", "https://wikipedia.org", List.of(), false));
-    var noScrapeResponse = restTemplate.exchange("/api/bookmark", HttpMethod.POST, entNoScrape, Bookmark.class);
+    var noScrapeResponse = restTemplate.exchange("/api/bookmark", HttpMethod.POST, entNoScrape, BookmarkDTO.class);
     assertEquals(HttpStatus.OK, noScrapeResponse.getStatusCode());
 
     var noScrapeBkmk = Optional.ofNullable(noScrapeResponse.getBody());
-    assertEquals("", noScrapeBkmk.orElseThrow().getScreenshotUrl());
+    assertEquals("", noScrapeBkmk.orElseThrow().screenshotUrl());
   }
 
   @Test
@@ -160,10 +154,10 @@ class BookmarkControllerTest {
     var response = restTemplate.exchange(baseUrl, HttpMethod.DELETE, getHttpEntity(restTemplate),
         String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertTrue(bkmkRepo.count() > 0);
+    assertTrue(bookmarkJDBCRepository.count() > 0);
 
     var bkmks = restTemplate.exchange(baseUrl, HttpMethod.GET, getHttpEntity(restTemplate),
-        Bookmark[].class);
+        BookmarkDTO[].class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -183,14 +177,14 @@ class BookmarkControllerTest {
     // Add web_dev to bookmark
     var ent = getHttpEntity(restTemplate);
     restTemplate.exchange("/api/bookmark/{bookmarkID}/tag?tag={title}", HttpMethod.POST, ent,
-        Tag.class, bkmk.id(), "web_dev");
+        TagDTO.class, bkmk.id(), "web_dev");
 
     System.out.println("FOUND TAG");
 
     // Add design tag to bookmark.
     ent = getHttpEntity(restTemplate);
     restTemplate.exchange("/api/bookmark/{bookmarkID}/tag?tag={title}", HttpMethod.POST, ent,
-        Tag.class, bkmk.id(), "design");
+        TagDTO.class, bkmk.id(), "design");
 
     var response = restTemplate.exchange("/api/bookmark?id={id}", HttpMethod.GET,
         getHttpEntity(restTemplate), BookmarkDTO.class, bkmk.id());
@@ -219,7 +213,7 @@ class BookmarkControllerTest {
     // Add Tag web_dev
     var ent = getHttpEntity(restTemplate);
     restTemplate.exchange("/api/bookmark/{bookmarkID}/tag?tag={title}", HttpMethod.POST, ent,
-        Tag.class, bkmk.id(), "web_dev");
+        TagDTO.class, bkmk.id(), "web_dev");
 
     // Add Tag design
     // Store tag response to delete the tag next
@@ -246,15 +240,15 @@ class BookmarkControllerTest {
   void addTagToBookmarkById() {
     var bkmk = saveBookmarks(new AddBkmkReq("duckduckgo", "https://duckduckgo.com", List.of(1L), true));
 
-    var tagReq = restTemplate.exchange("/api/bookmark/{bookmarkID}/tagId?tagId={id}", HttpMethod.POST,
-        getHttpEntity(restTemplate), BookmarkTagPair.class, bkmk.get(0).id(), 5);
+    var addReq = restTemplate.exchange("/api/bookmark/{bookmarkID}/tagId?tagId={id}", HttpMethod.POST,
+        getHttpEntity(restTemplate), BookmarkDTO.class, bkmk.get(0).id(), 5);
 
-    var btPairOpt = Optional.ofNullable(tagReq.getBody());
-    var tags = btPairOpt.orElseThrow().bkmk().getTags();
+    var tags = addReq.getBody().tags();
+    log.debug("Printing tags");
+    tags.stream().forEach(t -> t.toString());
 
     assertEquals(2, tags.size());
-
-    assertTrue(tags.stream().filter(t -> t.getId() == 5 || t.getId() == 1).count() == 2);
+    assertTrue(tags.stream().filter(t -> t.id() == 5 || t.id() == 1).count() == 2);
   }
 
   @Test
@@ -262,10 +256,10 @@ class BookmarkControllerTest {
     saveBookmarks(
         new AddBkmkReq("web scraping", "https://www.scrapethissite.com", List.of(1L, 6L), true));
     var response = restTemplate.exchange(baseUrl, HttpMethod.GET, getHttpEntity(restTemplate),
-        Bookmark[].class);
+        BookmarkDTO[].class);
     var bkmkOpt = Optional.ofNullable(response.getBody());
 
-    var id = bkmkOpt.orElseThrow()[0].getId();
+    var id = bkmkOpt.orElseThrow()[0].id();
     var delResp = restTemplate.exchange("/api/bookmark?id={id}", HttpMethod.DELETE,
         getHttpEntity(restTemplate), String.class, id);
     assertEquals(HttpStatus.OK, delResp.getStatusCode());
