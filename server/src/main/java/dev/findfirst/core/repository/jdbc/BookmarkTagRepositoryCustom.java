@@ -6,4 +6,6 @@ public interface BookmarkTagRepositoryCustom {
   int saveBookmarkTag(BookmarkTag bookmarkTag);
 
   int deleteBookmarkTag(BookmarkTag bookmarkTag);
+
+  int deleteAllTagsByUser();
 }

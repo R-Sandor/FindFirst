@@ -26,4 +26,10 @@ public class BookmarkTagRepositoryCustomImpl implements BookmarkTagRepositoryCus
     String sql = "DELETE FROM bookmark_tag bt USING bookmark WHERE bt.bookmark_id = ? AND bt.tag_id = ? AND bookmark.tenant_id = ?";
     return jdbcTemplate.update(sql, bookmarkTag.getBookmarkId(), bookmarkTag.getTagId(), tContext.getTenantId());
   }
+
+  @Override 
+  public int deleteAllTagsByUser() { 
+    String sql = "DELETE FROM bookmark_tag bt USING tag WHERE bt.tag_id = tag.id AND tag.tenant_id = ?";
+    return jdbcTemplate.update(sql, tContext.getTenantId());
+  }
 }

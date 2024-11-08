@@ -9,29 +9,28 @@ import jakarta.validation.constraints.NotBlank;
 
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
-import dev.findfirst.core.model.jdbc.BookmarkTag;
 import dev.findfirst.core.model.jdbc.TagJDBC;
-import dev.findfirst.core.model.jpa.Tag;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.core.repository.jdbc.BookmarkTagRepository;
 import dev.findfirst.core.repository.jdbc.TagJDBCRepository;
-import dev.findfirst.core.repository.jpa.TagRepository;
 import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
 import dev.findfirst.security.userAuth.tenant.repository.TenantRepository;
 
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class TagService {
 
   private final TagJDBCRepository tagRepositoryJDBC;
 
   private final BookmarkTagRepository bookmarkTagRepository;
 
-  private final TagRepository tagRepository;
 
   private final TenantContext tenantContext;
 
@@ -124,10 +123,12 @@ public class TagService {
     return Arrays.stream(titles).map(t -> findOrCreateTagJDBC(t)).toList();
   }
 
-  public List<Tag> deleteAllTags() {
-    var userTags = tagRepository.findAll();
-    tagRepository.deleteAll(userTags);
-    return userTags;
+  public List<TagDTO> deleteAllTags() {
+    var userTags = tagRepositoryJDBC.findAllByTenantId(tenantContext.getTenantId());
+    var deleted = convertTagJDBCToDTO(userTags, tenantContext.getTenantId(), true);
+    bookmarkTagRepository.deleteAllTagsByUser();
+    tagRepositoryJDBC.deleteAll(userTags);
+    return deleted;
   }
 
   public List<TagDTO> getTags() {
@@ -142,16 +143,11 @@ public class TagService {
     return convertTagJDBCToDTO(tagEnts, tenantContext.getTenantId(), withBookmarks);
   }
 
-  public List<Tag> getTagsByBookmarkId(long id) {
-    return tagRepository.findTagsByBookmarkId(id);
-  }
-
-  public Optional<Tag> getTagByTitle(String title) {
-    return tagRepository.findByTagTitle(title);
-  }
-
-  public Optional<Tag> findById(long id) {
-    return tagRepository.findById(id);
+  public List<TagDTO> getTagsByBookmarkId(long id) {
+    List<Long> tags = bookmarkTagRepository.findByBookmarkId(id).stream().map(bt -> bt.getTagId()).toList();
+    List<TagJDBC> tagEnts = new ArrayList<>();
+    tagRepositoryJDBC.findAllById(tags).forEach(tagEnts::add);  
+    return convertTagJDBCToDTO(tagEnts, tenantContext.getTenantId(), true);
   }
 
   public Optional<TagJDBC> findByIdJDBC(long id) {
@@ -174,9 +170,5 @@ public class TagService {
     } else {
       return Optional.ofNullable(null);
     }
-  }
-
-  public Optional<Tag> findByTagTitle(@NonNull String tag_title) {
-    return tagRepository.findByTagTitle(tag_title);
   }
 }

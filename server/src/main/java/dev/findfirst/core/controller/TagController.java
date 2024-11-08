@@ -4,7 +4,6 @@ import java.util.List;
 
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.jdbc.TagJDBC;
-import dev.findfirst.core.model.jpa.Tag;
 import dev.findfirst.core.service.TagService;
 
 import lombok.RequiredArgsConstructor;
@@ -37,7 +36,7 @@ public class TagController {
   }
 
   @DeleteMapping(value = "/tags")
-  public ResponseEntity<List<Tag>> deleteAllTags() {
+  public ResponseEntity<List<TagDTO>> deleteAllTags() {
     return ResponseEntity.ok().body(tagService.deleteAllTags());
   }
 
@@ -54,7 +53,7 @@ public class TagController {
    * @return
    */
   @GetMapping("/tag/bkmk")
-  public ResponseEntity<List<Tag>> getTagByBookmarkId(
+  public ResponseEntity<List<TagDTO>> getTagByBookmarkId(
       @RequestParam("bookmarkId") @NonNull Long id) {
     return ResponseEntity.ok(tagService.getTagsByBookmarkId(id));
   }
