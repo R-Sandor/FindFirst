@@ -3,7 +3,7 @@ package dev.findfirst.core.model;
 import java.sql.Date;
 import java.util.List;
 
-import dev.findfirst.core.model.jpa.Bookmark;
+import dev.findfirst.core.dto.BookmarkDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,5 +21,5 @@ public class Screenshot {
   private boolean disabled;
   private boolean manuallyCaptured;
   private Date lastUpdated;
-  private List<Bookmark> bookmarksWithScreenshot;
+  private List<BookmarkDTO> bookmarksWithScreenshot;
 }

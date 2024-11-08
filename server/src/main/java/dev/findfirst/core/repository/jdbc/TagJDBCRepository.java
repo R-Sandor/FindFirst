@@ -3,6 +3,7 @@ package dev.findfirst.core.repository.jdbc;
 import java.util.List;
 import java.util.Optional;
 
+import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.jdbc.TagJDBC;
 
 import org.springframework.data.jdbc.repository.query.Query;
@@ -21,4 +22,7 @@ public interface TagJDBCRepository extends CrudRepository<TagJDBC, Long> {
 
   @Query("SELECT COUNT(*) FROM tag WHERE tenant_id = :tenantId")
   Integer countUserTags(@Param("tenantId") Integer tenantId);
+
+  @Query("SELECT * FROM Tag t WHERE t.tenant_id = :tenantID AND t.tag_title IN :tagTitles ")
+  List<TagDTO> findByTagTitles(@Param("tagTitles") List<String> tagTitles, @Param("tenantID") int tenantID);
 }
