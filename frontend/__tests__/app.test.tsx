@@ -10,7 +10,6 @@ import { hitEnter } from "./utilities/fireEvents";
 import { TagReqPayload } from "@type/Bookmarks/Tag";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import { Providers } from "@/app/providers";
-import { debug } from "vitest-preview";
 const userEvnt = userEvent.setup();
 
 const data = JSON.stringify(bkmkResp, null, 2);
@@ -67,7 +66,7 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
         200,
         JSON.stringify({
           id: 1,
-          tag_title: "Cooking",
+          title: "Cooking",
           bookmarks: [],
         }),
       ];
@@ -77,7 +76,7 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
         200,
         JSON.stringify({
           id: 10,
-          tag_title: "new",
+          title: "new",
           bookmarks: [],
         }),
       ];
@@ -215,7 +214,7 @@ describe("Bookmark Operation.", () => {
     const expectedResult: TagReqPayload[] = [
       {
         id: 1,
-        tag_title: "Cooking",
+        title: "Cooking",
         bookmarks: [],
       },
     ];
@@ -228,7 +227,7 @@ describe("Bookmark Operation.", () => {
       tags: [
         {
           id: 1,
-          tag_title: "cooking",
+          title: "cooking",
         },
       ],
       scrapable: true,
