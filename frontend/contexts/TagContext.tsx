@@ -28,8 +28,8 @@ export function TagCntProvider({ children }: { children: React.ReactNode }) {
 }
 
 function tagCntReducer(tagMap: Map<number, TagWithCnt>, action: TagAction) {
-  const tagId = action.tagId;
-  const tagCnt: TagWithCnt | undefined = tagMap.get(action.tagId);
+  const tagId = action.id;
+  const tagCnt: TagWithCnt | undefined = tagMap.get(action.id);
   // create a deep copy of the existing.
   const newTagMap = new Map(tagMap);
 
@@ -42,13 +42,13 @@ function tagCntReducer(tagMap: Map<number, TagWithCnt>, action: TagAction) {
         console.log(action.bookmark);
         addBkmkToTag(tagCnt, action.bookmark);
         newTagMap.set(tagId, {
-          tagTitle: tagCnt.tagTitle,
+          title: tagCnt.title,
           count: tagCnt.count + 1,
           associatedBkmks: tagCnt.associatedBkmks,
         });
       } else {
         newTagMap.set(tagId, {
-          tagTitle: action.tagTitle,
+          title: action.title,
           count: 1,
           associatedBkmks: [bkmk],
         });
@@ -59,12 +59,12 @@ function tagCntReducer(tagMap: Map<number, TagWithCnt>, action: TagAction) {
       console.log("deleting");
       if (tagCnt && tagCnt.count > 1) {
         newTagMap.set(tagId, {
-          tagTitle: tagCnt.tagTitle,
+          title: tagCnt.title,
           count: tagCnt.count - 1,
           associatedBkmks: remBkmkFrmTag(tagCnt, action.bookmark),
         });
       } else {
-        newTagMap.delete(action.tagId);
+        newTagMap.delete(action.id);
       }
       return newTagMap;
     }
