@@ -7,6 +7,7 @@ import { instance } from "@api/Api";
 import MockAdapter from "axios-mock-adapter";
 import { hitKey } from "../utilities/fireEvents";
 import { defaultBookmark, firstTag, secondTag } from "../data/SampleData";
+import { debug } from "vitest-preview";
 const user = userEvent.setup();
 
 describe("Bookmark functions", () => {
@@ -24,6 +25,7 @@ describe("Bookmark functions", () => {
 
   it("Card Functionality", () => {
     const fb = screen.getAllByText(/facebook.com/i);
+    debug();
     expect(fb.length).toEqual(2);
     expect(screen.getByText(/social/i)).toBeInTheDocument();
   });
@@ -96,9 +98,9 @@ describe("Adding and deleting Tags", () => {
       ];
     });
     await act(async () => {
-      await user.click(screen.getByText(/socail/i));
+      await user.click(screen.getByText(/social/i));
     });
-    expect(screen.queryByText(/socail/i)).toBeNull();
+    expect(screen.queryByText(/social/i)).toBeNull();
   });
 
   it("Deleting tag on backspace", async () => {

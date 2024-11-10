@@ -100,7 +100,7 @@ export const defaultBookmark: Bookmark = {
   tags: [
     {
       id: 1,
-      title: "socail",
+      title: "social",
     },
   ],
   screenshotUrl: "",
