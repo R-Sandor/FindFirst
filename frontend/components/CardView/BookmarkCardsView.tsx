@@ -9,7 +9,7 @@ import cardView from "styles/cardView.module.scss";
 
 function getTagId(map: Map<number, TagWithCnt>, tagTitle: string) {
   for (let [k, v] of map) {
-    if (v.tagTitle === tagTitle) {
+    if (v.title === tagTitle) {
       return k;
     }
   }

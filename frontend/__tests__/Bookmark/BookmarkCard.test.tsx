@@ -7,7 +7,6 @@ import { instance } from "@api/Api";
 import MockAdapter from "axios-mock-adapter";
 import { hitKey } from "../utilities/fireEvents";
 import { defaultBookmark, firstTag, secondTag } from "../data/SampleData";
-import { debug } from "vitest-preview";
 const user = userEvent.setup();
 
 describe("Bookmark functions", () => {
@@ -25,7 +24,6 @@ describe("Bookmark functions", () => {
 
   it("Card Functionality", () => {
     const fb = screen.getAllByText(/facebook.com/i);
-    debug();
     expect(fb.length).toEqual(2);
     expect(screen.getByText(/social/i)).toBeInTheDocument();
   });
@@ -58,7 +56,7 @@ describe("Adding and deleting Tags", () => {
                 tags: [
                   {
                     id: 1,
-                    title: "soial",
+                    title: "social",
                   },
                 ],
                 scrapable: true,

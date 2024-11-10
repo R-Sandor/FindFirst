@@ -4,7 +4,7 @@ import Tag, { TagReqPayload } from "@type/Bookmarks/Tag";
 export const tagsData = [
   {
     id: 1,
-    tag_title: "Cooking",
+    title: "Cooking",
     bookmarks: [
       {
         id: 3,
@@ -15,7 +15,7 @@ export const tagsData = [
   },
   {
     id: 2,
-    tag_title: "web_dev",
+    title: "web_dev",
     bookmarks: [
       {
         id: 2,
@@ -26,7 +26,7 @@ export const tagsData = [
   },
   {
     id: 3,
-    tag_title: "deserts",
+    title: "deserts",
     bookmarks: [
       {
         id: 1,
@@ -37,17 +37,17 @@ export const tagsData = [
   },
   {
     id: 4,
-    tag_title: "camping",
+    title: "camping",
     bookmarks: [],
   },
   {
     id: 5,
-    tag_title: "spring docs",
+    title: "spring docs",
     bookmarks: [],
   },
   {
     id: 6,
-    tag_title: "web docs",
+    title: "web docs",
     bookmarks: [],
   },
 ];

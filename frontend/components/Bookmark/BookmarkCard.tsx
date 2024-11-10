@@ -37,7 +37,7 @@ async function addTagToBookmark(
     // It will always be the last index since it was the last added.
     // let index = response.data.length - 1;
     action.id = response.data.id;
-    action.title = response.data.tag_title;
+    action.title = response.data.title;
     bookmark.tags.push({ id: action.id, title: action.title });
   });
 
