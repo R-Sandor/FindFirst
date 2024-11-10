@@ -55,15 +55,15 @@ export const tagsData = [
 export const myTags: Tag[] = [
   {
     id: 1,
-    tag_title: "Cooking",
+    title: "Cooking",
   },
   {
     id: 2,
-    tag_title: "web_dev",
+    title: "web_dev",
   },
   {
     id: 3,
-    tag_title: "deserts",
+    title: "deserts",
   },
 ];
 export const bkmkResp: Bookmark[] = [
@@ -72,18 +72,24 @@ export const bkmkResp: Bookmark[] = [
     title: "Best Cheesecake Recipe",
     url: "https://sugarspunrun.com/best-cheesecake-recipe/",
     tags: [myTags[2]],
+    screenshotUrl: "",
+    scrapable: true,
   },
   {
     id: 2,
     title: "Dark mode guide",
     url: "https://blog.logrocket.com/dark-mode-react-in-depth-guide/",
     tags: [myTags[1]],
+    screenshotUrl: "",
+    scrapable: true,
   },
   {
     id: 3,
     title: "Chicken Parm",
     url: "https://www.foodnetwork.com/recipes/bobby-flay/chicken-parmigiana-recipe-1952359",
     tags: [myTags[0]],
+    screenshotUrl: "",
+    scrapable: true,
   },
 ];
 
@@ -94,15 +100,17 @@ export const defaultBookmark: Bookmark = {
   tags: [
     {
       id: 1,
-      tag_title: "socail",
+      title: "socail",
     },
   ],
+  screenshotUrl: "",
+  scrapable: true,
 };
 
 export const firstTag: TagReqPayload[] = [
   {
     id: 2,
-    tag_title: "fb",
+    title: "fb",
     bookmarks: [],
   },
 ];
@@ -110,7 +118,7 @@ export const firstTag: TagReqPayload[] = [
 export const secondTag: TagReqPayload[] = [
   {
     id: 3,
-    tag_title: "friends",
+    title: "friends",
     bookmarks: [],
   },
 ];

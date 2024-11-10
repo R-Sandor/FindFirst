@@ -25,7 +25,7 @@ describe("Bookmark functions", () => {
   it("Card Functionality", () => {
     const fb = screen.getAllByText(/facebook.com/i);
     expect(fb.length).toEqual(2);
-    expect(screen.getByText(/socail/i)).toBeInTheDocument();
+    expect(screen.getByText(/social/i)).toBeInTheDocument();
   });
 
   it("Deleting Bookmark", async () => {
@@ -56,9 +56,11 @@ describe("Adding and deleting Tags", () => {
                 tags: [
                   {
                     id: 1,
-                    tag_title: "socail",
+                    title: "soial",
                   },
                 ],
+                scrapable: true,
+                screenshotUrl: "",
               }}
             />
           </div>
@@ -89,7 +91,7 @@ describe("Adding and deleting Tags", () => {
         200,
         JSON.stringify({
           id: 1,
-          tag_title: "socail",
+          title: "social",
         }),
       ];
     });
