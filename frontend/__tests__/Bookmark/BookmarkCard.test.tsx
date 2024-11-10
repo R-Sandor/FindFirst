@@ -108,7 +108,7 @@ describe("Adding and deleting Tags", () => {
         200,
         JSON.stringify({
           id: 1,
-          tag_title: "socail",
+          title: "socail",
         }),
       ];
     });
@@ -116,6 +116,6 @@ describe("Adding and deleting Tags", () => {
     await act(async () => {
       hitKey(tags, "backspace", "backspace", 8, 8);
     });
-    expect(screen.queryByText(/socail/i)).toBeNull();
+    expect(screen.queryByText(/social/i)).toBeNull();
   });
 });
