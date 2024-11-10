@@ -75,7 +75,6 @@ describe("Login events.", () => {
     const axiosMock = new MockAdapter(instance);
     // Create a custom response
 
-    const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
     axiosMock.onGet().reply(401, "Invalid username or password");
 
     vi.spyOn(authService, "getAuthorized").mockImplementation(() => 0);
@@ -87,13 +86,15 @@ describe("Login events.", () => {
     await act(async () => {
       await typeUsername("j-dog");
       await typePassword("$t3ves_$uperh@rd_P@$$w0rd");
+      await user.click(submitBtn);
+      await user.click(submitBtn);
+      await user.click(submitBtn);
     });
-    await user.click(submitBtn);
-    await user.click(submitBtn);
-    await user.click(submitBtn);
     const forgot = screen.getByText("Forgot Password?");
     expect(forgot).toBeInTheDocument();
-    await user.click(forgot);
+    await act(async () => {
+      await user.click(forgot);
+    });
   });
 });
 
