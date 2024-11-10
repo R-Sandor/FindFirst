@@ -1,4 +1,7 @@
 package dev.findfirst.core.model;
 
-public record BookmarkTagPair(Bookmark bkmk, Tag tag) {
+import dev.findfirst.core.model.jdbc.BookmarkJDBC;
+import dev.findfirst.core.model.jdbc.TagJDBC;
+
+public record BookmarkTagPair(BookmarkJDBC bkmk, TagJDBC tag) {
 }

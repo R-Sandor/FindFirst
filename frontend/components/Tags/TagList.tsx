@@ -23,7 +23,7 @@ const TagList = () => {
           console.log("getting all Tags:", tags);
           for (let tag of tags) {
             const twc: TagWithCnt = {
-              tagTitle: tag.tag_title,
+              title: tag.title,
               count: tag.bookmarks.length,
               associatedBkmks: tag.bookmarks,
             };
@@ -55,16 +55,16 @@ const TagList = () => {
     groupItems.push(
       <ListGroup.Item key={`${key}-item`} className="w-full m-0 p-0">
         <button
-          onClick={(event) => selectTag(event, tagCnt.tagTitle)}
-          data-testid={`${tagCnt.tagTitle}-list-item`}
-          key={`${tagCnt.tagTitle}-list-item`}
+          onClick={(event) => selectTag(event, tagCnt.title)}
+          data-testid={`${tagCnt.title}-list-item`}
+          key={`${tagCnt.title}-list-item`}
           className={`d-flex m-0 w-full btn ${styles.btn} justify-content-between align-items-start`}
         >
-          {tagCnt.tagTitle}
+          {tagCnt.title}
           <Badge bg="primary" pill>
             <div
-              data-testid={`${tagCnt.tagTitle}-list-item-cnt`}
-              key={`${tagCnt.tagTitle}-list-item-badge`}
+              data-testid={`${tagCnt.title}-list-item-cnt`}
+              key={`${tagCnt.title}-list-item-badge`}
             >
               {tagCnt.count}
             </div>

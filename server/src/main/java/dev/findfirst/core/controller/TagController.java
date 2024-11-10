@@ -2,7 +2,8 @@ package dev.findfirst.core.controller;
 
 import java.util.List;
 
-import dev.findfirst.core.model.Tag;
+import dev.findfirst.core.dto.TagDTO;
+import dev.findfirst.core.model.jdbc.TagJDBC;
 import dev.findfirst.core.service.TagService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,24 +24,26 @@ public class TagController {
 
   private final TagService tagService;
 
+  // JDBC in progress
   @GetMapping(value = "/tags")
-  public ResponseEntity<List<Tag>> getTags() {
+  public ResponseEntity<List<TagDTO>> getTags() {
     return ResponseEntity.ok(tagService.getTags());
   }
 
   @PostMapping("/tags")
-  public ResponseEntity<List<Tag>> addAllTags(@RequestBody String tags[]) {
-    return ResponseEntity.ok(tagService.addAll(tags));
+  public ResponseEntity<List<TagDTO>> addAllTags(@RequestBody String tags[]) {
+    return ResponseEntity.ok().body(tagService.addAll(tags));
   }
 
   @DeleteMapping(value = "/tags")
-  public ResponseEntity<List<Tag>> deleteAllTags() {
+  public ResponseEntity<List<TagDTO>> deleteAllTags() {
     return ResponseEntity.ok().body(tagService.deleteAllTags());
   }
 
+  // JDBC
   @PostMapping(value = "/tag")
-  public ResponseEntity<Tag> addTag(@RequestParam("tag") String tag) {
-    return ResponseEntity.ok(tagService.findOrCreateTag(tag));
+  public ResponseEntity<TagJDBC> addTag(@RequestParam("tag") String tag) {
+    return ResponseEntity.ok(tagService.findOrCreateTagJDBC(tag));
   }
 
   /**
@@ -50,7 +53,7 @@ public class TagController {
    * @return
    */
   @GetMapping("/tag/bkmk")
-  public ResponseEntity<List<Tag>> getTagByBookmarkId(
+  public ResponseEntity<List<TagDTO>> getTagByBookmarkId(
       @RequestParam("bookmarkId") @NonNull Long id) {
     return ResponseEntity.ok(tagService.getTagsByBookmarkId(id));
   }

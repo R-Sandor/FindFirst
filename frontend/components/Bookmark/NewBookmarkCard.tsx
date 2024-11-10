@@ -26,7 +26,7 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
     scrapable: createBmk.scrapable,
   };
   let tagTitles: string[] = createBmk.tags.map((t) => {
-    return t.tag_title;
+    return t.title;
   });
 
   await api.addAllTag(tagTitles).then((response) => {
@@ -71,10 +71,10 @@ export default function NewBookmarkCard() {
   ) => {
     // get the the last inputed string and all the tags already entered.
     let tags: Tag[] = strTags.map((t) => {
-      return { tag_title: t, id: -1 };
+      return { title: t, id: -1 };
     });
     if (tagInput) {
-      tags.push({ tag_title: tagInput, id: -1 });
+      tags.push({ title: tagInput, id: -1 });
     }
     submittedBmk.title = submittedBmk.url;
     // TODO: set scrapable from toggle Issue #222
@@ -94,8 +94,8 @@ export default function NewBookmarkCard() {
       retBkmk.tags.forEach((t) => {
         let tAct: TagAction = {
           type: "add",
-          tagId: t.id,
-          tagTitle: t.tag_title,
+          id: t.id,
+          title: t.title,
           bookmark: retBkmk as Bookmark,
         };
         tagDispatch(tAct);

@@ -25,7 +25,7 @@ describe("Bookmark functions", () => {
   it("Card Functionality", () => {
     const fb = screen.getAllByText(/facebook.com/i);
     expect(fb.length).toEqual(2);
-    expect(screen.getByText(/socail/i)).toBeInTheDocument();
+    expect(screen.getByText(/social/i)).toBeInTheDocument();
   });
 
   it("Deleting Bookmark", async () => {
@@ -56,9 +56,11 @@ describe("Adding and deleting Tags", () => {
                 tags: [
                   {
                     id: 1,
-                    tag_title: "socail",
+                    title: "social",
                   },
                 ],
+                scrapable: true,
+                screenshotUrl: "",
               }}
             />
           </div>
@@ -89,14 +91,14 @@ describe("Adding and deleting Tags", () => {
         200,
         JSON.stringify({
           id: 1,
-          tag_title: "socail",
+          title: "social",
         }),
       ];
     });
     await act(async () => {
-      await user.click(screen.getByText(/socail/i));
+      await user.click(screen.getByText(/social/i));
     });
-    expect(screen.queryByText(/socail/i)).toBeNull();
+    expect(screen.queryByText(/social/i)).toBeNull();
   });
 
   it("Deleting tag on backspace", async () => {
@@ -106,7 +108,7 @@ describe("Adding and deleting Tags", () => {
         200,
         JSON.stringify({
           id: 1,
-          tag_title: "socail",
+          title: "socail",
         }),
       ];
     });
@@ -114,6 +116,6 @@ describe("Adding and deleting Tags", () => {
     await act(async () => {
       hitKey(tags, "backspace", "backspace", 8, 8);
     });
-    expect(screen.queryByText(/socail/i)).toBeNull();
+    expect(screen.queryByText(/social/i)).toBeNull();
   });
 });

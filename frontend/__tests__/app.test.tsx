@@ -10,7 +10,6 @@ import { hitEnter } from "./utilities/fireEvents";
 import { TagReqPayload } from "@type/Bookmarks/Tag";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import { Providers } from "@/app/providers";
-import { debug } from "vitest-preview";
 const userEvnt = userEvent.setup();
 
 const data = JSON.stringify(bkmkResp, null, 2);
@@ -47,11 +46,11 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
   });
 
   test("User clicks a tag in list", async () => {
-    const bkmkCard = screen.getByText(/Best Cheesecake/i);
+    const bkmkCard = await screen.findByText(/Best Cheesecake Recipe/i);
+    expect(bkmkCard).toBeInTheDocument();
     await act(async () => {
       await userEvnt.click(screen.getByTestId("deserts-list-item"));
     });
-    expect(bkmkCard).toBeInTheDocument();
     let allbkmks = screen.getAllByTestId(/bookmark-/i);
     expect(allbkmks.length).toBe(1);
     await act(async () => {
@@ -67,7 +66,7 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
         200,
         JSON.stringify({
           id: 1,
-          tag_title: "Cooking",
+          title: "Cooking",
           bookmarks: [],
         }),
       ];
@@ -77,7 +76,7 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
         200,
         JSON.stringify({
           id: 10,
-          tag_title: "new",
+          title: "new",
           bookmarks: [],
         }),
       ];
@@ -108,7 +107,7 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
         200,
         JSON.stringify({
           id: 2,
-          tag_title: "web_dev",
+          title: "web_dev",
         }),
       ];
     });
@@ -118,7 +117,7 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
         200,
         JSON.stringify({
           id: 1,
-          tag_title: "Cooking",
+          title: "Cooking",
         }),
       ];
     });
@@ -128,7 +127,7 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
         200,
         JSON.stringify({
           id: 1,
-          tag_title: "Cooking",
+          title: "Cooking",
           bookmarks: [],
         }),
       ];
@@ -215,7 +214,7 @@ describe("Bookmark Operation.", () => {
     const expectedResult: TagReqPayload[] = [
       {
         id: 1,
-        tag_title: "Cooking",
+        title: "Cooking",
         bookmarks: [],
       },
     ];
@@ -228,7 +227,7 @@ describe("Bookmark Operation.", () => {
       tags: [
         {
           id: 1,
-          tag_title: "cooking",
+          title: "cooking",
         },
       ],
       scrapable: true,

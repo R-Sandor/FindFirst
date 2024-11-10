@@ -3,7 +3,10 @@ package dev.findfirst.core.model;
 import java.util.Date;
 import java.util.List;
 
+import dev.findfirst.core.dto.BookmarkDTO;
+
 import lombok.Data;
+
 
 /** Takes bookmarks and turns them into an html file in the form of a String. */
 @Data
@@ -41,7 +44,7 @@ public class ExportBookmark {
   }
 
   private String getCat(TagBookmarks tb) {
-    Date date = tb.bookmarks().get(0).getCreatedDate();
+    Date date = tb.bookmarks().get(0).createdDate();
     Long time = 0l;
     if (date != null) {
       time = date.getTime();
@@ -60,20 +63,20 @@ public class ExportBookmark {
     return "\n</DL>";
   }
 
-  private StringBuilder getLinks(List<Bookmark> bkmks) {
+  private StringBuilder getLinks(List<BookmarkDTO> bkmks) {
     var links = new StringBuilder();
     bkmks.forEach(bkmk -> {
       Long addedTime = 0l;
       Long modTime = 0l;
-      Date date = bkmk.getCreatedDate();
+      Date date = bkmk.createdDate();
       if (date != null) {
-        addedTime = bkmk.getCreatedDate().getTime();
-        modTime = bkmk.getLastModifiedDate().getTime();
+        addedTime = bkmk.createdDate().getTime();
+        modTime = bkmk.lastModifiedOn().getTime();
       }
       links.append("""
               <DT><A HREF="%s" ADD_DATE=%s LAST_MODIFIED=%s ICON_URI="%s">%s</A>
-          """.formatted(bkmk.getUrl(), addedTime.toString(), modTime.toString(), bkmk.getUrl(),
-          bkmk.getTitle()));
+          """.formatted(bkmk.url(), addedTime.toString(), modTime.toString(), bkmk.url(),
+          bkmk.title()));
     });
 
     return links;

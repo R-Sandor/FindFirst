@@ -11,8 +11,6 @@ import { hitEnter, hitKey } from "../utilities/fireEvents";
 import { populateTags } from "../utilities/BookmarkUtils/BookmarkUtil";
 const user = userEvent.setup();
 
-
-
 describe("New Bookmark Card Renders", () => {
   beforeEach(() => {
     render(
@@ -73,7 +71,7 @@ describe("Fields logic", () => {
     const expectedResult: TagReqPayload[] = [
       {
         id: 1,
-        tag_title: "cooking",
+        title: "cooking",
         bookmarks: [],
       },
     ];
@@ -85,9 +83,11 @@ describe("Fields logic", () => {
       tags: [
         {
           id: 1,
-          tag_title: "cooking",
+          title: "cooking",
         },
       ],
+      screenshotUrl: "",
+      scrapable: false,
     };
 
     axiosMock.onPost(tagsAPI, ["cooking"]).reply(() => {
@@ -114,20 +114,19 @@ describe("Fields logic", () => {
     expect(submit).toBeDisabled();
   });
 
-
-
   it("Valid Domains", async () => {
-    async function checkDomain(url: string, submit: HTMLElement, isValid: boolean) {
+    async function checkDomain(
+      url: string,
+      submit: HTMLElement,
+      isValid: boolean,
+    ) {
       await act(async () => {
-        await user.type(
-          screen.getByPlaceholderText(/discover/i),
-          url,
-        );
+        await user.type(screen.getByPlaceholderText(/discover/i), url);
       });
       isValid ? expect(submit).toBeEnabled() : expect(submit).toBeDisabled();
       await act(async () => {
         await user.click(screen.getByText(/reset/i));
-      })
+      });
     }
     const submit = screen.getByText("Submit");
     await checkDomain("facebook.whatever", submit, false);
@@ -195,12 +194,12 @@ describe("Fields logic", () => {
     const expectedResult: TagReqPayload[] = [
       {
         id: 1,
-        tag_title: "cooking",
+        title: "cooking",
         bookmarks: [],
       },
       {
         id: 2,
-        tag_title: "food",
+        title: "food",
         bookmarks: [],
       },
     ];
@@ -212,13 +211,15 @@ describe("Fields logic", () => {
       tags: [
         {
           id: 1,
-          tag_title: "cooking",
+          title: "cooking",
         },
         {
           id: 2,
-          tag_title: "food",
+          title: "food",
         },
       ],
+      screenshotUrl: "",
+      scrapable: false,
     };
 
     axiosMock.onPost(tagsAPI, ["cooking", "food"]).reply(() => {

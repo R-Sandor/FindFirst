@@ -4,7 +4,7 @@ import java.util.List;
 
 import jakarta.validation.Valid;
 
-import dev.findfirst.core.model.Bookmark;
+import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.model.SearchBkmkByTagReq;
 import dev.findfirst.core.model.SearchBkmkByTextReq;
 import dev.findfirst.core.model.SearchBkmkByTitleReq;
@@ -20,23 +20,26 @@ import org.springframework.web.bind.annotation.RestController;
 public class SearchController {
 
   @GetMapping("/api/search/tags")
-  public ResponseEntity<List<Bookmark>> bookmarkSearchByTag(
+  public ResponseEntity<List<BookmarkDTO>> bookmarkSearchByTag(
       @Valid @RequestBody SearchBkmkByTagReq searchBkmkByTagReq) {
     // TODO finish
-    return new Response<>(List.of(new Bookmark()), HttpStatus.OK).get();
+    return new Response<>(List.of(new BookmarkDTO(0, null, null, null, false, null, null, null)),
+        HttpStatus.OK).get();
   }
 
   @GetMapping("/api/search/title")
-  public ResponseEntity<List<Bookmark>> bookMarkSearchByTitle(
+  public ResponseEntity<List<BookmarkDTO>> bookMarkSearchByTitle(
       @Valid @RequestBody SearchBkmkByTitleReq searchBkmkByTitleReq) {
     // TODO finish
-    return new Response<>(List.of(new Bookmark()), HttpStatus.OK).get();
+    return new Response<>(List.of(new BookmarkDTO(0, null, null, null, false, null, null, null)),
+        HttpStatus.OK).get();
   }
 
   @GetMapping("/api/search/text")
-  public ResponseEntity<List<Bookmark>> bookMarkSearchByText(
+  public ResponseEntity<List<BookmarkDTO>> bookMarkSearchByText(
       @Valid @RequestBody SearchBkmkByTextReq searchBkmkByTextReq) {
     // TODO finish
-    return new Response<>(List.of(new Bookmark()), HttpStatus.OK).get();
+    return new Response<>(List.of(new BookmarkDTO(0, null, null, null, false, null, null, null)),
+        HttpStatus.OK).get();
   }
 }

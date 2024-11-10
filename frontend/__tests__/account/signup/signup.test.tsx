@@ -2,7 +2,10 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Page from "app/account/signup/page";
-import { clickAway, submitDisabled } from "@/__tests__/utilities/TestingUtilities";
+import {
+  clickAway,
+  submitDisabled,
+} from "@/__tests__/utilities/TestingUtilities";
 
 const user = userEvent.setup();
 const goodEmail = "jsmith@gmail.com";
@@ -147,23 +150,25 @@ describe("Errors on fields.", () => {
     expect(pwdErr).toBeInTheDocument();
     await act(async () => {
       await user.type(uep.passwordInput, "testtest");
+      await clickAway(user);
     });
     // to simulate user clicking off of textfield
-    await clickAway(user);
 
     pwdErr = screen.getByText(/special character/i);
     expect(pwdErr).toBeInTheDocument();
   });
 
   test("All fields should have an error", async () => {
-    await typeUEP(badUsername, badEmail, badPassword);
+    await act(async () => {
+      await typeUEP(badUsername, badEmail, badPassword);
 
-    const usernameError = screen.getByText(/username too short/i);
-    expect(usernameError).toBeInTheDocument();
-    await clickAway(user);
-    const emailError = screen.getByText(/Invalid email/i);
-    expect(emailError).toBeInTheDocument();
-    submitDisabled(true);
+      const usernameError = screen.getByText(/username too short/i);
+      expect(usernameError).toBeInTheDocument();
+      await clickAway(user);
+      const emailError = screen.getByText(/Invalid email/i);
+      expect(emailError).toBeInTheDocument();
+      submitDisabled(true);
+    });
   });
 });
 

@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import dev.findfirst.core.model.Bookmark;
-import dev.findfirst.core.repository.BookmarkRepository;
+import dev.findfirst.core.model.jdbc.BookmarkJDBC;
+import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,7 +25,7 @@ class BookmarkServiceTest {
   @InjectMocks
   private BookmarkService bookmarkService;
   @Mock
-  private BookmarkRepository bookmarkRepository;
+  private BookmarkJDBCRepository bookmarkRepository;
   @Mock
   private ScreenshotManager sManager;
 
@@ -40,9 +40,9 @@ class BookmarkServiceTest {
   @ValueSource(booleans = {true, false})
   void addMissingScreenShotUrlToBookMarksTests(Boolean scrapable) {
     String screenshot_url = "http://example.com/3";
-    Bookmark bookmark = new Bookmark();
+    BookmarkJDBC bookmark = new BookmarkJDBC();
     bookmark.setScrapable(scrapable);
-    List<Bookmark> list = new ArrayList<>();
+    List<BookmarkJDBC> list = new ArrayList<>();
     list.add(bookmark);
     if (Boolean.TRUE.equals(scrapable)) {
       when(sManager.getScreenshot(any())).thenReturn(Optional.of(screenshot_url));

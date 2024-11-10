@@ -28,17 +28,17 @@ async function addTagToBookmark(
 ): Promise<TagAction> {
   let action: TagAction = {
     type: "add",
-    tagId: -1,
-    tagTitle: "",
+    id: -1,
+    title: "",
     bookmark: bookmark,
   };
 
   await api.addBookmarkTag(bookmark?.id, trimmedInput).then((response) => {
     // It will always be the last index since it was the last added.
     // let index = response.data.length - 1;
-    action.tagId = response.data.id;
-    action.tagTitle = response.data.tag_title;
-    bookmark.tags.push({ id: action.tagId, tag_title: action.tagTitle });
+    action.id = response.data.id;
+    action.title = response.data.title;
+    bookmark.tags.push({ id: action.id, title: action.title });
   });
 
   return action;
@@ -59,7 +59,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
     if (bookmark) {
       const tagList: string[] = [];
       bookmark.tags.map((tag: Tag) => {
-        tagList.push(tag.tag_title);
+        tagList.push(tag.title);
       });
       setStrTags(tagList);
     }
@@ -84,41 +84,41 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
 
     // decrement the bookmark counters
     bookmark.tags.forEach((tag) => {
-      const idx = getIdxFromTitle(tag.tag_title);
+      const idx = getIdxFromTitle(tag.title);
       const tagId = bookmark.tags[idx].id;
       // update the sidebar.
       let action: TagAction = {
         type: "delete",
-        tagId: tagId,
-        tagTitle: "",
+        id: tagId,
+        title: "",
         bookmark,
       };
       dispatch(action);
     });
   }
 
-  const deleteTag = (tag_title: string) => {
-    const idx = getIdxFromTitle(tag_title);
+  const deleteTag = (title: string) => {
+    const idx = getIdxFromTitle(title);
     const tagId = bookmark.tags[idx].id;
     if (bookmark) {
       bookmark.tags = bookmark.tags.filter((t, i) => i !== idx);
     }
     api.deleteTagById(bookmark.id, tagId);
-    let titles = bookmark.tags.map((t) => t.tag_title); // just the titles display
+    let titles = bookmark.tags.map((t) => t.title); // just the titles display
     setStrTags(titles);
 
     // update the sidebar.
     let action: TagAction = {
       type: "delete",
-      tagId: tagId,
-      tagTitle: "",
+      id: tagId,
+      title: "",
       bookmark,
     };
     dispatch(action);
   };
 
-  function getIdxFromTitle(tag_title: string): number {
-    return bookmark.tags.findIndex((t) => t.tag_title == tag_title);
+  function getIdxFromTitle(title: string): number {
+    return bookmark.tags.findIndex((t) => t.title == title);
   }
 
   const onChange = (e: any) => {
@@ -160,26 +160,33 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
     return bookmark.screenshotUrl ? overlayCard() : plainCard();
   }
 
-
   function overlayCard(): ReactNode {
     return (
       <div className="card">
-        <img className="card-img-top" src={IMAGE_DIR + bookmark.screenshotUrl} alt="screenshot preview" />
+        <img
+          className="card-img-top"
+          src={IMAGE_DIR + bookmark.screenshotUrl}
+          alt="screenshot preview"
+        />
         <div className="card-body">
           <h5 className="card-title">{bookmark.title}</h5>
-          <a className="card-link" target="_blank" href={bookmark.url}>{bookmark.url}</a>
+          <a className="card-link" target="_blank" href={bookmark.url}>
+            {bookmark.url}
+          </a>
         </div>
       </div>
-    )
+    );
   }
 
   function plainCard(): ReactNode {
     return (
       <Card.Body>
         <Card.Title>{bookmark.title}</Card.Title>
-        <Card.Link target="_blank" href={bookmark.url}>{bookmark.url}</Card.Link>
+        <Card.Link target="_blank" href={bookmark.url}>
+          {bookmark.url}
+        </Card.Link>
       </Card.Body>
-    )
+    );
   }
 
   return (

@@ -1,16 +1,16 @@
-package dev.findfirst.core.model;
+package dev.findfirst.core.model.jdbc;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.data.annotation.Id;
+import lombok.NoArgsConstructor;
 import org.springframework.data.relational.core.mapping.Table;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Data
-@Table
+@Table("bookmark_tag")
 public class BookmarkTag {
-  @Id
-  private Long id;
   private Long bookmarkId;
-  private Long TagId;
+  private Long tagId;
 }
