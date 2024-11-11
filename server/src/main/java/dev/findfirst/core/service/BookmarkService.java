@@ -15,7 +15,9 @@ import java.util.Optional;
 
 import dev.findfirst.core.dto.AddBkmkReq;
 import dev.findfirst.core.dto.BookmarkDTO;
+import dev.findfirst.core.dto.BookmarkOnly;
 import dev.findfirst.core.dto.TagDTO;
+import dev.findfirst.core.dto.TagOnly;
 import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.ExportBookmark;
@@ -97,10 +99,10 @@ public class BookmarkService {
 
       var tagEnts = tagService.findAllById(tagIds.stream().map(bkTg -> bkTg.getTagId()).toList());
 
-      List<TagDTO> tagDTOs = new ArrayList<>();
+      List<TagOnly> tagDTOs = new ArrayList<>();
 
       for (var t : tagEnts) {
-        tagDTOs.add(new TagDTO(t.getId(), t.getTitle(), new ArrayList<>()));
+        tagDTOs.add(new TagOnly(t.getId(), t.getTitle()));
       }
 
       return new BookmarkDTO(ent.getId(), ent.getTitle(), ent.getUrl(), ent.getScreenshotUrl(),
@@ -201,7 +203,7 @@ public class BookmarkService {
 
     // streams the sorted list
     tags.stream().forEach(t -> {
-      var uniques = new ArrayList<BookmarkDTO>();
+      var uniques = new ArrayList<BookmarkOnly>();
       addUniqueBookmarks(t, uniques, foundMap, uniqueBkmksWithTag);
     });
     var exporter = new ExportBookmark(uniqueBkmksWithTag);
@@ -219,8 +221,8 @@ public class BookmarkService {
    * @param alreadyFound Map<Long, Long> for fast lookup
    * @param uniqueBkmksWithTag Record of Tag Title with Bookmark.
    */
-  private void addUniqueBookmarks(TagDTO t, List<BookmarkDTO> uniques, Map<Long, Long> alreadyFound,
-      List<TagBookmarks> uniqueBkmksWithTag) {
+  private void addUniqueBookmarks(TagDTO t, List<BookmarkOnly> uniques,
+      Map<Long, Long> alreadyFound, List<TagBookmarks> uniqueBkmksWithTag) {
     t.bookmarks().stream().forEach(bkmk -> {
       var found = alreadyFound.get(bkmk.id());
       if (found == null) {

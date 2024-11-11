@@ -7,7 +7,7 @@ import java.util.Optional;
 
 import jakarta.validation.constraints.NotBlank;
 
-import dev.findfirst.core.dto.BookmarkDTO;
+import dev.findfirst.core.dto.BookmarkOnly;
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.jdbc.TagJDBC;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
@@ -73,13 +73,12 @@ public class TagService {
       var bkmkIds = bookmarkTagRepository.getAllBookmarkIdsForTag(ent.getId(), tenantId);
       var bkmkEnts = bookmarkRepo.findAllById(bkmkIds);
 
-      List<BookmarkDTO> bookmarkDTOs = new ArrayList<>();
+      List<BookmarkOnly> bookmarkDTOs = new ArrayList<>();
 
       if (withBookmarks) {
         for (var b : bkmkEnts) {
-          bookmarkDTOs.add(new BookmarkDTO(b.getId(), b.getTitle(), b.getUrl(),
-              b.getScreenshotUrl(), b.getScrapable(), b.getCreatedDate(), b.getLastModifiedDate(),
-              new ArrayList<TagDTO>()));
+          bookmarkDTOs.add(new BookmarkOnly(b.getId(), b.getTitle(), b.getUrl(),
+              b.getScreenshotUrl(), b.getScrapable(), b.getCreatedDate(), b.getLastModifiedDate()));
         }
       }
 

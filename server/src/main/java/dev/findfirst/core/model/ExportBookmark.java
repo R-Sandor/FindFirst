@@ -3,7 +3,7 @@ package dev.findfirst.core.model;
 import java.util.Date;
 import java.util.List;
 
-import dev.findfirst.core.dto.BookmarkDTO;
+import dev.findfirst.core.dto.BookmarkOnly;
 
 import lombok.Data;
 
@@ -63,7 +63,7 @@ public class ExportBookmark {
     return "\n</DL>";
   }
 
-  private StringBuilder getLinks(List<BookmarkDTO> bkmks) {
+  private StringBuilder getLinks(List<BookmarkOnly> bkmks) {
     var links = new StringBuilder();
     bkmks.forEach(bkmk -> {
       Long addedTime = 0l;
