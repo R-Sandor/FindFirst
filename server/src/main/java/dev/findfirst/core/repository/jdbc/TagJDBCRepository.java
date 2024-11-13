@@ -11,19 +11,19 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
 public interface TagJDBCRepository extends CrudRepository<TagJDBC, Long> {
-  @Query("SELECT * FROM Tag t WHERE t.tag_title = :title AND t.tenant_id = :tenantId")
-  Optional<TagJDBC> findByTitle(@Param("title") String title, @Param("tenantId") int tenantId);
+  @Query("SELECT * FROM Tag t WHERE t.tag_title = :title AND t.user_id = :userId")
+  Optional<TagJDBC> findByTitle(@Param("title") String title, @Param("userId") int userId);
 
-  @Query("SELECT id FROM tag WHERE tag_title = :title AND tenant_id = :tenantId")
-  Optional<Long> findIdByTitle(@Param("title") String title, @Param("tenantId") Integer tenantId);
+  @Query("SELECT id FROM tag WHERE tag_title = :title AND user_id = :userId")
+  Optional<Long> findIdByTitle(@Param("title") String title, @Param("userId") Integer userId);
 
-  @Query("SELECT * FROM tag WHERE tag.tenant_id = :tenantId")
-  List<TagJDBC> findAllByTenantId(@Param("tenantId") Integer tenantId);
+  @Query("SELECT * FROM tag WHERE tag.user_id = :userId")
+  List<TagJDBC> findAllByUserId(@Param("userId") Integer userId);
 
-  @Query("SELECT COUNT(*) FROM tag WHERE tenant_id = :tenantId")
-  Integer countUserTags(@Param("tenantId") Integer tenantId);
+  @Query("SELECT COUNT(*) FROM tag WHERE user_id = :userId")
+  Integer countUserTags(@Param("userId") Integer userId);
 
-  @Query("SELECT * FROM Tag t WHERE t.tenant_id = :tenantID AND t.tag_title IN :tagTitles ")
+  @Query("SELECT * FROM Tag t WHERE t.user_id = :userId AND t.tag_title IN :tagTitles ")
   List<TagDTO> findByTagTitles(@Param("tagTitles") List<String> tagTitles,
-      @Param("tenantID") int tenantID);
+      @Param("tenantID") int userId);
 }

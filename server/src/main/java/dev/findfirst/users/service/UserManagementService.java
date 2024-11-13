@@ -5,12 +5,12 @@ import java.rmi.UnexpectedException;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 import dev.findfirst.security.jwt.service.RefreshTokenService;
 import dev.findfirst.security.userAuth.models.RefreshToken;
 import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
-import dev.findfirst.security.userAuth.tenant.service.TenantService;
 import dev.findfirst.security.userAuth.utils.Constants;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
 import dev.findfirst.users.exceptions.NoUserFoundException;
@@ -44,7 +44,6 @@ public class UserManagementService {
   private final RefreshTokenService refreshTokenService;
   private final PasswordEncoder passwdEncoder;
   private final RoleRepository roleRepository;
-  private final TenantService tenantService;
   private final JwtEncoder encoder;
 
   @Value("${findfirst.app.jwtExpirationMs}")
@@ -60,6 +59,10 @@ public class UserManagementService {
 
   public boolean getUserExistByUsername(String username) {
     return userRepo.existsByUsername(username);
+  }
+
+  public Optional<User> getUserById(int id) { 
+    return userRepo.findById(id);
   }
 
   public boolean getUserExistEmail(String email) {
@@ -126,15 +129,12 @@ public class UserManagementService {
     var role =
         roleRepository.findById(URole.ROLE_USER.ordinal()).orElseThrow(NoSuchElementException::new);
     user.setRole(role);
-    var t = tenantService.create(signupRequest.username());
 
     // create a new tenant
     try {
-      user.setTenantId(t.getId());
       return saveUser(user);
     } catch (Exception e) {
       // If any exception occurs we should delete the records that were just made.
-      tenantService.deleteById(t.getId());
       deleteUser(user);
       throw new UnexpectedException("Unexpected error occured during signup, try again");
     }
@@ -145,11 +145,11 @@ public class UserManagementService {
     String email = user.getEmail();
     Integer roleId = user.getRole().getRole_id();
     String roleName = user.getRole().getName().name();
-    Integer tenantId = user.getTenantId();
+    Integer userId = user.getUserId();
     JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self").issuedAt(Instant.now())
         .expiresAt(now.plusSeconds(jwtExpirationMs)).subject(email).claim("scope", email)
         .claim(Constants.ROLE_ID_CLAIM, roleId).claim(Constants.ROLE_NAME_CLAIM, roleName)
-        .claim(Constants.TENANT_ID_CLAIM, tenantId).build();
+        .claim("userId", userId).build();
     return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
   }
 
@@ -160,9 +160,7 @@ public class UserManagementService {
     // credentials = username:password
     final String[] values = credentials.split(":", 2);
 
-    // This error should never occur, as authentication checks username and throws.
-    User user;
-    user = getUserByUsername(values[0]);
+    User user = getUserByUsername(values[0]);
     final RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
     String jwt = generateTokenFromUser(user);
 

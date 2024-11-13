@@ -15,21 +15,21 @@ public interface BookmarkTagRepository
 
   List<BookmarkTag> findByTagId(Long tagId);
 
-  @Query("SELECT bt.tag_id from bookmark_tag bt join bookmark bk ON bk.id = bt.bookmark_id WHERE bk.tenant_id = :tenantId")
-  List<Integer> getUserAllTagIdsToBookmarks(@Param(value = "tenantId") Integer tenantId);
+  @Query("SELECT bt.tag_id from bookmark_tag bt join bookmark bk ON bk.id = bt.bookmark_id WHERE bk.user_id = :userId")
+  List<Integer> getUserAllTagIdsToBookmarks(@Param(value = "userId") Integer userId);
 
   @Query("""
       SELECT bt.tag_id, bt.bookmark_id from bookmark_tag bt
-        join bookmark bk ON bk.id = bt.bookmark_id WHERE bk.tenant_id = :tenantId
+        join bookmark bk ON bk.id = bt.bookmark_id WHERE bk.user_id = :userId
       AND bk.id = :bkId
       """)
   Set<BookmarkTag> getAllTagIdsForBookmark(@Param("bkId") Long bookmark,
-      @Param("tenantId") Integer tenantId);
+      @Param("userId") Integer userId);
 
   @Query("""
       SELECT bt.bookmark_id from bookmark_tag bt
-        join tag tg ON tg.id = bt.tag_id WHERE tg.tenant_id = :tenantId
+        join tag tg ON tg.id = bt.tag_id WHERE tg.user_id = :userId
       AND tg.id = :tgId
       """)
-  List<Long> getAllBookmarkIdsForTag(@Param("tgId") Long tag, @Param("tenantId") Integer tenantId);
+  List<Long> getAllBookmarkIdsForTag(@Param("tgId") Long tag, @Param("userId") Integer userId);
 }

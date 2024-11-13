@@ -4,7 +4,7 @@ public class Constants {
 
   public static final String AUTHORIZATION_HEADER = "Authorization";
   public static final String BEARER_SCHEMA = "Bearer ";
-  public static final String TENANT_ID_CLAIM = "tenantId";
+  public static final String USER_ID_CLAIM = "userId";
   public static final String ROLE_ID_CLAIM = "roleId";
   public static final String ROLE_NAME_CLAIM = "roleName";
 

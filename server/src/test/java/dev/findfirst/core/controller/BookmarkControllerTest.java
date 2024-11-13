@@ -19,7 +19,7 @@ import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.jdbc.BookmarkTag;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
-import dev.findfirst.security.jwt.TenantAuthenticationToken;
+import dev.findfirst.security.jwt.UserAuthenticationToken;
 import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
 
 import lombok.extern.slf4j.Slf4j;
@@ -286,7 +286,7 @@ class BookmarkControllerTest {
     Mockito.when(securityContext.getAuthentication()).thenReturn(authentication);
     SecurityContextHolder.setContext(securityContext);
     Mockito.when(securityContext.getAuthentication())
-        .thenReturn(new TenantAuthenticationToken(authentication, 0, null, 1));
+        .thenReturn(new UserAuthenticationToken(authentication, 0, null, 1));
 
     bodyBuilder.part("file", fileContent).filename("BookmarksExample.html");
     HttpHeaders headers = new HttpHeaders();

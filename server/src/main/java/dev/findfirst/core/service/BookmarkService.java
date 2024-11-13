@@ -27,9 +27,8 @@ import dev.findfirst.core.model.jdbc.BookmarkTag;
 import dev.findfirst.core.model.jdbc.TagJDBC;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.core.repository.jdbc.BookmarkTagRepository;
-import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
-import dev.findfirst.security.userAuth.tenant.repository.TenantRepository;
-
+import dev.findfirst.security.userAuth.UserContext.UserContext;
+import dev.findfirst.users.service.UserManagementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -56,14 +55,15 @@ public class BookmarkService {
 
   private final ScreenshotManager sManager;
 
-  private final TenantContext tContext;
+  private final UserContext uContext;
 
-  private final TenantRepository tRepository;
+  private final UserManagementService userService;
+
 
   public List<BookmarkDTO> listJDBC() {
     return convertBookmarkJDBCToDTO(
-        bookmarkJDBCRepository.findAllBookmarksByUser(tContext.getTenantId()),
-        tContext.getTenantId());
+        bookmarkJDBCRepository.findAllBookmarksByUser(uContext.getUserId()),
+        uContext.getUserId());
   }
 
   public Optional<BookmarkDTO> getBookmarkById(long id) {
@@ -71,7 +71,7 @@ public class BookmarkService {
 
     if (bkOpt.isPresent()) {
       return Optional
-          .of(convertBookmarkJDBCToDTO(List.of(bkOpt.get()), tContext.getTenantId()).get(0));
+          .of(convertBookmarkJDBCToDTO(List.of(bkOpt.get()), uContext.getUserId()).get(0));
     }
     return Optional.ofNullable(null);
   }
@@ -83,7 +83,7 @@ public class BookmarkService {
   public Optional<BookmarkDTO> getBookmarkDTOById(Long id) {
     var ent = bookmarkJDBCRepository.findById(id);
     if (ent.isPresent()) {
-      var bkmk = convertBookmarkJDBCToDTO(List.of(ent.get()), tContext.getTenantId()).get(0);
+      var bkmk = convertBookmarkJDBCToDTO(List.of(ent.get()), uContext.getUserId()).get(0);
       return Optional.of(bkmk);
     } else {
       return Optional.of(null);
@@ -91,11 +91,11 @@ public class BookmarkService {
   }
 
   public List<BookmarkDTO> convertBookmarkJDBCToDTO(List<BookmarkJDBC> bookmarkEntities,
-      int tenantId) {
+      int userId) {
 
     // Get the bookmarks that are associated to the Tag.
     return bookmarkEntities.stream().map(ent -> {
-      var tagIds = bookmarkTagRepository.getAllTagIdsForBookmark(ent.getId(), tenantId);
+      var tagIds = bookmarkTagRepository.getAllTagIdsForBookmark(ent.getId(), userId);
 
       var tagEnts = tagService.findAllById(tagIds.stream().map(bkTg -> bkTg.getTagId()).toList());
 
@@ -114,7 +114,7 @@ public class BookmarkService {
       throws BookmarkAlreadyExistsException, TagNotFoundException {
     var tags = new ArrayList<Long>();
 
-    if (bookmarkJDBCRepository.findByUrl(reqBkmk.url(), tContext.getTenantId()).isPresent()) {
+    if (bookmarkJDBCRepository.findByUrl(reqBkmk.url(), uContext.getUserId()).isPresent()) {
       throw new BookmarkAlreadyExistsException();
     }
 
@@ -145,12 +145,13 @@ public class BookmarkService {
       screenshotUrlOpt = sManager.getScreenshot(reqBkmk.url());
     }
 
-    var tenant = tRepository.findById(tContext.getTenantId()).orElseThrow();
+    var user = userService.getUserById(uContext.getUserId()).orElseThrow();
+
 
     var savedTags = new HashSet<BookmarkTag>();
 
     var newBkmkJdbc =
-        new BookmarkJDBC(null, tenant.getId(), new Date(), tenant.getName(), tenant.getName(),
+        new BookmarkJDBC(null, user.getUserId(), new Date(), user.getUsername(), user.getUsername(),
             new Date(), title, reqBkmk.url(), screenshotUrlOpt.orElse(""), true, savedTags);
 
     var saved = bookmarkJDBCRepository.save(newBkmkJdbc);
@@ -161,7 +162,7 @@ public class BookmarkService {
     }
 
     newBkmkJdbc.setTags(savedTags);
-    return convertBookmarkJDBCToDTO(List.of(newBkmkJdbc), tenant.getId()).get(0);
+    return convertBookmarkJDBCToDTO(List.of(newBkmkJdbc), user.getUserId()).get(0);
   }
 
   public List<BookmarkDTO> addBookmarks(List<AddBkmkReq> bookmarks) throws Exception {
@@ -178,7 +179,7 @@ public class BookmarkService {
   public BookmarkDTO addTagById(BookmarkJDBC bk, long tagId) {
     bk.addTag(new BookmarkTag(bk.getId(), tagId));
     bookmarkJDBCRepository.save(bk);
-    return convertBookmarkJDBCToDTO(List.of(bk), tContext.getTenantId()).get(0);
+    return convertBookmarkJDBCToDTO(List.of(bk), uContext.getUserId()).get(0);
   }
 
   /**
@@ -238,7 +239,7 @@ public class BookmarkService {
   public void deleteBookmark(Long bookmarkId) {
     if (bookmarkId != null) {
       Optional<BookmarkJDBC> bookmark = bookmarkJDBCRepository.findById(bookmarkId);
-      if (bookmark.isPresent() && bookmark.get().getTenantId() == tContext.getTenantId()) {
+      if (bookmark.isPresent() && bookmark.get().getUserId() == uContext.getUserId()) {
         try {
           bookmarkJDBCRepository.deleteById(bookmarkId);
         } catch (ObjectOptimisticLockingFailureException exception) {
@@ -255,7 +256,7 @@ public class BookmarkService {
     // Finds all that belong to the user and deletes them.
     // Otherwise the @preRemove throws an execption as it should.
     bookmarkJDBCRepository
-        .deleteAll(bookmarkJDBCRepository.findAllBookmarksByUser(tContext.getTenantId()));
+        .deleteAll(bookmarkJDBCRepository.findAllBookmarksByUser(uContext.getUserId()));
   }
 
   public void addTagToBookmarkJDBC(BookmarkJDBC bookmark, TagJDBC tag) {

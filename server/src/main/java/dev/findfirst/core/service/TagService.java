@@ -2,6 +2,7 @@ package dev.findfirst.core.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,9 +14,8 @@ import dev.findfirst.core.model.jdbc.TagJDBC;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.core.repository.jdbc.BookmarkTagRepository;
 import dev.findfirst.core.repository.jdbc.TagJDBCRepository;
-import dev.findfirst.security.userAuth.tenant.contexts.TenantContext;
-import dev.findfirst.security.userAuth.tenant.repository.TenantRepository;
-
+import dev.findfirst.security.userAuth.UserContext.UserContext;
+import dev.findfirst.users.service.UserManagementService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,19 +30,18 @@ public class TagService {
 
   private final BookmarkTagRepository bookmarkTagRepository;
 
+  private final UserContext userContext;
 
-  private final TenantContext tenantContext;
-
-  private final TenantRepository tRepository;
+  private final UserManagementService userService;
 
   private final BookmarkJDBCRepository bookmarkRepo;
 
   private TagJDBC addTagJDBC(String title) {
-    var tenantId = tenantContext.getTenantId();
-    var tenant = tRepository.findById(tenantId).orElseThrow();
+    var userId = userContext.getUserId();
+    var user = userService.getUserById(userId).orElseThrow();
 
-    var tag = new TagJDBC(null, tenantId, tenant.getCreatedDate(), tenant.getCreatedBy(),
-        tenant.getLastModifiedBy(), tenant.getLastModifiedDate(), title);
+    var tag = new TagJDBC(null, user.getUserId(), new Date(), user.getUsername(),
+        user.getUsername(), new Date(), title);
     tag = tagRepositoryJDBC.save(tag);
     return tag;
   }
@@ -56,7 +55,7 @@ public class TagService {
   public TagDTO findOrCreateTag(String title) {
     var tagExisting = findByTagTitleJDBC(title);
     TagJDBC t = tagExisting.orElseGet(() -> addTagJDBC(title));
-    return convertTagJDBCToDTO(List.of(t), tenantContext.getTenantId(), true).get(0);
+    return convertTagJDBCToDTO(List.of(t), userContext.getUserId(), true).get(0);
   }
 
   public List<TagJDBC> findAllById(List<Long> ids) {
@@ -65,12 +64,12 @@ public class TagService {
     return tags;
   }
 
-  public List<TagDTO> convertTagJDBCToDTO(List<TagJDBC> tagEntities, int tenantId,
+  public List<TagDTO> convertTagJDBCToDTO(List<TagJDBC> tagEntities, int UserId,
       boolean withBookmarks) {
 
     // Get the bookmarks that are associated to the Tag.
     return tagEntities.stream().map(ent -> {
-      var bkmkIds = bookmarkTagRepository.getAllBookmarkIdsForTag(ent.getId(), tenantId);
+      var bkmkIds = bookmarkTagRepository.getAllBookmarkIdsForTag(ent.getId(), UserId);
       var bkmkEnts = bookmarkRepo.findAllById(bkmkIds);
 
       List<BookmarkOnly> bookmarkDTOs = new ArrayList<>();
@@ -98,7 +97,7 @@ public class TagService {
 
   public TagDTO getTagWithBookmarks(Long tagId) {
     TagJDBC tag = tagRepositoryJDBC.findById(tagId).orElseThrow();
-    return convertTagJDBCToDTO(List.of(tag), tenantContext.getTenantId(), true).get(0);
+    return convertTagJDBCToDTO(List.of(tag), userContext.getUserId(), true).get(0);
   }
 
   /**
@@ -122,23 +121,23 @@ public class TagService {
   }
 
   public List<TagDTO> deleteAllTags() {
-    var userTags = tagRepositoryJDBC.findAllByTenantId(tenantContext.getTenantId());
-    var deleted = convertTagJDBCToDTO(userTags, tenantContext.getTenantId(), true);
+    var userTags = tagRepositoryJDBC.findAllByUserId(userContext.getUserId());
+    var deleted = convertTagJDBCToDTO(userTags, userContext.getUserId(), true);
     bookmarkTagRepository.deleteAllTagsByUser();
     tagRepositoryJDBC.deleteAll(userTags);
     return deleted;
   }
 
   public List<TagDTO> getTags() {
-    var tagsJDBC = tagRepositoryJDBC.findAllByTenantId(tenantContext.getTenantId());
-    return convertTagJDBCToDTO(tagsJDBC, tenantContext.getTenantId(), true);
+    var tagsJDBC = tagRepositoryJDBC.findAllByUserId(userContext.getUserId());
+    return convertTagJDBCToDTO(tagsJDBC, userContext.getUserId(), true);
   }
 
-  public List<TagDTO> findAllTags(List<Long> tags, long tenantId, boolean withBookmarks) {
+  public List<TagDTO> findAllTags(List<Long> tags, long UserId, boolean withBookmarks) {
     var tagsJDBC = tagRepositoryJDBC.findAllById(tags);
     List<TagJDBC> tagEnts = new ArrayList<>();
     tagsJDBC.forEach(tagEnts::add);
-    return convertTagJDBCToDTO(tagEnts, tenantContext.getTenantId(), withBookmarks);
+    return convertTagJDBCToDTO(tagEnts, userContext.getUserId(), withBookmarks);
   }
 
   public List<TagDTO> getTagsByBookmarkId(long id) {
@@ -146,7 +145,7 @@ public class TagService {
         bookmarkTagRepository.findByBookmarkId(id).stream().map(bt -> bt.getTagId()).toList();
     List<TagJDBC> tagEnts = new ArrayList<>();
     tagRepositoryJDBC.findAllById(tags).forEach(tagEnts::add);
-    return convertTagJDBCToDTO(tagEnts, tenantContext.getTenantId(), true);
+    return convertTagJDBCToDTO(tagEnts, userContext.getUserId(), true);
   }
 
   public Optional<TagJDBC> findByIdJDBC(long id) {
@@ -154,7 +153,7 @@ public class TagService {
   }
 
   public Optional<TagJDBC> findByTagTitleJDBC(@NonNull String title) {
-    var tag = tagRepositoryJDBC.findByTitle(title, tenantContext.getTenantId());
+    var tag = tagRepositoryJDBC.findByTitle(title, userContext.getUserId());
     if (tag.isPresent()) {
       return Optional.of(tag.get());
     } else {
@@ -163,7 +162,7 @@ public class TagService {
   }
 
   public Optional<Long> findIdByTagTitleJDBC(@NotBlank String title) {
-    var tag = tagRepositoryJDBC.findIdByTitle(title, tenantContext.getTenantId());
+    var tag = tagRepositoryJDBC.findIdByTitle(title, userContext.getUserId());
     if (tag.isPresent()) {
       return Optional.of(tag.get());
     } else {

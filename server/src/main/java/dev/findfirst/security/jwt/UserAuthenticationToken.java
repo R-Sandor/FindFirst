@@ -5,19 +5,19 @@ import java.util.Collection;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
-public class TenantAuthenticationToken extends AbstractAuthenticationToken {
+public class UserAuthenticationToken extends AbstractAuthenticationToken {
 
   private final transient Object principal;
-  private final int tenantId;
+  private final int userId;
   private final int roleId;
 
-  public TenantAuthenticationToken(Object principal, int roleId,
-      Collection<? extends GrantedAuthority> authorities, int tenantId) {
+  public UserAuthenticationToken (Object principal, int roleId,
+      Collection<? extends GrantedAuthority> authorities, int userId) {
     super(authorities);
     setAuthenticated(true);
     this.principal = principal;
     this.roleId = roleId;
-    this.tenantId = tenantId;
+    this.userId = userId;
   }
 
   @Override
@@ -30,8 +30,8 @@ public class TenantAuthenticationToken extends AbstractAuthenticationToken {
     return this.principal;
   }
 
-  public int getTenantId() {
-    return this.tenantId;
+  public int getUserId() {
+    return this.userId;
   }
 
   public int getRoleId() {

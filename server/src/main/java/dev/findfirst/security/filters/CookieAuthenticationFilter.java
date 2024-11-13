@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import dev.findfirst.security.jwt.JwtService;
-import dev.findfirst.security.jwt.TenantAuthenticationToken;
+import dev.findfirst.security.jwt.UserAuthenticationToken;
 import dev.findfirst.security.userAuth.utils.Constants;
 
 import io.jsonwebtoken.Claims;
@@ -46,8 +46,8 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
     return Collections.singletonList(simpleGrantedAuthority);
   }
 
-  private TenantAuthenticationToken getTenantAuthenticationToken(String jwt) {
-    TenantAuthenticationToken tenantAuthenticationToken = null;
+  private UserAuthenticationToken getUserAuthenticationToken(String jwt) {
+    UserAuthenticationToken userAuthenticationToken = null;
 
     try {
       /* AUTHENTICATION */
@@ -56,15 +56,16 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
       /* AUTHORIZATION */
       int roleId = jwsClaims.getBody().get(Constants.ROLE_ID_CLAIM, Integer.class);
       List<SimpleGrantedAuthority> authorities = getSimpleGrantedAuthorities(jwsClaims);
-      int tenantId = jwsClaims.getBody().get(Constants.TENANT_ID_CLAIM, Integer.class);
-      tenantAuthenticationToken =
-          new TenantAuthenticationToken(email, roleId, authorities, tenantId);
+      int userId = jwsClaims.getBody().get(Constants.USER_ID_CLAIM, Integer.class);
+      log.debug("UserID on claim {}", userId);
+      userAuthenticationToken =
+          new UserAuthenticationToken(email, roleId, authorities, userId);
     } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException
         | SignatureException | IllegalArgumentException e) {
       log.error("Problems with JWT", e);
     }
 
-    return tenantAuthenticationToken;
+    return userAuthenticationToken;
   }
 
   @Override
@@ -74,8 +75,8 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
     try {
       String jwt = parseJwt(request);
       if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
-        TenantAuthenticationToken tenantAuthenticationToken = getTenantAuthenticationToken(jwt);
-        SecurityContextHolder.getContext().setAuthentication(tenantAuthenticationToken);
+        UserAuthenticationToken userAuthenticationToken = getUserAuthenticationToken(jwt);
+        SecurityContextHolder.getContext().setAuthentication(userAuthenticationToken);
       }
     } catch (Exception e) {
       log.error("Cannot set user authentication: {}", e);

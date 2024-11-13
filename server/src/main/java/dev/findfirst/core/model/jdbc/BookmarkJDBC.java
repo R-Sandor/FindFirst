@@ -20,7 +20,7 @@ public class BookmarkJDBC {
   @Id
   private Long id;
 
-  private Integer tenantId;
+  private Integer userId;
   private Date createdDate;
   private String createdBy;
   private String lastModifiedBy;

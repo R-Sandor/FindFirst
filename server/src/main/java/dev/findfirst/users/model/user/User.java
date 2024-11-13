@@ -66,7 +66,4 @@ public class User {
   @ManyToOne(optional = false)
   private Role role;
 
-  @JsonIgnore
-  @Column(nullable = false)
-  private Integer tenantId;
 }

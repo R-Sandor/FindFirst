@@ -17,7 +17,7 @@ public class TagJDBC {
   private Long id;
 
   @JsonIgnore
-  private Integer tenantId;
+  private Integer userId;
 
   @JsonIgnore
   private Date createdDate = new Date();
