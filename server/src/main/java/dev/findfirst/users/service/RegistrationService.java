@@ -43,10 +43,8 @@ public class RegistrationService extends AccountService {
       throw new NoTokenFoundException();
     }
 
-    User user = verificationToken.getUser();
-    if (user == null) {
-      throw new NoUserFoundException();
-    }
+    var userId = verificationToken.getUser().getId();
+    var user = userManagement.getUserById(userId).orElseThrow(() -> new NoUserFoundException());
     Calendar cal = Calendar.getInstance();
     if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
       throw new TokenExpiredException();

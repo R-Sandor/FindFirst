@@ -33,7 +33,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -242,7 +241,7 @@ public class BookmarkService {
       if (bookmark.isPresent() && bookmark.get().getUserId() == uContext.getUserId()) {
         try {
           bookmarkJDBCRepository.deleteById(bookmarkId);
-        } catch (ObjectOptimisticLockingFailureException exception) {
+        } catch (Exception exception) {
           // I don't know a fool proof way of preventing this error
           // other than blocking on the method. Which would not
           // be ideal given its a controller and the error itself

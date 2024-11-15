@@ -2,10 +2,12 @@ package dev.findfirst.users.repository;
 
 import java.util.Optional;
 
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
+
 import dev.findfirst.users.model.user.User;
 
-import org.springframework.data.repository.CrudRepository;
-
+@Repository
 public interface UserRepo extends CrudRepository<User, Integer> {
 
   Optional<User> findByEmail(String email);

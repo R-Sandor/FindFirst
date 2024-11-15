@@ -12,6 +12,7 @@ import dev.findfirst.users.repository.UserRepo;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,11 +31,9 @@ public class RefreshTokenService {
   }
 
   public RefreshToken createRefreshToken(User user) {
-    RefreshToken refreshToken = new RefreshToken();
 
-    refreshToken.setUser(user);
-    refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenDurationMs));
-    refreshToken.setToken(UUID.randomUUID().toString());
+    RefreshToken refreshToken = new RefreshToken(null, AggregateReference.to(user.getUserId()),
+        UUID.randomUUID().toString(), Instant.now().plusMillis(refreshTokenDurationMs));
 
     refreshToken = refreshTokenRepository.save(refreshToken);
     return refreshToken;

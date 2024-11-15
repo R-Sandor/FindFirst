@@ -4,7 +4,6 @@ import java.nio.charset.StandardCharsets;
 import java.rmi.UnexpectedException;
 import java.time.Instant;
 import java.util.Base64;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,18 +14,19 @@ import dev.findfirst.security.userAuth.utils.Constants;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
 import dev.findfirst.users.exceptions.NoUserFoundException;
 import dev.findfirst.users.exceptions.UserNameTakenException;
+import dev.findfirst.users.model.user.Role;
 import dev.findfirst.users.model.user.SigninTokens;
 import dev.findfirst.users.model.user.Token;
 import dev.findfirst.users.model.user.URole;
 import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.repository.PasswordTokenRepository;
-import dev.findfirst.users.repository.RoleRepository;
 import dev.findfirst.users.repository.UserRepo;
 import dev.findfirst.users.repository.VerificationTokenRepository;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -43,7 +43,6 @@ public class UserManagementService {
   private final PasswordTokenRepository passwordTokenRepository;
   private final RefreshTokenService refreshTokenService;
   private final PasswordEncoder passwdEncoder;
-  private final RoleRepository roleRepository;
   private final JwtEncoder encoder;
 
   @Value("${findfirst.app.jwtExpirationMs}")
@@ -84,7 +83,7 @@ public class UserManagementService {
 
   public String createVerificationToken(User user) {
     String token = UUID.randomUUID().toString();
-    Token verificationToken = new Token(user, token);
+    Token verificationToken = new Token(AggregateReference.to(user.getUserId()), token);
     tokenRepository.save(verificationToken);
     return token;
   }
@@ -95,7 +94,7 @@ public class UserManagementService {
 
   public String createResetPwdToken(User user) {
     String token = UUID.randomUUID().toString();
-    Token pwdToken = new Token(user, token);
+    Token pwdToken = new Token(AggregateReference.to(user.getUserId()), token);
     log.debug("creating token for: {}", user);
     var old = passwordTokenRepository.findByUser(user);
     if (old != null) {
@@ -111,7 +110,8 @@ public class UserManagementService {
   }
 
   public User getUserFromPasswordToken(String pwdToken) {
-    return passwordTokenRepository.findByToken(pwdToken).getUser();
+    var userId = passwordTokenRepository.findByToken(pwdToken).getUser().getId();
+    return userRepo.findById(userId).orElseThrow();
   }
 
   public User createNewUserAccount(SignupRequest signupRequest)
@@ -126,9 +126,8 @@ public class UserManagementService {
 
     // Create new user's account
     User user = new User(signupRequest, passwdEncoder.encode(signupRequest.password()));
-    var role =
-        roleRepository.findById(URole.ROLE_USER.ordinal()).orElseThrow(NoSuchElementException::new);
-    user.setRole(role);
+    AggregateReference<Role, Integer> ref = AggregateReference.to(0);
+    user.setRole(ref);
 
     // create a new tenant
     try {
@@ -140,12 +139,12 @@ public class UserManagementService {
     }
   }
 
-  public String generateTokenFromUser(User user) {
+  public String generateTokenFromUser(int userId) {
     Instant now = Instant.now();
+    var user =  userRepo.findById(userId).orElseThrow();
     String email = user.getEmail();
-    Integer roleId = user.getRole().getRole_id();
-    String roleName = user.getRole().getName().name();
-    Integer userId = user.getUserId();
+    Integer roleId = user.getRole().getId();
+    var roleName = URole.values()[roleId].toString();
     JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self").issuedAt(Instant.now())
         .expiresAt(now.plusSeconds(jwtExpirationMs)).subject(email).claim("scope", email)
         .claim(Constants.ROLE_ID_CLAIM, roleId).claim(Constants.ROLE_NAME_CLAIM, roleName)
@@ -162,7 +161,7 @@ public class UserManagementService {
 
     User user = getUserByUsername(values[0]);
     final RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
-    String jwt = generateTokenFromUser(user);
+    String jwt = generateTokenFromUser(user.getUserId());
 
     return new SigninTokens(jwt, refreshToken.getToken());
   }

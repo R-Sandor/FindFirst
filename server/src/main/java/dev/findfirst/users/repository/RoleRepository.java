@@ -5,11 +5,9 @@ import java.util.Optional;
 import dev.findfirst.users.model.user.Role;
 import dev.findfirst.users.model.user.URole;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.CrudRepository;
 
-@Repository
-public interface RoleRepository extends JpaRepository<Role, Integer> {
+public interface RoleRepository extends CrudRepository<Role, Integer> {
   Optional<Role> findByName(URole name);
 
   Optional<Role> findById(int id);

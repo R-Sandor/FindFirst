@@ -149,7 +149,7 @@ public class UserController {
     String jwt = refreshRequest.refreshToken();
     return refreshTokenService.findByToken(jwt).map(refreshTokenService::verifyExpiration)
         .map(RefreshToken::getUser).map(user -> {
-          String token = userService.generateTokenFromUser(user);
+          String token = userService.generateTokenFromUser(user.getId());
           ResponseCookie cookie = ResponseCookie.from("findfirst", token).secure(true)
               .sameSite("strict").path("/").domain(domain).httpOnly(true).build();
           return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(token);

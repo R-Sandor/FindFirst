@@ -2,32 +2,28 @@ package dev.findfirst.security.userAuth.models;
 
 import java.time.Instant;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.jdbc.core.mapping.AggregateReference;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
 
 import dev.findfirst.users.model.user.User;
-
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@Entity(name = "refreshtoken")
+@AllArgsConstructor
+@Table
 public class RefreshToken {
+
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private long id;
+  private Long id;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id", referencedColumnName = "user_id")
-  private User user;
+  @Column("user_id")
+  AggregateReference<User, Integer> user; 
 
-  @Column(nullable = false, unique = true)
   private String token;
 
-  @Column(nullable = false)
   private Instant expiryDate;
 }

@@ -4,37 +4,32 @@ import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.Calendar;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.jdbc.core.mapping.AggregateReference;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Data
 @NoArgsConstructor
+@Table
 public class Token {
 
   private static final int EXPIRATION = 60 * 24;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   private String token;
 
-  @OneToOne(targetEntity = User.class, fetch = FetchType.LAZY)
-  @JoinColumn(nullable = false, name = "user_id")
-  private User user;
+  @Column("user_id")
+  private AggregateReference<User, Integer> user;
 
   private Date expiryDate;
 
-  public Token(User user, String token) {
+  public Token(AggregateReference<User, Integer> user, String token) {
     this.user = user;
     this.token = token;
     this.expiryDate = calculateExpiryDate(EXPIRATION);

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
+import dev.findfirst.users.model.user.URole;
 import dev.findfirst.users.model.user.User;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -35,7 +36,7 @@ public class UserDetailsImpl implements UserDetails {
   }
 
   public static UserDetailsImpl build(User user) {
-    GrantedAuthority authority = new SimpleGrantedAuthority(user.getRole().getName().name());
+    GrantedAuthority authority = new SimpleGrantedAuthority(URole.values()[user.getRole().getId()].toString());
 
     return new UserDetailsImpl(user.getUserId(), user.getUsername(), user.getEmail(),
         user.getPassword(), authority);
