@@ -60,7 +60,7 @@ public class UserManagementService {
     return userRepo.existsByUsername(username);
   }
 
-  public Optional<User> getUserById(int id) { 
+  public Optional<User> getUserById(int id) {
     return userRepo.findById(id);
   }
 
@@ -141,7 +141,7 @@ public class UserManagementService {
 
   public String generateTokenFromUser(int userId) {
     Instant now = Instant.now();
-    var user =  userRepo.findById(userId).orElseThrow();
+    var user = userRepo.findById(userId).orElseThrow();
     String email = user.getEmail();
     Integer roleId = user.getRole().getId();
     var roleName = URole.values()[roleId].toString();

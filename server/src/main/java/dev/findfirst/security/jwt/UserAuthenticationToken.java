@@ -11,7 +11,7 @@ public class UserAuthenticationToken extends AbstractAuthenticationToken {
   private final int userId;
   private final int roleId;
 
-  public UserAuthenticationToken (Object principal, int roleId,
+  public UserAuthenticationToken(Object principal, int roleId,
       Collection<? extends GrantedAuthority> authorities, int userId) {
     super(authorities);
     setAuthenticated(true);

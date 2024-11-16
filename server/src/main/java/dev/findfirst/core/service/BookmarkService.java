@@ -29,6 +29,7 @@ import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.core.repository.jdbc.BookmarkTagRepository;
 import dev.findfirst.security.userAuth.UserContext.UserContext;
 import dev.findfirst.users.service.UserManagementService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -58,11 +59,9 @@ public class BookmarkService {
 
   private final UserManagementService userService;
 
-
   public List<BookmarkDTO> listJDBC() {
     return convertBookmarkJDBCToDTO(
-        bookmarkJDBCRepository.findAllBookmarksByUser(uContext.getUserId()),
-        uContext.getUserId());
+        bookmarkJDBCRepository.findAllBookmarksByUser(uContext.getUserId()), uContext.getUserId());
   }
 
   public Optional<BookmarkDTO> getBookmarkById(long id) {
@@ -146,7 +145,6 @@ public class BookmarkService {
 
     var user = userService.getUserById(uContext.getUserId()).orElseThrow();
 
-
     var savedTags = new HashSet<BookmarkTag>();
 
     var newBkmkJdbc =
@@ -164,7 +162,8 @@ public class BookmarkService {
     return convertBookmarkJDBCToDTO(List.of(newBkmkJdbc), user.getUserId()).get(0);
   }
 
-  public List<BookmarkDTO> addBookmarks(List<AddBkmkReq> bookmarks) throws Exception {
+  public List<BookmarkDTO> addBookmarks(List<AddBkmkReq> bookmarks)
+      throws BookmarkAlreadyExistsException, TagNotFoundException {
     return bookmarks.stream().map(t -> {
       try {
         return addBookmark(t);

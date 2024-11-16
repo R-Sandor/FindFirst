@@ -12,8 +12,7 @@ import org.springframework.data.repository.query.Param;
 public interface BookmarkJDBCRepository extends CrudRepository<BookmarkJDBC, Long> {
 
   @Query("SELECT * FROM bookmark where bookmark.url = :url AND bookmark.user_id = :userID")
-  public Optional<BookmarkJDBC> findByUrl(@Param("url") String url,
-      @Param("userID") int userID);
+  public Optional<BookmarkJDBC> findByUrl(@Param("url") String url, @Param("userID") int userID);
 
   @Query("SELECT * FROM bookmark where bookmark.user_id = :userID")
   public List<BookmarkJDBC> findAllBookmarksByUser(@Param("userID") int userID);

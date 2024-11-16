@@ -57,8 +57,7 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
       int roleId = jwsClaims.getBody().get(Constants.ROLE_ID_CLAIM, Integer.class);
       List<SimpleGrantedAuthority> authorities = getSimpleGrantedAuthorities(jwsClaims);
       int userId = jwsClaims.getBody().get(Constants.USER_ID_CLAIM, Integer.class);
-      userAuthenticationToken =
-          new UserAuthenticationToken(email, roleId, authorities, userId);
+      userAuthenticationToken = new UserAuthenticationToken(email, roleId, authorities, userId);
     } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException
         | SignatureException | IllegalArgumentException e) {
       log.error("Problems with JWT", e);

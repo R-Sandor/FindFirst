@@ -1,9 +1,9 @@
 package dev.findfirst.security.userAuth.UserContext;
 
+import dev.findfirst.security.jwt.UserAuthenticationToken;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-
-import dev.findfirst.security.jwt.UserAuthenticationToken;
 
 @Component
 public class UserContext {
