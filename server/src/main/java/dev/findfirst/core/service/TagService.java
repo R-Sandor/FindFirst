@@ -134,11 +134,11 @@ public class TagService {
     return convertTagJDBCToDTO(tagsJDBC, userContext.getUserId(), true);
   }
 
-  public List<TagDTO> findAllTags(List<Long> tags, long UserId, boolean withBookmarks) {
+  public List<TagDTO> findAllTags(List<Long> tags, int userId, boolean withBookmarks) {
     var tagsJDBC = tagRepositoryJDBC.findAllById(tags);
     List<TagJDBC> tagEnts = new ArrayList<>();
     tagsJDBC.forEach(tagEnts::add);
-    return convertTagJDBCToDTO(tagEnts, userContext.getUserId(), withBookmarks);
+    return convertTagJDBCToDTO(tagEnts, userId, withBookmarks);
   }
 
   public List<TagDTO> getTagsByBookmarkId(long id) {
