@@ -37,8 +37,6 @@ public class JwtService {
 
   @PostConstruct
   private void init() {
-    // secretKey =
-    // Keys.hmacShaKeyFor(jwtSigningKey.getBytes(StandardCharsets.UTF_8));
     jwtParser = Jwts.parserBuilder().setSigningKey(priv).build();
   }
 
