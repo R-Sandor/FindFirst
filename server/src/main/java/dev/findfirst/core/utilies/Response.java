@@ -18,16 +18,6 @@ public class Response<T> {
    * @param action caller defined action.
    * @param t parameter to consumer.
    */
-  public Response(Consumer<T> action, T t) {
-    prepareResponse(action, t);
-  }
-
-  /**
-   * Wrapper constructor for prepareResponse
-   *
-   * @param action caller defined action.
-   * @param t parameter to consumer.
-   */
   public Response(Consumer<T> action, Optional<T> t) {
     t.ifPresentOrElse(action, () -> this.resp = new ResponseEntity<>(HttpStatus.BAD_REQUEST));
     this.setResponse(t.orElseThrow(), HttpStatus.OK);
@@ -48,18 +38,6 @@ public class Response<T> {
   }
 
   /**
-   * Easy prepare Response entity.
-   *
-   * @param action caller defined action.
-   * @param t parameter to consumer.
-   */
-  public ResponseEntity<T> prepareResponse(Consumer<T> action, T t) {
-    this.setResponse(t, HttpStatus.OK);
-    action.accept(t);
-    return resp;
-  }
-
-  /**
    * Prepare response with optional check. Return bad request if there is no data.
    *
    * @param t
@@ -71,11 +49,13 @@ public class Response<T> {
   }
 
   public ResponseEntity<T> setResponse(T t, HttpStatus status) {
-    return this.resp = new ResponseEntity<T>(t, status);
+    this.resp = new ResponseEntity<T>(t, status);
+    return resp;
   }
 
   public ResponseEntity<T> setResponse(HttpStatus status) {
-    return this.resp = new ResponseEntity<T>(status);
+    this.resp = new ResponseEntity<T>(status);
+    return resp;
   }
 
   public ResponseEntity<T> get() {
