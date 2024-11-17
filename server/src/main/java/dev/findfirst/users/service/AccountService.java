@@ -11,7 +11,7 @@ public abstract class AccountService {
   @Value("${findfirst.app.domain}")
   protected String domain;
 
-  public AccountService(UserManagementService service, DefaultEmailService email) {
+  protected AccountService(UserManagementService service, DefaultEmailService email) {
     this.userManagement = service;
     this.emailService = email;
   }
