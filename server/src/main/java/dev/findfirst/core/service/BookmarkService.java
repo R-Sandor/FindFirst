@@ -193,10 +193,10 @@ public class BookmarkService {
     var uniqueBkmksWithTag = new ArrayList<TagBookmarks>();
 
     // Sort by the largest tags set.
-    tags.stream().sorted((rTag, lTag) -> rTag.bookmarks().size() - lTag.bookmarks().size()).toList();
+    var sorted = tags.stream().sorted((rTag, lTag) -> rTag.bookmarks().size() - lTag.bookmarks().size()).toList();
 
     // streams the sorted list
-    tags.stream().forEach(t -> {
+    sorted.stream().forEach(t -> {
       var uniques = new ArrayList<BookmarkOnly>();
       addUniqueBookmarks(t, uniques, foundMap, uniqueBkmksWithTag);
     });
