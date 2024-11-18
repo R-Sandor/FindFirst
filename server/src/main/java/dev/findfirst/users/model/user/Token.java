@@ -21,7 +21,7 @@ public class Token {
   @Id
   private Long id;
 
-  private String token;
+  private String tokenVal;
 
   @Column("user_id")
   private AggregateReference<User, Integer> user;
@@ -30,7 +30,7 @@ public class Token {
 
   public Token(AggregateReference<User, Integer> user, String token) {
     this.user = user;
-    this.token = token;
+    this.tokenVal = token;
     this.expiryDate = calculateExpiryDate(EXPIRATION);
   }
 
