@@ -36,6 +36,8 @@ instance.interceptors.response.use(
       }
       failCount++;
       api.refreshToken(user!.refreshToken);
+    } else if(error.response.status === 409){
+      return {error: error.response.status};
     }
   },
 );

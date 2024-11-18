@@ -16,6 +16,8 @@ import {
   NewBookmarkForm,
   newcard,
 } from "@type/Bookmarks/NewBookmark";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
   let newBkmkRequest: NewBookmarkRequest;
@@ -36,6 +38,20 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
     });
   });
   await api.addBookmark(newBkmkRequest).then((response) => {
+    console.log("API Response:", response);
+    if (response.error && response.error === 409){
+      console.log("Bookmark already exist")
+      toast.error('This Bookmark already exist !', {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        });
+    }
     createBmk.id = response.data.id;
     createBmk.tags = response.data.tags;
     createBmk.screenshotUrl = response.data.screenshotUrl;
@@ -251,6 +267,7 @@ export default function NewBookmarkCard() {
           </Form>
         )}
       </Formik>
+      <ToastContainer />
     </div>
   );
 }
