@@ -11,6 +11,8 @@ import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Data
 @NoArgsConstructor
 @Table
@@ -21,6 +23,7 @@ public class Token {
   @Id
   private Long id;
 
+  @Column("token")
   private String tokenVal;
 
   @Column("user_id")

@@ -7,7 +7,7 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface VerificationTokenRepository extends CrudRepository<Token, Long> {
 
-  public Token findByToken(String token);
+  public Token findByTokenVal(String token);
 
   public Token findByUser(User user);
 }

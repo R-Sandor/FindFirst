@@ -89,7 +89,7 @@ public class UserManagementService {
   }
 
   public Token getVerificationToken(String VerificationToken) {
-    return tokenRepository.findByToken(VerificationToken);
+    return tokenRepository.findByTokenVal(VerificationToken);
   }
 
   public String createResetPwdToken(User user) {
@@ -106,11 +106,11 @@ public class UserManagementService {
   }
 
   public Token getPasswordToken(String pwdToken) {
-    return passwordTokenRepository.findByToken(pwdToken);
+    return passwordTokenRepository.findByTokenVal(pwdToken);
   }
 
   public User getUserFromPasswordToken(String pwdToken) {
-    var userId = passwordTokenRepository.findByToken(pwdToken).getUser().getId();
+    var userId = passwordTokenRepository.findByTokenVal(pwdToken).getUser().getId();
     return userRepo.findById(userId).orElseThrow();
   }
 
