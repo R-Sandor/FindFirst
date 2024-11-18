@@ -5,6 +5,7 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -192,7 +193,7 @@ public class BookmarkService {
     var uniqueBkmksWithTag = new ArrayList<TagBookmarks>();
 
     // Sort by the largest tags set.
-    tags.sort((rTag, lTag) -> rTag.bookmarks().size() - lTag.bookmarks().size());
+    tags.stream().sorted((rTag, lTag) -> rTag.bookmarks().size() - lTag.bookmarks().size()).toList();
 
     // streams the sorted list
     tags.stream().forEach(t -> {
