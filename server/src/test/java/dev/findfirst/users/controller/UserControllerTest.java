@@ -158,7 +158,6 @@ class UserControllerTest {
     int port = mailhog.getMappedPort(8025);
 
     String url = "http://" + host + ":" + port + "/api/v2/messages";
-    // String response = Request.Get(url).execute().returnContent().asString();
     var messageRaw = restTemplate.getForEntity(url, String.class).getBody();
 
     ObjectMapper mapper = new ObjectMapper();
