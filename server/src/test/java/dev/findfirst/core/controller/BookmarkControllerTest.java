@@ -251,7 +251,7 @@ class BookmarkControllerTest {
     tags.stream().forEach(t -> t.toString());
 
     assertEquals(2, tags.size());
-    assertTrue(tags.stream().filter(t -> t.id() == 5 || t.id() == 1).count() == 2);
+    assertEquals(2, tags.stream().filter(t -> t.id() == 5 || t.id() == 1).count());
   }
 
   @Test
