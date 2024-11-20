@@ -76,7 +76,7 @@ class BookmarkControllerTest {
 
   @Test
   void containerStarupTest() {
-    assertEquals(postgres.isRunning(), true);
+    assertEquals(true, postgres.isRunning());
   }
 
   @Test
