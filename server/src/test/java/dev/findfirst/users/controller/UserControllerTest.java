@@ -141,10 +141,16 @@ class UserControllerTest {
     // token is the last part of the string
     var tknParam = urlStruct[urlStruct.length - 1];
     assertNotNull(tknParam);
-    response = restTemplate.exchange(userUrl + "/changePassword?tokenPassword={tkn}",
+    restTemplate.exchange(userUrl + "/changePassword?tokenPassword={tkn}",
         HttpMethod.POST,
         new HttpEntity<>(new TokenPassword(tknParam, "jsmithsNewsPassword!"), new HttpHeaders()),
         String.class, token);
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBasicAuth("jsmith", "jsmithsNewsPassword!");
+    HttpEntity<String> entity = new HttpEntity<>(headers);
+    var signResp = restTemplate.postForEntity("/user/signin", entity, TokenRefreshResponse.class);
+    assertEquals(HttpStatus.OK, signResp.getStatusCode());
+
   }
 
   String getTokenFromEmail(int emailIdx, int lineWithToken) throws Exception {

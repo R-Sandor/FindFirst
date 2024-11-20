@@ -77,7 +77,7 @@ public class UserManagementService {
   }
 
   public void changeUserPassword(User user, String password) {
-    user.setPassword(password);
+    user.setPassword(encodePassword(password));
     saveUser(user);
   }
 
@@ -114,6 +114,10 @@ public class UserManagementService {
     return userRepo.findById(userId).orElseThrow();
   }
 
+  public String encodePassword(String password){ 
+    return passwdEncoder.encode(password);
+  }
+
   public User createNewUserAccount(SignupRequest signupRequest)
       throws UserNameTakenException, EmailAlreadyRegisteredException, UnexpectedException {
     if (getUserExistByUsername(signupRequest.username())) {
@@ -125,7 +129,7 @@ public class UserManagementService {
     }
 
     // Create new user's account
-    User user = new User(signupRequest, passwdEncoder.encode(signupRequest.password()));
+    User user = new User(signupRequest, encodePassword(signupRequest.password()));
     AggregateReference<Role, Integer> ref = AggregateReference.to(0);
     user.setRole(ref);
 
