@@ -51,7 +51,7 @@ public class BookmarkController {
 
   @GetMapping("/bookmarks")
   public ResponseEntity<List<BookmarkDTO>> getAllBookmarks() {
-    return new Response<List<BookmarkDTO>>(bookmarkService.listJDBC(), HttpStatus.OK).get();
+    return new Response<>(bookmarkService.listJDBC(), HttpStatus.OK).get();
   }
 
   @GetMapping(value = "/bookmarks/export", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
@@ -70,7 +70,7 @@ public class BookmarkController {
 
   @GetMapping(value = "/bookmark")
   public ResponseEntity<BookmarkDTO> getBookmarkById(@RequestParam("id") long id) {
-    return new Response<BookmarkDTO>(bookmarkService.getBookmarkDTOById(id)).get();
+    return new Response<>(bookmarkService.getBookmarkDTOById(id)).get();
   }
 
   @PostMapping(value = "/bookmark")
@@ -94,14 +94,14 @@ public class BookmarkController {
     bookmarkService.deleteBookmark(id);
     ObjectMapper mapper = new ObjectMapper();
     String jsonStr = mapper.writeValueAsString("Deleted Bookmark %s".formatted(id));
-    return new ResponseEntity<String>(jsonStr, HttpStatus.OK);
+    return new ResponseEntity<>(jsonStr, HttpStatus.OK);
   }
 
   @PostMapping(value = "/bookmark/addBookmarks")
   public ResponseEntity<List<BookmarkDTO>> addBookmarks(
       @RequestBody @Size(min = 1, max = 100) List<AddBkmkReq> bookmarks) {
     try {
-      return new ResponseEntity<List<BookmarkDTO>>(bookmarkService.addBookmarks(bookmarks),
+      return new ResponseEntity<>(bookmarkService.addBookmarks(bookmarks),
           HttpStatus.OK);
     } catch (Exception e) {
       return ResponseEntity.badRequest().build();
@@ -182,9 +182,6 @@ public class BookmarkController {
 
     var fBytes = file.getBytes();
     String docStr = new String(fBytes, StandardCharsets.UTF_8);
-
-    // TODO: If the filename doesn't end with .html then throw.
-    // TODO: Check if the file is too big!
 
     return bookmarkService.importBookmarks(docStr);
   }
