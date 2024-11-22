@@ -82,7 +82,7 @@ public class BookmarkController {
       // Return 409 Conflict if the bookmark already exists
       return response.setResponse(HttpStatus.CONFLICT);
     } catch (Exception e) {
-      e.printStackTrace();
+      log.debug(e.getMessage());
       return response.setResponse(HttpStatus.BAD_REQUEST);
     }
   }
