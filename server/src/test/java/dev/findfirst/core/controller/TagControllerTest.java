@@ -67,19 +67,12 @@ class TagControllerTest {
     assertTrue(bkmks.length > 0, "There should be bookmarks already for this test...");
 
     var tagCount = getAllTags().length;
-    log.debug("\n\n\nChecking current Tags\n");
-    log.debug("\n\n\n " + tagCount + "\n");
-    for (var t : getAllTags()) {
-      log.debug(t.toString());
-    }
     var tagResp = Optional.ofNullable(restTemplate
         .exchange("/api/tags", HttpMethod.DELETE, getHttpEntity(restTemplate), TagDTO[].class)
         .getBody());
 
     var deletedTags = tagResp.orElseThrow();
-    for (var del : deletedTags) {
-      log.debug(del.toString());
-    }
+
     // Check that all the tags are deleted
     assertEquals(tagCount, deletedTags.length);
     assertEquals(0, getAllTags().length);
@@ -121,7 +114,6 @@ class TagControllerTest {
     var tagResp = restTemplate.exchange("/api/tags", HttpMethod.GET, getHttpEntity(restTemplate),
         TagDTO[].class);
     var tagOpt = Optional.ofNullable(tagResp.getBody());
-    var tags = tagOpt.orElseThrow();
-    return tags;
+    return tagOpt.orElseThrow();
   }
 }
