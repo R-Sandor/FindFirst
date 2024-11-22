@@ -109,9 +109,9 @@ public class UserManagementService {
     return passwordTokenRepository.findByTokenVal(pwdToken);
   }
 
-  public User getUserFromPasswordToken(String pwdToken) {
+  public User getUserFromPasswordToken(String pwdToken) throws NoUserFoundException {
     var userId = passwordTokenRepository.findByTokenVal(pwdToken).getUser().getId();
-    return userRepo.findById(userId).orElseThrow();
+    return userRepo.findById(userId).orElseThrow(NoUserFoundException::new);
   }
 
   public String encodePassword(String password) {
