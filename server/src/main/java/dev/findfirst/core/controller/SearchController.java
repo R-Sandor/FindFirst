@@ -36,8 +36,7 @@ public class SearchController {
   }
 
   /**
-   * This is BLOCKED by requiring Issue #281
-   * The search enginge is required to do the text search. 
+   * This is BLOCKED by requiring Issue #281 The search enginge is required to do the text search.
    */
   @GetMapping("/api/search/text")
   public ResponseEntity<List<BookmarkDTO>> bookMarkSearchByText(

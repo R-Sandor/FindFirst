@@ -141,8 +141,7 @@ class UserControllerTest {
     // token is the last part of the string
     var tknParam = urlStruct[urlStruct.length - 1];
     assertNotNull(tknParam);
-    restTemplate.exchange(userUrl + "/changePassword?tokenPassword={tkn}",
-        HttpMethod.POST,
+    restTemplate.exchange(userUrl + "/changePassword?tokenPassword={tkn}", HttpMethod.POST,
         new HttpEntity<>(new TokenPassword(tknParam, "jsmithsNewsPassword!"), new HttpHeaders()),
         String.class, token);
     HttpHeaders headers = new HttpHeaders();

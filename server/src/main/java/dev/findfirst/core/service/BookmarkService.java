@@ -191,7 +191,8 @@ public class BookmarkService {
     var uniqueBkmksWithTag = new ArrayList<TagBookmarks>();
 
     // Sort by the largest tags set.
-    var sorted = tags.stream().sorted((rTag, lTag) -> rTag.bookmarks().size() - lTag.bookmarks().size()).toList();
+    var sorted = tags.stream()
+        .sorted((rTag, lTag) -> rTag.bookmarks().size() - lTag.bookmarks().size()).toList();
 
     // streams the sorted list
     sorted.stream().forEach(t -> {
@@ -222,7 +223,7 @@ public class BookmarkService {
         uniques.add(bkmk);
       }
     });
-    if (uniques.size() > 0) {
+    if (uniques.isEmpty()) {
       uniqueBkmksWithTag.add(new TagBookmarks(t.title(), uniques));
     }
   }
@@ -293,7 +294,7 @@ public class BookmarkService {
   public void addMissingScreenShotUrlToBookMarks() {
     log.info("Executing addMissingScreenShotUrlToBookMarks");
     List<BookmarkJDBC> list = bookmarkJDBCRepository.findBookmarksWithEmptyOrBlankScreenShotUrl();
-    list.forEach((bookmark) -> {
+    list.forEach(bookmark -> {
       if (bookmark.getScrapable() != null && bookmark.getScrapable()) {
         sManager.getScreenshot(bookmark.getUrl()).ifPresentOrElse(bookmark::setScreenshotUrl,
             () -> log.error("Failed to scrap bookmark with id: {}", bookmark.getId()));

@@ -114,7 +114,7 @@ public class UserManagementService {
     return userRepo.findById(userId).orElseThrow();
   }
 
-  public String encodePassword(String password){ 
+  public String encodePassword(String password) {
     return passwdEncoder.encode(password);
   }
 

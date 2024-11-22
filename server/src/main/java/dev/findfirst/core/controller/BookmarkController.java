@@ -100,8 +100,7 @@ public class BookmarkController {
   public ResponseEntity<List<BookmarkDTO>> addBookmarks(
       @RequestBody @Size(min = 1, max = 100) List<AddBkmkReq> bookmarks) {
     try {
-      return new ResponseEntity<>(bookmarkService.addBookmarks(bookmarks),
-          HttpStatus.OK);
+      return new ResponseEntity<>(bookmarkService.addBookmarks(bookmarks), HttpStatus.OK);
     } catch (Exception e) {
       return ResponseEntity.badRequest().build();
     }
@@ -155,8 +154,8 @@ public class BookmarkController {
     var b = bookmarkService.findByIdJDBC(bookmarkID);
 
     return b.isPresent() && t.isPresent()
-        ? new ResponseEntity<>(
-            bookmarkService.deleteTag(new BookmarkTag(bookmarkID, t.get())), HttpStatus.OK)
+        ? new ResponseEntity<>(bookmarkService.deleteTag(new BookmarkTag(bookmarkID, t.get())),
+            HttpStatus.OK)
         : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
 
