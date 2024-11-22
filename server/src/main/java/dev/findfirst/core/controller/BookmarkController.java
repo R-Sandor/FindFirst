@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
@@ -109,7 +108,6 @@ public class BookmarkController {
   }
 
   @PostMapping(value = "/bookmark/{bookmarkID}/tag")
-  @ResponseBody
   public ResponseEntity<TagDTO> addTag(@PathVariable(value = "bookmarkID") @NotNull long bookmarkId,
       @RequestParam("tag") @Size(max = 512) @NotBlank String title) {
     final var bkmkOpt = bookmarkService.findByIdJDBC(bookmarkId);
@@ -157,7 +155,7 @@ public class BookmarkController {
     var b = bookmarkService.findByIdJDBC(bookmarkID);
 
     return b.isPresent() && t.isPresent()
-        ? new ResponseEntity<BookmarkTag>(
+        ? new ResponseEntity<>(
             bookmarkService.deleteTag(new BookmarkTag(bookmarkID, t.get())), HttpStatus.OK)
         : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
@@ -171,7 +169,7 @@ public class BookmarkController {
     var b = bookmarkService.findByIdJDBC(bookmarkID);
 
     return b.isPresent() && t.isPresent()
-        ? new ResponseEntity<BookmarkTag>(
+        ? new ResponseEntity<>(
             bookmarkService.deleteTag(new BookmarkTag(bookmarkID, t.get().getId())), HttpStatus.OK)
         : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
   }
