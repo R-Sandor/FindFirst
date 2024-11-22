@@ -22,7 +22,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @IntegrationTest
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class WebCheckServiceTest {
+class WebCheckServiceTest {
 
   @MockBean
   RobotsFetcher robotsFetcher;
@@ -35,7 +35,7 @@ public class WebCheckServiceTest {
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
   @Test
-  public void isScrapable() {
+  void isScrapable() {
     String robotsString = """
         User-agent: *
         Allow: /api/v*/store

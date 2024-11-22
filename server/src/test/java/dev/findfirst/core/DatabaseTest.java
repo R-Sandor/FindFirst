@@ -33,7 +33,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @IntegrationTest
 @TestMethodOrder(OrderAnnotation.class)
-public class DatabaseTest {
+class DatabaseTest {
 
   @MockBean
   private UserContext userContext;
