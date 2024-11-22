@@ -42,11 +42,7 @@ public class JwtService {
 
   public String getJwtFromCookies(HttpServletRequest request) {
     Cookie cookie = WebUtils.getCookie(request, jwtCookie);
-    if (cookie != null) {
-      return cookie.getValue();
-    } else {
-      return null;
-    }
+    return cookie != null? cookie.getValue() : null;
   }
 
   public Jws<Claims> parseJwt(String jwt) throws ExpiredJwtException, UnsupportedJwtException,
@@ -60,8 +56,6 @@ public class JwtService {
 
   public boolean validateJwtToken(String authToken) {
     Map<String, Object> claims = jwtDecoder.decode(authToken).getClaims();
-    if (claims.get("sub") != null)
-      return true;
-    return false;
+    return claims.get("sub") != null;
   }
 }
