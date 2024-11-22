@@ -270,7 +270,7 @@ class BookmarkControllerTest {
    * @throws InterruptedException
    */
   @Test
-  void importBookmarks() throws IOException, InterruptedException {
+  void importBookmarks() throws IOException {
     assertNotNull(new File("google_bookmarks_1_21_24.html"));
     var bodyBuilder = new MultipartBodyBuilder();
     byte[] fileContent = new ClassPathResource("google_bookmarks_1_21_24.html").getInputStream().readAllBytes();
