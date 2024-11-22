@@ -79,13 +79,13 @@ public class SecSecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests((authorize) -> authorize.requestMatchers("/user/**").permitAll()
+    http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/user/**").permitAll()
         .anyRequest().authenticated());
-    http.csrf((csrf) -> csrf.disable()).httpBasic(Customizer.withDefaults())
-        .oauth2ResourceServer((rs) -> rs.jwt((jwt) -> jwt.decoder(jwtDecoder())))
+    http.csrf(csrf -> csrf.disable()).httpBasic(Customizer.withDefaults())
+        .oauth2ResourceServer(rs -> rs.jwt(jwt -> jwt.decoder(jwtDecoder())))
         .sessionManagement(
-            (session) -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .exceptionHandling((exceptions) -> exceptions.authenticationEntryPoint(unauthorizedHandler)
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(unauthorizedHandler)
             .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
     http.authenticationProvider(authenticationProvider());
     http.addFilterBefore(cookieJWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
