@@ -49,12 +49,12 @@ public class Response<T> {
   }
 
   public ResponseEntity<T> setResponse(T t, HttpStatus status) {
-    this.resp = new ResponseEntity<T>(t, status);
+    this.resp = new ResponseEntity<>(t, status);
     return resp;
   }
 
   public ResponseEntity<T> setResponse(HttpStatus status) {
-    this.resp = new ResponseEntity<T>(status);
+    this.resp = new ResponseEntity<>(status);
     return resp;
   }
 
