@@ -5,7 +5,6 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -162,12 +161,11 @@ public class BookmarkService {
     return convertBookmarkJDBCToDTO(List.of(newBkmkJdbc), user.getUserId()).get(0);
   }
 
-  public List<BookmarkDTO> addBookmarks(List<AddBkmkReq> bookmarks)
-      throws BookmarkAlreadyExistsException, TagNotFoundException {
+  public List<BookmarkDTO> addBookmarks(List<AddBkmkReq> bookmarks) {
     return bookmarks.stream().map(t -> {
       try {
         return addBookmark(t);
-      } catch (Exception e) {
+      } catch (BookmarkAlreadyExistsException | TagNotFoundException e) {
         log.debug(e.toString());
         return null;
       }
