@@ -39,19 +39,19 @@ class BookmarkServiceTest {
   @NullSource
   @ValueSource(booleans = {true, false})
   void addMissingScreenShotUrlToBookMarksTests(Boolean scrapable) {
-    String screenshot_url = "http://example.com/3";
+    String screenshotUrl = "http://example.com/3";
     BookmarkJDBC bookmark = new BookmarkJDBC();
     bookmark.setScrapable(scrapable);
     List<BookmarkJDBC> list = new ArrayList<>();
     list.add(bookmark);
     if (Boolean.TRUE.equals(scrapable)) {
-      when(sManager.getScreenshot(any())).thenReturn(Optional.of(screenshot_url));
+      when(sManager.getScreenshot(any())).thenReturn(Optional.of(screenshotUrl));
       when(bookmarkRepository.saveAll(any())).thenReturn(list);
     }
     when(bookmarkRepository.findBookmarksWithEmptyOrBlankScreenShotUrl()).thenReturn(list);
     bookmarkService.addMissingScreenShotUrlToBookMarks();
     if (Boolean.TRUE.equals(scrapable)) {
-      Assertions.assertEquals(screenshot_url, bookmark.getScreenshotUrl(), "URL is not updated");
+      Assertions.assertEquals(screenshotUrl, bookmark.getScreenshotUrl(), "URL is not updated");
       verify(sManager, times(1)).getScreenshot(any());
     } else {
       Assertions.assertNull(bookmark.getScreenshotUrl(), "URL is updated");
