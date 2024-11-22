@@ -88,8 +88,8 @@ public class UserManagementService {
     return token;
   }
 
-  public Token getVerificationToken(String VerificationToken) {
-    return tokenRepository.findByTokenVal(VerificationToken);
+  public Token getVerificationToken(String verificationToken) {
+    return tokenRepository.findByTokenVal(verificationToken);
   }
 
   public String createResetPwdToken(User user) {
