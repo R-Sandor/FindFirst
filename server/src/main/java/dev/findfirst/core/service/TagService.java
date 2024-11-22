@@ -65,12 +65,12 @@ public class TagService {
     return tags;
   }
 
-  public List<TagDTO> convertTagJDBCToDTO(List<TagJDBC> tagEntities, int UserId,
+  public List<TagDTO> convertTagJDBCToDTO(List<TagJDBC> tagEntities, int userID,
       boolean withBookmarks) {
 
     // Get the bookmarks that are associated to the Tag.
     return tagEntities.stream().map(ent -> {
-      var bkmkIds = bookmarkTagRepository.getAllBookmarkIdsForTag(ent.getId(), UserId);
+      var bkmkIds = bookmarkTagRepository.getAllBookmarkIdsForTag(ent.getId(), userID);
       var bkmkEnts = bookmarkRepo.findAllById(bkmkIds);
 
       List<BookmarkOnly> bookmarkDTOs = new ArrayList<>();
