@@ -108,7 +108,7 @@ public class TagService {
    * @param titles List of strings
    */
   public List<TagDTO> addAll(String... titles) {
-    return Arrays.stream(titles).map(t -> findOrCreateTag(t)).toList();
+    return Arrays.stream(titles).map(this::findOrCreateTag).toList();
   }
 
   /**
@@ -118,7 +118,7 @@ public class TagService {
    * @param titles List of strings
    */
   public List<TagJDBC> addAllJDBC(String... titles) {
-    return Arrays.stream(titles).map(t -> findOrCreateTagJDBC(t)).toList();
+    return Arrays.stream(titles).map(this::findOrCreateTagJDBC).toList();
   }
 
   public List<TagDTO> deleteAllTags() {
