@@ -14,7 +14,7 @@ import dev.findfirst.core.model.jdbc.TagJDBC;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.core.repository.jdbc.BookmarkTagRepository;
 import dev.findfirst.core.repository.jdbc.TagJDBCRepository;
-import dev.findfirst.security.userAuth.context.UserContext;
+import dev.findfirst.security.userauth.context.UserContext;
 import dev.findfirst.users.service.UserManagementService;
 
 import lombok.NonNull;
@@ -48,7 +48,8 @@ public class TagService {
   }
 
   /**
-   * Simple checks if there is a tag with given tag title if not creates one and returns the Tag.
+   * Simple checks if there is a tag with given tag title if not creates one and
+   * returns the Tag.
    *
    * @param title
    * @return Tag existing tag with ID or a new Tag with the given title.
@@ -87,7 +88,8 @@ public class TagService {
   }
 
   /**
-   * Simple checks if there is a tag with given tag title if not creates one and returns the Tag.
+   * Simple checks if there is a tag with given tag title if not creates one and
+   * returns the Tag.
    *
    * @param title
    * @return Tag existing tag with ID or a new Tag with the given title.
@@ -102,7 +104,8 @@ public class TagService {
   }
 
   /**
-   * Create List of tags by titles. Creating a new tags for ones that do not exist and returning
+   * Create List of tags by titles. Creating a new tags for ones that do not exist
+   * and returning
    * list of existing tags.
    *
    * @param titles List of strings
@@ -112,7 +115,8 @@ public class TagService {
   }
 
   /**
-   * Create List of tags by titles. Creating a new tags for ones that do not exist and returning
+   * Create List of tags by titles. Creating a new tags for ones that do not exist
+   * and returning
    * list of existing tags.
    *
    * @param titles List of strings
@@ -142,8 +146,7 @@ public class TagService {
   }
 
   public List<TagDTO> getTagsByBookmarkId(long id) {
-    List<Long> tags =
-        bookmarkTagRepository.findByBookmarkId(id).stream().map(bt -> bt.getTagId()).toList();
+    List<Long> tags = bookmarkTagRepository.findByBookmarkId(id).stream().map(bt -> bt.getTagId()).toList();
     List<TagJDBC> tagEnts = new ArrayList<>();
     tagRepositoryJDBC.findAllById(tags).forEach(tagEnts::add);
     return convertTagJDBCToDTO(tagEnts, userContext.getUserId(), true);

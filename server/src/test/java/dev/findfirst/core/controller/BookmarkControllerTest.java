@@ -20,8 +20,7 @@ import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.jdbc.BookmarkTag;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.security.jwt.UserAuthenticationToken;
-import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
-
+import dev.findfirst.security.userauth.models.TokenRefreshResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -117,8 +116,7 @@ class BookmarkControllerTest {
     // Test with scraping (but not allowed as per robot.txt)
     var entFailScrape = getHttpEntity(restTemplate,
         new AddBkmkReq("Facebook", "https://facebook.com", List.of(), true));
-    var responseFailScrape =
-        restTemplate.exchange("/api/bookmark", HttpMethod.POST, entFailScrape, BookmarkDTO.class);
+    var responseFailScrape = restTemplate.exchange("/api/bookmark", HttpMethod.POST, entFailScrape, BookmarkDTO.class);
     assertEquals(HttpStatus.OK, responseFailScrape.getStatusCode());
     var bkmkFailScrape = Optional.ofNullable(responseFailScrape.getBody());
     assertEquals("", bkmkFailScrape.orElseThrow().title());
@@ -126,8 +124,7 @@ class BookmarkControllerTest {
     // Test without scrapping
     var entNoScrape = getHttpEntity(restTemplate,
         new AddBkmkReq("Wikipedia", "https://wikipedia.org", List.of(), false));
-    var noScrapeResponse =
-        restTemplate.exchange("/api/bookmark", HttpMethod.POST, entNoScrape, BookmarkDTO.class);
+    var noScrapeResponse = restTemplate.exchange("/api/bookmark", HttpMethod.POST, entNoScrape, BookmarkDTO.class);
     assertEquals(HttpStatus.OK, noScrapeResponse.getStatusCode());
 
     var noScrapeBkmk = Optional.ofNullable(noScrapeResponse.getBody());
@@ -219,9 +216,8 @@ class BookmarkControllerTest {
     // Add Tag design
     // Store tag response to delete the tag next
     ent = getHttpEntity(restTemplate);
-    var tagOpt =
-        Optional.ofNullable(restTemplate.exchange("/api/bookmark/{bookmarkID}/tag?tag={title}",
-            HttpMethod.POST, ent, TagDTO.class, bkmk.id(), "design").getBody());
+    var tagOpt = Optional.ofNullable(restTemplate.exchange("/api/bookmark/{bookmarkID}/tag?tag={title}",
+        HttpMethod.POST, ent, TagDTO.class, bkmk.id(), "design").getBody());
     long tagId = tagOpt.orElseThrow().id();
 
     // Delete by the id.
@@ -240,8 +236,7 @@ class BookmarkControllerTest {
 
   @Test
   void addTagToBookmarkById() {
-    var bkmk =
-        saveBookmarks(new AddBkmkReq("duckduckgo", "https://duckduckgo.com", List.of(1L), true));
+    var bkmk = saveBookmarks(new AddBkmkReq("duckduckgo", "https://duckduckgo.com", List.of(1L), true));
 
     var addReq = restTemplate.exchange("/api/bookmark/{bookmarkID}/tagId?tagId={id}",
         HttpMethod.POST, getHttpEntity(restTemplate), BookmarkDTO.class, bkmk.get(0).id(), 5);
@@ -278,8 +273,7 @@ class BookmarkControllerTest {
   void importBookmarks() throws IOException, InterruptedException {
     assertNotNull(new File("google_bookmarks_1_21_24.html"));
     var bodyBuilder = new MultipartBodyBuilder();
-    byte[] fileContent =
-        new ClassPathResource("google_bookmarks_1_21_24.html").getInputStream().readAllBytes();
+    byte[] fileContent = new ClassPathResource("google_bookmarks_1_21_24.html").getInputStream().readAllBytes();
 
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
     Authentication authentication = Mockito.mock(Authentication.class);
@@ -314,8 +308,7 @@ class BookmarkControllerTest {
     // Test can not handle covariant return type of [] vs a single Bookmark.
     if (newBkmks.length == 1) {
       ent = getHttpEntity(restTemplate, newBkmks[0]);
-      var bkmkResp =
-          restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent, BookmarkDTO.class);
+      var bkmkResp = restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent, BookmarkDTO.class);
       return List.of(bkmkResp.getBody());
     }
     ent = getHttpEntity(restTemplate, Arrays.asList(newBkmks));

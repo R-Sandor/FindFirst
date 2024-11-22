@@ -1,4 +1,4 @@
-package dev.findfirst.security.userAuth.models;
+package dev.findfirst.security.userauth.models;
 
 import java.time.Instant;
 

@@ -5,7 +5,7 @@ import java.security.interfaces.RSAPublicKey;
 
 import dev.findfirst.security.filters.CookieAuthenticationFilter;
 import dev.findfirst.security.jwt.AuthEntryPointJwt;
-import dev.findfirst.security.userAuth.service.UserDetailsServiceImpl;
+import dev.findfirst.security.userauth.service.UserDetailsServiceImpl;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;

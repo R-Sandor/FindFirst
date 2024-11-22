@@ -1,4 +1,4 @@
-package dev.findfirst.security.userAuth.models.payload.request;
+package dev.findfirst.security.userauth.models.payload.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

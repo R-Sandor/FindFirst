@@ -8,9 +8,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 import dev.findfirst.security.jwt.service.RefreshTokenService;
-import dev.findfirst.security.userAuth.models.RefreshToken;
-import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
-import dev.findfirst.security.userAuth.utils.Constants;
+import dev.findfirst.security.userauth.models.RefreshToken;
+import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
+import dev.findfirst.security.userauth.utils.Constants;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
 import dev.findfirst.users.exceptions.NoUserFoundException;
 import dev.findfirst.users.exceptions.UserNameTakenException;

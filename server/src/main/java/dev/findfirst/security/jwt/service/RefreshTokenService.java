@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import dev.findfirst.security.jwt.exceptions.TokenRefreshException;
 import dev.findfirst.security.jwt.repo.RefreshTokenRepository;
-import dev.findfirst.security.userAuth.models.RefreshToken;
+import dev.findfirst.security.userauth.models.RefreshToken;
 import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.repository.UserRepo;
 

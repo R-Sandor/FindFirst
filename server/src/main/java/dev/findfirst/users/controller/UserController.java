@@ -9,11 +9,11 @@ import jakarta.validation.constraints.Email;
 
 import dev.findfirst.security.jwt.exceptions.TokenRefreshException;
 import dev.findfirst.security.jwt.service.RefreshTokenService;
-import dev.findfirst.security.userAuth.models.RefreshToken;
-import dev.findfirst.security.userAuth.models.TokenRefreshResponse;
-import dev.findfirst.security.userAuth.models.payload.request.SignupRequest;
-import dev.findfirst.security.userAuth.models.payload.request.TokenRefreshRequest;
-import dev.findfirst.security.userAuth.models.payload.response.MessageResponse;
+import dev.findfirst.security.userauth.models.RefreshToken;
+import dev.findfirst.security.userauth.models.TokenRefreshResponse;
+import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
+import dev.findfirst.security.userauth.models.payload.request.TokenRefreshRequest;
+import dev.findfirst.security.userauth.models.payload.response.MessageResponse;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
 import dev.findfirst.users.exceptions.NoTokenFoundException;
 import dev.findfirst.users.exceptions.NoUserFoundException;

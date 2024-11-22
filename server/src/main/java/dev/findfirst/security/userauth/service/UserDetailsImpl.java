@@ -1,4 +1,4 @@
-package dev.findfirst.security.userAuth.service;
+package dev.findfirst.security.userauth.service;
 
 import java.util.Collection;
 import java.util.List;
@@ -36,8 +36,7 @@ public class UserDetailsImpl implements UserDetails {
   }
 
   public static UserDetailsImpl build(User user) {
-    GrantedAuthority authority =
-        new SimpleGrantedAuthority(URole.values()[user.getRole().getId()].toString());
+    GrantedAuthority authority = new SimpleGrantedAuthority(URole.values()[user.getRole().getId()].toString());
 
     return new UserDetailsImpl(user.getUserId(), user.getUsername(), user.getEmail(),
         user.getPassword(), authority);
