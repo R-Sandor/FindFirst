@@ -1,7 +1,7 @@
 package dev.findfirst.core.repository.jdbc;
 
 import dev.findfirst.core.model.jdbc.BookmarkTag;
-import dev.findfirst.security.userAuth.UserContext.UserContext;
+import dev.findfirst.security.userAuth.context.UserContext;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;

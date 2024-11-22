@@ -1,4 +1,4 @@
-package dev.findfirst.security.userAuth.UserContext;
+package dev.findfirst.security.userAuth.context;
 
 import dev.findfirst.security.jwt.UserAuthenticationToken;
 

@@ -14,7 +14,7 @@ import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.core.repository.jdbc.BookmarkTagRepository;
 import dev.findfirst.core.repository.jdbc.TagJDBCRepository;
 import dev.findfirst.core.service.TagService;
-import dev.findfirst.security.userAuth.UserContext.UserContext;
+import dev.findfirst.security.userAuth.context.UserContext;
 
 import org.junit.jupiter.api.MethodOrderer.OrderAnnotation;
 import org.junit.jupiter.api.Order;

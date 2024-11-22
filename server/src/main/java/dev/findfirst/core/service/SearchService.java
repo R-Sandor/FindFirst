@@ -6,7 +6,7 @@ import java.util.List;
 import dev.findfirst.core.dto.BookmarkOnly;
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.repository.jdbc.TagJDBCRepository;
-import dev.findfirst.security.userAuth.UserContext.UserContext;
+import dev.findfirst.security.userAuth.context.UserContext;
 
 import org.springframework.stereotype.Service;
 

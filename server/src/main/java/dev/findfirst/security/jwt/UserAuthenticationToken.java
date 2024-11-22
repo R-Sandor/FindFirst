@@ -5,6 +5,9 @@ import java.util.Collection;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 public class UserAuthenticationToken extends AbstractAuthenticationToken {
 
   private final transient Object principal;
