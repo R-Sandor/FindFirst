@@ -31,7 +31,7 @@ public class TagController {
   }
 
   @PostMapping("/tags")
-  public ResponseEntity<List<TagDTO>> addAllTags(@RequestBody String tags[]) {
+  public ResponseEntity<List<TagDTO>> addAllTags(@RequestBody String[] tags) {
     return ResponseEntity.ok().body(tagService.addAll(tags));
   }
 

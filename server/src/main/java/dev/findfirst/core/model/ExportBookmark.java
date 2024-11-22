@@ -16,6 +16,9 @@ public class ExportBookmark {
 
   private List<TagBookmarks> content;
 
+  private static String endCat = "\t</DL><p>";
+  private static String endOfContent = "\n</DL>";
+
   public ExportBookmark(List<TagBookmarks> tagBookmarks) {
     String defaultText =
         """
@@ -38,9 +41,9 @@ public class ExportBookmark {
     content.forEach(tb -> {
       htmlOut.append(getCat(tb));
       htmlOut.append(getLinks(tb.bookmarks()));
-      htmlOut.append(endCat());
+      htmlOut.append(endCat);
     });
-    htmlOut.append(endOfContent());
+    htmlOut.append(endOfContent);
   }
 
   private String getCat(TagBookmarks tb) {
@@ -50,17 +53,9 @@ public class ExportBookmark {
       time = date.getTime();
     }
     return """
-          \n<DT><H3 ADD_DATE="%s" LAST_MODIFIED="%s">%s</H3>
+          <DT><H3 ADD_DATE="%s" LAST_MODIFIED="%s">%s</H3>
           <DL><p>
         """.formatted(time.toString(), time.toString(), tb.tagTitle());
-  }
-
-  private String endCat() {
-    return "\t</DL><p>";
-  }
-
-  private String endOfContent() {
-    return "\n</DL>";
   }
 
   private StringBuilder getLinks(List<BookmarkOnly> bkmks) {
