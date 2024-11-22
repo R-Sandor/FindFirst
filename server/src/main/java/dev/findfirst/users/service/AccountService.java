@@ -16,5 +16,5 @@ public abstract class AccountService {
     this.emailService = email;
   }
 
-  abstract void AccountEmailOp(String emailAddres, String token);
+  abstract void accountEmailOp(String emailAddres, String token);
 }

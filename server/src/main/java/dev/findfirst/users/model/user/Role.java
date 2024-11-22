@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table(name = "roles")
@@ -12,7 +13,8 @@ import org.springframework.data.relational.core.mapping.Table;
 @Data
 public class Role {
   @Id
-  private Integer role_id;
+  @Column("role_id")
+  private int id;
 
   private URole name;
 }

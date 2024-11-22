@@ -19,11 +19,11 @@ public class RegistrationService extends AccountService {
 
   public void sendRegistration(User user) {
     var token = userManagement.createVerificationToken(user);
-    AccountEmailOp(user.getEmail(), token);
+    accountEmailOp(user.getEmail(), token);
   }
 
   @Override
-  void AccountEmailOp(String emailAddress, String token) {
+  void accountEmailOp(String emailAddress, String token) {
     String confirmationUrl = domain + "/user/regitrationConfirm?token=" + token;
     String message = """
             Please finish registering your account with the given url:

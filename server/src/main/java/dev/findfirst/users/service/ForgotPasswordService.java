@@ -29,7 +29,7 @@ public class ForgotPasswordService extends AccountService {
       throw new NoUserFoundException();
     }
     var token = userManagement.createResetPwdToken(user);
-    AccountEmailOp(email, token);
+    accountEmailOp(email, token);
   }
 
   public void changePassword(TokenPassword tp)
@@ -40,7 +40,7 @@ public class ForgotPasswordService extends AccountService {
   }
 
   @Override
-  void AccountEmailOp(String emailAddress, String token) {
+  void accountEmailOp(String emailAddress, String token) {
     String confirmationUrl = this.domain + "/user/changePassword?token=" + token;
     String message = """
             You have requested password reset for your account.

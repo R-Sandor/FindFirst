@@ -116,8 +116,7 @@ public class UserController {
   }
 
   @PostMapping("changePassword")
-  public ResponseEntity<String> passwordChange(@RequestBody TokenPassword tokenPassword)
-      throws URISyntaxException {
+  public ResponseEntity<String> passwordChange(@RequestBody TokenPassword tokenPassword) {
     try {
       pwdService.changePassword(tokenPassword);
     } catch (NoTokenFoundException | TokenExpiredException | NoUserFoundException e) {
