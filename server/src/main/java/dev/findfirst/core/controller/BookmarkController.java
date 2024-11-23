@@ -38,7 +38,6 @@ import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 
 @RestController
-@Validated
 @RequestMapping("/api")
 @RequiredArgsConstructor
 @Slf4j
