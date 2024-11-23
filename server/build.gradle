@@ -133,7 +133,7 @@ sonar {
     property "sonar.projectKey", "findfirst_server"
     property "sonar.organization", "findfirst"
     property "sonar.host.url", "https://sonarcloud.io"
-    property "sonar.gradle.skipCompile", "false"
+    property "sonar.gradle.skipCompile", "true"
   }
 }
 
