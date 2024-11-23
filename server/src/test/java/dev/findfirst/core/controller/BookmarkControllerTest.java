@@ -138,14 +138,13 @@ class BookmarkControllerTest {
         new AddBkmkReq("goolgleExample", "https://google.com", List.of(), true));
   }
 
-  //
-  // @Test
-  // void exportAllUsersBookmarks() {
-  //   var response = restTemplate.exchange("/api/bookmarks/export", HttpMethod.GET,
-  //       getHttpEntity(restTemplate), byte[].class);
-  //   String docStr = new String(response.getBody(), StandardCharsets.UTF_8);
-  //   assertNotNull(docStr);
-  // }
+  @Test
+  void exportAllUsersBookmarks() {
+    var response = restTemplate.exchange("/api/bookmarks/export", HttpMethod.GET,
+        getHttpEntity(restTemplate), byte[].class);
+    String docStr = new String(response.getBody(), StandardCharsets.UTF_8);
+    assertNotNull(docStr);
+  }
 
   @Test
   // should test that all of JSmith's bookmarks are deleted but no one else's
