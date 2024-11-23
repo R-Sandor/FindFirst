@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -169,9 +170,6 @@ class BookmarkControllerTest {
     var bkmkResp = saveBookmarks(new AddBkmkReq("yahoo", "https://yahoo.com", List.of(), true));
     var bkmk = bkmkResp.get(0);
 
-    System.out.println("SAVED BOOKMARK");
-
-    System.out.println("FINDING TAG");
     // Add web_dev to bookmark
     var ent = getHttpEntity(restTemplate);
     restTemplate.exchange("/api/bookmark/{bookmarkID}/tag?tag={title}", HttpMethod.POST, ent,
@@ -301,6 +299,15 @@ class BookmarkControllerTest {
   void jdbcRepo() {
     long count = bookmarkJDBCRepository.count();
     assertTrue(count > 0);
+  }
+
+  @Test
+  void triggerBookmarkAlreadyExistException() {
+    saveBookmarks(new AddBkmkReq("search", "https://bing.com", new ArrayList<>(), true));
+    var ent = getHttpEntity(restTemplate, new AddBkmkReq("search", "https://bing.com", new ArrayList<>(), true));
+    var blResp = restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent,
+        BookmarkDTO[].class);
+    assertEquals(HttpStatus.CONFLICT, blResp.getStatusCode());
   }
 
   private List<BookmarkDTO> saveBookmarks(AddBkmkReq... newBkmks) {
