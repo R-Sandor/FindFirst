@@ -30,7 +30,7 @@ jobs:
         run: |
           cd server/
           ./scripts/createServerKeys.sh  
-          ./gradlew build sonar --info
+          ./gradlew build sonar --debug
   sonarQubeFrontend:
     name: sonarQube Frontend
     runs-on: ubuntu-latest
