@@ -2,8 +2,7 @@ package dev.findfirst.security.userauth.utils;
 
 public class Constants {
 
-  private Constants() {
-  }
+  private Constants() {}
 
   public static final String AUTHORIZATION_HEADER = "Authorization";
   public static final String BEARER_SCHEMA = "Bearer ";

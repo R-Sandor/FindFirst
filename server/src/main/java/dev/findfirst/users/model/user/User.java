@@ -1,5 +1,7 @@
 package dev.findfirst.users.model.user;
 
+import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,8 +10,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-
-import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
 
 @Data
 @Builder

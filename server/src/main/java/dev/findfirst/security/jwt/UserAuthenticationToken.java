@@ -2,10 +2,9 @@ package dev.findfirst.security.jwt;
 
 import java.util.Collection;
 
+import lombok.EqualsAndHashCode;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-
-import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 public class UserAuthenticationToken extends AbstractAuthenticationToken {

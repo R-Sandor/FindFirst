@@ -146,8 +146,9 @@ public class BookmarkService {
 
     var savedTags = new HashSet<BookmarkTag>();
 
-    var newBkmkJdbc = new BookmarkJDBC(null, user.getUserId(), new Date(), user.getUsername(), user.getUsername(),
-        new Date(), title, reqBkmk.url(), screenshotUrlOpt.orElse(""), true, savedTags);
+    var newBkmkJdbc =
+        new BookmarkJDBC(null, user.getUserId(), new Date(), user.getUsername(), user.getUsername(),
+            new Date(), title, reqBkmk.url(), screenshotUrlOpt.orElse(""), true, savedTags);
 
     var saved = bookmarkJDBCRepository.save(newBkmkJdbc);
     for (var tag : tags) {
@@ -178,10 +179,8 @@ public class BookmarkService {
   }
 
   /**
-   * Exports bookmarks by their tag groups. The largest tag groups are exported
-   * first. Any bookmark
-   * already accounted for in that group will be excluded from any other group
-   * that it was also
+   * Exports bookmarks by their tag groups. The largest tag groups are exported first. Any bookmark
+   * already accounted for in that group will be excluded from any other group that it was also
    * tagged.
    *
    * @return String representing HTLM file.
@@ -205,17 +204,14 @@ public class BookmarkService {
   }
 
   /**
-   * Checks if a bookmark has already been found in previous tag group. If it has
-   * not it is added to
-   * uniques, and the id added to map for fast lookups. Finally record that
-   * contains the title of
-   * the tag `cooking` `docs` for example is created with it associated bookmarks.
-   * The record is
+   * Checks if a bookmark has already been found in previous tag group. If it has not it is added to
+   * uniques, and the id added to map for fast lookups. Finally record that contains the title of
+   * the tag `cooking` `docs` for example is created with it associated bookmarks. The record is
    * added to uniqueBkmkWithTags.
    *
-   * @param t                  Tag
-   * @param uniques            List<Bookmark> of uniques
-   * @param alreadyFound       Map<Long, Long> for fast lookup
+   * @param t Tag
+   * @param uniques List<Bookmark> of uniques
+   * @param alreadyFound Map<Long, Long> for fast lookup
    * @param uniqueBkmksWithTag Record of Tag Title with Bookmark.
    */
   private void addUniqueBookmarks(TagDTO t, List<BookmarkOnly> uniques,

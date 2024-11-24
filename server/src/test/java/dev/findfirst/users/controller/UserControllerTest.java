@@ -53,8 +53,8 @@ class UserControllerTest {
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
   @Container
-  public static GenericContainer<?> mailhog = new GenericContainer<>(DockerImageName.parse("mailhog/mailhog:latest"))
-      .withExposedPorts(1025,
+  public static GenericContainer<?> mailhog =
+      new GenericContainer<>(DockerImageName.parse("mailhog/mailhog:latest")).withExposedPorts(1025,
           8025);
 
   @TestConfiguration
@@ -80,8 +80,7 @@ class UserControllerTest {
   private String userUrl = "/user";
 
   /**
-   * Tests that a user should be able to sign up. After signing up another user
-   * should not be able
+   * Tests that a user should be able to sign up. After signing up another user should not be able
    * use the same username or email.
    */
   @Test
@@ -98,8 +97,7 @@ class UserControllerTest {
   }
 
   /**
-   * Create a user, gets the registration token from the email. Uses the token to
-   * complete
+   * Create a user, gets the registration token from the email. Uses the token to complete
    * registration.
    */
   @Test

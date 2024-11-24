@@ -42,7 +42,7 @@ public class JwtService {
 
   public String getJwtFromCookies(HttpServletRequest request) {
     Cookie cookie = WebUtils.getCookie(request, jwtCookie);
-    return cookie != null? cookie.getValue() : null;
+    return cookie != null ? cookie.getValue() : null;
   }
 
   public Jws<Claims> parseJwt(String jwt) throws ExpiredJwtException, UnsupportedJwtException,
