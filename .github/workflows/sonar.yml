@@ -23,6 +23,18 @@ jobs:
         with:
           java-version: 17
           distribution: "temurin"
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle') }}
+          restore-keys: ${{ runner.os }}-gradle
       - name: Scan server
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # analysis token associated to your project
@@ -30,7 +42,7 @@ jobs:
         run: |
           cd server/
           ./scripts/createServerKeys.sh  
-          ./gradlew build sonar --debug
+          ./gradlew build sonar --info
   sonarQubeFrontend:
     name: sonarQube Frontend
     runs-on: ubuntu-latest
