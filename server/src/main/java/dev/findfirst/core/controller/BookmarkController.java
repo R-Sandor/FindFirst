@@ -13,6 +13,7 @@ import dev.findfirst.core.dto.AddBkmkReq;
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
+import dev.findfirst.core.exceptions.BookmarkNotFoundException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.jdbc.BookmarkTag;
 import dev.findfirst.core.service.BookmarkService;
@@ -128,13 +129,8 @@ public class BookmarkController {
   public ResponseEntity<BookmarkDTO> addTagById(@PathVariable(value = "bookmarkID") Long bookmarkId,
       @RequestParam(value = "tagId") Long tagId) {
 
-    log.debug("Getting Bookmark");
     var bookmark = bookmarkService.findByIdJDBC(bookmarkId);
-    log.debug("Getting Tag: {}", tagId);
     var tag = tagService.findByIdJDBC(tagId);
-
-    log.debug(bookmark.orElseThrow().toString());
-    log.debug(tag.orElseThrow().toString());
 
     if (bookmark.isPresent() && tag.isPresent()) {
       var bk = bookmark.get();
@@ -143,32 +139,34 @@ public class BookmarkController {
     return ResponseEntity.badRequest().build();
   }
 
+  @ExceptionHandler(BookmarkNotFoundException.class)
+  public ResponseEntity<String> handleNotFoundException() {
+    return ResponseEntity.internalServerError().body(new BookmarkNotFoundException().getMessage());
+  }
+
   @DeleteMapping(value = "bookmark/{bookmarkID}/tag")
   public ResponseEntity<BookmarkTag> deleteTagFromBookmark(
       @Valid @PathVariable("bookmarkID") long bookmarkID,
-      @RequestParam("tag") @NotBlank String title) {
+      @RequestParam("tag") @NotBlank String title)
+      throws TagNotFoundException, BookmarkNotFoundException {
 
-    var t = tagService.findIdByTagTitleJDBC(title);
-    var b = bookmarkService.findByIdJDBC(bookmarkID);
+    var t = tagService.findIdByTagTitleJDBC(title).orElseThrow(TagNotFoundException::new);
+    bookmarkService.findByIdJDBC(bookmarkID).orElseThrow(BookmarkNotFoundException::new);
 
-    return b.isPresent() && t.isPresent()
-        ? new ResponseEntity<>(bookmarkService.deleteTag(new BookmarkTag(bookmarkID, t.get())),
-            HttpStatus.OK)
-        : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(bookmarkService.deleteTag(new BookmarkTag(bookmarkID, t)),
+        HttpStatus.OK);
   }
 
   @DeleteMapping(value = "bookmark/{bookmarkID}/tagId", produces = "application/json")
   public ResponseEntity<BookmarkTag> deleteTagFromBookmarkById(
       @Valid @PathVariable("bookmarkID") long bookmarkID,
-      @RequestParam("tagId") @Valid long tagId) {
+      @RequestParam("tagId") @Valid long tagId) throws TagNotFoundException, BookmarkNotFoundException {
 
-    var t = tagService.findByIdJDBC(tagId);
-    var b = bookmarkService.findByIdJDBC(bookmarkID);
+    var t = tagService.findByIdJDBC(tagId).orElseThrow(TagNotFoundException::new);
+    bookmarkService.findByIdJDBC(bookmarkID).orElseThrow(BookmarkNotFoundException::new);
 
-    return b.isPresent() && t.isPresent()
-        ? new ResponseEntity<>(
-            bookmarkService.deleteTag(new BookmarkTag(bookmarkID, t.get().getId())), HttpStatus.OK)
-        : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(
+        bookmarkService.deleteTag(new BookmarkTag(bookmarkID, t.getId())), HttpStatus.OK);
   }
 
   @PostMapping(value = "bookmark/import", produces = MediaType.APPLICATION_NDJSON_VALUE)
