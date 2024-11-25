@@ -47,8 +47,11 @@ public class ExportBookmark {
   }
 
   private String getCat(TagBookmarks tb) {
-    Date date = tb.bookmarks().get(0).createdDate();
+    Date date = null;
     Long time = 0l;
+    if (tb.bookmarks().size() > 0) {
+      date = tb.bookmarks().get(0).createdDate();
+    }
     if (date != null) {
       time = date.getTime();
     }

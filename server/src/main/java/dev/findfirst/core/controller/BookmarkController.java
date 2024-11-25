@@ -55,10 +55,9 @@ public class BookmarkController {
 
   @GetMapping(value = "/bookmarks/export", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
   public ResponseEntity<byte[]> exportAllBookmarks() {
-    var exported = bookmarkService.export();
     return ResponseEntity.ok()
         .header("Content-Disposition", "attachment; filename=findfirst-bookmarks.html")
-        .body(exported.getBytes());
+        .body(bookmarkService.export().getBytes());
   }
 
   @DeleteMapping(value = "/bookmarks")
@@ -102,11 +101,7 @@ public class BookmarkController {
   @PostMapping(value = "/bookmark/addBookmarks")
   public ResponseEntity<List<BookmarkDTO>> addBookmarks(
       @RequestBody @Size(min = 1, max = 100) List<AddBkmkReq> bookmarks) {
-    try {
-      return new ResponseEntity<>(bookmarkService.addBookmarks(bookmarks), HttpStatus.OK);
-    } catch (Exception e) {
-      return ResponseEntity.badRequest().build();
-    }
+    return new ResponseEntity<>(bookmarkService.addBookmarks(bookmarks), HttpStatus.OK);
   }
 
   @PostMapping(value = "/bookmark/{bookmarkID}/tag")

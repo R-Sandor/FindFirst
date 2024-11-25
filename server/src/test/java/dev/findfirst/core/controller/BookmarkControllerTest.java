@@ -326,6 +326,15 @@ class BookmarkControllerTest {
     assertEquals(HttpStatus.CONFLICT, blResp.getStatusCode());
   }
 
+  @Test 
+  void export() { 
+    var ent = getHttpEntity(restTemplate);
+    var response = restTemplate.exchange("/api/bookmarks/export", HttpMethod.GET, ent, byte[].class);
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertTrue(response.getBody().length > 0); 
+
+  }
+
   private List<BookmarkDTO> saveBookmarks(AddBkmkReq... newBkmks) {
     HttpEntity<?> ent;
     // Test can not handle covariant return type of [] vs a single Bookmark.
