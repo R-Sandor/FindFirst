@@ -151,9 +151,10 @@ public class BookmarkController {
       throws TagNotFoundException, BookmarkNotFoundException {
 
     var t = tagService.findIdByTagTitleJDBC(title).orElseThrow(TagNotFoundException::new);
-    bookmarkService.findByIdJDBC(bookmarkID).orElseThrow(BookmarkNotFoundException::new);
+    // verify that the bookmark exists.
+    var b = bookmarkService.findByIdJDBC(bookmarkID).orElseThrow(BookmarkNotFoundException::new);
 
-    return new ResponseEntity<>(bookmarkService.deleteTag(new BookmarkTag(bookmarkID, t)),
+    return new ResponseEntity<>(bookmarkService.deleteTag(new BookmarkTag(b.getId(), t)),
         HttpStatus.OK);
   }
 
@@ -163,10 +164,11 @@ public class BookmarkController {
       @RequestParam("tagId") @Valid long tagId) throws TagNotFoundException, BookmarkNotFoundException {
 
     var t = tagService.findByIdJDBC(tagId).orElseThrow(TagNotFoundException::new);
-    bookmarkService.findByIdJDBC(bookmarkID).orElseThrow(BookmarkNotFoundException::new);
+    // verify that the bookmark exists.
+    var b = bookmarkService.findByIdJDBC(bookmarkID).orElseThrow(BookmarkNotFoundException::new);
 
     return new ResponseEntity<>(
-        bookmarkService.deleteTag(new BookmarkTag(bookmarkID, t.getId())), HttpStatus.OK);
+        bookmarkService.deleteTag(new BookmarkTag(b.getId(), t.getId())), HttpStatus.OK);
   }
 
   @PostMapping(value = "bookmark/import", produces = MediaType.APPLICATION_NDJSON_VALUE)
