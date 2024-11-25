@@ -73,9 +73,9 @@ public class BookmarkController {
   }
 
   @ExceptionHandler(TagNotFoundException.class)
-	public ResponseEntity<String> handle() {
-		return ResponseEntity.internalServerError().body(new TagNotFoundException().getMessage());
-	}
+  public ResponseEntity<String> handle() {
+    return ResponseEntity.internalServerError().body(new TagNotFoundException().getMessage());
+  }
 
   @PostMapping(value = "/bookmark")
   public ResponseEntity<BookmarkDTO> addBookmark(@RequestBody AddBkmkReq req)
