@@ -13,6 +13,7 @@ import dev.findfirst.core.dto.AddBkmkReq;
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
+import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.jdbc.BookmarkTag;
 import dev.findfirst.core.service.BookmarkService;
 import dev.findfirst.core.service.TagService;
@@ -26,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -70,8 +72,14 @@ public class BookmarkController {
     return new Response<>(bookmarkService.getBookmarkDTOById(id)).get();
   }
 
+  @ExceptionHandler(TagNotFoundException.class)
+	public ResponseEntity<String> handle() {
+		return ResponseEntity.internalServerError().body(new TagNotFoundException().getMessage());
+	}
+
   @PostMapping(value = "/bookmark")
-  public ResponseEntity<BookmarkDTO> addBookmark(@RequestBody AddBkmkReq req) {
+  public ResponseEntity<BookmarkDTO> addBookmark(@RequestBody AddBkmkReq req)
+      throws TagNotFoundException {
     var response = new Response<BookmarkDTO>();
     try {
       BookmarkDTO createdBookmark = bookmarkService.addBookmark(req);
@@ -79,9 +87,6 @@ public class BookmarkController {
     } catch (BookmarkAlreadyExistsException e) {
       // Return 409 Conflict if the bookmark already exists
       return response.setResponse(HttpStatus.CONFLICT);
-    } catch (Exception e) {
-      log.debug(e.getMessage());
-      return response.setResponse(HttpStatus.BAD_REQUEST);
     }
   }
 

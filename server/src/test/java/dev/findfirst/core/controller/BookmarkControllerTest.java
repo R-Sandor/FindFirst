@@ -18,6 +18,7 @@ import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.dto.AddBkmkReq;
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
+import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.jdbc.BookmarkTag;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.security.jwt.UserAuthenticationToken;
@@ -234,6 +235,15 @@ class BookmarkControllerTest {
     var bkmkOptJDBC = Optional.ofNullable(response.getBody());
     var bkmkDto = bkmkOptJDBC.orElseThrow();
     assertFalse(bkmkDto.tags().stream().anyMatch(t -> t.id() == tagId));
+  }
+
+  @Test
+  void tagNotFoundOnAddRequest() {
+    var ent = getHttpEntity(restTemplate,
+        new AddBkmkReq("duckduckgo privacy", "https://spreadprivacy.com/", List.of(10L), true));
+    var bkmkResp = restTemplate.exchange("/api/bookmark", HttpMethod.POST, ent, String.class);
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, bkmkResp.getStatusCode());
+    assertEquals(new TagNotFoundException().getMessage(), bkmkResp.getBody());
   }
 
   @Test
