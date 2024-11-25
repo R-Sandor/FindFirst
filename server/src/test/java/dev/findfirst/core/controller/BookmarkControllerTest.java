@@ -98,7 +98,7 @@ class BookmarkControllerTest {
 
   @Test
   void getBookmarkById() {
-    var response = restTemplate.exchange(bookmarkURI + "/?id=1", HttpMethod.GET,
+    var response = restTemplate.exchange(bookmarkURI + "?id=1", HttpMethod.GET,
         getHttpEntity(restTemplate), BookmarkDTO.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -240,7 +240,8 @@ class BookmarkControllerTest {
   @Test
   void tagNotFoundOnAddRequest() {
     var ent = getHttpEntity(restTemplate,
-        new AddBkmkReq("duckduckgo privacy", "https://spreadprivacy.com/", List.of(10L), true));
+        new AddBkmkReq("duckduckgo privacy", "https://spreadprivacy.com/", List.of(20L), true));
+
     var bkmkResp = restTemplate.exchange(bookmarkURI, HttpMethod.POST, ent, String.class);
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, bkmkResp.getStatusCode());
     assertEquals(new TagNotFoundException().getMessage(), bkmkResp.getBody());
