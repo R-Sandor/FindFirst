@@ -21,15 +21,10 @@ public class ImageController {
   private String screenshotSaveLoc;
 
   @GetMapping("{fileName}")
-  public byte[] getImage(@PathVariable String fileName) {
+  public byte[] getImage(@PathVariable String fileName) throws IOException {
     Path filePath = Path.of(screenshotSaveLoc, fileName);
     if (Files.exists(filePath)) {
-      try {
-        return Files.newInputStream(filePath, StandardOpenOption.READ).readAllBytes();
-      } catch (IOException ex) {
-        log.error(ex.toString());
-        return new byte[0];
-      }
+      return Files.newInputStream(filePath, StandardOpenOption.READ).readAllBytes();
     }
     return new byte[0];
   }
