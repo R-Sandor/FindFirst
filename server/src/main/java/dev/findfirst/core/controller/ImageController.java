@@ -24,7 +24,9 @@ public class ImageController {
   public byte[] getImage(@PathVariable String fileName) throws IOException {
     Path filePath = Path.of(screenshotSaveLoc, fileName);
     if (Files.exists(filePath)) {
-      return Files.newInputStream(filePath, StandardOpenOption.READ).readAllBytes();
+      try (var imageStream = Files.newInputStream(filePath, StandardOpenOption.READ)) {
+        return imageStream.readAllBytes();
+      } 
     }
     return new byte[0];
   }
