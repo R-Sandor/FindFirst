@@ -107,13 +107,11 @@ public class BookmarkController {
 
   @PostMapping(value = "/bookmark/{bookmarkID}/tag")
   public ResponseEntity<TagDTO> addTag(@PathVariable(value = "bookmarkID") @NotNull long bookmarkId,
-      @RequestParam("tag") @Size(max = 512) @NotBlank String title) {
+      @RequestParam("tag") @Size(max = 512) @NotBlank String title)
+      throws BookmarkNotFoundException {
     final var bkmkOpt = bookmarkService.findByIdJDBC(bookmarkId);
 
-    if (!bkmkOpt.isPresent()) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-    var bookmark = bkmkOpt.get();
+    var bookmark = bkmkOpt.orElseThrow(BookmarkNotFoundException::new);
 
     // Check if there is a tag by the given title.
     TagDTO tagDTO = tagService.findOrCreateTag(title);
@@ -127,16 +125,14 @@ public class BookmarkController {
 
   @PostMapping("/bookmark/{bookmarkID}/tagId")
   public ResponseEntity<BookmarkDTO> addTagById(@PathVariable(value = "bookmarkID") Long bookmarkId,
-      @RequestParam(value = "tagId") Long tagId) {
+      @RequestParam(value = "tagId") Long tagId)
+      throws BookmarkNotFoundException, TagNotFoundException {
 
-    var bookmark = bookmarkService.findByIdJDBC(bookmarkId);
-    var tag = tagService.findByIdJDBC(tagId);
+    var bookmark =
+        bookmarkService.findByIdJDBC(bookmarkId).orElseThrow(BookmarkNotFoundException::new);
+    var tag = tagService.findByIdJDBC(tagId).orElseThrow(TagNotFoundException::new);
 
-    if (bookmark.isPresent() && tag.isPresent()) {
-      var bk = bookmark.get();
-      return ResponseEntity.ok(bookmarkService.addTagById(bk, tagId));
-    }
-    return ResponseEntity.badRequest().build();
+    return ResponseEntity.ok(bookmarkService.addTagById(bookmark, tag.getId()));
   }
 
   @ExceptionHandler(BookmarkNotFoundException.class)
@@ -160,15 +156,15 @@ public class BookmarkController {
 
   @DeleteMapping(value = "bookmark/{bookmarkID}/tagId", produces = "application/json")
   public ResponseEntity<BookmarkTag> deleteTagFromBookmarkById(
-      @Valid @PathVariable("bookmarkID") long bookmarkID,
-      @RequestParam("tagId") @Valid long tagId) throws TagNotFoundException, BookmarkNotFoundException {
+      @Valid @PathVariable("bookmarkID") long bookmarkID, @RequestParam("tagId") @Valid long tagId)
+      throws TagNotFoundException, BookmarkNotFoundException {
 
     var t = tagService.findByIdJDBC(tagId).orElseThrow(TagNotFoundException::new);
     // verify that the bookmark exists.
     var b = bookmarkService.findByIdJDBC(bookmarkID).orElseThrow(BookmarkNotFoundException::new);
 
-    return new ResponseEntity<>(
-        bookmarkService.deleteTag(new BookmarkTag(b.getId(), t.getId())), HttpStatus.OK);
+    return new ResponseEntity<>(bookmarkService.deleteTag(new BookmarkTag(b.getId(), t.getId())),
+        HttpStatus.OK);
   }
 
   @PostMapping(value = "bookmark/import", produces = MediaType.APPLICATION_NDJSON_VALUE)

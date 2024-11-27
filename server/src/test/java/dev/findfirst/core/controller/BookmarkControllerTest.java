@@ -261,6 +261,12 @@ class BookmarkControllerTest {
 
     assertEquals(2, tags.size());
     assertEquals(2, tags.stream().filter(t -> t.id() == 5 || t.id() == 1).count());
+
+    // No Existent bookmarkID
+    var badReq = restTemplate.exchange(bookmarkURI + "/{bookmarkID}/tagId?tagId={id}",
+        HttpMethod.POST, getHttpEntity(restTemplate), String.class, 22, 5);
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, badReq.getStatusCode());
+    assertEquals(new BookmarkNotFoundException().getMessage(), badReq.getBody());
   }
 
   @Test

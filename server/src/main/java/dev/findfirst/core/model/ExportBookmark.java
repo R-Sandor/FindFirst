@@ -19,17 +19,18 @@ public class ExportBookmark {
   private static String endOfContent = "\n</DL>";
 
   public ExportBookmark(List<TagBookmarks> tagBookmarks) {
-    String defaultText = """
-        <!DOCTYPE NETSCAPE-Bookmark-file-1>
-        <!-- This is an automatically generated file.
-        It will be read and overwritten.
-        DO NOT EDIT! -->
-        <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
-        <meta http-equiv="Content-Security-Policy"  content="default-src 'self'; script-src 'none'; img-src data: *; object-src 'none'"></meta>
-        <TITLE>FindFirst Bookmarks</TITLE>
-        <H1>Bookmarks</H1>
-        <DL><p>
-        """;
+    String defaultText =
+        """
+            <!DOCTYPE NETSCAPE-Bookmark-file-1>
+            <!-- This is an automatically generated file.
+            It will be read and overwritten.
+            DO NOT EDIT! -->
+            <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
+            <meta http-equiv="Content-Security-Policy"  content="default-src 'self'; script-src 'none'; img-src data: *; object-src 'none'"></meta>
+            <TITLE>FindFirst Bookmarks</TITLE>
+            <H1>Bookmarks</H1>
+            <DL><p>
+            """;
     htmlOut = new StringBuilder(defaultText);
     content = tagBookmarks;
     buildHtml();
