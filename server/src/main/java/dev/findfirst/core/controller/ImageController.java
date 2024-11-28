@@ -26,7 +26,7 @@ public class ImageController {
     if (Files.exists(filePath)) {
       try (var imageStream = Files.newInputStream(filePath, StandardOpenOption.READ)) {
         return imageStream.readAllBytes();
-      } 
+      }
     }
     return new byte[0];
   }
