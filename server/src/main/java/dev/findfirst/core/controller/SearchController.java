@@ -36,7 +36,7 @@ public class SearchController {
   @GetMapping("/api/search/title")
   public ResponseEntity<List<BookmarkOnly>> bookMarkSearchByTitleKeywords(
       @Valid @ModelAttribute SearchBkmkByTitleReq searchBkmkByTitleReq) {
-    return new Response<>(search.titleKeywordSearch(searchBkmkByTitleReq.title()), HttpStatus.OK).get();
+    return new Response<>(search.titleKeywordSearch(searchBkmkByTitleReq.keywords()), HttpStatus.OK).get();
   }
 
   /**
