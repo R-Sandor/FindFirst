@@ -44,7 +44,7 @@ class SearchControllerTest {
   @Test
   void searchByTitle() {
     var resp = restTemplate.exchange("/api/search/title?title={}", HttpMethod.GET,
-        getHttpEntity(restTemplate), BookmarkDTO[].class, new SearchBkmkByTitleReq("Test Title"));
+        getHttpEntity(restTemplate), BookmarkDTO[].class, new SearchBkmkByTitleReq(new String[]{"Test", "Title"}));
 
     assertEquals(HttpStatus.OK, resp.getStatusCode());
   }

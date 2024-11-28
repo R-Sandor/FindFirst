@@ -21,4 +21,7 @@ public interface BookmarkJDBCRepository extends CrudRepository<BookmarkJDBC, Lon
   @Query("SELECT b FROM Bookmark b WHERE b.screenshotUrl IS NULL OR TRIM(b.screenshotUrl)=''")
   List<BookmarkJDBC> findBookmarksWithEmptyOrBlankScreenShotUrl();
 
+  @Query("select * from bookmark where to_tsvector(title) @@ to_tsquery(:keywords)")
+  List<BookmarkJDBC> titleKeywordSearch(String keywords, int userId);
+
 }
