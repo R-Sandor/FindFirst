@@ -24,4 +24,17 @@ public interface BookmarkJDBCRepository extends CrudRepository<BookmarkJDBC, Lon
   @Query("select * from bookmark where to_tsvector(title) @@ to_tsquery(:keywords) AND bookmark.user_id = :userID")
   List<BookmarkJDBC> titleKeywordSearch(String keywords, int userID);
 
+  @Query("""
+      SELECT *
+      FROM bookmark
+      WHERE user_id = :userID AND id IN (
+       SELECT bookmark_id
+       FROM bookmark_tag
+       WHERE bookmark_tag.tag_id IN (
+         SELECT id FROM Tag t WHERE t.user_id = :userID AND t.tag_title IN (:tagTitles)
+       )
+      )
+      """)
+  List<BookmarkJDBC> findBookmarkByTagTitle(@Param("tagTitles") List<String> tagTitles,
+      @Param("userID") int userID);
 }

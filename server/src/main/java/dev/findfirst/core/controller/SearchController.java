@@ -3,7 +3,7 @@ package dev.findfirst.core.controller;
 import java.util.List;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.BookmarkOnly;
 import dev.findfirst.core.model.SearchBkmkByTagReq;
@@ -12,6 +12,7 @@ import dev.findfirst.core.model.SearchBkmkByTitleReq;
 import dev.findfirst.core.service.SearchService;
 import dev.findfirst.core.utilies.Response;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,17 +27,16 @@ public class SearchController {
 
 
   @GetMapping("/api/search/tags")
-  public ResponseEntity<List<BookmarkDTO>> bookmarkSearchByTag(
+  public ResponseEntity<List<BookmarkOnly>> bookmarkSearchByTag(
       @Valid @ModelAttribute SearchBkmkByTagReq searchBkmkByTagReq) {
-    // GH ISSUE #279
-    return ResponseEntity
-        .ok(List.of(new BookmarkDTO(0, null, null, null, false, null, null, null)));
+    return ResponseEntity.ok(search.bookmarksByTags(searchBkmkByTagReq.tags()));
   }
 
   @GetMapping("/api/search/title")
   public ResponseEntity<List<BookmarkOnly>> bookMarkSearchByTitleKeywords(
       @Valid @ModelAttribute SearchBkmkByTitleReq searchBkmkByTitleReq) {
-    return new Response<>(search.titleKeywordSearch(searchBkmkByTitleReq.keywords()), HttpStatus.OK).get();
+    return new Response<>(search.titleKeyword(searchBkmkByTitleReq.keywords()), HttpStatus.OK)
+        .get();
   }
 
   /**
