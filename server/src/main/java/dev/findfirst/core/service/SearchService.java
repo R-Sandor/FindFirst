@@ -6,6 +6,7 @@ import java.util.StringJoiner;
 
 import dev.findfirst.core.dto.BookmarkOnly;
 import dev.findfirst.core.dto.TagDTO;
+import dev.findfirst.core.model.jdbc.TagJDBC;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.core.repository.jdbc.TagJDBCRepository;
 import dev.findfirst.security.userauth.context.UserContext;
@@ -35,11 +36,8 @@ public class SearchService {
   }
 
   public List<BookmarkOnly> bookmarkSearchByTagTitles(List<String> titles) {
-    List<TagDTO> foundTags = tagRepository.findByTagTitles(titles, userContext.getUserId());
+    List<TagJDBC> foundTags = tagRepository.findByTagTitles(titles, userContext.getUserId());
     List<BookmarkOnly> foundBookmarks = new ArrayList<>();
-    for (TagDTO foundTag : foundTags) {
-      foundBookmarks.addAll(foundTag.bookmarks());
-    }
     return foundBookmarks;
   }
 
