@@ -78,27 +78,23 @@ const api = {
       params: { id: id },
     });
   },
-  exportAllBookmarks() {
-    return axios({
+  async exportAllBookmarks() {
+    const response = await axios({
       method: "GET",
       url: SERVER_URL + "/bookmarks/export",
       responseType: "blob",
       withCredentials: true,
-    }).then((response) => {
-      console.log(response);
-      const href = URL.createObjectURL(response.data);
-
-      // create "a" HTML element with href to file & click
-      const link = document.createElement("a");
-      link.href = href;
-      link.setAttribute("download", "findfirst-bookmarks.html"); //or any other extension
-      document.body.appendChild(link);
-      link.click();
-
-      // clean up "a" element & remove ObjectURL
-      document.body.removeChild(link);
-      URL.revokeObjectURL(href);
     });
+    const href = URL.createObjectURL(response.data);
+    // create "a" HTML element with href to file & click
+    const link = document.createElement("a");
+    link.href = href;
+    link.setAttribute("download", "findfirst-bookmarks.html"); //or any other extension
+    document.body.appendChild(link);
+    link.click();
+    // clean up "a" element & remove ObjectURL
+    document.body.removeChild(link);
+    URL.revokeObjectURL(href);
   },
   // Adds a bookmark containing a list of tag Ids if any.
   addBookmark(bkmkReq: NewBookmarkRequest) {
@@ -157,6 +153,15 @@ const api = {
   },
   refreshToken(token: string) {
     return instance.post(`refreshToken/token?token=${token}`);
+  },
+  searchBookmarkByTitleKeywords(keywords: string) {
+    return instance.get(`search/title?keywords=${keywords}`);
+  },
+  searchBookmarkByTags(tags: string) {
+    return instance.get(`search/tags?tags=${tags}`);
+  },
+  searchBookmarkByText(text: string) {
+    return instance.get(`search/text?text=${text}`);
   },
 };
 
