@@ -8,9 +8,29 @@ import ImportModal from "@components/Import/ImportModal";
 import Export from "./Export";
 import Image from "next/image";
 import navbarView from "styles/navbar.module.scss";
+import { useEffect, useState } from "react";
+import api from "api/Api";
+import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
+import Bookmark from "@type/Bookmarks/Bookmark";
+
+enum SearchType {
+  titleSearch,
+  textSearch,
+  tagSearch,
+}
+
+enum SearchTypeChar {
+  n = SearchType.titleSearch, // Name seaerch (i.e. title)
+  f = SearchType.textSearch, // Full-text search.
+  t = SearchType.tagSearch, // Tag search.
+}
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
+
+  const [searchText, setSearchText] = useState("");
+  const [searchType, setSearchType] = useState(SearchType.titleSearch);
+  const bkmkDispatch = useBookmarkDispatch();
 
   const router = useRouter();
   // TODO: Refactor into its own component.
@@ -45,6 +65,62 @@ const GlobalNavbar: React.FC = () => {
     router.push("/account/login");
   };
 
+  function search(searchText: string, searchType: SearchType) {
+    if (searchType == SearchType.titleSearch) {
+      api
+        .searchBookmarkByTitleKeywords(searchText.replaceAll(" ", ","))
+        .then((successResult) => {
+          bkmkDispatch({
+            type: "search",
+            bookmarks: successResult.data as Bookmark[],
+          });
+        });
+    } else if (searchType == SearchType.tagSearch) {
+      api
+        .searchBookmarkByTags(searchText.replaceAll(" ", ","))
+        .then((successResult) => {});
+    } else if (searchType == SearchType.textSearch) {
+      api.searchBookmarkByText(searchText);
+    }
+  }
+  const handleSearch = (event: any) => {
+    let rawSearch: string = event.target.value;
+    let search: string = "";
+
+    rawSearch = rawSearch.trim();
+
+    if (rawSearch.length > 1 && rawSearch.startsWith("/")) {
+      let sTypeChar: string | undefined = rawSearch.at(1);
+      if (sTypeChar) {
+        if (sTypeChar in SearchTypeChar) {
+          setSearchType(
+            Object.keys(SearchTypeChar)
+              .filter((v) => isNaN(Number(v)))
+              .indexOf(sTypeChar),
+          );
+        }
+      }
+      search = rawSearch.substring(2).trim();
+    } else if (rawSearch.length) {
+      search = rawSearch;
+    }
+    setSearchText(search);
+  };
+
+  useEffect(() => {
+    if (searchText) {
+      search(searchText, searchType);
+    } else {
+      setSearchType(SearchType.titleSearch);
+      api.getAllBookmarks().then((successResult) => {
+        bkmkDispatch({
+          type: "search",
+          bookmarks: successResult.data as Bookmark[],
+        });
+      });
+    }
+  }, [searchText, searchType]);
+
   return (
     <Navbar
       expand="lg"
@@ -71,6 +147,7 @@ const GlobalNavbar: React.FC = () => {
               type="text"
               className={`${navbarView.searchBarInput}`}
               placeholder="Search"
+              onChange={handleSearch}
             />
             <button
               className={`btn ms-2 ${navbarView.searchBarBtn}`}

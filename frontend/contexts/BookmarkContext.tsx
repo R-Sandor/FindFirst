@@ -23,7 +23,7 @@ export const BookmarkContext = createContext<ProviderProps>({
   loading: true,
 });
 export const BookmarkDispatchContext = createContext<Dispatch<BookmarkAction>>(
-  () => { },
+  () => {},
 );
 
 export function useBookmarks() {
@@ -51,17 +51,15 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
     }
   }, [bookmarks.length, userAuth]);
 
-
   useEffect(() => {
     return () => {
-      hasFetched.current = false
+      hasFetched.current = false;
       dispatch({
         type: "reset",
-        bookmarks: []
+        bookmarks: [],
       });
-    }
+    };
   }, [userAuth]);
-
 
   return (
     <BookmarkContext.Provider value={{ values: bookmarks, loading: isLoading }}>
@@ -75,11 +73,9 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
 function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
   switch (action.type) {
     case "add": {
-      console.log("adding");
       return [...bookmarkList, ...action.bookmarks];
     }
     case "delete": {
-      console.log("DELETE");
       if (action.bookmarkId) {
         const id = parseInt(action.bookmarkId.toString());
         api.deleteBookmarkById(id);
@@ -88,6 +84,9 @@ function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
     }
     case "reset": {
       return [];
+    }
+    case "search": {
+      return action.bookmarks;
     }
     default: {
       throw Error("Unknown action: " + action.type);
