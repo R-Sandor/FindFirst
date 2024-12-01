@@ -28,14 +28,14 @@ public class SearchService {
       joiner.add(kw);
     }
     var userID = userContext.getUserId();
-    return bookmarkService.convertBookmarkJDBCToDTO(bookmarkRepo.titleKeywordSearch(joiner.toString(), userID), userID);
+    return bookmarkService.convertBookmarkJDBCToDTO(
+        bookmarkRepo.titleKeywordSearch(joiner.toString(), userID), userID);
   }
 
   public List<BookmarkDTO> bookmarksByTags(List<String> tags) {
     var userID = userContext.getUserId();
-    return bookmarkService.convertBookmarkJDBCToDTO(
-        bookmarkRepo.findBookmarkByTagTitle(tags.stream().map(String::toLowerCase).toList(), userID),
-        userID);
+    return bookmarkService.convertBookmarkJDBCToDTO(bookmarkRepo
+        .findBookmarkByTagTitle(tags.stream().map(String::toLowerCase).toList(), userID), userID);
   }
 
 }
