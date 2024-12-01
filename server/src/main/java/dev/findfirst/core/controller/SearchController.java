@@ -27,13 +27,13 @@ public class SearchController {
 
 
   @GetMapping("/api/search/tags")
-  public ResponseEntity<List<BookmarkOnly>> bookmarkSearchByTag(
+  public ResponseEntity<List<BookmarkDTO>> searchBookmarkByTags(
       @Valid @ModelAttribute SearchBkmkByTagReq searchBkmkByTagReq) {
     return ResponseEntity.ok(search.bookmarksByTags(searchBkmkByTagReq.tags()));
   }
 
   @GetMapping("/api/search/title")
-  public ResponseEntity<List<BookmarkOnly>> bookMarkSearchByTitleKeywords(
+  public ResponseEntity<List<BookmarkDTO>> searchBookmarksByTitleKeywords(
       @Valid @ModelAttribute SearchBkmkByTitleReq searchBkmkByTitleReq) {
     return new Response<>(search.titleKeyword(searchBkmkByTitleReq.keywords()), HttpStatus.OK)
         .get();
@@ -43,7 +43,7 @@ public class SearchController {
    * This is BLOCKED by requiring Issue #281 The search engine is required to do the text search.
    */
   @GetMapping("/api/search/text")
-  public ResponseEntity<List<BookmarkDTO>> bookMarkSearchByText(
+  public ResponseEntity<List<BookmarkDTO>> searchBookmarkByText(
       @Valid @ModelAttribute SearchBkmkByTextReq searchBkmkByTextReq) {
     return new Response<>(List.of(new BookmarkDTO(0, null, null, null, false, null, null, null)),
         HttpStatus.OK).get();

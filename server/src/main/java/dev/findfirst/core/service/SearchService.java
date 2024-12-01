@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.StringJoiner;
 
-import dev.findfirst.core.dto.BookmarkOnly;
+import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
 import dev.findfirst.security.userauth.context.UserContext;
 
@@ -23,18 +23,19 @@ public class SearchService {
 
   private final UserContext userContext;
 
-  public List<BookmarkOnly> titleKeyword(String[] keywords) {
+  public List<BookmarkDTO> titleKeyword(String[] keywords) {
     StringJoiner joiner = new StringJoiner(" | ");
     for (String kw : keywords) {
       joiner.add(kw);
     }
-    return bookmarkService.convertBookmarkJDBCToBookmarkOnly(
-        bookmarkRepo.titleKeywordSearch(joiner.toString(), userContext.getUserId()));
+    var userID = userContext.getUserId();
+    return bookmarkService.convertBookmarkJDBCToDTO(bookmarkRepo.titleKeywordSearch(joiner.toString(), userID), userID);
   }
 
-  public List<BookmarkOnly> bookmarksByTags(String[] tags) {
-    return bookmarkService.convertBookmarkJDBCToBookmarkOnly(
-        bookmarkRepo.findBookmarkByTagTitle(Arrays.asList(tags), userContext.getUserId()));
+  public List<BookmarkDTO> bookmarksByTags(String[] tags) {
+    var userID = userContext.getUserId();
+    return bookmarkService.convertBookmarkJDBCToDTO(bookmarkRepo.findBookmarkByTagTitle(Arrays.asList(tags), userID),
+        userID);
   }
 
 }
