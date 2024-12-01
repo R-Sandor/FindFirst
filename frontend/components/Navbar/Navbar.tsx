@@ -65,23 +65,28 @@ const GlobalNavbar: React.FC = () => {
     router.push("/account/login");
   };
 
-  function search(searchText: string, searchType: SearchType) {
+  async function search(searchText: string, searchType: SearchType) {
+    let searchData: Bookmark[] = [];
+    console.log(searchType);
     if (searchType == SearchType.titleSearch) {
-      api
+      await api
         .searchBookmarkByTitleKeywords(searchText.replaceAll(" ", ","))
         .then((successResult) => {
-          bkmkDispatch({
-            type: "search",
-            bookmarks: successResult.data as Bookmark[],
-          });
+          searchData = successResult.data as Bookmark[];
         });
     } else if (searchType == SearchType.tagSearch) {
-      api
+      await api
         .searchBookmarkByTags(searchText.replaceAll(" ", ","))
-        .then((successResult) => {});
+        .then((successResult) => {
+          searchData = successResult.data as Bookmark[];
+        });
     } else if (searchType == SearchType.textSearch) {
-      api.searchBookmarkByText(searchText);
+      await api.searchBookmarkByText(searchText);
     }
+    bkmkDispatch({
+      type: "search",
+      bookmarks: searchData,
+    });
   }
   const handleSearch = (event: any) => {
     let rawSearch: string = event.target.value;

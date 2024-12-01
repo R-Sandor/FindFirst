@@ -158,6 +158,7 @@ const api = {
     return instance.get(`search/title?keywords=${keywords}`);
   },
   searchBookmarkByTags(tags: string) {
+    console.log(tags);
     return instance.get(`search/tags?tags=${tags}`);
   },
   searchBookmarkByText(text: string) {

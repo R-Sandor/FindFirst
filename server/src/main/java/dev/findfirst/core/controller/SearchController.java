@@ -5,7 +5,6 @@ import java.util.List;
 import jakarta.validation.Valid;
 
 import dev.findfirst.core.dto.BookmarkDTO;
-import dev.findfirst.core.dto.BookmarkOnly;
 import dev.findfirst.core.model.SearchBkmkByTagReq;
 import dev.findfirst.core.model.SearchBkmkByTextReq;
 import dev.findfirst.core.model.SearchBkmkByTitleReq;

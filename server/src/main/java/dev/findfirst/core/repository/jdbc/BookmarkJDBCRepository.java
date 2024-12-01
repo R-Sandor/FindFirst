@@ -31,7 +31,7 @@ public interface BookmarkJDBCRepository extends CrudRepository<BookmarkJDBC, Lon
        SELECT bookmark_id
        FROM bookmark_tag
        WHERE bookmark_tag.tag_id IN (
-         SELECT id FROM Tag t WHERE t.user_id = :userID AND t.tag_title IN (:tagTitles)
+         SELECT id FROM Tag t WHERE t.user_id = :userID AND LOWER(t.tag_title) IN (:tagTitles)
        )
       )
       """)
