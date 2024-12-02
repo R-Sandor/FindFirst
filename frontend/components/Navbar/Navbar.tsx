@@ -129,12 +129,13 @@ const GlobalNavbar: React.FC = () => {
     else if (
       searchType == SearchType.tagSearch &&
       searchType != prevSearchType &&
-      searchText.length &&
-      !modified
+      searchText.length
     ) {
       console.log("converting to tags");
       setPrevSearchType(SearchType.tagSearch);
-      setStrTags([...searchText.trimEnd().split(" ")]);
+      if(modified) {
+        setStrTags([...searchText.trimEnd().split(" ")]);
+      }
       setSearchText("");
     }
     // No search parameters at all, bring back the defualt.
