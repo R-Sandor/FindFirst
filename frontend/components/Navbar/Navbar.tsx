@@ -118,6 +118,7 @@ const GlobalNavbar: React.FC = () => {
   };
 
   useEffect(() => {
+    console.log(modified);
     // someone switched from tags to another type of search.
     if (searchType != SearchType.tagSearch && strTags.length) {
       setSearchText(strTags.join(" "));
@@ -128,7 +129,8 @@ const GlobalNavbar: React.FC = () => {
     else if (
       searchType == SearchType.tagSearch &&
       searchType != prevSearchType &&
-      searchText.length
+      searchText.length &&
+      !modified
     ) {
       console.log("converting to tags");
       setPrevSearchType(SearchType.tagSearch);
