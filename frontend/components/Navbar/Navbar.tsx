@@ -117,12 +117,24 @@ const GlobalNavbar: React.FC = () => {
   };
 
   useEffect(() => {
-    if (searchText.trim() || strTags.length) {
+    if (searchType != SearchType.tagSearch && strTags.length) {
+      console.log("fixing");
+      setSearchText(strTags.join(" "));
+      setStrTags([]);
+      search(strTags.join(" "), searchType);
+    } else if (
+      searchType == SearchType.tagSearch &&
+      !strTags.length &&
+      searchText.length
+    ) {
+      console.log("setting tags");
+      setStrTags([...searchText.split(" ")]);
+      setSearchText("");
+    } else if (searchType == SearchType.tagSearch) {
+      console.log("tagSearch");
       search(searchText, searchType);
     } else {
-      if (searchText.length == 2) {
-        setSearchType(SearchType.titleSearch);
-      } else if (searchText.length == 0 && modified) {
+      if (searchText.length == 0 && modified) {
         setModified(false);
         api.getAllBookmarks().then((successResult) => {
           bkmkDispatch({
@@ -132,7 +144,7 @@ const GlobalNavbar: React.FC = () => {
         });
       }
     }
-  }, [modified, searchText, searchType]);
+  }, [modified, searchText, searchType, strTags]);
 
   const deleteTag = (index: number) => {
     const tags = strTags.filter((t, i) => i !== index);
@@ -190,25 +202,27 @@ const GlobalNavbar: React.FC = () => {
           <div className={`d-flex flex-grow-1 mx-3 ${navbarView.searchBar}`}>
             <button
               key={"searchType"}
-              // onClick={() => deleteTag(index, setFieldValue, values)}
+              onClick={() => setSearchType((searchType + 1) % 3)}
               type="button"
               data-testid={searchType + "searchType"}
               className={navbarView.pillButton}
             >
               {`/${SearchTypeChar[searchType]}`}
             </button>
-            {strTags.map((tag, index) => (
-              <button
-                key={index}
-                onClick={() => deleteTag(index)}
-                type="button"
-                data-testid={tag}
-                className={navbarView.pillButtonTag}
-              >
-                {tag}
-                <i className="xtag bi bi-x"></i>
-              </button>
-            ))}
+            {searchType == SearchType.tagSearch
+              ? strTags.map((tag, index) => (
+                  <button
+                    key={index}
+                    onClick={() => deleteTag(index)}
+                    type="button"
+                    data-testid={tag}
+                    className={navbarView.pillButtonTag}
+                  >
+                    {tag}
+                    <i className="xtag bi bi-x"></i>
+                  </button>
+                ))
+              : null}
             <input
               type="text"
               className={`${navbarView.searchBarInput}`}
