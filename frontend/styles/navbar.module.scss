@@ -21,12 +21,38 @@
 }
 
 .searchBar > .searchBarBtn {
-  margin-left: -35px !important;
+  margin-left: -95px !important;
   border: none;
 
   &:hover {
     color: #29b5bf;
   }
+}
+
+.pillButton {
+  background-color: #ddd;
+  border: none;
+  color: white;
+  padding: 0px 2px;
+  text-decoration: none;
+  display: inline-block;
+
+  min-width: 5%;
+  max-width: 20%;
+  margin: 2px 2px;
+  background-color: #29b5bf;
+  white-space: nowrap;
+  height: 22px;
+  text-align: center;
+  &:hover {
+    background-color: rgb(81, 191, 291);
+  }
+}
+
+.pillButtonTag {
+  @extend .pillButton;
+  min-width: 10%;
+  background-color: #29b5bf;
 }
 
 @media (max-width: 480px) {

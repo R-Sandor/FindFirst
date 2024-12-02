@@ -20,7 +20,7 @@ enum SearchType {
 }
 
 enum SearchTypeChar {
-  n = SearchType.titleSearch, // Name seaerch (i.e. title)
+  n = SearchType.titleSearch, // Name search (i.e. title)
   f = SearchType.textSearch, // Full-text search.
   t = SearchType.tagSearch, // Tag search.
 }
@@ -29,7 +29,9 @@ const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
 
   const [searchText, setSearchText] = useState("");
+  const [modified, setModified] = useState(false);
   const [searchType, setSearchType] = useState(SearchType.titleSearch);
+  const [strTags, setStrTags] = useState<string[]>([]);
   const bkmkDispatch = useBookmarkDispatch();
 
   const router = useRouter();
@@ -67,16 +69,15 @@ const GlobalNavbar: React.FC = () => {
 
   async function search(searchText: string, searchType: SearchType) {
     let searchData: Bookmark[] = [];
-    console.log(searchType);
     if (searchType == SearchType.titleSearch) {
       await api
-        .searchBookmarkByTitleKeywords(searchText.replaceAll(" ", ","))
+        .searchBookmarkByTitleKeywords(searchText.trim().replaceAll(" ", ","))
         .then((successResult) => {
           searchData = successResult.data as Bookmark[];
         });
-    } else if (searchType == SearchType.tagSearch) {
+    } else if (searchType == SearchType.tagSearch && strTags.length) {
       await api
-        .searchBookmarkByTags(searchText.replaceAll(" ", ","))
+        .searchBookmarkByTags(strTags.join(","))
         .then((successResult) => {
           searchData = successResult.data as Bookmark[];
         });
@@ -89,12 +90,11 @@ const GlobalNavbar: React.FC = () => {
     });
   }
   const handleSearch = (event: any) => {
-    let rawSearch: string = event.target.value;
+    const rawSearch: string = event.target.value;
+    let trimmed = rawSearch.trim();
     let search: string = "";
 
-    rawSearch = rawSearch.trim();
-
-    if (rawSearch.length > 1 && rawSearch.startsWith("/")) {
+    if (trimmed.length > 1 && trimmed.startsWith("/")) {
       let sTypeChar: string | undefined = rawSearch.at(1);
       if (sTypeChar) {
         if (sTypeChar in SearchTypeChar) {
@@ -106,25 +106,65 @@ const GlobalNavbar: React.FC = () => {
         }
       }
       search = rawSearch.substring(2).trim();
+      setModified(true);
     } else if (rawSearch.length) {
       search = rawSearch;
+      setModified(true);
+    } else {
+      // setModified(false);
     }
     setSearchText(search);
   };
 
   useEffect(() => {
-    if (searchText) {
+    if (searchText.trim() || strTags.length) {
       search(searchText, searchType);
     } else {
-      setSearchType(SearchType.titleSearch);
-      api.getAllBookmarks().then((successResult) => {
-        bkmkDispatch({
-          type: "search",
-          bookmarks: successResult.data as Bookmark[],
+      if (searchText.length == 2) {
+        setSearchType(SearchType.titleSearch);
+      } else if (searchText.length == 0 && modified) {
+        setModified(false);
+        api.getAllBookmarks().then((successResult) => {
+          bkmkDispatch({
+            type: "search",
+            bookmarks: successResult.data as Bookmark[],
+          });
         });
-      });
+      }
     }
-  }, [searchText, searchType]);
+  }, [modified, searchText, searchType]);
+
+  const deleteTag = (index: number) => {
+    const tags = strTags.filter((t, i) => i !== index);
+    setStrTags(tags);
+  };
+
+  function onKeyDown(e: any) {
+    if (searchType == SearchType.tagSearch) {
+      const { keyCode } = e;
+      const trimmedInput = searchText.trim();
+      if (
+        // add tag via space bar or enter
+        (keyCode === 32 || keyCode === 13) &&
+        trimmedInput.length &&
+        !strTags.includes(trimmedInput)
+      ) {
+        e.preventDefault();
+        setStrTags((prevState) => [...prevState, trimmedInput]);
+        setSearchText("");
+      }
+      // user hits backspace and the user has input field of 0
+      // then pop the last tag only if there is one.
+      if (keyCode === 8 && !searchText.length && strTags.length) {
+        e.preventDefault();
+        const tagsCopy = [...strTags];
+        let poppedTag = tagsCopy.pop();
+
+        setStrTags(tagsCopy);
+        setSearchText(poppedTag ? poppedTag : "");
+      }
+    }
+  }
 
   return (
     <Navbar
@@ -148,11 +188,34 @@ const GlobalNavbar: React.FC = () => {
         </Navbar.Brand>
         {userAuth === AuthStatus.Authorized ? (
           <div className={`d-flex flex-grow-1 mx-3 ${navbarView.searchBar}`}>
+            <button
+              key={"searchType"}
+              // onClick={() => deleteTag(index, setFieldValue, values)}
+              type="button"
+              data-testid={searchType + "searchType"}
+              className={navbarView.pillButton}
+            >
+              {`/${SearchTypeChar[searchType]}`}
+            </button>
+            {strTags.map((tag, index) => (
+              <button
+                key={index}
+                onClick={() => deleteTag(index)}
+                type="button"
+                data-testid={tag}
+                className={navbarView.pillButtonTag}
+              >
+                {tag}
+                <i className="xtag bi bi-x"></i>
+              </button>
+            ))}
             <input
               type="text"
               className={`${navbarView.searchBarInput}`}
               placeholder="Search"
+              onKeyDown={(e) => onKeyDown(e)}
               onChange={handleSearch}
+              value={searchText}
             />
             <button
               className={`btn ms-2 ${navbarView.searchBarBtn}`}
