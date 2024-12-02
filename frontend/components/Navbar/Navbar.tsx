@@ -31,6 +31,7 @@ const GlobalNavbar: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [modified, setModified] = useState(false);
   const [searchType, setSearchType] = useState(SearchType.titleSearch);
+  const [prevSearchType, setPrevSearchType] = useState(SearchType.titleSearch);
   const [strTags, setStrTags] = useState<string[]>([]);
   const bkmkDispatch = useBookmarkDispatch();
 
@@ -117,32 +118,37 @@ const GlobalNavbar: React.FC = () => {
   };
 
   useEffect(() => {
+    // someone switched from tags to another type of search.
     if (searchType != SearchType.tagSearch && strTags.length) {
-      console.log("fixing");
       setSearchText(strTags.join(" "));
       setStrTags([]);
       search(strTags.join(" "), searchType);
-    } else if (
+    }
+    // switched a text search to a tag search.
+    else if (
       searchType == SearchType.tagSearch &&
-      !strTags.length &&
+      searchType != prevSearchType &&
       searchText.length
     ) {
-      console.log("setting tags");
-      setStrTags([...searchText.split(" ")]);
+      console.log("converting to tags");
+      setPrevSearchType(SearchType.tagSearch);
+      setStrTags([...searchText.trimEnd().split(" ")]);
       setSearchText("");
-    } else if (searchType == SearchType.tagSearch) {
-      console.log("tagSearch");
-      search(searchText, searchType);
-    } else {
-      if (searchText.length == 0 && modified) {
-        setModified(false);
-        api.getAllBookmarks().then((successResult) => {
-          bkmkDispatch({
-            type: "search",
-            bookmarks: successResult.data as Bookmark[],
-          });
+    }
+    // No search parameters at all, bring back the defualt.
+    else if (searchText.length == 0 && strTags.length == 0 && modified) {
+      setModified(false);
+      api.getAllBookmarks().then((successResult) => {
+        bkmkDispatch({
+          type: "search",
+          bookmarks: successResult.data as Bookmark[],
         });
-      }
+      });
+    }
+    // otherwise just search.
+    else if (searchText.length || strTags.length) {
+      console.log("searching");
+      search(searchText, searchType);
     }
   }, [modified, searchText, searchType, strTags]);
 
@@ -153,6 +159,7 @@ const GlobalNavbar: React.FC = () => {
 
   function onKeyDown(e: any) {
     if (searchType == SearchType.tagSearch) {
+      console.log("key down?");
       const { keyCode } = e;
       const trimmedInput = searchText.trim();
       if (
@@ -161,7 +168,6 @@ const GlobalNavbar: React.FC = () => {
         trimmedInput.length &&
         !strTags.includes(trimmedInput)
       ) {
-        e.preventDefault();
         setStrTags((prevState) => [...prevState, trimmedInput]);
         setSearchText("");
       }
@@ -169,9 +175,10 @@ const GlobalNavbar: React.FC = () => {
       // then pop the last tag only if there is one.
       if (keyCode === 8 && !searchText.length && strTags.length) {
         e.preventDefault();
+        console.log(strTags);
         const tagsCopy = [...strTags];
         let poppedTag = tagsCopy.pop();
-
+        console.log("popping tag");
         setStrTags(tagsCopy);
         setSearchText(poppedTag ? poppedTag : "");
       }
@@ -202,7 +209,10 @@ const GlobalNavbar: React.FC = () => {
           <div className={`d-flex flex-grow-1 mx-3 ${navbarView.searchBar}`}>
             <button
               key={"searchType"}
-              onClick={() => setSearchType((searchType + 1) % 3)}
+              onClick={() => {
+                setPrevSearchType(searchType);
+                setSearchType((searchType + 1) % 3);
+              }}
               type="button"
               data-testid={searchType + "searchType"}
               className={navbarView.pillButton}
