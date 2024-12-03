@@ -5,6 +5,7 @@ export interface NewBookmarkForm {
   id?: string;
   title: string;
   url: string;
+  scrapable: boolean;
   tagTitles: string[];
 }
 
@@ -15,7 +16,7 @@ export interface NewBookmarkRequest {
   title: string;
   url: string;
   tagIds: number[];
-  scrapable: boolean
+  scrapable: boolean;
 }
 
 /**
@@ -24,5 +25,6 @@ export interface NewBookmarkRequest {
 export const newcard: NewBookmarkForm = {
   title: "",
   url: "",
+  scrapable: true,
   tagTitles: [],
 };

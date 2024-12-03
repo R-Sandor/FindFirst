@@ -65,6 +65,7 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
 export default function NewBookmarkCard() {
   const [urlInput, setUrlInput] = useState("");
   const [tagInput, setTagInput] = useState("");
+  const [isScrapable, setScrable] = useState(true);
   const [strTags, setStrTags] = useState<string[]>([]);
   const bkmkDispatch = useBookmarkDispatch();
   const tagDispatch = useTagsDispatch();
@@ -224,6 +225,28 @@ export default function NewBookmarkCard() {
                     type="text"
                   />
                 </Card.Text>
+                {dirty ? (
+                  <div className="form-check form-switch isScrapable">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="isScrapable"
+                      checked={isScrapable}
+                      onClick={() => {
+                        setScrable(!isScrapable);
+                        values.scrapable = !isScrapable;
+                        setValues({ ...values });
+                      }}
+                    />
+                    <label
+                      className="form-check-label"
+                      htmlFor="flexSwitchCheckChecked"
+                      id="isScrapableLabel"
+                    >
+                      Scrapable
+                    </label>
+                  </div>
+                ) : null}
               </Card.Body>
               <Card.Footer className="card-footer">
                 <div className="container">
