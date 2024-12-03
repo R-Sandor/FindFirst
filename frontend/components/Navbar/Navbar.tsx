@@ -20,7 +20,7 @@ enum SearchType {
 }
 
 enum SearchTypeChar {
-  n = SearchType.titleSearch, // Name search (i.e. title)
+  b = SearchType.titleSearch, // Name search (i.e. title)
   f = SearchType.textSearch, // Full-text search.
   t = SearchType.tagSearch, // Tag search.
 }
@@ -133,7 +133,7 @@ const GlobalNavbar: React.FC = () => {
     ) {
       console.log("converting to tags");
       setPrevSearchType(SearchType.tagSearch);
-      if(modified) {
+      if (modified) {
         setStrTags([...searchText.trimEnd().split(" ")]);
       }
       setSearchText("");
