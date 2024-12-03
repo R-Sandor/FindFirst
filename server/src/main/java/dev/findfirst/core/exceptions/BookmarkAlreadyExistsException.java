@@ -1,7 +1,9 @@
 package dev.findfirst.core.exceptions;
 
-public class BookmarkAlreadyExistsException extends Exception {
-  public BookmarkAlreadyExistsException() {
-    super("Bookmark already exists with the same data.");
+import org.springframework.http.HttpStatus;
+
+public class BookmarkAlreadyExistsException extends ErrorResponseException {
+  public BookmarkAlreadyExistsException(String logMessage) {
+    super(HttpStatus.CONFLICT, "Bookmark already exists.", logMessage);
   }
 }

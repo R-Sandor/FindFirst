@@ -18,6 +18,7 @@ import {
 } from "@type/Bookmarks/NewBookmark";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AxiosError, AxiosResponse } from "axios";
 
 async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
   let newBkmkRequest: NewBookmarkRequest;
@@ -37,27 +38,31 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
       newBkmkRequest.tagIds.push(rt.id);
     });
   });
-  await api.addBookmark(newBkmkRequest).then((response) => {
-    console.log("API Response:", response);
+
+  await api.addBookmark(newBkmkRequest).then((response:AxiosError<any>|AxiosResponse) => {
     if (response.status === 409) {
-      console.log("Bookmark already exist");
-      toast.error("This Bookmark already exist !", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored",
-      });
+      if(response instanceof AxiosError){
+        toast.error(response?.response?.data.error, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      }
+      
       return;
     }
+    if(!(response instanceof AxiosError)){
     createBmk.id = response.data.id;
     createBmk.tags = response.data.tags;
     createBmk.screenshotUrl = response.data.screenshotUrl;
     createBmk.scrapable = response.data.scrapable;
     createBmk.title = response.data.title;
+  }
   });
   return createBmk;
 }
@@ -108,7 +113,7 @@ export default function NewBookmarkCard() {
     actions.resetForm({ newcard }, setStrTags([]), setTagInput(""));
     let retBkmk = await makeNewBookmark(newBkmk);
     // if adding the bookmark was successful.
-    if (retBkmk) {
+    if (retBkmk.id!=-1) {
       retBkmk.tags.forEach((t) => {
         let tAct: TagAction = {
           type: "add",

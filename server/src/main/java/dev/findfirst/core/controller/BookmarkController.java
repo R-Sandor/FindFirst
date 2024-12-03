@@ -13,7 +13,6 @@ import jakarta.validation.constraints.Size;
 import dev.findfirst.core.dto.AddBkmkReq;
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
-import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
 import dev.findfirst.core.exceptions.BookmarkNotFoundException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.jdbc.BookmarkTag;
@@ -82,13 +81,8 @@ public class BookmarkController {
   public ResponseEntity<BookmarkDTO> addBookmark(@RequestBody AddBkmkReq req)
       throws TagNotFoundException, URISyntaxException {
     var response = new Response<BookmarkDTO>();
-    try {
-      BookmarkDTO createdBookmark = bookmarkService.addBookmark(req);
-      return response.setResponse(createdBookmark, HttpStatus.OK);
-    } catch (BookmarkAlreadyExistsException e) {
-      // Return 409 Conflict if the bookmark already exists
-      return response.setResponse(HttpStatus.CONFLICT);
-    }
+    BookmarkDTO createdBookmark = bookmarkService.addBookmark(req);
+    return response.setResponse(createdBookmark, HttpStatus.OK);
   }
 
   @DeleteMapping(value = "/bookmark", produces = "application/json")
