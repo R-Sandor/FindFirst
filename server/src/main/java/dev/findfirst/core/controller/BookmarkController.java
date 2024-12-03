@@ -1,6 +1,7 @@
 package dev.findfirst.core.controller;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -79,7 +80,7 @@ public class BookmarkController {
 
   @PostMapping(value = "/bookmark")
   public ResponseEntity<BookmarkDTO> addBookmark(@RequestBody AddBkmkReq req)
-      throws TagNotFoundException {
+      throws TagNotFoundException, URISyntaxException {
     var response = new Response<BookmarkDTO>();
     try {
       BookmarkDTO createdBookmark = bookmarkService.addBookmark(req);

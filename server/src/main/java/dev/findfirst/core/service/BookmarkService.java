@@ -1,6 +1,8 @@
 package dev.findfirst.core.service;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -117,7 +119,7 @@ public class BookmarkService {
   }
 
   public BookmarkDTO addBookmark(AddBkmkReq reqBkmk)
-      throws BookmarkAlreadyExistsException, TagNotFoundException {
+      throws BookmarkAlreadyExistsException, TagNotFoundException, URISyntaxException {
     var tags = new ArrayList<Long>();
 
     if (bookmarkJDBCRepository.findByUrl(reqBkmk.url(), uContext.getUserId()).isPresent()) {
@@ -149,6 +151,8 @@ public class BookmarkService {
 
       title = !title.isEmpty() ? title : reqBkmk.title();
       screenshotUrlOpt = sManager.getScreenshot(reqBkmk.url());
+    } else {
+      title = new URI(reqBkmk.url()).getHost();
     }
 
     var user = userService.getUserById(uContext.getUserId()).orElseThrow();
@@ -174,7 +178,7 @@ public class BookmarkService {
     return bookmarks.stream().map(t -> {
       try {
         return addBookmark(t);
-      } catch (BookmarkAlreadyExistsException | TagNotFoundException e) {
+      } catch (BookmarkAlreadyExistsException | TagNotFoundException | URISyntaxException e) {
         log.debug(e.toString());
         return null;
       }
@@ -291,7 +295,8 @@ public class BookmarkService {
           return addBookmark(
               new AddBkmkReq(title, URLDecoder.decode(url, StandardCharsets.UTF_8), null, true));
         }
-      } catch (IOException | BookmarkAlreadyExistsException | TagNotFoundException ex) {
+      } catch (IOException | BookmarkAlreadyExistsException | TagNotFoundException
+          | URISyntaxException ex) {
         log.error(ex.getMessage());
       }
       return new BookmarkDTO(0, null, null, null, false, null, null, null);
