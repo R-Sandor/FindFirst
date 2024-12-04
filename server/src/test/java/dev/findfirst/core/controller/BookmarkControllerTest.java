@@ -9,10 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.dto.AddBkmkReq;
@@ -351,8 +348,9 @@ class BookmarkControllerTest {
     saveBookmarks(new AddBkmkReq("search", "https://bing.com", new ArrayList<>(), true));
     var ent = getHttpEntity(restTemplate,
         new AddBkmkReq("search", "https://bing.com", new ArrayList<>(), true));
-    var blResp = restTemplate.exchange(bookmarkURI, HttpMethod.POST, ent, BookmarkDTO[].class);
+    var blResp = restTemplate.exchange(bookmarkURI, HttpMethod.POST, ent, Map.class);
     assertEquals(HttpStatus.CONFLICT, blResp.getStatusCode());
+    assertEquals("Bookmark already exists.", (blResp.getBody()).get("error"));
   }
 
   @Test

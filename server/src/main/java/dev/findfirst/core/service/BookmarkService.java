@@ -119,11 +119,13 @@ public class BookmarkService {
   }
 
   public BookmarkDTO addBookmark(AddBkmkReq reqBkmk)
-      throws BookmarkAlreadyExistsException, TagNotFoundException, URISyntaxException {
+      throws TagNotFoundException, URISyntaxException {
     var tags = new ArrayList<Long>();
 
     if (bookmarkJDBCRepository.findByUrl(reqBkmk.url(), uContext.getUserId()).isPresent()) {
-      throw new BookmarkAlreadyExistsException();
+      String logMessage = "Bookmark already exists for user with id " + uContext.getUserId()
+          + " and url: " + reqBkmk.url();
+      throw new BookmarkAlreadyExistsException(logMessage);
     }
 
     if (reqBkmk.tagIds() != null) {
