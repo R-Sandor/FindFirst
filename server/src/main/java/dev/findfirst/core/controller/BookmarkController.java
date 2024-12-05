@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Size;
 import dev.findfirst.core.dto.AddBkmkReq;
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
+import dev.findfirst.core.dto.UpdateBookmarkReq;
 import dev.findfirst.core.exceptions.BookmarkNotFoundException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.jdbc.BookmarkTag;
@@ -30,6 +31,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -77,7 +80,7 @@ public class BookmarkController {
     return ResponseEntity.internalServerError().body(new TagNotFoundException().getMessage());
   }
 
-  @PostMapping(value = "/bookmark")
+  @PostMapping("/bookmark")
   public ResponseEntity<BookmarkDTO> addBookmark(@RequestBody AddBkmkReq req)
       throws TagNotFoundException, URISyntaxException {
     var response = new Response<BookmarkDTO>();
@@ -85,7 +88,20 @@ public class BookmarkController {
     return response.setResponse(createdBookmark, HttpStatus.OK);
   }
 
-  @DeleteMapping(value = "/bookmark", produces = "application/json")
+  /**
+   * Partial update to a bookmark.
+   * 
+   * @param updateBookmarkReq contains all the params accepted; The id, and title are required
+   *        fields.
+   * @throws BookmarkNotFoundException 
+   */
+  @PatchMapping("bookmark")
+  public ResponseEntity<BookmarkDTO> updateBookmark(
+      @Valid @ModelAttribute UpdateBookmarkReq updateBookmarkReq) throws BookmarkNotFoundException {
+    return new ResponseEntity<BookmarkDTO>(bookmarkService.updateBookmark(updateBookmarkReq), HttpStatus.OK);
+  }
+
+  @DeleteMapping("/bookmark")
   public ResponseEntity<String> deleteById(@RequestParam("id") Long id)
       throws JsonProcessingException {
     bookmarkService.deleteBookmark(id);

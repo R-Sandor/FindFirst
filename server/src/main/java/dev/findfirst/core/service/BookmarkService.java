@@ -19,7 +19,9 @@ import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.BookmarkOnly;
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.dto.TagOnly;
+import dev.findfirst.core.dto.UpdateBookmarkReq;
 import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
+import dev.findfirst.core.exceptions.BookmarkNotFoundException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.ExportBookmark;
 import dev.findfirst.core.model.TagBookmarks;
@@ -303,6 +305,16 @@ public class BookmarkService {
       }
       return new BookmarkDTO(0, null, null, null, false, null, null, null);
     }).delayElements(Duration.ofMillis(100));
+  }
+
+  public BookmarkDTO updateBookmark(UpdateBookmarkReq updateReq) throws BookmarkNotFoundException { 
+    var bkmk = bookmarkJDBCRepository.findById(updateReq.id()).orElseThrow(BookmarkNotFoundException::new);
+   
+    bkmk.setTitle(updateReq.title());
+    if (updateReq.isScrapable() != null) { 
+      bkmk.setScrapable(updateReq.isScrapable());
+    }
+    return convertBookmarkJDBCToDTO(List.of(bookmarkJDBCRepository.save(bkmk)), uContext.getUserId()).get(0);
   }
 
   @Scheduled(cron = "0 * 2 * * *", zone = "America/New_York")
