@@ -95,9 +95,9 @@ public class BookmarkController {
    *        fields.
    * @throws BookmarkNotFoundException 
    */
-  @PatchMapping("bookmark")
+  @PatchMapping("/bookmark")
   public ResponseEntity<BookmarkDTO> updateBookmark(
-      @Valid @ModelAttribute UpdateBookmarkReq updateBookmarkReq) throws BookmarkNotFoundException {
+      @Valid @RequestBody UpdateBookmarkReq updateBookmarkReq) throws BookmarkNotFoundException {
     return new ResponseEntity<BookmarkDTO>(bookmarkService.updateBookmark(updateBookmarkReq), HttpStatus.OK);
   }
 
@@ -110,13 +110,13 @@ public class BookmarkController {
     return new ResponseEntity<>(jsonStr, HttpStatus.OK);
   }
 
-  @PostMapping(value = "/bookmark/addBookmarks")
+  @PostMapping("/bookmark/addBookmarks")
   public ResponseEntity<List<BookmarkDTO>> addBookmarks(
       @RequestBody @Size(min = 1, max = 100) List<AddBkmkReq> bookmarks) {
     return new ResponseEntity<>(bookmarkService.addBookmarks(bookmarks), HttpStatus.OK);
   }
 
-  @PostMapping(value = "/bookmark/{bookmarkID}/tag")
+  @PostMapping("/bookmark/{bookmarkID}/tag")
   public ResponseEntity<TagDTO> addTag(@PathVariable(value = "bookmarkID") @NotNull long bookmarkId,
       @RequestParam("tag") @Size(max = 512) @NotBlank String title)
       throws BookmarkNotFoundException {
@@ -151,7 +151,7 @@ public class BookmarkController {
     return ResponseEntity.internalServerError().body(new BookmarkNotFoundException().getMessage());
   }
 
-  @DeleteMapping(value = "bookmark/{bookmarkID}/tag")
+  @DeleteMapping("bookmark/{bookmarkID}/tag")
   public ResponseEntity<BookmarkTag> deleteTagFromBookmark(
       @Valid @PathVariable("bookmarkID") long bookmarkID,
       @RequestParam("tag") @NotBlank String title)
@@ -165,7 +165,7 @@ public class BookmarkController {
         HttpStatus.OK);
   }
 
-  @DeleteMapping(value = "bookmark/{bookmarkID}/tagId", produces = "application/json")
+  @DeleteMapping("bookmark/{bookmarkID}/tagId")
   public ResponseEntity<BookmarkTag> deleteTagFromBookmarkById(
       @Valid @PathVariable("bookmarkID") long bookmarkID, @RequestParam("tagId") @Valid long tagId)
       throws TagNotFoundException, BookmarkNotFoundException {

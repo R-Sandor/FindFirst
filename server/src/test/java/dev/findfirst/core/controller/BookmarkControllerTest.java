@@ -15,6 +15,7 @@ import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.dto.AddBkmkReq;
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
+import dev.findfirst.core.dto.UpdateBookmarkReq;
 import dev.findfirst.core.exceptions.BookmarkNotFoundException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.jdbc.BookmarkTag;
@@ -32,6 +33,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.*;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -133,6 +135,17 @@ class BookmarkControllerTest {
 
     var noScrapeBkmk = Optional.ofNullable(noScrapeResponse.getBody());
     assertEquals("", noScrapeBkmk.orElseThrow().screenshotUrl());
+  }
+
+  @Test void updateBookmark() { 
+    this.restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+    String newTitle = "Dark MODE";
+
+    var updateReq =
+        restTemplate.exchange(bookmarkURI , HttpMethod.PATCH, getHttpEntity(restTemplate, new UpdateBookmarkReq(2, newTitle, null)), BookmarkDTO.class);
+    var bkmkDTO = updateReq.getBody();
+    assertEquals(newTitle, bkmkDTO.title());
+    assertEquals(true, bkmkDTO.scrapable()); 
   }
 
   @Test
