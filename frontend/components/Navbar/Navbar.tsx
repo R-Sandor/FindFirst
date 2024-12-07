@@ -31,7 +31,7 @@ const GlobalNavbar: React.FC = () => {
   const [searchText, setSearchText] = useState("");
   const [modified, setModified] = useState(false);
   const [searchType, setSearchType] = useState(SearchType.titleSearch);
-  const [prevSearchType, setPrevSearchType] = useState(SearchType.titleSearch);
+  const [shouldSplit, setShouldSplit] = useState(false);
   const [strTags, setStrTags] = useState<string[]>([]);
   const bkmkDispatch = useBookmarkDispatch();
 
@@ -121,6 +121,7 @@ const GlobalNavbar: React.FC = () => {
     console.log(modified);
     // someone switched from tags to another type of search.
     if (searchType != SearchType.tagSearch && strTags.length) {
+      console.log("textSearch");
       setSearchText(strTags.join(" "));
       setStrTags([]);
       search(strTags.join(" "), searchType);
@@ -128,14 +129,13 @@ const GlobalNavbar: React.FC = () => {
     // switched a text search to a tag search.
     else if (
       searchType == SearchType.tagSearch &&
-      searchType != prevSearchType &&
+      shouldSplit &&
       searchText.length
     ) {
       console.log("converting to tags");
-      setPrevSearchType(SearchType.tagSearch);
-      if (modified) {
-        setStrTags([...searchText.trimEnd().split(" ")]);
-      }
+      setStrTags([...searchText.trimEnd().split(" ")]);
+      // only split once.
+      setShouldSplit(false);
       setSearchText("");
     }
     // No search parameters at all, bring back the defualt.
@@ -162,7 +162,6 @@ const GlobalNavbar: React.FC = () => {
 
   function onKeyDown(e: any) {
     if (searchType == SearchType.tagSearch) {
-      console.log("key down?");
       const { keyCode } = e;
       const trimmedInput = searchText.trim();
       if (
@@ -213,8 +212,13 @@ const GlobalNavbar: React.FC = () => {
             <button
               key={"searchType"}
               onClick={() => {
-                setPrevSearchType(searchType);
-                setSearchType((searchType + 1) % 3);
+                const nextType = (searchType + 1) % 3;
+                if (searchText.length && nextType == SearchType.tagSearch) {
+                  setShouldSplit(true);
+                } else {
+                  setShouldSplit(false);
+                }
+                setSearchType(nextType);
               }}
               type="button"
               data-testid={searchType + "searchType"}
