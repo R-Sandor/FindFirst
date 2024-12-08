@@ -138,15 +138,58 @@ sonar {
   }
 }
 
+def setFlywayDev(dbScripts) {
+  addDevScriptsToMigrations(dbScripts);
+  flyway.cleanDisabled = false;
+}
+
+def isDevProfile(String profile) {
+ return profile == null || profile.equalsIgnoreCase("integration") || profiles.equalsIgnoreCase("dev");
+}
+
+def addDevScriptsToMigrations(dbScripts) {
+    dbScripts.add("classpath:db/dev");
+    flyway.locations = dbScripts;
+}
+
+def setFlywayPrefrences(profiles, dbScripts) {
+  if(profiles != null) {
+    boolean isList = profiles instanceof List;
+    if (isList) {
+      for(String prof in profiles) {
+        if(isDevProfile(prof)) {
+          setFlywayDev(dbScripts);
+          break;
+        }
+      }
+    } else if(isDevProfile(profiles)) {
+      setFlywayDev(dbScripts);
+    }
+  }
+  // spring.profiles.active are always set for production,
+  // otherwise assume we're in development if null.
+  else {
+    setFlywayDev(dbScripts);
+  }
+}
+
+
+
 flyway {
+  // our defaults
+  def dbScripts = ["classpath:db/migration"];
+  locations = dbScripts;
+  cleanDisabled = true;
+
+  // Set env preferences
+  String profiles = System.getenv("SPRING_PROFILES_ACTIVE");
+  setFlywayPrefrences(profiles, dbScripts);
+
   // Get the system property or use the default, i.e. development defaults.
   url = System.getProperty("SPRING_DATASOURCE_URL", "jdbc:postgresql://localhost:5432/findfirst")
   user = System.getProperty("POSTGRES_USER", "postgres")
   password = System.getProperty("POSTGRES_PASSWORD", "admin")
   driver = "org.postgresql.Driver"
-  locations = ["classpath:db/migration"]
-  // Ideally we should not do this.
-  cleanDisabled = true
 }
 
 

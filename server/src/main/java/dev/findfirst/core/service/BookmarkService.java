@@ -307,14 +307,16 @@ public class BookmarkService {
     }).delayElements(Duration.ofMillis(100));
   }
 
-  public BookmarkDTO updateBookmark(UpdateBookmarkReq updateReq) throws BookmarkNotFoundException { 
-    var bkmk = bookmarkJDBCRepository.findById(updateReq.id()).orElseThrow(BookmarkNotFoundException::new);
-   
+  public BookmarkDTO updateBookmark(UpdateBookmarkReq updateReq) throws BookmarkNotFoundException {
+    var bkmk =
+        bookmarkJDBCRepository.findById(updateReq.id()).orElseThrow(BookmarkNotFoundException::new);
+
     bkmk.setTitle(updateReq.title());
-    if (updateReq.isScrapable() != null) { 
+    if (updateReq.isScrapable() != null) {
       bkmk.setScrapable(updateReq.isScrapable());
     }
-    return convertBookmarkJDBCToDTO(List.of(bookmarkJDBCRepository.save(bkmk)), uContext.getUserId()).get(0);
+    return convertBookmarkJDBCToDTO(List.of(bookmarkJDBCRepository.save(bkmk)),
+        uContext.getUserId()).get(0);
   }
 
   @Scheduled(cron = "0 * 2 * * *", zone = "America/New_York")

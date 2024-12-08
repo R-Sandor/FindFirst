@@ -31,7 +31,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -93,12 +92,13 @@ public class BookmarkController {
    * 
    * @param updateBookmarkReq contains all the params accepted; The id, and title are required
    *        fields.
-   * @throws BookmarkNotFoundException 
+   * @throws BookmarkNotFoundException
    */
   @PatchMapping("/bookmark")
   public ResponseEntity<BookmarkDTO> updateBookmark(
       @Valid @RequestBody UpdateBookmarkReq updateBookmarkReq) throws BookmarkNotFoundException {
-    return new ResponseEntity<BookmarkDTO>(bookmarkService.updateBookmark(updateBookmarkReq), HttpStatus.OK);
+    return new ResponseEntity<BookmarkDTO>(bookmarkService.updateBookmark(updateBookmarkReq),
+        HttpStatus.OK);
   }
 
   @DeleteMapping("/bookmark")

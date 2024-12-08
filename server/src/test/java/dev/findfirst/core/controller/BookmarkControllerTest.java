@@ -137,15 +137,17 @@ class BookmarkControllerTest {
     assertEquals("", noScrapeBkmk.orElseThrow().screenshotUrl());
   }
 
-  @Test void updateBookmark() { 
-    this.restTemplate.getRestTemplate().setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+  @Test
+  void updateBookmark() {
+    this.restTemplate.getRestTemplate()
+        .setRequestFactory(new HttpComponentsClientHttpRequestFactory());
     String newTitle = "Dark MODE";
 
-    var updateReq =
-        restTemplate.exchange(bookmarkURI , HttpMethod.PATCH, getHttpEntity(restTemplate, new UpdateBookmarkReq(2, newTitle, null)), BookmarkDTO.class);
+    var updateReq = restTemplate.exchange(bookmarkURI, HttpMethod.PATCH,
+        getHttpEntity(restTemplate, new UpdateBookmarkReq(2, newTitle, null)), BookmarkDTO.class);
     var bkmkDTO = updateReq.getBody();
     assertEquals(newTitle, bkmkDTO.title());
-    assertEquals(true, bkmkDTO.scrapable()); 
+    assertEquals(true, bkmkDTO.scrapable());
   }
 
   @Test
