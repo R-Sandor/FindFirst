@@ -211,6 +211,7 @@ const GlobalNavbar: React.FC = () => {
           <div className={`d-flex flex-grow-1 mx-3 ${navbarView.searchBar}`}>
             <button
               key={"searchType"}
+              title={`${SearchType[searchType]} Search`}
               onClick={() => {
                 const nextType = (searchType + 1) % 3;
                 if (searchText.length && nextType == SearchType.tagSearch) {
