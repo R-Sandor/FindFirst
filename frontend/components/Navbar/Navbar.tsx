@@ -12,25 +12,36 @@ import { useEffect, useState } from "react";
 import api from "api/Api";
 import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
 import Bookmark from "@type/Bookmarks/Bookmark";
+import SearchType from "@type/classes/SearchType";
 
-enum SearchType {
+enum SearchTypeEnum {
   titleSearch,
   textSearch,
   tagSearch,
 }
 
 enum SearchTypeChar {
-  b = SearchType.titleSearch, // Name search (i.e. title)
-  f = SearchType.textSearch, // Full-text search.
-  t = SearchType.tagSearch, // Tag search.
+  b = SearchTypeEnum.titleSearch, // Title search (i.e. Bookmark Title)
+  f = SearchTypeEnum.textSearch, // Full-text search.
+  t = SearchTypeEnum.tagSearch, // Tag search.
 }
+
+const searchTypes = Object.values(SearchTypeEnum)
+  .filter((v) => isNaN(Number(v)))
+  .map((st, i) => {
+    let type = String(st)
+      .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+      .split(" ")[0];
+    let typeCased = type.charAt(0).toUpperCase() + String(type).slice(1);
+    return new SearchType(i, SearchTypeChar[i], typeCased + " Search");
+  });
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
 
   const [searchText, setSearchText] = useState("");
   const [modified, setModified] = useState(false);
-  const [searchType, setSearchType] = useState(SearchType.titleSearch);
+  const [searchType, setSearchType] = useState(searchTypes[0]);
   const [shouldSplit, setShouldSplit] = useState(false);
   const [strTags, setStrTags] = useState<string[]>([]);
   const bkmkDispatch = useBookmarkDispatch();
@@ -68,21 +79,21 @@ const GlobalNavbar: React.FC = () => {
     router.push("/account/login");
   };
 
-  async function search(searchText: string, searchType: SearchType) {
+  async function search(searchText: string, searchType: SearchTypeEnum) {
     let searchData: Bookmark[] = [];
-    if (searchType == SearchType.titleSearch) {
+    if (searchType == SearchTypeEnum.titleSearch) {
       await api
         .searchBookmarkByTitleKeywords(searchText.trim().replaceAll(" ", ","))
         .then((successResult) => {
           searchData = successResult.data as Bookmark[];
         });
-    } else if (searchType == SearchType.tagSearch && strTags.length) {
+    } else if (searchType == SearchTypeEnum.tagSearch && strTags.length) {
       await api
         .searchBookmarkByTags(strTags.join(","))
         .then((successResult) => {
           searchData = successResult.data as Bookmark[];
         });
-    } else if (searchType == SearchType.textSearch) {
+    } else if (searchType == SearchTypeEnum.textSearch) {
       await api.searchBookmarkByText(searchText);
     }
     bkmkDispatch({
@@ -98,12 +109,11 @@ const GlobalNavbar: React.FC = () => {
     if (trimmed.length > 1 && trimmed.startsWith("/")) {
       let sTypeChar: string | undefined = rawSearch.at(1);
       if (sTypeChar) {
-        if (sTypeChar in SearchTypeChar) {
-          setSearchType(
-            Object.keys(SearchTypeChar)
-              .filter((v) => isNaN(Number(v)))
-              .indexOf(sTypeChar),
-          );
+        for (let i = 0; i < searchTypes.length; i++) {
+          if (searchTypes[i].charCode == sTypeChar) {
+            setSearchType(searchTypes[i]);
+            break;
+          }
         }
       }
       search = rawSearch.substring(2).trim();
@@ -118,21 +128,18 @@ const GlobalNavbar: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(modified);
     // someone switched from tags to another type of search.
-    if (searchType != SearchType.tagSearch && strTags.length) {
-      console.log("textSearch");
+    if (searchType.type != SearchTypeEnum.tagSearch && strTags.length) {
       setSearchText(strTags.join(" "));
       setStrTags([]);
-      search(strTags.join(" "), searchType);
+      search(strTags.join(" "), searchType.type);
     }
     // switched a text search to a tag search.
     else if (
-      searchType == SearchType.tagSearch &&
+      searchType.type == SearchTypeEnum.tagSearch &&
       shouldSplit &&
       searchText.length
     ) {
-      console.log("converting to tags");
       setStrTags([...searchText.trimEnd().split(" ")]);
       // only split once.
       setShouldSplit(false);
@@ -150,8 +157,7 @@ const GlobalNavbar: React.FC = () => {
     }
     // otherwise just search.
     else if (searchText.length || strTags.length) {
-      console.log("searching");
-      search(searchText, searchType);
+      search(searchText, searchType.type);
     }
   }, [modified, searchText, searchType, strTags]);
 
@@ -161,7 +167,7 @@ const GlobalNavbar: React.FC = () => {
   };
 
   function onKeyDown(e: any) {
-    if (searchType == SearchType.tagSearch) {
+    if (searchType.type == SearchTypeEnum.tagSearch) {
       const { keyCode } = e;
       const trimmedInput = searchText.trim();
       if (
@@ -177,10 +183,8 @@ const GlobalNavbar: React.FC = () => {
       // then pop the last tag only if there is one.
       if (keyCode === 8 && !searchText.length && strTags.length) {
         e.preventDefault();
-        console.log(strTags);
         const tagsCopy = [...strTags];
         let poppedTag = tagsCopy.pop();
-        console.log("popping tag");
         setStrTags(tagsCopy);
         setSearchText(poppedTag ? poppedTag : "");
       }
@@ -211,23 +215,23 @@ const GlobalNavbar: React.FC = () => {
           <div className={`d-flex flex-grow-1 mx-3 ${navbarView.searchBar}`}>
             <button
               key={"searchType"}
-              title={`${SearchType[searchType]} Search`}
+              title={searchType.textDescription}
               onClick={() => {
-                const nextType = (searchType + 1) % 3;
-                if (searchText.length && nextType == SearchType.tagSearch) {
+                const nextType = (searchType.type + 1) % 3;
+                if (searchText.length && nextType == SearchTypeEnum.tagSearch) {
                   setShouldSplit(true);
                 } else {
                   setShouldSplit(false);
                 }
-                setSearchType(nextType);
+                setSearchType(searchTypes[nextType]);
               }}
               type="button"
               data-testid={searchType + "searchType"}
               className={navbarView.pillButton}
             >
-              {`/${SearchTypeChar[searchType]}`}
+              {`/${searchType.charCode}`}
             </button>
-            {searchType == SearchType.tagSearch
+            {searchType.type == SearchTypeEnum.tagSearch
               ? strTags.map((tag, index) => (
                   <button
                     key={index}
