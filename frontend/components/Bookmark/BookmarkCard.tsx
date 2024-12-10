@@ -48,6 +48,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   const dispatch = useTagsDispatch();
   const bkmkDispatch = useBookmarkDispatch();
   const [input, setInput] = useState("");
+  const [inEditMode, setEditMode] = useState(false);
   const [strTags, setStrTags] = useState<string[]>([]);
   const [show, setShow] = useState(false);
   const handleClose = () => {
@@ -181,7 +182,20 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   function plainCard(): ReactNode {
     return (
       <Card.Body>
-        <Card.Title>{bookmark.title}</Card.Title>
+        <Card.Title>
+          {inEditMode ? (
+            <input
+              className="title-edit"
+              // value={}
+              placeholder={bookmark.title}
+              data-testid={`${bookmark.title}-input`}
+              // onKeyDown={onKeyDown}
+              // onChange={onChange}
+            />
+          ) : (
+            bookmark.title
+          )}
+        </Card.Title>
         <Card.Link target="_blank" href={bookmark.url}>
           {bookmark.url}
         </Card.Link>
@@ -192,12 +206,20 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   return (
     <div data-testid={`bookmark-${bookmark.title}`} className="mx-2">
       <Card className="bookmark-card">
-        <div className="card-header w-full">
+        <div className="card-header">
           <CloseButton
-            className="inline p-2 m-0 float-right text-sm"
+            className="delete-bookmark-icon inline float-right"
             onClick={handleShow}
             data-testid={`bk-id-${bookmark.id}-deleteBtn`}
           />
+          <button className="btn edit-bookmark-icon">
+            <i
+              onClick={() => {
+                setEditMode(!inEditMode);
+              }}
+              className="bi bi-pen"
+            ></i>
+          </button>
         </div>
         <DeleteModal
           show={show}

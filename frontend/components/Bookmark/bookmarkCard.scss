@@ -31,6 +31,10 @@
   }
 }
 
+.title-edit {
+  width: 100%;
+}
+
 .xtag {
   float: right;
   margin-left: 4px;
@@ -72,9 +76,10 @@
 }
 
 .card-header {
-  background-color: var(--card-bg);
+  // background-color: var(--card-bg);
   margin-top: 0px;
   padding-top: 2px;
+  margin-bottom: 0px;
   padding: unset;
   border: 2px;
 }
@@ -129,6 +134,24 @@
 .new-bookmark-card {
   @extend .bookmark-card;
   text-align: center;
+}
+
+.edit-bookmark-icon {
+  float: left;
+  padding: 0px;
+  margin-top: 6px;
+  margin-bottom: 8px;
+  margin-left: 12px;
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.25rem;
+}
+
+.delete-bookmark-icon {
+  float: right;
+  padding: 2px;
+  margin: 0.5rem; /* 8px */
+  font-size: 0.875rem; /* 14px */
+  line-height: 1.25rem; /* 20px */
 }
 
 .error-text {
