@@ -299,13 +299,13 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
             onClick={handleShow}
             data-testid={`bk-id-${bookmark.id}-deleteBtn`}
           />
-          <button className="btn edit-bookmark-icon">
-            <i
-              onClick={() => {
-                changeEditMode();
-              }}
-              className="bi bi-pen"
-            ></i>
+          <button
+            onClick={() => {
+              changeEditMode();
+            }}
+            className="btn edit-bookmark-icon"
+          >
+            <i className="bi bi-pen"></i>
           </button>
         </div>
         <DeleteModal
