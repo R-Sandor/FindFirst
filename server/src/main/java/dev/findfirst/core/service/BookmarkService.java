@@ -315,6 +315,9 @@ public class BookmarkService {
     if (updateReq.isScrapable() != null) {
       bkmk.setScrapable(updateReq.isScrapable());
     }
+    if (!updateReq.url().isEmpty()) { 
+      bkmk.setUrl(updateReq.url());
+    }
     return convertBookmarkJDBCToDTO(List.of(bookmarkJDBCRepository.save(bkmk)),
         uContext.getUserId()).get(0);
   }

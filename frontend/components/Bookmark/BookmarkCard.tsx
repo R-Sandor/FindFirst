@@ -1,4 +1,10 @@
-import { ReactNode, useEffect, useState } from "react";
+import {
+  MutableRefObject,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Card, CloseButton } from "react-bootstrap";
 import { useTagsDispatch } from "@/contexts/TagContext";
 import Bookmark from "@/types/Bookmarks/Bookmark";
@@ -9,6 +15,7 @@ import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 import Tag from "@/types/Bookmarks/Tag";
 import api from "@/api/Api";
+import { ScrapableBookmarkToggle } from "./ScrapableToggle";
 
 const IMAGE_DIR = process.env.NEXT_PUBLIC_IMAGE_DIR;
 
@@ -49,13 +56,18 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   const bkmkDispatch = useBookmarkDispatch();
   const [input, setInput] = useState("");
   const [inEditMode, setEditMode] = useState(false);
+  const [editScrapable, setScrable] = useState(bookmark.scrapable);
   const [strTags, setStrTags] = useState<string[]>([]);
   const [show, setShow] = useState(false);
-  const handleClose = () => {
-    setShow(false);
-  };
-  const handleShow = () => setShow(true);
+  /*
+   * Create copies to compare state, its technically shallow but I have no nested properties
+   * that are edited in the partial update. For example Tags would be shallow copied.
+   * Thus set the before and after, initially they are the same.
+   */
+  const beforeEdit = useRef({ ...bookmark });
+  const edit = useRef({ ...bookmark });
 
+  // Set tags on the card from the bookmark json object.
   useEffect(() => {
     if (bookmark) {
       const tagList: string[] = [];
@@ -65,6 +77,36 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
       setStrTags(tagList);
     }
   }, [bookmark]);
+
+  const handleClose = () => {
+    setShow(false);
+  };
+  const handleShow = () => setShow(true);
+
+  const handleEdits = (inEditMode: boolean) => {
+    if (!inEditMode && isChanges(beforeEdit, edit)) {
+      sendPatch(edit.current);
+      beforeEdit.current = { ...edit.current };
+    }
+  };
+
+  const sendPatch = (edit: Bookmark) => {
+    console.log(edit);
+    api.updateBookmark({
+      id: edit.id,
+      title: edit.title,
+      url: edit.url,
+      isScrapable: edit.scrapable,
+    });
+  };
+
+  const isChanges = (
+    beforeEdit: MutableRefObject<Bookmark>,
+    edit: MutableRefObject<Bookmark>,
+  ) => {
+    edit.current.scrapable = editScrapable;
+    return JSON.stringify(beforeEdit.current) != JSON.stringify(edit.current);
+  };
 
   /**
    * Decrement all the tags associated to this bookmark
@@ -163,44 +205,89 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
 
   function overlayCard(): ReactNode {
     return (
-      <div className="card">
+      <Card className="bookmark-card">
         <img
           className="card-img-top"
           src={IMAGE_DIR + bookmark.screenshotUrl}
           alt="screenshot preview"
         />
-        <div className="card-body">
-          <h5 className="card-title">{bookmark.title}</h5>
-          <a className="card-link" target="_blank" href={bookmark.url}>
-            {bookmark.url}
-          </a>
-        </div>
-      </div>
+        <CardBody />
+      </Card>
     );
   }
 
-  function plainCard(): ReactNode {
+  const CardBody = () => {
     return (
       <Card.Body>
-        <Card.Title>
-          {inEditMode ? (
-            <input
-              className="title-edit"
-              // value={}
-              placeholder={bookmark.title}
-              data-testid={`${bookmark.title}-input`}
-              // onKeyDown={onKeyDown}
-              // onChange={onChange}
-            />
-          ) : (
-            bookmark.title
-          )}
-        </Card.Title>
-        <Card.Link target="_blank" href={bookmark.url}>
-          {bookmark.url}
-        </Card.Link>
+        <Card.Title>{inEditMode ? <EditTitle /> : bookmark.title}</Card.Title>
+        {inEditMode ? (
+          <EditUrl />
+        ) : (
+          <Card.Link target="_blank" href={bookmark.url}>
+            {bookmark.url}
+          </Card.Link>
+        )}
       </Card.Body>
     );
+  };
+
+  const EditTitle = () => {
+    return (
+      <input
+        className="title-edit"
+        defaultValue={bookmark.title}
+        data-testid={`${bookmark.title}-edit-input`}
+        onChange={(e) => {
+          const { value } = e.target;
+          edit.current.title = value;
+          bookmark.title = value;
+        }}
+        onKeyDown={(e) => {
+          const { key } = e;
+          if (key === "Enter" || key === "NumpadEnter") {
+            changeEditMode();
+          }
+        }}
+      />
+    );
+  };
+
+  const EditUrl = () => {
+    return (
+      <div>
+        <input
+          className="url-edit"
+          defaultValue={bookmark.url}
+          data-testid={`${bookmark.url}-edit-input`}
+          onChange={(e) => {
+            const { value } = e.target;
+            edit.current.url = value;
+            bookmark.url = value;
+          }}
+          onKeyDown={(e) => {
+            const { key } = e;
+            if (key === "Enter") {
+              changeEditMode();
+            }
+          }}
+        />
+        <div className="mt-4">
+          <ScrapableBookmarkToggle
+            isScrapable={editScrapable}
+            setScrapable={setScrable}
+          />
+        </div>
+      </div>
+    );
+  };
+
+  function changeEditMode() {
+    setEditMode(!inEditMode);
+    handleEdits(!inEditMode);
+  }
+
+  function plainCard(): ReactNode {
+    return <CardBody />;
   }
 
   return (
@@ -215,7 +302,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
           <button className="btn edit-bookmark-icon">
             <i
               onClick={() => {
-                setEditMode(!inEditMode);
+                changeEditMode();
               }}
               className="bi bi-pen"
             ></i>

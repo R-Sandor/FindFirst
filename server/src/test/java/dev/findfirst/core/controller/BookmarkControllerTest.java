@@ -144,7 +144,7 @@ class BookmarkControllerTest {
     String newTitle = "Dark MODE";
 
     var updateReq = restTemplate.exchange(bookmarkURI, HttpMethod.PATCH,
-        getHttpEntity(restTemplate, new UpdateBookmarkReq(2, newTitle, null)), BookmarkDTO.class);
+        getHttpEntity(restTemplate, new UpdateBookmarkReq(2, newTitle, "https://blog.logrocket.com/dark-mode-react-in-depth-guide/", null)), BookmarkDTO.class);
     var bkmkDTO = updateReq.getBody();
     assertEquals(newTitle, bkmkDTO.title());
     assertEquals(true, bkmkDTO.scrapable());

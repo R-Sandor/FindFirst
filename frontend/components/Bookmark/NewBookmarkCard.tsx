@@ -19,6 +19,7 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AxiosError, AxiosResponse } from "axios";
+import { ScrapableNewBookmarkToggle } from "./ScrapableToggle";
 
 async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
   let newBkmkRequest: NewBookmarkRequest;
@@ -39,31 +40,33 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
     });
   });
 
-  await api.addBookmark(newBkmkRequest).then((response:AxiosError<any>|AxiosResponse) => {
-    if (response.status === 409) {
-      if(response instanceof AxiosError){
-        toast.error(response?.response?.data.error, {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
+  await api
+    .addBookmark(newBkmkRequest)
+    .then((response: AxiosError<any> | AxiosResponse) => {
+      if (response.status === 409) {
+        if (response instanceof AxiosError) {
+          toast.error(response?.response?.data.error, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+
+        return;
       }
-      
-      return;
-    }
-    if(!(response instanceof AxiosError)){
-    createBmk.id = response.data.id;
-    createBmk.tags = response.data.tags;
-    createBmk.screenshotUrl = response.data.screenshotUrl;
-    createBmk.scrapable = response.data.scrapable;
-    createBmk.title = response.data.title;
-  }
-  });
+      if (!(response instanceof AxiosError)) {
+        createBmk.id = response.data.id;
+        createBmk.tags = response.data.tags;
+        createBmk.screenshotUrl = response.data.screenshotUrl;
+        createBmk.scrapable = response.data.scrapable;
+        createBmk.title = response.data.title;
+      }
+    });
   return createBmk;
 }
 
@@ -113,7 +116,7 @@ export default function NewBookmarkCard() {
     actions.resetForm({ newcard }, setStrTags([]), setTagInput(""));
     let retBkmk = await makeNewBookmark(newBkmk);
     // if adding the bookmark was successful.
-    if (retBkmk.id!=-1) {
+    if (retBkmk.id != -1) {
       retBkmk.tags.forEach((t) => {
         let tAct: TagAction = {
           type: "add",
@@ -142,11 +145,12 @@ export default function NewBookmarkCard() {
   };
 
   function onKeyDown(e: any, sv: any, values: NewBookmarkForm) {
-    const { keyCode } = e;
+    const { key } = e;
     const trimmedInput = tagInput.trim();
+    console.log(key);
     if (
       // add tag via space bar or enter
-      (keyCode === 32 || keyCode === 13) &&
+      (key === "Enter" || key === "Space" || key === " ") &&
       trimmedInput.length &&
       !strTags.includes(trimmedInput)
     ) {
@@ -157,7 +161,7 @@ export default function NewBookmarkCard() {
     }
     // user hits backspace and the user has input field of 0
     // then pop the last tag only if there is one.
-    if (keyCode === 8 && !tagInput.length && strTags.length) {
+    if (key === "Backspace" && !tagInput.length && strTags.length) {
       e.preventDefault();
       const tagsCopy = [...strTags];
       let poppedTag = tagsCopy.pop();
@@ -231,26 +235,12 @@ export default function NewBookmarkCard() {
                   />
                 </Card.Text>
                 {dirty ? (
-                  <div className="form-check form-switch isScrapable">
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id="isScrapable"
-                      checked={isScrapable}
-                      onClick={() => {
-                        setScrable(!isScrapable);
-                        values.scrapable = !isScrapable;
-                        setValues({ ...values });
-                      }}
-                    />
-                    <label
-                      className="form-check-label"
-                      htmlFor="flexSwitchCheckChecked"
-                      id="isScrapableLabel"
-                    >
-                      Scrapable
-                    </label>
-                  </div>
+                  <ScrapableNewBookmarkToggle
+                    isScrapable={isScrapable}
+                    setScrapable={setScrable}
+                    values={values}
+                    setValues={setValues}
+                  />
                 ) : null}
               </Card.Body>
               <Card.Footer className="card-footer">

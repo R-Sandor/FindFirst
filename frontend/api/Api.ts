@@ -1,5 +1,6 @@
 import authService from "@services/auth.service";
 import { NewBookmarkRequest } from "@type/Bookmarks/NewBookmark";
+import UpdateBmkReq from "@type/Bookmarks/UpdateBmkRequest";
 import axios from "axios";
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/api";
 
@@ -163,6 +164,9 @@ const api = {
   },
   searchBookmarkByText(text: string) {
     return instance.get(`search/text?text=${text}`);
+  },
+  updateBookmark(update: UpdateBmkReq) {
+    return instance.patch("bookmark", update);
   },
 };
 
