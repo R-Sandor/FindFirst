@@ -114,6 +114,14 @@ application {
   mainClass = 'dev.findfirst.FindFirstApplication'
 }
 
+bootRun 
+{ 
+  String activeProfile = System.properties['spring.profiles.active']
+  if(activeProfile == null || activeProfile.isBlank()) { 
+    systemProperty "spring.profiles.active", "dev";
+  }
+}
+
 test {
   systemProperty 'spring.profiles.active', 'integration'
   useJUnitPlatform()

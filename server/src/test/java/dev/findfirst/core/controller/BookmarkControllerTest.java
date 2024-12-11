@@ -114,8 +114,7 @@ class BookmarkControllerTest {
     var response = restTemplate.exchange(bookmarkURI, HttpMethod.POST, ent, BookmarkDTO.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var bkmk = Optional.ofNullable(response.getBody());
-    assertEquals("Stack Overflow - Where Developers Learn, Share, & Build Careers",
-        bkmk.orElseThrow().title());
+    assertEquals("stackoverflow.com", bkmk.orElseThrow().title());
 
     // Test with scraping (but not allowed as per robot.txt)
     var entFailScrape = getHttpEntity(restTemplate,
@@ -141,13 +140,39 @@ class BookmarkControllerTest {
   void updateBookmark() {
     this.restTemplate.getRestTemplate()
         .setRequestFactory(new HttpComponentsClientHttpRequestFactory());
+
+    String oldTitle = "Dark mode guide";
+    String ifScrapableTitle = "Dark mode in React: An in-depth guide - LogRocket Blog";
     String newTitle = "Dark MODE";
+    String url = "https://blog.logrocket.com/dark-mode-react-in-depth-guide/#what-dark-mode";
+
+    var ent = getHttpEntity(restTemplate, new AddBkmkReq(oldTitle, url, List.of(), true));
+    var response = restTemplate.exchange(bookmarkURI, HttpMethod.POST, ent, BookmarkDTO.class);
+    var id = response.getBody().id();
+
+    var noChangeReq = restTemplate.exchange(bookmarkURI, HttpMethod.PATCH,
+        getHttpEntity(restTemplate, new UpdateBookmarkReq(id, null, null, null)),
+        BookmarkDTO.class);
+    var bkmkDTO = noChangeReq.getBody();
+    var scrapable = bkmkDTO.scrapable();
+
+    if (scrapable) {
+      assertEquals(ifScrapableTitle, bkmkDTO.title());
+    } else {
+      assertEquals(oldTitle, bkmkDTO.title());
+    }
+
+    assertEquals(url, bkmkDTO.url());
 
     var updateReq = restTemplate.exchange(bookmarkURI, HttpMethod.PATCH,
-        getHttpEntity(restTemplate, new UpdateBookmarkReq(2, newTitle, "https://blog.logrocket.com/dark-mode-react-in-depth-guide/", null)), BookmarkDTO.class);
-    var bkmkDTO = updateReq.getBody();
+        getHttpEntity(restTemplate, new UpdateBookmarkReq(2, newTitle, url + "newpath", false)),
+        BookmarkDTO.class);
+
+    bkmkDTO = updateReq.getBody();
     assertEquals(newTitle, bkmkDTO.title());
-    assertEquals(true, bkmkDTO.scrapable());
+    assertEquals(false, bkmkDTO.scrapable());
+    assertEquals(url + "newpath", bkmkDTO.url());
+
   }
 
   @Test
@@ -313,7 +338,6 @@ class BookmarkControllerTest {
 
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, delResp.getStatusCode());
     assertEquals(new BookmarkNotFoundException().getMessage(), delResp.getBody());
-
 
   }
 
