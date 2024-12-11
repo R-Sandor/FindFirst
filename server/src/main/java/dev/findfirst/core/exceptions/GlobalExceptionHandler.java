@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
       ResponseStatusException ex) {
     // Extract log message
     String logMessage =
-        ex instanceof ErrorResponseException ? ((ErrorResponseException) ex).getServerLogMessage()
+        ex instanceof ErrorResponseException errorResponseException ? errorResponseException.getServerLogMessage()
             : ex.getReason();
     StackTraceElement[] stackTrace = ex.getStackTrace();
     // Get the first relevant stack trace element (usually the point where the exception was thrown)

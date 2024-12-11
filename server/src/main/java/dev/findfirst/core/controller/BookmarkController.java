@@ -97,7 +97,7 @@ public class BookmarkController {
   @PatchMapping("/bookmark")
   public ResponseEntity<BookmarkDTO> updateBookmark(
       @Valid @RequestBody UpdateBookmarkReq updateBookmarkReq) throws BookmarkNotFoundException {
-    return new ResponseEntity<BookmarkDTO>(bookmarkService.updateBookmark(updateBookmarkReq),
+    return new ResponseEntity<>(bookmarkService.updateBookmark(updateBookmarkReq),
         HttpStatus.OK);
   }
 

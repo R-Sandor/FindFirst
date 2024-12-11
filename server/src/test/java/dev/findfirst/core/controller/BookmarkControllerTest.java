@@ -293,8 +293,6 @@ class BookmarkControllerTest {
         HttpMethod.POST, getHttpEntity(restTemplate), BookmarkDTO.class, bkmk.get(0).id(), 5);
 
     var tags = addReq.getBody().tags();
-    log.debug("Printing tags");
-    tags.stream().forEach(t -> t.toString());
 
     assertEquals(2, tags.size());
     assertEquals(2, tags.stream().filter(t -> t.id() == 5 || t.id() == 1).count());
