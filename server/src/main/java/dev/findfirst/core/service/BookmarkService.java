@@ -98,7 +98,7 @@ public class BookmarkService {
     return bookmarkEntities.stream().map(ent -> {
       var tagIds = bookmarkTagRepository.getAllTagIdsForBookmark(ent.getId(), userId);
 
-      var tagEnts = tagService.findAllById(tagIds.stream().map(bkTg -> bkTg.getTagId()).toList());
+      var tagEnts = tagService.findAllById(tagIds.stream().map(BookmarkTag::getTagId).toList());
 
       List<TagOnly> tagDTOs = new ArrayList<>();
 
