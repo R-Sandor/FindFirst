@@ -70,7 +70,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   useEffect(() => {
     if (bookmark) {
       const tagList: string[] = [];
-      bookmark.tags.map((tag: Tag) => {
+      bookmark.tags.forEach((tag: Tag) => {
         tagList.push(tag.title);
       });
       setStrTags(tagList);
@@ -257,9 +257,9 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
         {resolveCardType()}
         <Card.Footer className="card-footer">
           <div className="container">
-            {strTags.map((tag, id) => (
+            {strTags.map((tag) => (
               <button
-                key={id}
+                key={tag}
                 onClick={() => deleteTag(tag)}
                 type="button"
                 className="pill-button"
