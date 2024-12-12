@@ -1,5 +1,5 @@
 import { NewBookmarkForm } from "@type/Bookmarks/NewBookmark";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { ChangeEventHandler, Dispatch, SetStateAction, useEffect } from "react";
 
 export function ScrapableNewBookmarkToggle({
   isScrapable,
@@ -41,7 +41,7 @@ export function ScrapableBookmarkToggle({
   setScrapable,
 }: {
   isScrapable: boolean;
-  setScrapable: Dispatch<SetStateAction<boolean>>;
+  setScrapable: Function;
 }) {
   useEffect(() => {
     console.log(isScrapable);

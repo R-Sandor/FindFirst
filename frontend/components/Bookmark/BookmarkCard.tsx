@@ -15,7 +15,7 @@ import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 import Tag from "@/types/Bookmarks/Tag";
 import api from "@/api/Api";
-import { ScrapableBookmarkToggle } from "./ScrapableToggle";
+import CardBody from "./CardBody";
 
 const IMAGE_DIR = process.env.NEXT_PUBLIC_IMAGE_DIR;
 
@@ -56,7 +56,6 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   const bkmkDispatch = useBookmarkDispatch();
   const [input, setInput] = useState("");
   const [inEditMode, setEditMode] = useState(false);
-  const [editScrapable, setScrable] = useState(bookmark.scrapable);
   const [strTags, setStrTags] = useState<string[]>([]);
   const [show, setShow] = useState(false);
   /*
@@ -65,7 +64,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
    * Thus set the before and after, initially they are the same.
    */
   const beforeEdit = useRef({ ...bookmark });
-  const edit = useRef({ ...bookmark });
+  const edit = useRef<Bookmark>({ ...bookmark });
 
   // Set tags on the card from the bookmark json object.
   useEffect(() => {
@@ -104,7 +103,6 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
     beforeEdit: MutableRefObject<Bookmark>,
     edit: MutableRefObject<Bookmark>,
   ) => {
-    edit.current.scrapable = editScrapable;
     return JSON.stringify(beforeEdit.current) != JSON.stringify(edit.current);
   };
 
@@ -211,83 +209,26 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
           src={IMAGE_DIR + bookmark.screenshotUrl}
           alt="screenshot preview"
         />
-        <CardBody />
+        {plainCard()}
       </Card>
     );
   }
 
-  const CardBody = () => {
-    return (
-      <Card.Body>
-        <Card.Title>{inEditMode ? <EditTitle /> : bookmark.title}</Card.Title>
-        {inEditMode ? (
-          <EditUrl />
-        ) : (
-          <Card.Link target="_blank" href={bookmark.url}>
-            {bookmark.url}
-          </Card.Link>
-        )}
-      </Card.Body>
-    );
-  };
-
-  const EditTitle = () => {
-    return (
-      <input
-        className="title-edit"
-        defaultValue={bookmark.title}
-        data-testid={`${bookmark.title}-edit-input`}
-        onChange={(e) => {
-          const { value } = e.target;
-          edit.current.title = value;
-          bookmark.title = value;
-        }}
-        onKeyDown={(e) => {
-          const { key } = e;
-          if (key === "Enter" || key === "NumpadEnter") {
-            changeEditMode();
-          }
-        }}
-      />
-    );
-  };
-
-  const EditUrl = () => {
-    return (
-      <div>
-        <input
-          className="url-edit"
-          defaultValue={bookmark.url}
-          data-testid={`${bookmark.url}-edit-input`}
-          onChange={(e) => {
-            const { value } = e.target;
-            edit.current.url = value;
-            bookmark.url = value;
-          }}
-          onKeyDown={(e) => {
-            const { key } = e;
-            if (key === "Enter") {
-              changeEditMode();
-            }
-          }}
-        />
-        <div className="mt-4">
-          <ScrapableBookmarkToggle
-            isScrapable={editScrapable}
-            setScrapable={setScrable}
-          />
-        </div>
-      </div>
-    );
-  };
-
   function changeEditMode() {
+    console.log("edit changed");
     setEditMode(!inEditMode);
     handleEdits(!inEditMode);
   }
 
   function plainCard(): ReactNode {
-    return <CardBody />;
+    return (
+      <CardBody
+        bookmark={bookmark}
+        inEditMode={inEditMode}
+        edit={edit}
+        changeEditMode={changeEditMode}
+      />
+    );
   }
 
   return (
