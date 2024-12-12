@@ -11,13 +11,13 @@
   }
 }
 
-.resetForm { 
+.resetForm {
   max-width: 350px;
 }
 
 %message {
   text-align: center;
-  min-height: 50px;
+  min-height: 65px;
   margin-bottom: 10px;
   border-radius: 10px;
   justify-content: center; /* Align horizontal */
@@ -44,3 +44,4 @@
   transform: translate(-50%, -50%);
   padding: 10px;
 }
+

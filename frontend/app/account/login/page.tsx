@@ -11,29 +11,26 @@ export interface credentials {
   password: string;
 }
 
-function signMessage(
-  submitSuccess: boolean,
-  submitMessage: string
-) {
-  return !submitSuccess ?
-    submitFailureDisplay(submitMessage) : null;
+function failureMessage(submitMessage: string) {
+  return submitFailureDisplay(submitMessage);
 }
 
 function submitFailureDisplay(submissionMessage: string) {
   return <div className={styles.failure}>{submissionMessage}</div>;
 }
+
 export default function Page() {
-  const [signinSuccess, setSigninSuccess] = useState<boolean>(true);
+  const [signinFailure, setSignFailure] = useState<boolean>(false);
   const attemptCount = useRef<number>(0);
   const router = useRouter();
-  const handleOnSubmit = async (credentials: credentials, actions: any) => {
+  const handleOnSubmit = async (credentials: credentials) => {
     if (await authService.login(credentials)) {
       attemptCount.current = 0;
       router.push("/");
     } else {
-      console.log("failed")
+      console.log("failed");
       attemptCount.current = attemptCount.current + 1;
-      setSigninSuccess(false)
+      setSignFailure(true);
     }
   };
 
@@ -75,7 +72,9 @@ export default function Page() {
                   type="password"
                 />
               </div>
-              {signMessage(signinSuccess, "Username or password not found.")}
+              {signinFailure
+                ? failureMessage("Username or password not found.")
+                : null}
               <button
                 type="submit"
                 disabled={!(isValid && dirty)}
@@ -83,15 +82,17 @@ export default function Page() {
               >
                 Login
               </button>
-              {
-                attemptCount.current > 2 ? <button
+              {attemptCount.current > 2 ? (
+                <button
                   type="submit"
                   className={`btn ${styles.forgot_button}`}
-                  onClick={()=> { router.push("/account/resetPassword") }}
+                  onClick={() => {
+                    router.push("/account/resetPassword");
+                  }}
                 >
                   Forgot Password?
-                </button> : null
-              }
+                </button>
+              ) : null}
             </Form>
           )}
         </Formik>

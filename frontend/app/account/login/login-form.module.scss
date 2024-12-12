@@ -6,13 +6,13 @@
   border-color: rgb(171, 231, 226);
 }
 
-[data-bs-theme="light"] .signin_button { 
+[data-bs-theme="light"] .signin_button {
   &:hover {
     background-color: rgb(120, 227, 253);
   }
 }
 
-[data-bs-theme="dark"] .signin_button { 
+[data-bs-theme="dark"] .signin_button {
   &:hover {
     background-color: rgb(240, 250, 253);
     color: rgb(0, 0, 0);
@@ -40,7 +40,7 @@
 
 %message {
   text-align: center;
-  height: 50px;
+  height: 65px;
   margin-bottom: 10px;
   max-width: 300px;
   border-radius: 10px;
@@ -70,3 +70,4 @@
   transform: translate(-50%, -50%);
   padding: 10px;
 }
+
