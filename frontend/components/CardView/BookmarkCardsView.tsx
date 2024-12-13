@@ -52,7 +52,7 @@ export default function BookmarkCardsView() {
   return (
     <div>
       {!bookmarks.loading ? (
-        <div className={`${cardView.content} max-h-inherit row pt-3`}>
+        <div className={`${cardView.content} row`}>
           <div className="col-sm-12 col-md-12 col-lg-4">
             <NewBookmarkCard />
           </div>

@@ -10,7 +10,7 @@ import { useTagsDispatch } from "@/contexts/TagContext";
 import Bookmark from "@/types/Bookmarks/Bookmark";
 import TagAction from "@/types/Bookmarks/TagAction";
 import DeleteModal from "./DeleteModal";
-import "./bookmarkCard.scss";
+import style from "./bookmarkCard.module.scss";
 import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 import Tag from "@/types/Bookmarks/Tag";
@@ -203,7 +203,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
 
   function overlayCard(): ReactNode {
     return (
-      <Card className="bookmark-card">
+      <Card className={style.bookmarkCard}>
         <img
           className="card-img-top"
           src={IMAGE_DIR + bookmark.screenshotUrl}
@@ -232,11 +232,11 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   }
 
   return (
-    <div data-testid={`bookmark-${bookmark.title}`} className="mx-2">
-      <Card className="bookmark-card">
-        <div className="card-header">
+    <div data-testid={`bookmark-${bookmark.title}`} className={style.main}>
+      <Card className={style.bookmarkCard}>
+        <div className={style.cardHeader}>
           <CloseButton
-            className="delete-bookmark-icon inline float-right"
+            className={style.deleteBookmarkIcon}
             onClick={handleShow}
             data-testid={`bk-id-${bookmark.id}-deleteBtn`}
           />
@@ -244,7 +244,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
             onClick={() => {
               changeEditMode();
             }}
-            className="btn edit-bookmark-icon"
+            className={`btn ${style.editBookmarkIcon}`}
           >
             <i className="bi bi-pen"></i>
           </button>
@@ -255,14 +255,14 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
           deleteBkmk={deleteBkmk}
         />
         {resolveCardType()}
-        <Card.Footer className="card-footer">
-          <div className="container">
+        <Card.Footer className={style.cardFooter}>
+          <div className={style.container}>
             {strTags.map((tag) => (
               <button
                 key={tag}
                 onClick={() => deleteTag(tag)}
                 type="button"
-                className="pill-button"
+                className={style.pillButton}
                 data-testid={`${tag}-tag-${bookmark.id}-bk`}
               >
                 {tag}
@@ -271,6 +271,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
             ))}
 
             <input
+              className={style.input}
               value={input}
               placeholder="Enter a tag"
               data-testid={`${bookmark.title}-input`}

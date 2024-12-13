@@ -2,7 +2,7 @@
 import UseAuth from "@components/UseAuth";
 import TagList from "@components/Tags/TagList";
 import tagStyles from "@/styles/tag.module.scss";
-import navStyles from "@/styles/navbar.module.scss"
+import navStyles from "@/styles/navbar.module.scss";
 import BookmarkCardsView from "@components/CardView/BookmarkCardsView";
 
 export default function App() {
@@ -17,7 +17,9 @@ export default function App() {
   return userAuth ? (
     <div className={`${navStyles.containerFluid} container-fluid`}>
       <div className="row">
-        <div className={`col-md-4 col-lg-3 ${tagStyles.scroller} ${tagStyles.tagList}`}>
+        <div
+          className={`col-md-4 col-lg-3 ${tagStyles.main} ${tagStyles.scroller} ${tagStyles.tagList}`}
+        >
           <TagList />
         </div>
         <div className="col-md-8 col-lg-9">

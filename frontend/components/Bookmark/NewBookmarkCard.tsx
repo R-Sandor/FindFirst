@@ -1,7 +1,7 @@
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
 import { Button, Card } from "react-bootstrap";
-import "./bookmarkCard.scss";
+import style from "./bookmarkCard.module.scss";
 import api from "@/api/Api";
 import Bookmark from "@/types/Bookmarks/Bookmark";
 import { useBookmarkDispatch } from "@/contexts/BookmarkContext";
@@ -136,12 +136,9 @@ export default function NewBookmarkCard() {
     }
   };
 
-  const handleOnReset = async ({ tagTitles, title, url }: NewBookmarkForm) => {
+  const handleOnReset = async () => {
     setStrTags([]);
     setUrlInput("");
-    tagTitles = [];
-    title = "";
-    url = "";
   };
 
   function onKeyDown(e: any, sv: any, values: NewBookmarkForm) {
@@ -207,7 +204,7 @@ export default function NewBookmarkCard() {
   });
 
   return (
-    <div className="px-1 new-bookmark-card">
+    <div className={style.main}>
       <Formik
         initialValues={newcard}
         onSubmit={handleOnSubmit}
@@ -218,12 +215,12 @@ export default function NewBookmarkCard() {
       >
         {({ isValid, dirty, values, setValues, setFieldValue, errors }) => (
           <Form>
-            <Card className="new-bookmark-card">
+            <Card className={`${style.newBookmarkCard} ${style.cardBody}`}>
               <Card.Header>
                 Add Bookmark <i className="bi bi-bookmarks-fill"></i>{" "}
               </Card.Header>
               <Card.Body>
-                <Card.Text className="title">
+                <Card.Text className={style.title}>
                   <Field
                     className="form-control"
                     id="url"
@@ -243,22 +240,23 @@ export default function NewBookmarkCard() {
                   />
                 ) : null}
               </Card.Body>
-              <Card.Footer className="card-footer">
-                <div className="container">
+              <Card.Footer className={style.cardFooter}>
+                <div className={style.container}>
                   {strTags.map((tag, index) => (
                     <button
-                      key={index}
+                      key={tag}
                       onClick={() => deleteTag(index, setFieldValue, values)}
                       type="button"
                       data-testid={tag}
-                      className="pill-button"
+                      className={style.pillButton}
                     >
                       {tag}
-                      <i className="xtag bi bi-journal-x"></i>
+                      <i className={`${style.xtag} bi bi-journal-x`}></i>
                     </button>
                   ))}
                   <input
                     value={tagInput}
+                    className={style.input}
                     placeholder="Enter a tag"
                     onKeyDown={(e) => onKeyDown(e, setValues, values)}
                     onChange={onTagInputChange}
@@ -267,19 +265,22 @@ export default function NewBookmarkCard() {
                 </div>
                 <Button
                   disabled={!(isValid && dirty)}
-                  className="pill-button submit"
+                  className={`${style.pillButton} ${style.submit}`}
                   type="submit"
                 >
                   Submit
                 </Button>
-                <Button className="pill-button reset" type="reset">
+                <Button
+                  className={`${style.pillButton} ${style.reset}`}
+                  type="reset"
+                >
                   Reset
                 </Button>
                 {errors.url ? (
-                  <div className="error-text">{errors.url}</div>
+                  <div className={style.errorText}>{errors.url}</div>
                 ) : null}
                 {errors.tagTitles && values.tagTitles ? (
-                  <div className="error-text">{errors.tagTitles}</div>
+                  <div className={style.errorText}>{errors.tagTitles}</div>
                 ) : null}
               </Card.Footer>
             </Card>

@@ -31,14 +31,18 @@ nav {
   background-color: #f1f1f1;
 }
 
-:root {
-  --tag-list-bg: #dcf2f1;
+.btn:disabled {
+  background-color: grey;
 }
 
 [data-bs-theme="light"] {
   background-color: #f7fbfc;
+  --tag-list-bg: #d6e6f2;
+  --card-bg: #d9e9e6;
 }
 
 [data-bs-theme="dark"] {
   background-color: #717a83;
+  --tag-list-bg: #2c3437;
+  --card-bg: var(--bs-body-bg);
 }

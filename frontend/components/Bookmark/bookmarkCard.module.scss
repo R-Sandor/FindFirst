@@ -1,14 +1,35 @@
-[data-bs-theme="light"] {
-  --tag-list-bg: #d6e6f2;
-  --card-bg: #d9e9e6;
+.main {
+  margin-left: 0.5rem; /* 8px */
+  margin-right: 0.5rem; /* 8px */
+
+  @media screen and (max-width: 700px) {
+    .title {
+      font-size: 12px;
+    }
+    p {
+      font-size: 20px;
+    }
+    .card-title {
+      font-size: 15px;
+    }
+    .card-footer {
+      font-size: 12px;
+    }
+  }
 }
 
-[data-bs-theme="dark"] {
-  --tag-list-bg: #2c3437;
-  --card-bg: unset;
+.container .input {
+  height: 25px;
+  flex: content;
+  min-width: 100%;
+  width: 100%;
+  border: 0px solid;
+  border: none;
+  border-top: 1px solid;
+  background-color: unset;
 }
 
-.pill-button {
+.pillButton {
   background-color: #ddd;
   border: none;
   color: white;
@@ -29,6 +50,10 @@
       url("./icons/x-journal.svg") 16 16,
       pointer;
   }
+
+  &:disabled {
+    background-color: grey;
+  }
 }
 
 .title-edit {
@@ -42,6 +67,7 @@
   color: mintcream;
   border-color: aliceblue;
 }
+
 .container {
   flex-wrap: wrap;
   align-items: center;
@@ -54,28 +80,13 @@
   color: black;
 }
 
-.btn:disabled {
-  background-color: grey;
-}
-
-.container input {
-  height: 25px;
-  flex: content;
-  min-width: 100%;
-  width: 100%;
-  // border: 0px solid;
-  border: none;
-  border-top: 1px solid;
-  background-color: unset;
-}
-
-.card-footer {
+.cardFooter {
   padding: 0;
   border-top: 0px;
   background-color: var(--card-bg);
 }
 
-.card-header {
+.cardHeader {
   margin-top: 0px;
   margin-bottom: 0px;
   padding: unset;
@@ -92,22 +103,7 @@
   padding-left: 0;
 }
 
-@media screen and (max-width: 700px) {
-  .title {
-    font-size: 12px;
-  }
-  p {
-    font-size: 20px;
-  }
-  .card-title {
-    font-size: 15px;
-  }
-  .card-footer {
-    font-size: 12px;
-  }
-}
-
-.journal-icon {
+.journalIcon {
   display: block;
   float: right;
 }
@@ -120,21 +116,20 @@
   float: right;
 }
 
-.card-body {
+.bookmarkCard {
+  min-height: 250px;
+  margin-bottom: 20px;
   background-color: var(--card-bg);
 }
 
-.bookmark-card {
-  min-height: 250px;
-  margin-bottom: 20px;
-}
-
-.new-bookmark-card {
-  @extend .bookmark-card;
+.newBookmarkCard {
+  @extend .bookmarkCard;
   text-align: center;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
 }
 
-.edit-bookmark-icon {
+.editBookmarkIcon {
   float: left;
   padding: 0px;
   margin-top: 6px;
@@ -144,7 +139,8 @@
   line-height: 1.25rem;
 }
 
-.delete-bookmark-icon {
+.deleteBookmarkIcon {
+  display: inline;
   float: right;
   padding: 2px;
   margin: 0.5rem; /* 8px */
@@ -152,7 +148,7 @@
   line-height: 1.25rem; /* 20px */
 }
 
-.error-text {
+.errorText {
   color: red;
   font-style: italic;
   margin-left: 8px;

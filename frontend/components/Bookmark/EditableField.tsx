@@ -1,5 +1,4 @@
-import Bookmark from "@type/Bookmarks/Bookmark";
-import { ChangeEventHandler, MutableRefObject } from "react";
+import { ChangeEventHandler } from "react";
 
 export default function EditableField({
   fieldValue,

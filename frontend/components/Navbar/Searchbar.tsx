@@ -150,49 +150,53 @@ export default function Searchbar() {
 
   return (
     <div className={`d-flex flex-grow-1 mx-3 ${navbarView.searchBar}`}>
-      <button
-        key={"searchType"}
-        title={searchType.textDescription}
-        onClick={() => {
-          const nextType = (searchType.type + 1) % 3;
-          if (searchText.length && nextType == SearchTypeEnum.tagSearch) {
-            setShouldSplit(true);
-          } else {
-            setShouldSplit(false);
-          }
-          setSearchType(searchTypes[nextType]);
-        }}
-        type="button"
-        data-testid={searchType + "searchType"}
-        className={navbarView.pillButton}
-      >
-        {`/${searchType.charCode}`}
-      </button>
-      {searchType.type == SearchTypeEnum.tagSearch
-        ? strTags.map((tag, index) => (
-            <button
-              key={index}
-              onClick={() => deleteTag(index)}
-              type="button"
-              data-testid={tag}
-              className={navbarView.pillButtonTag}
-            >
-              {tag}
-              <i className="xtag bi bi-x"></i>
-            </button>
-          ))
-        : null}
-      <input
-        type="text"
-        className={`${navbarView.searchBarInput}`}
-        placeholder="Search"
-        onKeyDown={(e) => onKeyDown(e)}
-        onChange={handleSearch}
-        value={searchText}
-      />
-      <button className={`btn ms-2 ${navbarView.searchBarBtn}`} type="submit">
-        <i className="bi bi-search"></i>
-      </button>
+      <div className={`flex-grow d-flex `}>
+        <div className="mt-1">
+          <button
+            key={"searchType"}
+            title={searchType.textDescription}
+            onClick={() => {
+              const nextType = (searchType.type + 1) % 3;
+              if (searchText.length && nextType == SearchTypeEnum.tagSearch) {
+                setShouldSplit(true);
+              } else {
+                setShouldSplit(false);
+              }
+              setSearchType(searchTypes[nextType]);
+            }}
+            type="button"
+            data-testid={searchType + "searchType"}
+            className={`${navbarView.pillButton}`}
+          >
+            {`/${searchType.charCode}`}
+          </button>
+          {searchType.type == SearchTypeEnum.tagSearch
+            ? strTags.map((tag, index) => (
+                <button
+                  key={index}
+                  onClick={() => deleteTag(index)}
+                  type="button"
+                  data-testid={tag}
+                  className={navbarView.pillButtonTag}
+                >
+                  {tag}
+                  <i className="xtag bi bi-x"></i>
+                </button>
+              ))
+            : null}
+        </div>
+        <input
+          type="text"
+          className={`flex-grow-1 ${navbarView.searchBarInput} `}
+          placeholder="Search"
+          onKeyDown={(e) => onKeyDown(e)}
+          onChange={handleSearch}
+          value={searchText}
+        />
+        <button className={`btn ${navbarView.searchBarBtn}`} type="submit">
+          <i className="bi bi-search"></i>
+        </button>
+      </div>
     </div>
   );
 }
