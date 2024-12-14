@@ -31,6 +31,9 @@ nav {
   background-color: #f1f1f1;
 }
 
+.btn {
+}
+
 .btn:disabled {
   background-color: grey;
 }

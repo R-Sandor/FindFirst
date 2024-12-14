@@ -1,6 +1,6 @@
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
-import { Button, Card } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import style from "./bookmarkCard.module.scss";
 import api from "@/api/Api";
 import Bookmark from "@/types/Bookmarks/Bookmark";
@@ -217,12 +217,12 @@ export default function NewBookmarkCard() {
       >
         {({ isValid, dirty, values, setValues, setFieldValue, errors }) => (
           <Form>
-            <Card className={`${style.newBookmarkCard} ${style.cardBody}`}>
-              <Card.Header>
+            <div className={`card ${style.newBookmarkCard} ${style.cardBody}`}>
+              <div className="card-header">
                 Add Bookmark <i className="bi bi-bookmarks-fill"></i>{" "}
-              </Card.Header>
-              <Card.Body>
-                <Card.Text className={style.title}>
+              </div>
+              <div className="card-body">
+                <div className={`card-text ${style.title}`}>
                   <Field
                     className="form-control"
                     id="url"
@@ -232,7 +232,7 @@ export default function NewBookmarkCard() {
                     placeholder="url: https://findfirst.com/discover"
                     type="text"
                   />
-                </Card.Text>
+                </div>
                 {dirty ? (
                   <ScrapableNewBookmarkToggle
                     isScrapable={isScrapable}
@@ -241,8 +241,8 @@ export default function NewBookmarkCard() {
                     setValues={setValues}
                   />
                 ) : null}
-              </Card.Body>
-              <Card.Footer className={style.cardFooter}>
+              </div>
+              <div className={`card-footer ${style.cardFooter} `}>
                 <div className={style.container}>
                   {strTags.map((tag, index) => (
                     <button
@@ -267,13 +267,13 @@ export default function NewBookmarkCard() {
                 </div>
                 <button
                   disabled={!isValid || !dirty}
-                  className={`btn ${style.pillButton}  ${style.submit}`}
+                  className={`${style.formButton}  ${style.submit}`}
                   type="submit"
                 >
                   Submit
                 </button>
                 <button
-                  className={`btn ${style.pillButton} ${style.reset}`}
+                  className={`${style.formButton} ${style.reset}`}
                   type="reset"
                 >
                   Reset
@@ -284,8 +284,8 @@ export default function NewBookmarkCard() {
                 {errors.tagTitles && values.tagTitles ? (
                   <div className={style.errorText}>{errors.tagTitles}</div>
                 ) : null}
-              </Card.Footer>
-            </Card>
+              </div>
+            </div>
           </Form>
         )}
       </Formik>

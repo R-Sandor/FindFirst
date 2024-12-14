@@ -233,7 +233,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
 
   return (
     <div data-testid={`bookmark-${bookmark.title}`} className={style.main}>
-      <Card className={style.bookmarkCard}>
+      <div className={`card ${style.bookmarkCard}`}>
         <div className={style.cardHeader}>
           <CloseButton
             className={style.deleteBookmarkIcon}
@@ -280,7 +280,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
             />
           </div>
         </Card.Footer>
-      </Card>
+      </div>
     </div>
   );
 }
