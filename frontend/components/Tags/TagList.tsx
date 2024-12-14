@@ -5,7 +5,7 @@ import { useTags } from "@/contexts/TagContext";
 import useAuth from "@components/UseAuth";
 import api from "@/api/Api";
 import { TagReqPayload, TagWithCnt } from "@/types/Bookmarks/Tag";
-import styles from "./tag-pill.module.scss";
+import itemStyle from "./tag-list-item.module.scss";
 import { useSelectedTags } from "@/contexts/SelectedContext";
 
 const TagList = () => {
@@ -43,22 +43,22 @@ const TagList = () => {
       const updated = [...selected];
       updated.splice(idx, 1);
       setSelected(updated);
-      event.target.classList.remove(styles.on);
+      event.target.classList.remove(itemStyle.on);
     } else {
       setSelected([...selected, title]);
-      event.target.classList.add(styles.on);
+      event.target.classList.add(itemStyle.on);
     }
   }
 
   let groupItems: any = [];
   tagMap.forEach((tagCnt, key) => {
     groupItems.push(
-      <ListGroup.Item key={`${key}-item`} className={styles.root}>
+      <ListGroup.Item key={`${key}-item`} className={`${itemStyle.item}`}>
         <button
           onClick={(event) => selectTag(event, tagCnt.title)}
           data-testid={`${tagCnt.title}-list-item`}
           key={`${tagCnt.title}-list-item`}
-          className={`d-flex btn ${styles.btn} justify-content-between align-items-start`}
+          className={`d-flex btn ${itemStyle.btn} justify-content-between align-items-start`}
         >
           {tagCnt.title}
           <Badge bg="primary" pill>
@@ -91,7 +91,9 @@ const TagList = () => {
   return (
     <div>
       {!loading ? (
-        <ListGroup className="pt-3 w-full">{groupItems}</ListGroup>
+        <ListGroup variant="flush" className="pt-3 w-full">
+          {groupItems}
+        </ListGroup>
       ) : (
         <div></div>
       )}

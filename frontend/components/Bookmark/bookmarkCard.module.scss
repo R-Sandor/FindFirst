@@ -30,7 +30,6 @@
 }
 
 .pillButton {
-  background-color: #ddd;
   border: none;
   color: white;
   padding: 0px 2px;
@@ -40,19 +39,17 @@
   min-width: 20%;
   max-width: 100%;
   margin: 2px 2px;
-  background-color: #29b5bf;
+  background-color: #29b5bf !important;
   white-space: nowrap;
   height: 22px;
   text-align: center;
+
   &:hover {
-    background-color: rgb(81, 191, 291);
-    cursor:
-      url("./icons/x-journal.svg") 16 16,
-      pointer;
+    background-color: rgb(81, 191, 291) !important;
   }
 
   &:disabled {
-    background-color: grey;
+    background-color: grey !important;
   }
 }
 
@@ -153,8 +150,8 @@
   font-style: italic;
   margin-left: 8px;
   background-color: rgb(253, 240, 240);
-  max-width: 50%;
-  padding: 2px 4px 4px 2px;
+  max-width: 25%;
+  // padding: 2px 4px 4px 2px;
   border-radius: 5px;
 }
 

@@ -149,9 +149,9 @@ export default function Searchbar() {
   }
 
   return (
-    <div className={`d-flex flex-grow-1 mx-3 ${navbarView.searchBar}`}>
-      <div className={`flex-grow d-flex `}>
-        <div className="mt-1">
+    <div className={`d-flex flex-grow-1 ${navbarView.searchBar}`}>
+      <div className={`flex-grow d-flex`}>
+        <div className={navbarView.searchButtonsContainer}>
           <button
             key={"searchType"}
             title={searchType.textDescription}

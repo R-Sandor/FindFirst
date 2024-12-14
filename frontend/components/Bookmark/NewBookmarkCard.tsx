@@ -138,7 +138,9 @@ export default function NewBookmarkCard() {
 
   const handleOnReset = async () => {
     setStrTags([]);
-    setUrlInput("");
+    if (urlInput) {
+      setUrlInput("");
+    }
   };
 
   function onKeyDown(e: any, sv: any, values: NewBookmarkForm) {
@@ -263,19 +265,19 @@ export default function NewBookmarkCard() {
                     data-testid="new-bk-tag-input"
                   />
                 </div>
-                <Button
-                  disabled={!(isValid && dirty)}
-                  className={`${style.pillButton} ${style.submit}`}
+                <button
+                  disabled={!isValid || !dirty}
+                  className={`btn ${style.pillButton}  ${style.submit}`}
                   type="submit"
                 >
                   Submit
-                </Button>
-                <Button
-                  className={`${style.pillButton} ${style.reset}`}
+                </button>
+                <button
+                  className={`btn ${style.pillButton} ${style.reset}`}
                   type="reset"
                 >
                   Reset
-                </Button>
+                </button>
                 {errors.url ? (
                   <div className={style.errorText}>{errors.url}</div>
                 ) : null}

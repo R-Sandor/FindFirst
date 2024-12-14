@@ -1,6 +1,6 @@
 .btn {
   &:hover {
-    background-color: #5cb85c;
+    background-color: #5cb85c !important;
   }
   margin: 0px;
   width: 100%;
@@ -11,8 +11,6 @@
   color: white;
 }
 
-.root {
-  width: 100%;
-  margin: 0px;
-  padding: 0px;
+.item {
+  padding: 0px !important;
 }

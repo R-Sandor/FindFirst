@@ -10,6 +10,9 @@
   align-items: center;
   height: 100%;
   flex-grow: 1;
+
+  margin-left: 0.75rem; /* 12px */
+  margin-right: 0.75rem; /* 12px */
 }
 
 .searchBarInput {
@@ -95,4 +98,9 @@
   .containerFluid {
     margin-top: 40px;
   }
+}
+
+.searchButtonsContainer {
+  padding: 0.325rem 0.25rem;
+  // margin-top: 0.25rem; /* 4px */
 }
