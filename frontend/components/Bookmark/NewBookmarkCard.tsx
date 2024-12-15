@@ -1,6 +1,5 @@
 import { Field, Form, Formik } from "formik";
 import { useState } from "react";
-import { Card } from "react-bootstrap";
 import style from "./bookmarkCard.module.scss";
 import api from "@/api/Api";
 import Bookmark from "@/types/Bookmarks/Bookmark";
@@ -17,7 +16,6 @@ import {
   newcard,
 } from "@type/Bookmarks/NewBookmark";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { AxiosError, AxiosResponse } from "axios";
 import { ScrapableNewBookmarkToggle } from "./ScrapableToggle";
 

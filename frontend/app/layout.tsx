@@ -1,8 +1,8 @@
-import "./globals.css";
+import "./globals.scss";
+import "bootstrap-icons/font/bootstrap-icons.min.css";
+import "react-toastify/dist/ReactToastify.css";
 import type { Metadata } from "next";
 import Navbar from "@components/Navbar/Navbar";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap-icons/font/bootstrap-icons.min.css";
 import { NavigationEvents } from "@components/navigation-events";
 import { Suspense } from "react";
 import { Providers } from "./providers";
