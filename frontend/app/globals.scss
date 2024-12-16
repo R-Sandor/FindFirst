@@ -1,6 +1,7 @@
 @tailwind components;
 @tailwind utilities;
-@import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;700&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 @import "bootstrap/dist/css/bootstrap.min.css";
 
 body {
@@ -15,6 +16,14 @@ body {
   box-sizing: border-box;
   font-family: "Work Sans", sans-serif;
 }
+
+.work-sans-font {
+  font-family: "Work Sans", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
 a {
   text-decoration: none;
 }
@@ -29,9 +38,6 @@ nav {
   justify-content: space-between;
   align-items: center;
   background-color: #f1f1f1;
-}
-
-.btn {
 }
 
 .btn:disabled {
