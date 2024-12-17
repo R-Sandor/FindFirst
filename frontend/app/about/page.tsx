@@ -1,7 +1,7 @@
 "use client";
 import styles from "./about.module.scss";
 
-export default function Page() {
+export default function About() {
   return (
     <div className={` ${styles.center} grid`}>
       <div className={styles.about_box}>
@@ -23,3 +23,4 @@ export default function Page() {
     </div>
   );
 }
+

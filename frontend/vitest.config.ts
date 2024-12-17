@@ -23,7 +23,7 @@ export default defineConfig({
         "api",
         ...defaults,
       ],
-      reporter: ['text', 'lcov'],
+      reporter: ["text", "lcov", "html"],
       reportOnFailure: true,
     },
     testTimeout: 40000, // 40 seconds to run a test.
