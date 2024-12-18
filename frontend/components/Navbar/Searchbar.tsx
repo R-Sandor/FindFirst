@@ -5,13 +5,13 @@ import SearchType from "@type/classes/SearchType";
 import { useEffect, useState } from "react";
 import navbarView from "styles/navbar.module.scss";
 
-enum SearchTypeEnum {
+export enum SearchTypeEnum {
   titleSearch,
   textSearch,
   tagSearch,
 }
 
-enum SearchTypeChar {
+export enum SearchTypeChar {
   b = SearchTypeEnum.titleSearch, // Title search (i.e. Bookmark Title)
   f = SearchTypeEnum.textSearch, // Full-text search.
   t = SearchTypeEnum.tagSearch, // Tag search.
@@ -99,28 +99,34 @@ export default function Searchbar() {
     }
   }
 
+  function isSearchIsTypeSearchTypeChange(unmodifiedSearch: string): boolean {
+    let input: string | undefined = unmodifiedSearch.at(1);
+    let found = false;
+    for (let i = 0; i < searchTypes.length; i++) {
+      if (searchTypes[i].charCode == input) {
+        setSearchType(searchTypes[i]);
+        found = true;
+        break;
+      }
+    }
+    return found;
+  }
+
   const handleSearch = (event: any) => {
     const rawSearch: string = event.target.value;
     let trimmed = rawSearch.trim();
     let search: string = "";
 
     if (trimmed.length > 1 && trimmed.startsWith("/")) {
-      let sTypeChar: string | undefined = rawSearch.at(1);
-      if (sTypeChar) {
-        for (let i = 0; i < searchTypes.length; i++) {
-          if (searchTypes[i].charCode == sTypeChar) {
-            setSearchType(searchTypes[i]);
-            break;
-          }
-        }
+      if (isSearchIsTypeSearchTypeChange(rawSearch)) {
+        search = rawSearch.substring(2).trim();
+      } else {
+        search = rawSearch;
       }
-      search = rawSearch.substring(2).trim();
       setModified(true);
     } else if (rawSearch.length) {
       search = rawSearch;
       setModified(true);
-    } else {
-      // setModified(false);
     }
     setSearchText(search);
   };
@@ -176,7 +182,7 @@ export default function Searchbar() {
                   key={index}
                   onClick={() => deleteTag(index)}
                   type="button"
-                  data-testid={tag}
+                  data-testid={`tag-${tag}`}
                   className={navbarView.pillButtonTag}
                 >
                   {tag}

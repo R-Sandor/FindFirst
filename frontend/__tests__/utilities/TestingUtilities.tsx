@@ -1,6 +1,8 @@
 import { UserEvent } from "@testing-library/user-event";
 import { expect } from "vitest";
-import { act, screen } from "@testing-library/react";
+import { act, fireEvent, screen } from "@testing-library/react";
+import { async } from "rxjs";
+import { hitKey } from "./fireEvents";
 
 export async function clickAway(user: UserEvent) {
   const rootElement = document.documentElement;
@@ -19,6 +21,33 @@ export async function type(
   await act(() => user.type(inputBox, text));
 }
 
+/**
+ * Backspaces on a field a given number of times. If number of times is not
+ * provided backspace once.
+ */
+export async function backSpaceOnField(
+  field: HTMLElement,
+  repeat: number | undefined | null,
+) {
+  if (repeat == undefined || repeat == null) {
+    repeat = 1;
+  }
+  let val = field.getAttribute("value");
+  console.log("the val is", val);
+  for (let i = 0; i < repeat; i++) {
+    await act(async () => {
+      hitKey(field, "backspace", "backspace", 8, 8);
+
+      if (val) {
+        val = val.slice(0, val.length - 1);
+      }
+      fireEvent.change(field, {
+        target: { value: val },
+      });
+    });
+  }
+}
+
 export function submitDisabled(
   isDisabled: Boolean,
   text?: string,
@@ -32,4 +61,3 @@ export function submitDisabled(
   expect(submitBtn.disabled).toBe(isDisabled);
   return submitBtn;
 }
-
