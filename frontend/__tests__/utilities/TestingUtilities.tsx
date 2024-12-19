@@ -1,8 +1,6 @@
 import { UserEvent } from "@testing-library/user-event";
 import { expect } from "vitest";
-import { act, fireEvent, screen } from "@testing-library/react";
-import { async } from "rxjs";
-import { hitKey } from "./fireEvents";
+import { act, screen } from "@testing-library/react";
 
 export async function clickAway(user: UserEvent) {
   const rootElement = document.documentElement;
@@ -18,7 +16,7 @@ export async function type(
   inputBox: HTMLElement,
   text: string,
 ) {
-  await act(() => user.type(inputBox, text));
+  await act(async () => await user.type(inputBox, text));
 }
 
 /**
@@ -26,24 +24,22 @@ export async function type(
  * provided backspace once.
  */
 export async function backSpaceOnField(
+  user: UserEvent,
   field: HTMLElement,
   repeat: number | undefined | null,
 ) {
+  // delete entire word
   if (repeat == undefined || repeat == null) {
-    repeat = 1;
+    let input = field.getAttribute("value")?.trim();
+    if (input) {
+      repeat = input.substring(input.lastIndexOf(" "), input.length).length;
+    } else {
+      repeat = 1;
+    }
   }
-  let val = field.getAttribute("value");
-  console.log("the val is", val);
   for (let i = 0; i < repeat; i++) {
     await act(async () => {
-      hitKey(field, "backspace", "backspace", 8, 8);
-
-      if (val) {
-        val = val.slice(0, val.length - 1);
-      }
-      fireEvent.change(field, {
-        target: { value: val },
-      });
+      await user.type(field, "{backspace}");
     });
   }
 }

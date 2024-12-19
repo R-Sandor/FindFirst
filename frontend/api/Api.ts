@@ -156,8 +156,6 @@ const api = {
     return instance.post(`refreshToken/token?token=${token}`);
   },
   searchBookmarkByTitleKeywords(keywords: string) {
-    console.log(keywords);
-    console.log("searching title");
     return instance.get("search/title", {
       params: {
         keywords: keywords,
@@ -165,7 +163,6 @@ const api = {
     });
   },
   searchBookmarkByTags(tags: string) {
-    console.log(tags);
     return instance.get(`search/tags?tags=${tags}`);
   },
   searchBookmarkByText(text: string) {
