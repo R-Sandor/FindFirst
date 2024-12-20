@@ -108,7 +108,7 @@ export default function NewBookmarkCard() {
       url: submittedBmk.url,
       screenshotUrl: "",
       tags: tags,
-      scrapable: true,
+      scrapable: isScrapable,
     };
 
     actions.resetForm({ newcard }, setStrTags([]), setTagInput(""));
@@ -144,7 +144,6 @@ export default function NewBookmarkCard() {
   function onKeyDown(e: any, sv: any, values: NewBookmarkForm) {
     const { key } = e;
     const trimmedInput = tagInput.trim();
-    console.log(key);
     if (
       // add tag via space bar or enter
       (key === "Enter" || key === "Space" || key === " ") &&

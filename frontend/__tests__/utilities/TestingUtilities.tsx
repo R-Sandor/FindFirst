@@ -26,7 +26,7 @@ export async function type(
 export async function backSpaceOnField(
   user: UserEvent,
   field: HTMLElement,
-  repeat: number | undefined | null,
+  repeat: number | undefined | null = null,
 ) {
   // delete entire word
   if (repeat == undefined || repeat == null) {

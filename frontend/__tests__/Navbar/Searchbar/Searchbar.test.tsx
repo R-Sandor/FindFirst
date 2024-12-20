@@ -12,6 +12,7 @@ import useAuth from "@components/UseAuth";
 import { AuthStatus, User } from "@services/auth.service";
 import { instance } from "@api/Api";
 import { bkmkResp } from "../../data/SampleData";
+import { debug } from "vitest-preview";
 
 const user = userEvent.setup();
 let mock: any;
@@ -92,9 +93,6 @@ describe("Searchbar functionality tests", () => {
     const searchBar = screen.getByPlaceholderText(/search/i);
 
     await type(user, searchBar, "Golang is bad");
-
-    expect(searchTypeButton).toBeInTheDocument();
-
     await click(user, searchTypeButton);
     await click(user, searchTypeButton);
 
@@ -129,12 +127,52 @@ describe("Searchbar functionality tests", () => {
     expect(searchTypeButton).toHaveTextContent("/t");
   });
 
-  it(
-    "Switching type with Tag from Tag search to Tilte search creates tags to text.",
-  );
-  it("User can click Tag to delete it from Navbar");
+  it("Switching type with Tag from Tag search to Tilte search creates tags to text.", async () => {
+    mock.onGet().reply(200, data); // any search return the generic data.
+    const searchTypeButton = screen.getByText(`/${SearchTypeChar[0]}`);
+    const searchBar = screen.getByPlaceholderText(/search/i);
+    await type(user, searchBar, "Golang is bad");
+    await click(user, searchTypeButton);
+    await click(user, searchTypeButton);
+    await backSpaceOnField(user, searchBar, 1);
+    let allTags = await screen.findAllByTestId(/tag-/);
 
-  it(
-    "When user enters in white space after a tag it should work without an errors",
-  );
+    expect(allTags.length).toEqual(2);
+    expect(searchBar.getAttribute("value")).toEqual("bad");
+
+    // delete bad
+    await backSpaceOnField(user, searchBar);
+    // pop tag
+    await backSpaceOnField(user, searchBar, 1);
+    // delete is
+    await backSpaceOnField(user, searchBar);
+    // pop tag
+    await backSpaceOnField(user, searchBar, 1);
+    // delete Golang
+    await backSpaceOnField(user, searchBar);
+
+    allTags = screen.queryAllByTestId(/tag-/);
+    expect(allTags.length).toEqual(0);
+
+    await type(user, searchBar, "Golang");
+    await type(user, searchBar, "{enter}");
+  });
+
+  it("User switch from tag search back to text", async () => {
+    mock.onGet().reply(200, data); // any search return the generic data.
+    const searchTypeButton = screen.getByText(`/${SearchTypeChar[0]}`);
+    const searchBar = screen.getByPlaceholderText(/search/i);
+    await click(user, searchTypeButton);
+    await click(user, searchTypeButton);
+    await type(user, searchBar, "Java ");
+    await type(user, searchBar, "is ");
+    await type(user, searchBar, "better ");
+    let allTags = await screen.findAllByTestId(/tag-/);
+    expect(allTags.length).toEqual(3);
+
+    await click(user, searchTypeButton);
+
+    expect(searchTypeButton).toHaveTextContent("/b");
+    expect(searchBar.getAttribute("value")).toEqual("Java is better");
+  });
 });

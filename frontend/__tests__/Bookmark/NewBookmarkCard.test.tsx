@@ -56,8 +56,8 @@ describe("Fields logic", () => {
     await act(async () => {
       await user.type(url, "foodnetwork.com");
       await user.type(tags, "cooking");
+      await user.type(tags, "{enter}");
     });
-    hitEnter(tags);
     expect(submit).not.toBeDisabled();
 
     // fields should be populated
@@ -177,6 +177,7 @@ describe("Fields logic", () => {
     await act(async () => {
       await user.type(url, "foodnetwork.com");
       await user.type(tags, "cooking");
+      await user.type(tags, "{enter}");
       hitEnter(tags);
       await user.clear(tags);
       await user.type(tags, "food");

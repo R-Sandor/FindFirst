@@ -76,20 +76,22 @@ export default function Searchbar() {
 
   function onKeyDown(e: any) {
     if (searchType.type == SearchTypeEnum.tagSearch) {
-      const { keyCode } = e;
+      const { key } = e;
       const trimmedInput = searchText.trim();
       if (
         // add tag via space bar or enter
-        (keyCode === 32 || keyCode === 13) &&
+        (key === "Enter" || key === "Space" || key === " ") &&
         trimmedInput.length &&
         !strTags.includes(trimmedInput)
       ) {
+        console.log(trimmedInput);
+        e.preventDefault();
         setStrTags((prevState) => [...prevState, trimmedInput]);
         setSearchText("");
       }
       // user hits backspace and the user has input field of 0
       // then pop the last tag only if there is one.
-      if (keyCode === 8 && !searchText.length && strTags.length) {
+      if (key === "Backspace" && !searchText.length && strTags.length) {
         e.preventDefault();
         const tagsCopy = [...strTags];
         let poppedTag = tagsCopy.pop();

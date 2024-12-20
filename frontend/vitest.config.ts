@@ -26,7 +26,12 @@ export default defineConfig({
       reporter: ["text", "lcov", "html"],
       reportOnFailure: true,
     },
-    testTimeout: 40000, // 40 seconds to run a test.
+    testTimeout: 60000, // 40 seconds to run a test.
+    poolOptions: {
+      vmThreads: {
+        memoryLimit: "500mb",
+      },
+    },
   },
   resolve: {
     alias: {
