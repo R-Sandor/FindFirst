@@ -1,7 +1,6 @@
 import { SearchTypeChar } from "@components/Navbar/Searchbar";
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { debug } from "vitest-preview";
 import { MockedFunction, beforeEach, describe, expect, it, vi } from "vitest";
 import GlobalNavbar from "@components/Navbar/Navbar";
 import {
@@ -12,7 +11,7 @@ import {
 import useAuth from "@components/UseAuth";
 import { AuthStatus, User } from "@services/auth.service";
 import { instance } from "@api/Api";
-import { bkmkResp, tagsData } from "../../data/SampleData";
+import { bkmkResp } from "../../data/SampleData";
 
 const user = userEvent.setup();
 let mock: any;
@@ -113,19 +112,21 @@ describe("Searchbar functionality tests", () => {
   it("User changes type via searchbar with keyboard", async () => {
     mock.onGet().reply(200, data);
     const searchTypeButton = screen.getByText(`/${SearchTypeChar[0]}`);
-    const searchBar = screen.getByPlaceholderText(/search/i);
-    await type(user, searchBar, "/");
-
     expect(searchTypeButton).toBeInTheDocument();
+
+    const searchBar = screen.getByPlaceholderText(/search/i);
+
+    await type(user, searchBar, "/");
     expect(searchBar).toHaveValue("/");
 
     await type(user, searchBar, "v");
     expect(searchBar).toHaveValue("/v");
-    // fireEvent.keyDown(searchBar, { key: "Backspace" });
 
-    await backSpaceOnField(searchBar, 2);
-    // fireEvent.change(searchBar, { target: { value: "Hello Worl" } }); // Updates the input field's value
+    await backSpaceOnField(user, searchBar, 2);
     expect(searchBar).toHaveValue("");
+
+    await type(user, searchBar, "/t");
+    expect(searchTypeButton).toHaveTextContent("/t");
   });
 
   it(
