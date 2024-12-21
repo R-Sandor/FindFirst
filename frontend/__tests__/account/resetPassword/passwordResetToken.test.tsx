@@ -1,5 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import PasswordReset from "@/app/account/resetPassword/[token]/page";
 import {
@@ -8,7 +8,6 @@ import {
 } from "@/__tests__/utilities/TestingUtilities";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import TokenPassword from "@type/account/TokenPassword";
 const user = userEvent.setup();
 
@@ -19,14 +18,16 @@ function getPasswordFields() {
   return { pwd, confirmPwd };
 }
 
+interface Params {
+  token: string;
+}
+
 const myParams: Params = {
   token: "12ds2-45434ds-1232334",
 };
 
 beforeEach(async () => {
-  await act(async () => {
-    render(<PasswordReset />);
-  });
+  render(<PasswordReset />);
 });
 
 beforeAll(() => {
@@ -53,33 +54,23 @@ describe("Password field handling", () => {
 
   test("Password too short.", async () => {
     const fields = getPasswordFields();
-    await act(async () => {
-      await user.type(fields.pwd, "Test");
-      await clickAway(user);
-    });
+    await user.type(fields.pwd, "Test");
+    await clickAway(user);
     expect(screen.getByText("Password too short!")).toBeInTheDocument();
-    await act(async () => {
-      await user.type(fields.pwd, "Test");
-    });
+    await user.type(fields.pwd, "Test");
     expect(screen.getByText(/must contain/i)).toBeInTheDocument();
-    await act(async () => {
-      await user.type(fields.pwd, "!");
-    });
+    await user.type(fields.pwd, "!");
     expect(screen.queryByText(/must contain/i)).not.toBeInTheDocument();
     submitDisabled(true);
   });
 
   test("Passwords don't match.", async () => {
     const fields = getPasswordFields();
-    await act(async () => {
-      await user.type(fields.pwd, "TestTest!");
-      await user.type(fields.confirmPwd, "Test");
-      await clickAway(user);
-    });
+    await user.type(fields.pwd, "TestTest!");
+    await user.type(fields.confirmPwd, "Test");
+    await clickAway(user);
     expect(screen.getByText(/must match/i)).toBeInTheDocument();
-    await act(async () => {
-      await user.type(fields.confirmPwd, "Test!");
-    });
+    await user.type(fields.confirmPwd, "Test!");
     expect(screen.queryByText(/must match/i)).not.toBeInTheDocument();
     submitDisabled(false);
   });
@@ -108,13 +99,9 @@ describe("Submission handling.", () => {
       ];
     });
     const fields = getPasswordFields();
-    await act(async () => {
-      await user.type(fields.pwd, "TestTest!");
-      await user.type(fields.confirmPwd, "TestTest!");
-    });
-    await act(async () => {
-      await user.click(submitDisabled(false));
-    });
+    await user.type(fields.pwd, "TestTest!");
+    await user.type(fields.confirmPwd, "TestTest!");
+    await user.click(submitDisabled(false));
   });
 
   test("Unsuccessful reset.", async () => {
@@ -139,13 +126,9 @@ describe("Submission handling.", () => {
     });
 
     const fields = getPasswordFields();
-    await act(async () => {
-      await user.type(fields.pwd, "TestTest!");
-      await user.type(fields.confirmPwd, "TestTest!");
-    });
-    await act(async () => {
-      await user.click(submitDisabled(false));
-    });
+    await user.type(fields.pwd, "TestTest!");
+    await user.type(fields.confirmPwd, "TestTest!");
+    await user.click(submitDisabled(false));
     expect(
       await screen.findByText(/Error/i, undefined, { timeout: 1500 }),
     ).toBeInTheDocument();

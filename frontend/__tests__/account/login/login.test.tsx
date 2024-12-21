@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { getByTestId, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Page from "app/account/login/page";
 import MockAdapter from "axios-mock-adapter";
@@ -9,6 +9,7 @@ import { submitDisabled } from "@/__tests__/utilities/TestingUtilities";
 import { bkmkResp } from "@/__tests__/data/SampleData";
 import { instance } from "@api/Api";
 import authService from "@services/auth.service";
+import { debug } from "vitest-preview";
 const user = userEvent.setup();
 
 describe("Login events.", () => {
@@ -27,14 +28,8 @@ describe("Login events.", () => {
   });
 
   beforeEach(() => {
-    act(() => {
-      // eslint-disable-next-line react/no-children-prop
-      render(
-        <RootLayout>
-          <Page />
-        </RootLayout>,
-      );
-    });
+    // eslint-disable-next-line react/no-children-prop
+    render(<Page />);
   });
 
   test("User can login with a valid username password", async () => {
@@ -59,15 +54,13 @@ describe("Login events.", () => {
         },
       ];
     });
-    const submitBtn = screen.getAllByRole("button", {
-      name: "Login",
-    })[1];
-    await act(async () => {
-      await typeUsername("j-dog");
-      await typePassword("$t3ves_$uperh@rd_P@$$w0rd");
 
-      await user.click(submitBtn);
-    });
+    const submitBtn = screen.getByTestId("login-btn");
+    const username = screen.getByPlaceholderText(/Username/i);
+    await user.type(username, "j-dog");
+    await typePassword("$t3ves_$uperh@rd_P@$$w0rd");
+
+    await user.click(submitBtn);
   });
 
   test("User login failed invalid username password", async () => {
@@ -80,29 +73,23 @@ describe("Login events.", () => {
     vi.spyOn(authService, "getAuthorized").mockImplementation(() => 0);
     vi.spyOn(authService, "login").mockImplementation(async () => false);
 
-    const submitBtn = screen.getAllByRole("button", {
-      name: "Login",
-    })[1];
-    await act(async () => {
-      await typeUsername("j-dog");
-      await typePassword("$t3ves_$uperh@rd_P@$$w0rd");
-      await user.click(submitBtn);
-      await user.click(submitBtn);
-      await user.click(submitBtn);
-    });
+    const submitBtn = screen.getByTestId("login-btn");
+    const username = screen.getByPlaceholderText(/Username/i);
+    await user.type(username, "j-dog");
+    await typePassword("$t3ves_$uperh@rd_P@$$w0rd");
+    await user.click(submitBtn);
+    await user.click(submitBtn);
+    await user.click(submitBtn);
+    debug();
     const forgot = screen.getByText("Forgot Password?");
     expect(forgot).toBeInTheDocument();
-    await act(async () => {
-      await user.click(forgot);
-    });
+    await user.click(forgot);
   });
 });
 
 describe("Errors on fields.", () => {
   beforeEach(() => {
-    act(() => {
-      render(<Page />);
-    });
+    render(<Page />);
   });
   test("Submit button should be disabled no usename or password.", async () => {
     submitDisabled(true, "Login");

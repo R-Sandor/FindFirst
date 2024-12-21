@@ -28,7 +28,6 @@ export default function Page() {
       attemptCount.current = 0;
       router.push("/");
     } else {
-      console.log("failed");
       attemptCount.current = attemptCount.current + 1;
       setSignFailure(true);
     }
@@ -79,6 +78,7 @@ export default function Page() {
                 type="submit"
                 disabled={!(isValid && dirty)}
                 className={`btn ${styles.signin_button}`}
+                data-testid="login-btn"
               >
                 Login
               </button>

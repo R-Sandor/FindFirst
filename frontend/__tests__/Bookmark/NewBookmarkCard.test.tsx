@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { act } from "@testing-library/react";
 import NewBookmarkCard from "@components/Bookmark/NewBookmarkCard";
 import userEvent from "@testing-library/user-event";
 import MockAdapter from "axios-mock-adapter";
@@ -33,15 +32,13 @@ describe("New Bookmark Card Renders", () => {
 
 describe("Fields logic", () => {
   beforeEach(() => {
-    act(() => {
-      render(
-        <div data-bs-theme="dark" className="row pt-3">
-          <div className="col-6 col-sm-12 col-md-12 col-lg-4">
-            <NewBookmarkCard />
-          </div>
-        </div>,
-      );
-    });
+    render(
+      <div data-bs-theme="dark" className="row pt-3">
+        <div className="col-6 col-sm-12 col-md-12 col-lg-4">
+          <NewBookmarkCard />
+        </div>
+      </div>,
+    );
   });
 
   it("No fields have data, should be disabled", () => {
@@ -53,11 +50,9 @@ describe("Fields logic", () => {
     const submit = screen.getByText("Submit");
     const tags = screen.getByPlaceholderText("Enter a tag");
     const url = screen.getByPlaceholderText(/discover/i);
-    await act(async () => {
-      await user.type(url, "foodnetwork.com");
-      await user.type(tags, "cooking");
-      await user.type(tags, "{enter}");
-    });
+    await user.type(url, "foodnetwork.com");
+    await user.type(tags, "cooking");
+    await user.type(tags, "{enter}");
     expect(submit).not.toBeDisabled();
 
     // fields should be populated
@@ -104,9 +99,7 @@ describe("Fields logic", () => {
         return [200, JSON.stringify(expectedBookmark)];
       });
 
-    await act(async () => {
-      await user.click(submit);
-    });
+    await user.click(submit);
 
     // if everything submitted correctly then it should be empty input field.
     expect(url).toHaveValue("");
@@ -120,13 +113,9 @@ describe("Fields logic", () => {
       submit: HTMLElement,
       isValid: boolean,
     ) {
-      await act(async () => {
-        await user.type(screen.getByPlaceholderText(/discover/i), url);
-      });
+      await user.type(screen.getByPlaceholderText(/discover/i), url);
       isValid ? expect(submit).toBeEnabled() : expect(submit).toBeDisabled();
-      await act(async () => {
-        await user.click(screen.getByText(/reset/i));
-      });
+      await user.click(screen.getByText(/reset/i));
     }
     const submit = screen.getByText("Submit");
     await checkDomain("facebook.whatever", submit, false);
@@ -147,24 +136,22 @@ describe("Fields logic", () => {
     const url = screen.getByPlaceholderText(/discover/i);
     const tags = screen.getByPlaceholderText("Enter a tag");
     const submit = screen.getByText("Submit");
-    await act(async () => {
-      await populateTags(
-        [
-          "cooking",
-          "food",
-          "recipes",
-          "ideas",
-          "home",
-          "meals",
-          "dinner",
-          "favs2",
-          "misc",
-        ],
-        user,
-      );
-      await user.type(url, "foodnetwork.com");
-      await user.click(reset);
-    });
+    await populateTags(
+      [
+        "cooking",
+        "food",
+        "recipes",
+        "ideas",
+        "home",
+        "meals",
+        "dinner",
+        "favs2",
+        "misc",
+      ],
+      user,
+    );
+    await user.type(url, "foodnetwork.com");
+    await user.click(reset);
     expect(url).toHaveValue("");
     expect(tags).toHaveValue("");
     expect(submit).toBeDisabled();
@@ -174,14 +161,12 @@ describe("Fields logic", () => {
     const submit = screen.getByText("Submit");
     const tags = screen.getByPlaceholderText("Enter a tag");
     const url = screen.getByPlaceholderText(/discover/i);
-    await act(async () => {
-      await user.type(url, "foodnetwork.com");
-      await user.type(tags, "cooking");
-      await user.type(tags, "{enter}");
-      hitEnter(tags);
-      await user.clear(tags);
-      await user.type(tags, "food");
-    });
+    await user.type(url, "foodnetwork.com");
+    await user.type(tags, "cooking");
+    await user.type(tags, "{enter}");
+    hitEnter(tags);
+    await user.clear(tags);
+    await user.type(tags, "food");
     expect(submit).not.toBeDisabled();
 
     // fields should be populated
@@ -237,11 +222,7 @@ describe("Fields logic", () => {
         return [200, JSON.stringify(expectedBookmark)];
       });
 
-    await act(async () => {
-      await act(async () => {
-        await user.click(submit);
-      });
-    });
+    await user.click(submit);
 
     // if everything submitted correctly then it should be empty input field.
     expect(url).toHaveValue("");
@@ -252,52 +233,44 @@ describe("Fields logic", () => {
 
 describe("Tags Operations", () => {
   beforeEach(() => {
-    act(() => {
-      render(
-        <div data-bs-theme="dark" className="row pt-3">
-          <div className="col-6 col-sm-12 col-md-12 col-lg-4">
-            <NewBookmarkCard />
-          </div>
-        </div>,
-      );
-    });
+    render(
+      <div data-bs-theme="dark" className="row pt-3">
+        <div className="col-6 col-sm-12 col-md-12 col-lg-4">
+          <NewBookmarkCard />
+        </div>
+      </div>,
+    );
   });
 
   it("Too many tags, UI should limit to 8 tags", async () => {
-    await act(async () => {
-      await populateTags(
-        [
-          "cooking",
-          "food",
-          "recipes",
-          "ideas",
-          "home",
-          "meals",
-          "dinner",
-          "favs",
-          "misc",
-        ],
-        user,
-      );
-    });
+    await populateTags(
+      [
+        "cooking",
+        "food",
+        "recipes",
+        "ideas",
+        "home",
+        "meals",
+        "dinner",
+        "favs",
+        "misc",
+      ],
+      user,
+    );
     expect(screen.getByText(/Too many tags/i)).toBeVisible();
   });
 
   it("Click delete a Tag", async () => {
-    await act(async () => {
-      await populateTags(["Tag1", "Tag2"], user);
-      await user.click(screen.getByTestId("Tag2"));
-    });
+    await populateTags(["Tag1", "Tag2"], user);
+    await user.click(screen.getByTestId("Tag2"));
     expect(screen.queryByTestId("Tag2")).toEqual(null);
   });
 
   it("Back Space delete a Tag", async () => {
     const tags = screen.getByPlaceholderText("Enter a tag");
 
-    await act(async () => {
-      await populateTags(["Tag1", "Tag2"], user);
-      hitKey(tags, "Backspace", "Backspace", 8, 8);
-    });
+    await populateTags(["Tag1", "Tag2"], user);
+    hitKey(tags, "Backspace", "Backspace", 8, 8);
     expect(screen.queryByTestId("Tag2")).toEqual(null);
   });
 });

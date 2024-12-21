@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Page from "app/account/signup/page";
 import {
@@ -38,26 +38,20 @@ export async function typeUsername(
 ): Promise<HTMLInputElement> {
   const usernameInput: HTMLInputElement =
     screen.getByPlaceholderText(/Username/i);
-  await act(async () => {
-    await user.type(usernameInput, username);
-  });
+  await user.type(usernameInput, username);
   return usernameInput;
 }
 
 async function typeEmail(email: string): Promise<HTMLInputElement> {
   const emailInput: HTMLInputElement = screen.getByPlaceholderText(/Email/i);
-  await act(async () => {
-    await user.type(emailInput, email);
-  });
+  await user.type(emailInput, email);
   return emailInput;
 }
 
 export async function typePassword(pwd: string): Promise<HTMLInputElement> {
   const passwordInput: HTMLInputElement =
     screen.getByPlaceholderText(/Password/i);
-  await act(async () => {
-    await user.type(passwordInput, pwd);
-  });
+  await user.type(passwordInput, pwd);
   return passwordInput;
 }
 
@@ -140,18 +134,14 @@ describe("Errors on fields.", () => {
 
   test("Password should have an error", async () => {
     const uep = await typeUEP(goodUsername, goodEmail, "test");
-    await act(async () => {
-      await user.type(uep.usernameInput, goodUsername);
-    });
+    await user.type(uep.usernameInput, goodUsername);
 
     submitDisabled(true);
 
     let pwdErr = screen.getByText(/password too short/i);
     expect(pwdErr).toBeInTheDocument();
-    await act(async () => {
-      await user.type(uep.passwordInput, "testtest");
-      await clickAway(user);
-    });
+    await user.type(uep.passwordInput, "testtest");
+    await clickAway(user);
     // to simulate user clicking off of textfield
 
     pwdErr = screen.getByText(/special character/i);
@@ -159,24 +149,20 @@ describe("Errors on fields.", () => {
   });
 
   test("All fields should have an error", async () => {
-    await act(async () => {
-      await typeUEP(badUsername, badEmail, badPassword);
+    await typeUEP(badUsername, badEmail, badPassword);
 
-      const usernameError = screen.getByText(/username too short/i);
-      expect(usernameError).toBeInTheDocument();
-      await clickAway(user);
-      const emailError = screen.getByText(/Invalid email/i);
-      expect(emailError).toBeInTheDocument();
-      submitDisabled(true);
-    });
+    const usernameError = screen.getByText(/username too short/i);
+    expect(usernameError).toBeInTheDocument();
+    await clickAway(user);
+    const emailError = screen.getByText(/Invalid email/i);
+    expect(emailError).toBeInTheDocument();
+    submitDisabled(true);
   });
 });
 
 describe("Testing that user submits work with correct messages.", () => {
   beforeEach(() => {
-    act(() => {
-      render(<Page />);
-    });
+    render(<Page />);
   });
 
   test("Good submission, no error.", async () => {
@@ -192,9 +178,7 @@ describe("Testing that user submits work with correct messages.", () => {
 
     const submitBtn = submitDisabled(false);
 
-    await act(async () => {
-      await user.click(submitBtn);
-    });
+    await user.click(submitBtn);
 
     const goodMsg = await screen.findByText(/please complete/i);
     expect(goodMsg).toBeInTheDocument();
@@ -214,9 +198,7 @@ describe("Testing that user submits work with correct messages.", () => {
 
     const submitBtn = submitDisabled(false);
 
-    await act(async () => {
-      await user.click(submitBtn);
-    });
+    await user.click(submitBtn);
 
     const takenUsernameMsg = await screen.findByText(
       /Username is already taken/i,

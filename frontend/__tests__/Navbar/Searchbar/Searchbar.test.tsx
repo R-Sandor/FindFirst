@@ -1,5 +1,5 @@
 import { SearchTypeChar } from "@components/Navbar/Searchbar";
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockedFunction, beforeEach, describe, expect, it, vi } from "vitest";
 import GlobalNavbar from "@components/Navbar/Navbar";
@@ -12,7 +12,6 @@ import useAuth from "@components/UseAuth";
 import { AuthStatus, User } from "@services/auth.service";
 import { instance } from "@api/Api";
 import { bkmkResp } from "../../data/SampleData";
-import { debug } from "vitest-preview";
 
 const user = userEvent.setup();
 let mock: any;
@@ -61,9 +60,7 @@ describe("Searchbar functionality tests", () => {
     let MockAdapter = require("axios-mock-adapter");
 
     mock = new MockAdapter(instance);
-    act(() => {
-      render(<GlobalNavbar />);
-    });
+    render(<GlobalNavbar />);
     const urlF = new RegExp(`search/text*`);
     const urlT = new RegExp(`search/tag*`);
     mock

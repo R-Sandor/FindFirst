@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import BookmarkCard from "@components/Bookmark/BookmarkCard";
 import { populateTags } from "../utilities/BookmarkUtils/BookmarkUtil";
@@ -11,15 +11,13 @@ const user = userEvent.setup();
 
 describe("Bookmark functions", () => {
   beforeEach(() => {
-    act(() => {
-      render(
-        <div data-bs-theme="dark" className="row pt-3">
-          <div className="col-6 col-sm-12 col-md-12 col-lg-4">
-            <BookmarkCard bookmark={defaultBookmark} />
-          </div>
-        </div>,
-      );
-    });
+    render(
+      <div data-bs-theme="dark" className="row pt-3">
+        <div className="col-6 col-sm-12 col-md-12 col-lg-4">
+          <BookmarkCard bookmark={defaultBookmark} />
+        </div>
+      </div>,
+    );
   });
 
   it("Card Functionality", () => {
@@ -33,40 +31,34 @@ describe("Bookmark functions", () => {
     axiosMock.onDelete().reply(() => {
       return [200, JSON.stringify("Deleting Bookmark 1")];
     });
-    await act(async () => {
-      await user.click(screen.getByTestId("bk-id-1-deleteBtn"));
-    });
-    await act(async () => {
-      await user.click(screen.getByText(/yes/i));
-    });
+    await user.click(screen.getByTestId("bk-id-1-deleteBtn"));
+    await user.click(screen.getByText(/yes/i));
   });
 });
 
 describe("Adding and deleting Tags", () => {
   beforeEach(() => {
-    act(() => {
-      render(
-        <div data-bs-theme="dark" className="row pt-3">
-          <div className="col-6 col-sm-12 col-md-12 col-lg-4">
-            <BookmarkCard
-              bookmark={{
-                id: 1,
-                title: "facebook.com",
-                url: "facebook.com",
-                tags: [
-                  {
-                    id: 1,
-                    title: "social",
-                  },
-                ],
-                scrapable: true,
-                screenshotUrl: "",
-              }}
-            />
-          </div>
-        </div>,
-      );
-    });
+    render(
+      <div data-bs-theme="dark" className="row pt-3">
+        <div className="col-6 col-sm-12 col-md-12 col-lg-4">
+          <BookmarkCard
+            bookmark={{
+              id: 1,
+              title: "facebook.com",
+              url: "facebook.com",
+              tags: [
+                {
+                  id: 1,
+                  title: "social",
+                },
+              ],
+              scrapable: true,
+              screenshotUrl: "",
+            }}
+          />
+        </div>
+      </div>,
+    );
   });
 
   it("Adding tags", async () => {
@@ -77,9 +69,7 @@ describe("Adding and deleting Tags", () => {
     axiosMock.onPost().replyOnce(() => {
       return [200, JSON.stringify(secondTag)];
     });
-    await act(async () => {
-      await populateTags(["fb", "friends"], user);
-    });
+    await populateTags(["fb", "friends"], user);
     expect(screen.getByText(/fb/i)).toBeInTheDocument();
     expect(screen.getByText(/friends/i)).toBeInTheDocument();
   });
@@ -95,9 +85,7 @@ describe("Adding and deleting Tags", () => {
         }),
       ];
     });
-    await act(async () => {
-      await user.click(screen.getByText(/social/i));
-    });
+    await user.click(screen.getByText(/social/i));
     expect(screen.queryByText(/social/i)).toBeNull();
   });
 
@@ -113,9 +101,7 @@ describe("Adding and deleting Tags", () => {
       ];
     });
     const tags = screen.getByPlaceholderText("Enter a tag");
-    await act(async () => {
-      hitKey(tags, "backspace", "backspace", 8, 8);
-    });
+    hitKey(tags, "backspace", "backspace", 8, 8);
     expect(screen.queryByText(/social/i)).toBeNull();
   });
 });

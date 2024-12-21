@@ -1,14 +1,14 @@
 import { UserEvent } from "@testing-library/user-event";
 import { expect } from "vitest";
-import { act, screen } from "@testing-library/react";
+import { screen } from "@testing-library/react";
 
 export async function clickAway(user: UserEvent) {
   const rootElement = document.documentElement;
-  await act(() => user.click(rootElement));
+  await user.click(rootElement);
 }
 
 export async function click(user: UserEvent, element: HTMLElement) {
-  await act(() => user.click(element));
+  await user.click(element);
 }
 
 export async function type(
@@ -16,7 +16,7 @@ export async function type(
   inputBox: HTMLElement,
   text: string,
 ) {
-  await act(async () => await user.type(inputBox, text));
+  await user.type(inputBox, text);
 }
 
 /**
@@ -38,9 +38,7 @@ export async function backSpaceOnField(
     }
   }
   for (let i = 0; i < repeat; i++) {
-    await act(async () => {
-      await user.type(field, "{backspace}");
-    });
+    await user.type(field, "{backspace}");
   }
 }
 
