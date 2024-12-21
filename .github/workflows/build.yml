@@ -22,20 +22,20 @@ jobs:
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
-          distribution: 'temurin'
+          java-version: "17"
+          distribution: "temurin"
 
       - name: Build and Push Server Container
-        run: | 
+        run: |
           make build_server
           docker push ghcr.io/r-sandor/findfirst-server:latest
 
       - name: Build and Push Screenshot Container
-        run: | 
+        run: |
           make build_screenshot
           docker push ghcr.io/r-sandor/findfirst-screenshot:latest
 
       - name: Build and Push Frontend Container
-        run: | 
+        run: |
           make build_frontend
           docker push ghcr.io/r-sandor/findfirst-frontend:latest
