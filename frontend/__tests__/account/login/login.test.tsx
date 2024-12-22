@@ -1,15 +1,14 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { getByTestId, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Page from "app/account/login/page";
 import MockAdapter from "axios-mock-adapter";
-import { typePassword, typeUsername } from "../signup/signup.test";
-import RootLayout from "@/app/layout";
+import { typePassword } from "../signup/signup.test";
 import { submitDisabled } from "@/__tests__/utilities/TestingUtilities";
 import { bkmkResp } from "@/__tests__/data/SampleData";
 import { instance } from "@api/Api";
 import authService from "@services/auth.service";
-import { debug } from "vitest-preview";
+import axios from "axios";
 const user = userEvent.setup();
 
 describe("Login events.", () => {
@@ -35,8 +34,9 @@ describe("Login events.", () => {
   test("User can login with a valid username password", async () => {
     // Mock recieving a 200 on the return from the server.
     const axiosMock = new MockAdapter(instance);
-    // Create a custom response
+    const mock = new MockAdapter(axios);
 
+    // Create a custom response
     const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
     axiosMock.onGet().reply(200, bkmkResp);
 
@@ -45,7 +45,7 @@ describe("Login events.", () => {
       tokenType: "Bearer",
       refreshToken: "5c3de962-950a-4633-91fa-90cc45f12a9d",
     };
-    axiosMock.onPost(SIGNIN_URL).reply((config) => {
+    mock.onPost(SIGNIN_URL).reply(() => {
       return [
         200,
         expectedResult,
@@ -80,7 +80,6 @@ describe("Login events.", () => {
     await user.click(submitBtn);
     await user.click(submitBtn);
     await user.click(submitBtn);
-    debug();
     const forgot = screen.getByText("Forgot Password?");
     expect(forgot).toBeInTheDocument();
     await user.click(forgot);

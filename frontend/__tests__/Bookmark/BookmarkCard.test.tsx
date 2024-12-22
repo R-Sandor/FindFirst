@@ -104,4 +104,24 @@ describe("Adding and deleting Tags", () => {
     hitKey(tags, "backspace", "backspace", 8, 8);
     expect(screen.queryByText(/social/i)).toBeNull();
   });
+
+  it("Edit bookmark", async () => {
+    const axiosMock = new MockAdapter(instance);
+    axiosMock.onPatch().reply(() => {
+      return [200, JSON.stringify({})];
+    });
+    const editBkmkBtn = screen.getByTestId("1-edit-btn");
+    await user.click(editBkmkBtn);
+    const editBkmkTitle = screen.getByTestId("title-facebook.com-edit-input");
+    const editBkmkUrl = screen.getByTestId("url-facebook.com-edit-input");
+    await user.type(editBkmkTitle, "-new");
+    await user.type(editBkmkUrl, "/home");
+    const toggle = screen.getByTestId(/1-scrapable-edit/i);
+    await user.click(toggle);
+    await user.type(editBkmkTitle, "{enter}");
+    await user.click(editBkmkBtn);
+    expect(screen.getByDisplayValue("facebook.com-new")).toBeInTheDocument();
+    expect(screen.getByDisplayValue("facebook.com/home")).toBeInTheDocument();
+    expect(toggle).not.toBeChecked();
+  });
 });

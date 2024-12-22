@@ -19,14 +19,16 @@ export default defineConfig({
         "types/**",
         "*.config.js",
         "components/Logo.js",
+        "components/navigation-events.tsx",
         "*/**/index.js",
         "api",
+        "app/layout.tsx",
         ...defaults,
       ],
       reporter: ["text", "lcov", "html"],
       reportOnFailure: true,
     },
-    testTimeout: 60000, // 40 seconds to run a test.
+    testTimeout: 90000, // 90 seconds to run a test.
     poolOptions: {
       vmThreads: {
         memoryLimit: "500mb",

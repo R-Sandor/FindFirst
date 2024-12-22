@@ -39,7 +39,6 @@ class AuthService {
   }
 
   public async login(credentials: credentials): Promise<boolean> {
-    console.log("user attempt to login");
     let success = false;
     await axios({
       url: SIGNIN_URL,
@@ -49,21 +48,20 @@ class AuthService {
         username: credentials.username,
         password: credentials.password,
       },
-    }).then((response) => {
-      console.log(response)
-      console.log("signin attempt");
-      if (response.status == 200) {
-        let signedinUser: User = {
-          username: credentials.username,
-          refreshToken: response.data.refreshToken,
-        };
-        localStorage.setItem("user", JSON.stringify(signedinUser));
-        this.notify((this.authorizedState = AuthStatus.Authorized));
-        console.log(signedinUser);
-        success = true;
-      }
-    }).catch((recject) => { });
-    return success
+    })
+      .then((response) => {
+        if (response.status == 200) {
+          let signedinUser: User = {
+            username: credentials.username,
+            refreshToken: response.data.refreshToken,
+          };
+          localStorage.setItem("user", JSON.stringify(signedinUser));
+          this.notify((this.authorizedState = AuthStatus.Authorized));
+          success = true;
+        }
+      })
+      .catch(() => {});
+    return success;
   }
 
   public logout() {
@@ -77,10 +75,10 @@ class AuthService {
     const publicPaths = ["/account/", "/about"];
     const path = url.split("?")[0];
     let found = publicPaths.find((p) => {
-      return path.startsWith(p)
-    })
-    return this.getUser() || found ?
-      AuthStatus.Authorized
+      return path.startsWith(p);
+    });
+    return this.getUser() || found
+      ? AuthStatus.Authorized
       : AuthStatus.Unauthorized;
   }
 

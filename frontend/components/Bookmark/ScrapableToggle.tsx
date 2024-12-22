@@ -18,6 +18,7 @@ export function ScrapableNewBookmarkToggle({
         className="form-check-input"
         type="checkbox"
         id="isScrapable"
+        data-testid={`${values.title}-scrapable-edit`}
         checked={isScrapable}
         onClick={() => {
           setScrapable(!isScrapable);
@@ -39,20 +40,19 @@ export function ScrapableNewBookmarkToggle({
 export function ScrapableBookmarkToggle({
   isScrapable,
   setScrapable,
+  id,
 }: {
   isScrapable: boolean;
   setScrapable: Function;
+  id: number;
 }) {
-  useEffect(() => {
-    console.log(isScrapable);
-  }, [isScrapable]);
-
   return (
     <div className="form-check form-switch isScrapable">
       <input
         className="form-check-input"
         type="checkbox"
         id="isScrapable"
+        data-testid={`${id}-scrapable-edit`}
         checked={isScrapable}
         onChange={() => {
           setScrapable(!isScrapable);

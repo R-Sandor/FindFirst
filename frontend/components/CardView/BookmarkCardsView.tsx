@@ -34,7 +34,6 @@ export default function BookmarkCardsView() {
     if (selected.length == 0) {
       return bookmarks;
     } else {
-      console.log("Selected", selected);
       selected.forEach((selectedTag) => {
         // get tagId of each selected
         const key = getTagId(tags, selectedTag);

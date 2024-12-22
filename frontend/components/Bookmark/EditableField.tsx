@@ -15,7 +15,7 @@ export default function EditableField({
     <input
       className="title-edit"
       defaultValue={fieldValue}
-      data-testid={`${fieldName}-edit-input`}
+      data-testid={`${fieldName}-${fieldValue}-edit-input`}
       onChange={onChange}
       onKeyDown={(e) => {
         const { key } = e;

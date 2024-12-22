@@ -1,10 +1,4 @@
-import {
-  MutableRefObject,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ReactNode, RefObject, useEffect, useRef, useState } from "react";
 import { Card, CloseButton } from "react-bootstrap";
 import { useTagsDispatch } from "@/contexts/TagContext";
 import Bookmark from "@/types/Bookmarks/Bookmark";
@@ -90,7 +84,6 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   };
 
   const sendPatch = (edit: Bookmark) => {
-    console.log(edit);
     api.updateBookmark({
       id: edit.id,
       title: edit.title,
@@ -100,8 +93,8 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   };
 
   const isChanges = (
-    beforeEdit: MutableRefObject<Bookmark>,
-    edit: MutableRefObject<Bookmark>,
+    beforeEdit: RefObject<Bookmark>,
+    edit: RefObject<Bookmark>,
   ) => {
     return JSON.stringify(beforeEdit.current) != JSON.stringify(edit.current);
   };
@@ -215,7 +208,6 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   }
 
   function changeEditMode() {
-    console.log("edit changed");
     setEditMode(!inEditMode);
     handleEdits(!inEditMode);
   }
@@ -241,10 +233,9 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
             data-testid={`bk-id-${bookmark.id}-deleteBtn`}
           />
           <button
-            onClick={() => {
-              changeEditMode();
-            }}
+            onClick={changeEditMode}
             className={`btn ${style.editBookmarkIcon}`}
+            data-testid={`${bookmark.id}-edit-btn`}
           >
             <i className="bi bi-pen"></i>
           </button>

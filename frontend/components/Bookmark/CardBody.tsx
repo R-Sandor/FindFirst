@@ -1,5 +1,5 @@
 import { Card } from "react-bootstrap";
-import { MutableRefObject, SetStateAction, useState } from "react";
+import { MutableRefObject, RefObject, SetStateAction, useState } from "react";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import EditableField from "./EditableField";
 import { ScrapableBookmarkToggle } from "./ScrapableToggle";
@@ -12,7 +12,7 @@ export default function CardBody({
 }: {
   bookmark: Bookmark;
   inEditMode: boolean;
-  edit: MutableRefObject<Bookmark>;
+  edit: RefObject<Bookmark>;
   changeEditMode: Function;
 }) {
   const [isScrapable, setScrapable] = useState(bookmark.scrapable);
@@ -50,10 +50,10 @@ export default function CardBody({
             <ScrapableBookmarkToggle
               isScrapable={isScrapable}
               setScrapable={(scrapableUpd: boolean) => {
-                console.log(scrapableUpd);
                 setScrapable(scrapableUpd);
                 edit.current.scrapable = scrapableUpd;
               }}
+              id={bookmark.id}
             />
           </div>
         </div>

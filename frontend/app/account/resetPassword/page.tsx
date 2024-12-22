@@ -68,7 +68,6 @@ export default function Page() {
         if (response.status == 200) setSubmitSuccess(true);
       })
       .catch((rejected) => {
-        console.log("REJECTED");
         setSubmitMessage(rejected.response.data.error);
         setSubmitSuccess(false);
       });
