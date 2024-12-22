@@ -18,7 +18,7 @@ export function ScrapableNewBookmarkToggle({
         className="form-check-input"
         type="checkbox"
         id="isScrapable"
-        data-testid={`${values.title}-scrapable-edit`}
+        data-testid={`${values.url}-scrapable-edit`}
         checked={isScrapable}
         onClick={() => {
           setScrapable(!isScrapable);

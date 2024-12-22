@@ -46,13 +46,15 @@ describe("Fields logic", () => {
     expect(submit).toBeDisabled();
   });
 
-  it("All Required fields are given data and submitted", async () => {
+  it("All required fields are given data and submitted", async () => {
     const submit = screen.getByText("Submit");
     const tags = screen.getByPlaceholderText("Enter a tag");
     const url = screen.getByPlaceholderText(/discover/i);
     await user.type(url, "foodnetwork.com");
     await user.type(tags, "cooking");
+    const toggle = screen.getByTestId("https://foodnetwork.com-scrapable-edit");
     await user.type(tags, "{enter}");
+    await user.click(toggle);
     expect(submit).not.toBeDisabled();
 
     // fields should be populated
