@@ -11,11 +11,11 @@ export enum SearchTypeEnum {
   tagSearch,
 }
 
-export enum SearchTypeChar {
-  b = SearchTypeEnum.titleSearch.valueOf(), // Title search (i.e. Bookmark Title)
-  f = SearchTypeEnum.textSearch.valueOf(), // Full-text search.
-  t = SearchTypeEnum.tagSearch.valueOf(), // Tag search.
-}
+export const SearchTypeChar: { [key in SearchTypeEnum]: string } = {
+  [SearchTypeEnum.titleSearch]: "b", // Title search (i.e. Bookmark Title)
+  [SearchTypeEnum.textSearch]: "f", // Full-text search
+  [SearchTypeEnum.tagSearch]: "t", // Tag search
+};
 
 const searchTypes = Object.values(SearchTypeEnum)
   .filter((v) => isNaN(Number(v)))
@@ -24,7 +24,11 @@ const searchTypes = Object.values(SearchTypeEnum)
       .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
       .split(" ")[0];
     let typeCased = type.charAt(0).toUpperCase() + String(type).slice(1);
-    return new SearchType(i, SearchTypeChar[i], typeCased + " Search");
+    return new SearchType(
+      i,
+      SearchTypeChar[i as SearchTypeEnum],
+      typeCased + " Search",
+    );
   });
 
 export default function Searchbar() {
