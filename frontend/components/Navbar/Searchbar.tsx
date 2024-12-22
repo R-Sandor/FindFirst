@@ -12,9 +12,9 @@ export enum SearchTypeEnum {
 }
 
 export enum SearchTypeChar {
-  b = SearchTypeEnum.titleSearch, // Title search (i.e. Bookmark Title)
-  f = SearchTypeEnum.textSearch, // Full-text search.
-  t = SearchTypeEnum.tagSearch, // Tag search.
+  b = SearchTypeEnum.titleSearch.valueOf(), // Title search (i.e. Bookmark Title)
+  f = SearchTypeEnum.textSearch.valueOf(), // Full-text search.
+  t = SearchTypeEnum.tagSearch.valueOf(), // Tag search.
 }
 
 const searchTypes = Object.values(SearchTypeEnum)
@@ -181,7 +181,7 @@ export default function Searchbar() {
           {searchType.type == SearchTypeEnum.tagSearch
             ? strTags.map((tag, index) => (
                 <button
-                  key={index}
+                  key={tag}
                   onClick={() => deleteTag(index)}
                   type="button"
                   data-testid={`tag-${tag}`}

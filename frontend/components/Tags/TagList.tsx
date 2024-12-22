@@ -51,9 +51,12 @@ const TagList = () => {
   }
 
   let groupItems: any = [];
-  tagMap.forEach((tagCnt, key) => {
+  tagMap.forEach((tagCnt) => {
     groupItems.push(
-      <ListGroup.Item key={`${key}-item`} className={`${itemStyle.item}`}>
+      <ListGroup.Item
+        key={`${tagCnt.title}-item`}
+        className={`${itemStyle.item}`}
+      >
         <button
           onClick={(event) => selectTag(event, tagCnt.title)}
           data-testid={`${tagCnt.title}-list-item`}

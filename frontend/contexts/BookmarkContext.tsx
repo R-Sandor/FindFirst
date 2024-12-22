@@ -12,14 +12,15 @@ import {
   useReducer,
   useState,
   useRef,
+  useMemo,
 } from "react";
 
 interface ProviderProps {
-  values: Bookmark[];
+  fetchedBookmarks: Bookmark[];
   loading: boolean;
 }
 export const BookmarkContext = createContext<ProviderProps>({
-  values: [],
+  fetchedBookmarks: [],
   loading: true,
 });
 export const BookmarkDispatchContext = createContext<Dispatch<BookmarkAction>>(
@@ -37,13 +38,10 @@ export function useBookmarkDispatch() {
 export function BookmarkProvider({ children }: { children: React.ReactNode }) {
   const [bookmarks, dispatch] = useReducer(bookmarkReducer, []);
   const [isLoading, setIsLoading] = useState(true);
-  const hasFetched = useRef(false);
   const userAuth = UseAuth();
 
   useEffect(() => {
-    if (userAuth && bookmarks.length == 0 && !hasFetched.current) {
-      console.log("Bookmarks being fetched");
-      hasFetched.current = true;
+    if (userAuth && bookmarks.length == 0) {
       api.getAllBookmarks().then((resp) => {
         dispatch({ type: "add", bookmarks: resp.data as Bookmark[] });
         setIsLoading(false);
@@ -53,7 +51,6 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     return () => {
-      hasFetched.current = false;
       dispatch({
         type: "reset",
         bookmarks: [],
@@ -61,8 +58,13 @@ export function BookmarkProvider({ children }: { children: React.ReactNode }) {
     };
   }, [userAuth]);
 
+  const value = useMemo(
+    () => ({ fetchedBookmarks: bookmarks, loading: isLoading }),
+    [bookmarks, isLoading],
+  );
+
   return (
-    <BookmarkContext.Provider value={{ values: bookmarks, loading: isLoading }}>
+    <BookmarkContext.Provider value={value}>
       <BookmarkDispatchContext.Provider value={dispatch}>
         {children}
       </BookmarkDispatchContext.Provider>

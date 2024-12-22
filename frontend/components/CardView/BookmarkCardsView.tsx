@@ -25,7 +25,7 @@ export default function BookmarkCardsView() {
 
   function addIfNotInList(ids: number[]) {
     ids.forEach((bkmkId) => {
-      const fnd = bookmarks.values.find((v) => v.id == bkmkId);
+      const fnd = bookmarks.fetchedBookmarks.find((v) => v.id == bkmkId);
       if (fnd) filterMap.set(bkmkId, fnd);
     });
   }
@@ -55,9 +55,9 @@ export default function BookmarkCardsView() {
           <div className="col-sm-12 col-md-12 col-lg-4">
             <NewBookmarkCard />
           </div>
-          {filterBookmarks(bookmarks.values).map((b, i) => {
+          {filterBookmarks(bookmarks.fetchedBookmarks).map((b) => {
             return (
-              <div key={i} className="col-sml-12 col-md-6 col-lg-4">
+              <div key={b.id} className="col-sml-12 col-md-6 col-lg-4">
                 <BookmarkCard bookmark={b} />
               </div>
             );

@@ -27,7 +27,9 @@ export default function ImportModal({
   const bkmkDispatch = useBookmarkDispatch();
 
   useEffect(() => {
-    importFile ? importBookmarks(importFile) : () => {};
+    if (importFile) {
+      importBookmarks(importFile);
+    }
   }, [importFile]);
 
   useEffect(() => {
