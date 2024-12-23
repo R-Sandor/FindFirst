@@ -35,7 +35,11 @@ export function useBookmarkDispatch() {
   return useContext(BookmarkDispatchContext);
 }
 
-export function BookmarkProvider({ children }: { children: React.ReactNode }) {
+export function BookmarkProvider({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) {
   const [bookmarks, dispatch] = useReducer(bookmarkReducer, []);
   const [isLoading, setIsLoading] = useState(true);
   const userAuth = UseAuth();

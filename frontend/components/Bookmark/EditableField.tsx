@@ -6,10 +6,10 @@ export default function EditableField({
   changeEditMode,
   onChange,
 }: {
-  fieldValue: string;
-  changeEditMode: Function;
-  fieldName: string;
-  onChange: ChangeEventHandler<HTMLInputElement>;
+  fieldValue: Readonly<string>;
+  changeEditMode: Readonly<Function>;
+  fieldName: Readonly<string>;
+  readonly onChange: ChangeEventHandler<HTMLInputElement>;
 }) {
   return (
     <input

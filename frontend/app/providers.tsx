@@ -4,7 +4,11 @@ import { BookmarkProvider } from "@/contexts/BookmarkContext";
 import { TagCntProvider } from "contexts/TagContext";
 import { SelectedTagProvider } from "contexts/SelectedContext";
 
-export function Providers({ children }: { children: React.ReactNode }) {
+export function Providers({
+  children,
+}: {
+  children: Readonly<React.ReactNode>;
+}) {
   return (
     <BookmarkProvider>
       <TagCntProvider>
@@ -13,4 +17,3 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </BookmarkProvider>
   );
 }
-

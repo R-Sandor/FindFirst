@@ -13,15 +13,15 @@ export default function ImportModal({
   show,
   "data-testid": dataTestId,
 }: {
-  file: Blob | undefined;
-  show: boolean | undefined;
-  "data-testid"?: string;
+  readonly file: Blob | undefined;
+  readonly show: boolean | undefined;
+  readonly "data-testid"?: string;
 }) {
   const [modalShow, setModalShow] = useState(show);
   const [uploadFileName, setUploadFileName] = useState(
     "Import your bookmarks from a .html.",
   );
-  const [importFile, setFile] = useState<Blob | undefined>(file);
+  const [importFile, setImportFile] = useState<Blob | undefined>(file);
   const [imported, setImported] = useState<Bookmark[]>([]);
   const [done, setDone] = useState(false);
   const bkmkDispatch = useBookmarkDispatch();
@@ -116,7 +116,7 @@ export default function ImportModal({
               disabled
               readOnly
             />
-            <FilePicker setUpload={setUploadFileName} setFile={setFile} />
+            <FilePicker setUpload={setUploadFileName} setFile={setImportFile} />
           </div>
           <hr />
           {imported.map((bkmk) => {

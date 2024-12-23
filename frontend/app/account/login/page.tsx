@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 
-export interface credentials {
+export interface Credentials {
   username: string;
   password: string;
 }
@@ -20,16 +20,16 @@ function submitFailureDisplay(submissionMessage: string) {
 }
 
 export default function Page() {
-  const [signinFailure, setSignFailure] = useState<boolean>(false);
+  const [signinFailure, setSigninFailure] = useState<boolean>(false);
   const attemptCount = useRef<number>(0);
   const router = useRouter();
-  const handleOnSubmit = async (credentials: credentials) => {
+  const handleOnSubmit = async (credentials: Credentials) => {
     if (await authService.login(credentials)) {
       attemptCount.current = 0;
       router.push("/");
     } else {
       attemptCount.current = attemptCount.current + 1;
-      setSignFailure(true);
+      setSigninFailure(true);
     }
   };
 

@@ -27,6 +27,7 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
     tagIds: [],
     scrapable: createBmk.scrapable,
   };
+  console.log(createBmk.scrapable);
   let tagTitles: string[] = createBmk.tags.map((t) => {
     return t.title;
   });
@@ -58,6 +59,7 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
         return;
       }
       if (!(response instanceof AxiosError)) {
+        console.log(response.data.scrapable);
         createBmk.id = response.data.id;
         createBmk.tags = response.data.tags;
         createBmk.screenshotUrl = response.data.screenshotUrl;
@@ -71,7 +73,7 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
 export default function NewBookmarkCard() {
   const [urlInput, setUrlInput] = useState("");
   const [tagInput, setTagInput] = useState("");
-  const [isScrapable, setScrable] = useState(true);
+  const [isScrapable, setIsScrapable] = useState(true);
   const [strTags, setStrTags] = useState<string[]>([]);
   const bkmkDispatch = useBookmarkDispatch();
   const tagDispatch = useTagsDispatch();
@@ -101,7 +103,6 @@ export default function NewBookmarkCard() {
       tags.push({ title: tagInput, id: -1 });
     }
     submittedBmk.title = submittedBmk.url;
-    // TODO: set scrapable from toggle Issue #222
     let newBkmk: Bookmark = {
       id: -1,
       title: submittedBmk.title,
@@ -120,7 +121,7 @@ export default function NewBookmarkCard() {
           type: "add",
           id: t.id,
           title: t.title,
-          bookmark: retBkmk as Bookmark,
+          bookmark: retBkmk,
         };
         tagDispatch(tAct);
       });
@@ -164,7 +165,9 @@ export default function NewBookmarkCard() {
 
       values.tagTitles = tagsCopy;
       setStrTags(tagsCopy);
-      setTagInput(poppedTag ? poppedTag : "");
+      if (poppedTag) {
+        setTagInput(poppedTag);
+      }
     }
     sv(values);
   }
@@ -233,7 +236,7 @@ export default function NewBookmarkCard() {
                 {dirty ? (
                   <ScrapableNewBookmarkToggle
                     isScrapable={isScrapable}
-                    setScrapable={setScrable}
+                    setScrapable={setIsScrapable}
                     values={values}
                     setValues={setValues}
                   />

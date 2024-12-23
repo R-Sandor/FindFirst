@@ -1,6 +1,10 @@
 import api from "@api/Api";
 
-export default function Export({ 'data-testid': dataTestId }: { 'data-testid'?: string }) {
+export default function Export({
+  "data-testid": dataTestId,
+}: {
+  readonly "data-testid"?: string;
+}) {
   const exportAllBookmarks = () => {
     api.exportAllBookmarks();
   };

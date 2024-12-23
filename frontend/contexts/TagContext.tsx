@@ -15,7 +15,11 @@ export const TagsCntDispatchContext = createContext<Dispatch<TagAction>>(
   () => {},
 );
 
-export function TagCntProvider({ children }: { children: React.ReactNode }) {
+export function TagCntProvider({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) {
   const [tags, dispatch] = useReducer(tagCntReducer, initialTagCnts);
 
   return (

@@ -14,7 +14,7 @@ import CardBody from "./CardBody";
 const IMAGE_DIR = process.env.NEXT_PUBLIC_IMAGE_DIR;
 
 interface BookmarkProp {
-  bookmark: Bookmark;
+  bookmark: Readonly<Bookmark>;
 }
 
 /**
@@ -49,7 +49,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   const dispatch = useTagsDispatch();
   const bkmkDispatch = useBookmarkDispatch();
   const [input, setInput] = useState("");
-  const [inEditMode, setEditMode] = useState(false);
+  const [inEditMode, setInEditMode] = useState(false);
   const [strTags, setStrTags] = useState<string[]>([]);
   const [show, setShow] = useState(false);
   /*
@@ -57,7 +57,7 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
    * that are edited in the partial update. For example Tags would be shallow copied.
    * Thus set the before and after, initially they are the same.
    */
-  const beforeEdit = useRef({ ...bookmark });
+  const currentBookmark = useRef<Bookmark>({ ...bookmark });
   const edit = useRef<Bookmark>({ ...bookmark });
 
   // Set tags on the card from the bookmark json object.
@@ -77,9 +77,9 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   const handleShow = () => setShow(true);
 
   const handleEdits = (inEditMode: boolean) => {
-    if (!inEditMode && isChanges(beforeEdit, edit)) {
+    if (!inEditMode && isChanges(currentBookmark, edit)) {
       sendPatch(edit.current);
-      beforeEdit.current = { ...edit.current };
+      currentBookmark.current = { ...edit.current };
     }
   };
 
@@ -134,11 +134,13 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   const deleteTag = (title: string) => {
     const idx = getIdxFromTitle(title);
     const tagId = bookmark.tags[idx].id;
-    if (bookmark) {
-      bookmark.tags = bookmark.tags.filter((t, i) => i !== idx);
+    if (currentBookmark.current) {
+      currentBookmark.current.tags = currentBookmark.current.tags.filter(
+        (t, i) => i !== idx,
+      );
     }
     api.deleteTagById(bookmark.id, tagId);
-    let titles = bookmark.tags.map((t) => t.title); // just the titles display
+    let titles = currentBookmark.current.tags.map((t) => t.title); // just the titles display
     setStrTags(titles);
 
     // update the sidebar.
@@ -183,10 +185,12 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
     // backspace delete
     if (keyCode === 8 && !input.length && bookmark?.tags.length) {
       e.preventDefault();
-      let tagsCopy = [...strTags];
-      let poppedTag = tagsCopy.pop();
-      if (poppedTag) deleteTag(poppedTag);
-      setInput(poppedTag ? poppedTag : "");
+      const tagsCopy = [...strTags];
+      const poppedTag = tagsCopy.pop();
+      if (poppedTag) {
+        deleteTag(poppedTag);
+        setInput(poppedTag);
+      }
     }
   }
 
@@ -208,14 +212,14 @@ export default function BookmarkCard({ bookmark }: BookmarkProp) {
   }
 
   function changeEditMode() {
-    setEditMode(!inEditMode);
+    setInEditMode(!inEditMode);
     handleEdits(!inEditMode);
   }
 
   function plainCard(): ReactNode {
     return (
       <CardBody
-        bookmark={bookmark}
+        bookmark={currentBookmark.current}
         inEditMode={inEditMode}
         edit={edit}
         changeEditMode={changeEditMode}

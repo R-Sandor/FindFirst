@@ -1,5 +1,5 @@
 import { NewBookmarkForm } from "@type/Bookmarks/NewBookmark";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 export function ScrapableNewBookmarkToggle({
   isScrapable,
@@ -7,10 +7,10 @@ export function ScrapableNewBookmarkToggle({
   values,
   setValues,
 }: {
-  isScrapable: boolean;
-  setScrapable: Dispatch<SetStateAction<boolean>>;
-  values: NewBookmarkForm;
-  setValues: Dispatch<SetStateAction<NewBookmarkForm>>;
+  isScrapable: Readonly<boolean>;
+  readonly setScrapable: Dispatch<SetStateAction<boolean>>;
+  values: Readonly<NewBookmarkForm>;
+  readonly setValues: Dispatch<SetStateAction<NewBookmarkForm>>;
 }) {
   return (
     <div className="form-check form-switch isScrapable">
@@ -19,11 +19,12 @@ export function ScrapableNewBookmarkToggle({
         type="checkbox"
         id="isScrapable"
         data-testid={`${values.url}-scrapable-edit`}
-        checked={isScrapable}
-        onClick={() => {
+        defaultChecked={isScrapable}
+        onChange={() => {
           setScrapable(!isScrapable);
-          values.scrapable = !isScrapable;
-          setValues({ ...values });
+          let cpy = { ...values };
+          cpy.scrapable = !isScrapable;
+          setValues({ ...cpy });
         }}
       />
       <label
@@ -42,10 +43,11 @@ export function ScrapableBookmarkToggle({
   setScrapable,
   id,
 }: {
-  isScrapable: boolean;
-  setScrapable: Function;
-  id: number;
+  isScrapable: Readonly<boolean>;
+  setScrapable: Readonly<Function>;
+  id: Readonly<number>;
 }) {
+  console.log(isScrapable);
   return (
     <div className="form-check form-switch isScrapable">
       <input
@@ -53,7 +55,7 @@ export function ScrapableBookmarkToggle({
         type="checkbox"
         id="isScrapable"
         data-testid={`${id}-scrapable-edit`}
-        checked={isScrapable}
+        defaultChecked={isScrapable}
         onChange={() => {
           setScrapable(!isScrapable);
         }}

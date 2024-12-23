@@ -100,7 +100,9 @@ export default function Searchbar() {
         const tagsCopy = [...strTags];
         let poppedTag = tagsCopy.pop();
         setStrTags(tagsCopy);
-        setSearchText(poppedTag ? poppedTag : "");
+        if (poppedTag) {
+          setSearchText(poppedTag);
+        }
       }
     }
   }
@@ -108,9 +110,9 @@ export default function Searchbar() {
   function isSearchIsTypeSearchTypeChange(unmodifiedSearch: string): boolean {
     let input: string | undefined = unmodifiedSearch.at(1);
     let found = false;
-    for (let i = 0; i < searchTypes.length; i++) {
-      if (searchTypes[i].charCode == input) {
-        setSearchType(searchTypes[i]);
+    for (let searchType of searchTypes) {
+      if (searchType.charCode == input) {
+        setSearchType(searchType);
         found = true;
         break;
       }

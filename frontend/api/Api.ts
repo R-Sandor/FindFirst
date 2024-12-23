@@ -55,7 +55,7 @@ const api = {
   async execute(
     method: string,
     resource: string,
-    data: any | null | undefined,
+    data: any,
     config: {} | undefined,
   ) {
     return instance({

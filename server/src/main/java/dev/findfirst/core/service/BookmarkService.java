@@ -139,8 +139,14 @@ public class BookmarkService {
     Document retDoc;
     String title = "";
     var screenshotUrlOpt = Optional.of("");
+    boolean shouldScrape = reqBkmk.scrapable();
 
-    if (reqBkmk.scrapable() && webCheckService.isScrapable(reqBkmk.url())) {
+    // Can we scrape this? 
+    if (reqBkmk.scrapable()) { 
+      shouldScrape = webCheckService.isScrapable(reqBkmk.url());
+    }
+
+    if (shouldScrape) {
       log.debug("Scrapable: true.\tScrapping URL and taking screenshot.");
 
       try {
@@ -165,7 +171,7 @@ public class BookmarkService {
 
     var newBkmkJdbc =
         new BookmarkJDBC(null, user.getUserId(), new Date(), user.getUsername(), user.getUsername(),
-            new Date(), title, reqBkmk.url(), screenshotUrlOpt.orElse(""), true, savedTags);
+            new Date(), title, reqBkmk.url(), screenshotUrlOpt.orElse(""), reqBkmk.scrapable(), savedTags);
 
     var saved = bookmarkJDBCRepository.save(newBkmkJdbc);
     for (var tag : tags) {

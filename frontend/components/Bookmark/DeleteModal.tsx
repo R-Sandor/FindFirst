@@ -1,17 +1,15 @@
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
-export interface modalProps {
-  show: boolean;
-  handleClose: () => void;
-  deleteBkmk: () => void;
+export interface ModalProps {
+  show: Readonly<boolean>;
+  readonly handleClose: () => void;
+  readonly deleteBkmk: () => void;
 }
 
-function DeleteModal({ show, handleClose, deleteBkmk }: modalProps) {
+function DeleteModal({ show, handleClose, deleteBkmk }: ModalProps) {
   return (
-    <div
-      style={{ display: "block", position: "initial" }}
-    >
+    <div style={{ display: "block", position: "initial" }}>
       <Modal className="" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Delete</Modal.Title>

@@ -20,7 +20,7 @@ export const SelectedTagContext = createContext<TagProvider>({
 export function SelectedTagProvider({
   children,
 }: {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }) {
   const [selected, setSelected] = useState<string[]>([]);
 

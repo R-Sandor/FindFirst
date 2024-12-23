@@ -6,13 +6,12 @@ import {
   FileSizeValidator,
 } from "use-file-picker/validators";
 
-export default function FilePicker({
-  setUpload,
-  setFile,
-}: {
-  setUpload: Dispatch<SetStateAction<string>>;
-  setFile: Dispatch<SetStateAction<Blob | undefined>>;
-}) {
+export interface FilePickerProps {
+  readonly setUpload: Dispatch<SetStateAction<string>>;
+  readonly setFile: Dispatch<SetStateAction<Blob | undefined>>;
+}
+
+export default function FilePicker({ setUpload, setFile }: FilePickerProps) {
   const { openFilePicker, loading, errors } = useFilePicker({
     readAs: "DataURL",
     accept: [".html"],
@@ -37,9 +36,6 @@ export default function FilePicker({
   }
 
   if (errors.length) {
-    {
-      console.log(errors);
-    }
     return <div>Error...</div>;
   }
   return (
