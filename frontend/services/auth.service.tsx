@@ -56,7 +56,8 @@ class AuthService {
             refreshToken: response.data.refreshToken,
           };
           localStorage.setItem("user", JSON.stringify(signedinUser));
-          this.notify((this.authorizedState = AuthStatus.Authorized));
+          this.authorizedState = AuthStatus.Authorized;
+          this.notify(this.authorizedState);
           success = true;
         }
       })
