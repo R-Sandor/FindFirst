@@ -11,7 +11,6 @@ import {
   useEffect,
   useReducer,
   useState,
-  useRef,
   useMemo,
 } from "react";
 
@@ -23,6 +22,7 @@ export const BookmarkContext = createContext<ProviderProps>({
   fetchedBookmarks: [],
   loading: true,
 });
+
 export const BookmarkDispatchContext = createContext<Dispatch<BookmarkAction>>(
   () => {},
 );

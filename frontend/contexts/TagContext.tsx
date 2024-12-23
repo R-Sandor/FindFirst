@@ -37,9 +37,7 @@ function tagCntReducer(tagMap: Map<number, TagWithCnt>, action: TagAction) {
 
   switch (action.type) {
     case "add": {
-      console.log("add Tag");
       if (tagCnt) {
-        console.log(action.bookmark);
         addBkmkToTag(tagCnt, action.bookmark);
         newTagMap.set(tagId, {
           title: tagCnt.title,
@@ -56,7 +54,6 @@ function tagCntReducer(tagMap: Map<number, TagWithCnt>, action: TagAction) {
       return newTagMap;
     }
     case "delete": {
-      console.log("deleting");
       if (tagCnt && tagCnt.count > 1) {
         newTagMap.set(tagId, {
           title: tagCnt.title,
@@ -86,15 +83,12 @@ function addBkmkToTag(tagCnt: TagWithCnt, bkmk: Bookmark) {
     }
   }
   if (!fnd) {
-    console.log("Should add new bookmark");
     tagCnt?.associatedBkmks.push({ ...bkmk });
   }
 }
 
 function remBkmkFrmTag(tagCnt: TagWithCnt, bkmk: Bookmark) {
-  return tagCnt.associatedBkmks.filter((b) => {
-    b.title != bkmk.title;
-  });
+  return tagCnt.associatedBkmks.filter((b) => b.title !== bkmk.title);
 }
 
 export function useTags() {
