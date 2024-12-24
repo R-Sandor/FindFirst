@@ -1,16 +1,18 @@
 import { ChangeEventHandler } from "react";
 
+interface EditableFieldProps {
+  fieldValue: Readonly<string>;
+  changeEditMode: Readonly<Function>;
+  fieldName: Readonly<string>;
+  readonly onChange: ChangeEventHandler<HTMLInputElement>;
+}
+
 export default function EditableField({
   fieldValue,
   fieldName,
   changeEditMode,
   onChange,
-}: {
-  fieldValue: Readonly<string>;
-  changeEditMode: Readonly<Function>;
-  fieldName: Readonly<string>;
-  readonly onChange: ChangeEventHandler<HTMLInputElement>;
-}) {
+}: Readonly<EditableFieldProps>) {
   return (
     <input
       className="title-edit"

@@ -1,17 +1,25 @@
 import { NewBookmarkForm } from "@type/Bookmarks/NewBookmark";
 import { Dispatch, SetStateAction } from "react";
 
+interface ScrapableNewBookmarkToggleProp {
+  isScrapable: Readonly<boolean>;
+  readonly setScrapable: Dispatch<SetStateAction<boolean>>;
+  values: Readonly<NewBookmarkForm>;
+  readonly setValues: Dispatch<SetStateAction<NewBookmarkForm>>;
+}
+
+interface ScrapableBookmarkToggleProp {
+  isScrapable: Readonly<boolean>;
+  setScrapable: Readonly<Function>;
+  id: Readonly<number>;
+}
+
 export function ScrapableNewBookmarkToggle({
   isScrapable,
   setScrapable,
   values,
   setValues,
-}: {
-  isScrapable: Readonly<boolean>;
-  readonly setScrapable: Dispatch<SetStateAction<boolean>>;
-  values: Readonly<NewBookmarkForm>;
-  readonly setValues: Dispatch<SetStateAction<NewBookmarkForm>>;
-}) {
+}: Readonly<ScrapableNewBookmarkToggleProp>) {
   return (
     <div className="form-check form-switch isScrapable">
       <input
@@ -42,11 +50,7 @@ export function ScrapableBookmarkToggle({
   isScrapable,
   setScrapable,
   id,
-}: {
-  isScrapable: Readonly<boolean>;
-  setScrapable: Readonly<Function>;
-  id: Readonly<number>;
-}) {
+}: Readonly<ScrapableBookmarkToggleProp>) {
   console.log(isScrapable);
   return (
     <div className="form-check form-switch isScrapable">

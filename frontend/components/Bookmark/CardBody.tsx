@@ -4,18 +4,20 @@ import Bookmark from "@type/Bookmarks/Bookmark";
 import EditableField from "./EditableField";
 import { ScrapableBookmarkToggle } from "./ScrapableToggle";
 
+interface CardBodyProp {
+  bookmark: Readonly<Bookmark>;
+  inEditMode: Readonly<boolean>;
+  edit: Readonly<RefObject<Bookmark>>;
+  changeEditMode: Readonly<Function>;
+}
+
 export default function CardBody({
   bookmark,
   inEditMode,
   edit,
   changeEditMode,
-}: {
-  bookmark: Readonly<Bookmark>;
-  inEditMode: Readonly<boolean>;
-  edit: Readonly<RefObject<Bookmark>>;
-  changeEditMode: Readonly<Function>;
-}) {
-  const [isScrapable, setScrapable] = useState(bookmark.scrapable);
+}: Readonly<CardBodyProp>) {
+  const [isScrapable, setIsScrapable] = useState(bookmark.scrapable);
   return (
     <Card.Body>
       <Card.Title>
@@ -48,7 +50,7 @@ export default function CardBody({
             <ScrapableBookmarkToggle
               isScrapable={isScrapable}
               setScrapable={(scrapableUpd: boolean) => {
-                setScrapable(scrapableUpd);
+                setIsScrapable(scrapableUpd);
                 edit.current.scrapable = scrapableUpd;
               }}
               id={bookmark.id}

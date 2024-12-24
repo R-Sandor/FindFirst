@@ -3,11 +3,6 @@ import TagAction from "@/types/Bookmarks/TagAction";
 import { TagWithCnt } from "@/types/Bookmarks/Tag";
 import Bookmark from "@type/Bookmarks/Bookmark";
 
-export interface disapatchInterface {
-  tagsWithCnt: Map<number, TagWithCnt>;
-  action: TagAction;
-}
-
 export const TagsCntContext = createContext<Map<number, TagWithCnt>>(
   new Map<number, TagWithCnt>(),
 );
@@ -79,8 +74,8 @@ function addBkmkToTag(tagCnt: TagWithCnt, bkmk: Bookmark) {
   let fnd = false;
   if (tagCnt) {
     const associatedBkmks = tagCnt.associatedBkmks;
-    for (let i = 0; i < associatedBkmks.length; i++) {
-      if (associatedBkmks[i].title == bkmk.title) {
+    for (let associatedBkmk of associatedBkmks) {
+      if (associatedBkmk.title == bkmk.title) {
         fnd = true;
         break;
       }
