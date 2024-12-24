@@ -24,11 +24,16 @@ dependencies {
     // This dependency is used by the application.
     implementation(libs.guava)
 
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-
-    implementation group: 'com.microsoft.playwright', name: 'playwright', version: '1.41.0'
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
     annotationProcessor 'org.projectlombok:lombok'
+    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.34'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation group: 'com.microsoft.playwright', name: 'playwright', version: '1.41.0'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:3.2.0'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
 }
 
 jacoco {
