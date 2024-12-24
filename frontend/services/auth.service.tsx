@@ -1,6 +1,6 @@
 "use client";
 import axios from "axios";
-import { credentials } from "../app/account/login/page";
+import { Credentials } from "../app/account/login/page";
 export interface User {
   username: string;
   refreshToken: string;
@@ -38,7 +38,7 @@ class AuthService {
     return this.getUser() ? AuthStatus.Authorized : AuthStatus.Unauthorized;
   }
 
-  public async login(credentials: credentials): Promise<boolean> {
+  public async login(credentials: Credentials): Promise<boolean> {
     let success = false;
     await axios({
       url: SIGNIN_URL,

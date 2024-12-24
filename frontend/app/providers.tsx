@@ -3,12 +3,9 @@
 import { BookmarkProvider } from "@/contexts/BookmarkContext";
 import { TagCntProvider } from "contexts/TagContext";
 import { SelectedTagProvider } from "contexts/SelectedContext";
+import ChildrenProp from "@type/Common/ChildrenProp";
 
-export function Providers({
-  children,
-}: {
-  children: Readonly<React.ReactNode>;
-}) {
+export function Providers({ children }: Readonly<ChildrenProp>) {
   return (
     <BookmarkProvider>
       <TagCntProvider>
