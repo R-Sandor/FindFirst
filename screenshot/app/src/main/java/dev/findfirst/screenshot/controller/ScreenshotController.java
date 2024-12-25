@@ -65,9 +65,9 @@ public class ScreenshotController {
       // Use Chromium for this example; you can choose another browser type
       BrowserType browserType = playwright.chromium();
 
-      try (Browser browser = browserType.launch()) {
-        BrowserContext context = browser.newContext();
-        Page page = context.newPage();
+      try (Browser browser = browserType.launch();
+          BrowserContext context = browser.newContext();
+          Page page = context.newPage()) {
         page.navigate(url);
 
         var validated = new URL(url).toURI();
