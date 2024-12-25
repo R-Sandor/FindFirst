@@ -13,7 +13,7 @@ class SearchBkmkByTitleReqTest {
   void titleRequestsEquality() { 
     assertEquals(new SearchBkmkByTitleReq(new String[]{"java", "spring"}), new SearchBkmkByTitleReq(new String[]{"java", "spring"}));
     assertNotEquals(new SearchBkmkByTitleReq(new String[]{"java", "spring"}), new SearchBkmkByTitleReq(new String[]{"java"}));
-    assertNotEquals(new SearchBkmkByTitleReq(new String[]{"java", "spring"}), "String");
+    assertNotEquals("String", new SearchBkmkByTitleReq(new String[]{"java", "spring"}));
   }
 
   @Test 

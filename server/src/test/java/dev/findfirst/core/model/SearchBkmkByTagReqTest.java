@@ -12,6 +12,6 @@ class SearchBkmkByTagReqTest {
   void tagRequestsEqual() { 
     assertEquals(new SearchBkmkByTagReq(List.of("tech", "docs")), new SearchBkmkByTagReq(List.of("tech", "docs")));
     assertNotEquals(new SearchBkmkByTagReq(List.of("tech", "docs")), new SearchBkmkByTagReq(List.of("tech")));
-    assertNotEquals(new SearchBkmkByTagReq(List.of("tech", "docs")), "String");
+    assertNotEquals("String", new SearchBkmkByTagReq(List.of("tech", "docs")));
   }
 }
