@@ -13,6 +13,7 @@ plugins {
     id 'org.sonarqube' version '5.1.0.4882'
     id 'jacoco'
     id 'application'
+    id "com.diffplug.spotless" version "6.19.0"
 }
 
 repositories {
@@ -30,10 +31,44 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-validation:3.2.0'
     implementation group: 'com.microsoft.playwright', name: 'playwright', version: '1.41.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test:3.2.0'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
+}
+
+
+spotless {
+  // optional: limit format enforcement to just the files changed by this feature branch
+  //ratchetFrom 'origin/main'
+
+  format 'misc', {
+    // define the files to apply `misc` to
+    target '*.gradle', '*.md', '.gitignore'
+    // define the steps to apply to those files
+    trimTrailingWhitespace()
+    indentWithSpaces(2)
+    endWithNewline()
+    encoding 'UTF-8'
+  }
+
+  java {
+    // optional: you can specify import groups directly
+    // note: you can use an empty string for all the imports you didn't specify explicitly, and '\\#` prefix for static imports
+    importOrder('java', 'jakarta', 'dev.findfirst')
+    // optional: instead of specifying import groups directly you can specify a config file
+    // export config file: https://github.com/diffplug/spotless/blob/main/ECLIPSE_SCREENSHOTS.md#creating-spotlessimportorder
+
+    removeUnusedImports()
+
+    // Choose one of these formatters.
+    eclipse().configFile("eclipse-java-google-style.xml")
+
+    formatAnnotations()  // fixes formatting of type annotations, see below
+
+    //licenseHeader '/* (C) $YEAR */' // or licenseHeaderFile
+  }
 }
 
 jacoco {
@@ -42,7 +77,10 @@ jacoco {
 }
 
 tasks.test {
+    systemProperty 'spring.profiles.active', 'test'
     finalizedBy(tasks.jacocoTestReport) // report is always generated after tests run
+    useJUnitPlatform()
+    testLogging.showStandardStreams = true
 }
 
 tasks.jacocoTestReport {

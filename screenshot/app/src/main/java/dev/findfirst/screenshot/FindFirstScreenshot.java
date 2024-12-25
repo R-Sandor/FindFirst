@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class FindFirstScreenshot {
-    public static void main(String[] args) {
-        SpringApplication.run(FindFirstScreenshot.class, args);
-    }
+  public static void main(String[] args) {
+    SpringApplication.run(FindFirstScreenshot.class, args);
+  }
 }
