@@ -11,21 +11,17 @@ import jakarta.annotation.PostConstruct;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-import lombok.extern.slf4j.Slf4j;
-
-import org.apache.coyote.BadRequestException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.HttpClientErrorException.BadRequest;
-
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
-import com.microsoft.playwright.PlaywrightException;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
@@ -58,7 +54,8 @@ public class ScreenshotController {
   }
 
   @GetMapping("/screenshot")
-  public String takeScreenshot(@RequestParam @NotBlank @Size(min = 4, max = 50) String url) throws BadRequestException, MalformedURLException, URISyntaxException {
+  public String takeScreenshot(@RequestParam @NotBlank @Size(min = 4, max = 50) String url)
+      throws BadRequestException, MalformedURLException, URISyntaxException {
 
     if (!isValid(url)) {
       throw new BadRequestException();
@@ -82,6 +79,6 @@ public class ScreenshotController {
 
         return filePath.getFileName().toString();
       }
-    } 
+    }
   }
 }

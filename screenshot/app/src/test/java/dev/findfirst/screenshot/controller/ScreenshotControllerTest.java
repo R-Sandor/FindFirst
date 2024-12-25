@@ -18,7 +18,8 @@ class ScreenshotControllerTest {
   @Test
   void imageRequest() {
     Assertions.assertNotNull(restTemplate);
-    var resp = restTemplate.getForEntity("/screenshot?url={url}", byte[].class, "https://google.com");
+    var resp =
+        restTemplate.getForEntity("/screenshot?url={url}", byte[].class, "https://google.com");
     Assertions.assertEquals(HttpStatus.OK, resp.getStatusCode());
     Assertions.assertTrue(resp.getBody().length > 0);
   }
@@ -26,7 +27,8 @@ class ScreenshotControllerTest {
   @Test
   void bogus() {
     Assertions.assertNotNull(restTemplate);
-    var resp = restTemplate.getForEntity("/screenshot?url={url}", byte[].class, "htts:/bogusgoogle.com");
+    var resp =
+        restTemplate.getForEntity("/screenshot?url={url}", byte[].class, "htts:/bogusgoogle.com");
     Assertions.assertEquals(HttpStatus.BAD_REQUEST, resp.getStatusCode());
   }
 }
