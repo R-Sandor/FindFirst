@@ -35,6 +35,7 @@ export default function Searchbar() {
   const bkmkDispatch = useBookmarkDispatch();
   const [searchType, setSearchType] = useState(searchTypes[0]);
   const [searchText, setSearchText] = useState("");
+  const [lastSearched, setLastSearched] = useState("");
   const [strTags, setStrTags] = useState<string[]>([]);
   const [shouldSplit, setShouldSplit] = useState(false);
   const [modified, setModified] = useState(false);
@@ -88,7 +89,6 @@ export default function Searchbar() {
         trimmedInput.length &&
         !strTags.includes(trimmedInput)
       ) {
-        console.log(trimmedInput);
         e.preventDefault();
         setStrTags((prevState) => [...prevState, trimmedInput]);
         setSearchText("");
@@ -105,6 +105,24 @@ export default function Searchbar() {
         }
       }
     }
+  }
+
+  interface SearchHelper {
+    text: string;
+    wordsList: string[];
+  }
+
+  function cleanText(text: string, wordsList: string[]): SearchHelper {
+    const trimmed = text.trim();
+    const nextWordStart = trimmed.lastIndexOf(" ");
+    if (nextWordStart > 0) {
+      wordsList.push(trimmed.slice(nextWordStart + 1));
+      return cleanText(trimmed.slice(0, nextWordStart), wordsList);
+    } else if (trimmed.length > 0) {
+      wordsList.push(text);
+      return cleanText("", wordsList);
+    }
+    return { text: "", wordsList: wordsList };
   }
 
   function isSearchIsTypeSearchTypeChange(unmodifiedSearch: string): boolean {
@@ -141,12 +159,15 @@ export default function Searchbar() {
 
   async function search(searchText: string, searchType: SearchTypeEnum) {
     let searchData: Bookmark[] = [];
-    if (searchType == SearchTypeEnum.titleSearch) {
-      await api
-        .searchBookmarkByTitleKeywords(searchText.trim().replaceAll(" ", ","))
-        .then((successResult) => {
+
+    if (searchType == SearchTypeEnum.titleSearch && searchText.trim().length) {
+      const words = cleanText(searchText, []).wordsList.reverse().join(",");
+      if (words.length && words.trim() !== lastSearched.trim()) {
+        setLastSearched(words);
+        await api.searchBookmarkByTitleKeywords(words).then((successResult) => {
           searchData = successResult.data as Bookmark[];
         });
+      }
     } else if (searchType == SearchTypeEnum.tagSearch && strTags.length) {
       await api
         .searchBookmarkByTags(strTags.join(","))
@@ -156,10 +177,12 @@ export default function Searchbar() {
     } else if (searchType == SearchTypeEnum.textSearch) {
       await api.searchBookmarkByText(searchText);
     }
-    bkmkDispatch({
-      type: "search",
-      bookmarks: searchData,
-    });
+    if (searchData.length > 0) {
+      bkmkDispatch({
+        type: "search",
+        bookmarks: searchData,
+      });
+    }
   }
 
   return (
