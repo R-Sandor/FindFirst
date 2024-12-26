@@ -18,9 +18,9 @@ public class GlobalExceptionHandler {
   protected ResponseEntity<Map<String, String>> handleResponseStatusException(
       ResponseStatusException ex) {
     // Extract log message
-    String logMessage =
-        ex instanceof ErrorResponseException errorResponseException ? errorResponseException.getServerLogMessage()
-            : ex.getReason();
+    String logMessage = ex instanceof ErrorResponseException errorResponseException
+        ? errorResponseException.getServerLogMessage()
+        : ex.getReason();
     StackTraceElement[] stackTrace = ex.getStackTrace();
     // Get the first relevant stack trace element (usually the point where the exception was thrown)
     StackTraceElement origin = stackTrace.length > 0 ? stackTrace[0] : null;

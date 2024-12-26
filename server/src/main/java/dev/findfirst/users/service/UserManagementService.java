@@ -111,7 +111,7 @@ public class UserManagementService {
 
   public User getUserFromPasswordToken(String pwdToken) throws NoUserFoundException {
     var userId = passwordTokenRepository.findByTokenVal(pwdToken).getUser().getId();
-    if (userId == null) { 
+    if (userId == null) {
       throw new NoUserFoundException();
     }
     return userRepo.findById(userId).orElseThrow(NoUserFoundException::new);

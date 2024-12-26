@@ -141,8 +141,8 @@ public class BookmarkService {
     var screenshotUrlOpt = Optional.of("");
     boolean shouldScrape = reqBkmk.scrapable();
 
-    // Can we scrape this? 
-    if (reqBkmk.scrapable()) { 
+    // Can we scrape this?
+    if (reqBkmk.scrapable()) {
       shouldScrape = webCheckService.isScrapable(reqBkmk.url());
     }
 
@@ -169,9 +169,9 @@ public class BookmarkService {
 
     var savedTags = new HashSet<BookmarkTag>();
 
-    var newBkmkJdbc =
-        new BookmarkJDBC(null, user.getUserId(), new Date(), user.getUsername(), user.getUsername(),
-            new Date(), title, reqBkmk.url(), screenshotUrlOpt.orElse(""), reqBkmk.scrapable(), savedTags);
+    var newBkmkJdbc = new BookmarkJDBC(null, user.getUserId(), new Date(), user.getUsername(),
+        user.getUsername(), new Date(), title, reqBkmk.url(), screenshotUrlOpt.orElse(""),
+        reqBkmk.scrapable(), savedTags);
 
     var saved = bookmarkJDBCRepository.save(newBkmkJdbc);
     for (var tag : tags) {

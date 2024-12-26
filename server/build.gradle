@@ -114,10 +114,10 @@ application {
   mainClass = 'dev.findfirst.FindFirstApplication'
 }
 
-bootRun 
-{ 
+bootRun
+{
   String activeProfile = System.properties['spring.profiles.active']
-  if(activeProfile == null || activeProfile.isBlank()) { 
+  if(activeProfile == null || activeProfile.isBlank()) {
     systemProperty "spring.profiles.active", "dev";
   }
 }
