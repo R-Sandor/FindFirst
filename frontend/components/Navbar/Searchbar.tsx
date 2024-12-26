@@ -161,7 +161,7 @@ export default function Searchbar() {
     let searchData: Bookmark[] = [];
 
     if (searchType == SearchTypeEnum.titleSearch && searchText.trim().length) {
-      const words = cleanText(searchText, []).wordsList.reverse().join(",");
+      const words = cleanText(searchText, []).wordsList.join(",");
       if (words.length && words.trim() !== lastSearched.trim()) {
         setLastSearched(words);
         await api.searchBookmarkByTitleKeywords(words).then((successResult) => {
