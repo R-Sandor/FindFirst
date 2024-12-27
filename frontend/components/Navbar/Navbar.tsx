@@ -34,7 +34,11 @@ const GlobalNavbar: React.FC = () => {
       );
     } else {
       return (
-        <Button variant="secondary" onClick={handleLogoutClick}>
+        <Button
+          className="d-inline-block"
+          variant="secondary"
+          onClick={handleLogoutClick}
+        >
           Logout
         </Button>
       );
@@ -47,14 +51,14 @@ const GlobalNavbar: React.FC = () => {
 
   return (
     <Navbar
-      expand="lg"
+      expand="md"
       style={{ borderBottom: "1px solid", height: "60px" }}
       className="bg-body-tertiary"
     >
       <Container className={`${navbarView.navContainer}`}>
         <Navbar.Brand
           onClick={() => router.push("/")}
-          className={`mx-3 cursor-pointer ${navbarView.navBrand}`}
+          className={`cursor-pointer ${navbarView.navBrand}`}
         >
           <Image
             src="/basic-f-v2-dark-mode-v2-fav.png"
@@ -66,7 +70,7 @@ const GlobalNavbar: React.FC = () => {
           FindFirst
         </Navbar.Brand>
         {userAuth === AuthStatus.Authorized ? <Searchbar /> : null}
-        <div className={`mx-3 ${navbarView.navBtns}`}>
+        <div role="group" className={`btn-group  ${navbarView.navBtns}`}>
           {userAuth === AuthStatus.Authorized ? (
             <ImportModal
               file={undefined}
