@@ -70,7 +70,7 @@ const GlobalNavbar: React.FC = () => {
           FindFirst
         </Navbar.Brand>
         {userAuth === AuthStatus.Authorized ? <Searchbar /> : null}
-        <div role="group" className={`btn-group  ${navbarView.navBtns}`}>
+        <div className={`btn-group  ${navbarView.navBtns}`}>
           {userAuth === AuthStatus.Authorized ? (
             <ImportModal
               file={undefined}

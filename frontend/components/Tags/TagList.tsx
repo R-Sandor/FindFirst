@@ -6,6 +6,7 @@ import useAuth from "@components/UseAuth";
 import api from "@/api/Api";
 import { TagReqPayload, TagWithCnt } from "@/types/Bookmarks/Tag";
 import itemStyle from "./tag-list-item.module.scss";
+import menuStyle from "styles/tag.module.scss";
 import { useSelectedTags } from "@/contexts/SelectedContext";
 
 const TagList = () => {
@@ -94,7 +95,7 @@ const TagList = () => {
   return (
     <div>
       {!loading ? (
-        <ListGroup variant="flush" className="pt-3 w-full">
+        <ListGroup variant="flush" className={`${menuStyle.tagList}`}>
           {groupItems}
         </ListGroup>
       ) : (

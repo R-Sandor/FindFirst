@@ -17,7 +17,7 @@ export default function App() {
   return userAuth ? (
     <div className={`${navStyles.containerFluid} container-fluid`}>
       <div className="row">
-        <div className={`col-md-4 col-lg-3  ${tagStyles.tagList}`}>
+        <div className={`col-md-4 col-lg-3 ${tagStyles.tagList}`}>
           <TagList />
         </div>
         <div className="col-md-8 col-lg-9">

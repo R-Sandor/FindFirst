@@ -88,7 +88,12 @@ export default function ImportModal({
 
   return (
     <div className="float-left mr-4" data-testid={dataTestId}>
-      <button className="btn" data-testid="import-btn" onClick={handleShow}>
+      <button
+        className="btn"
+        type="button"
+        data-testid="import-btn"
+        onClick={handleShow}
+      >
         <i className="bi bi-file-earmark-arrow-up-fill"></i>
       </button>
 
