@@ -57,7 +57,7 @@ export default function PasswordReset() {
     actions: any,
   ) => {
     let tknVal = "";
-    if (typeof params.token == "string") {
+    if (params && typeof params.token == "string") {
       tknVal = params.token;
     }
     const tknPwd: TokenPassword = {

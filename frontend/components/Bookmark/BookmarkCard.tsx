@@ -203,7 +203,7 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
       <Card className={style.bookmarkCard}>
         <img
           className="card-img-top"
-          src={IMAGE_DIR + bookmark.screenshotUrl}
+          src={"api/screenshot/" + bookmark.screenshotUrl}
           alt="screenshot preview"
         />
         {plainCard()}
