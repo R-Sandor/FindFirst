@@ -14,7 +14,7 @@ export default async function handler(
 
   const publicPath = path.join(
     process.cwd(),
-    "/public/screenshots",
+    IMAGE_DIR ? IMAGE_DIR : "",
     screenshot as string,
   );
 
