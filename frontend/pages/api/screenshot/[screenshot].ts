@@ -15,14 +15,11 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   );
 
   if (fs.existsSync(publicPath) && screenshot && IMAGE_DIR) {
-    console.log("This is the path", publicPath);
     fs.readFile(publicPath, (err, data) => {
       if (err) {
-        console.log(err);
         res.status(500).json({ error: "Unable to read file" });
-        return;
       }
-      res.setHeader("Content-Type", "application/octet-stream");
+      res.setHeader("Content-Type", "image/png");
       res.setHeader(
         "Content-Disposition",
         `attachment; filename=${screenshot}`,
@@ -30,7 +27,13 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       res.status(200).send(data);
     });
   } else if (screenshot && IMAGE_DIR) {
-    console.log("Not found sending from api");
     res.status(200).send(SERVED_IMAGE + screenshot);
+  } else {
+    res.status(400).send("No files");
   }
 }
+export const config = {
+  api: {
+    externalResolver: true,
+  },
+};
