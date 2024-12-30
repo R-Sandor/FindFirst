@@ -7,7 +7,7 @@ services:
       - "3000:3000"
     restart: always
     environment:
-      - NEXT_PUBLIC_IMAGE_DIR=https://findfirst.dev/api/screenshots/
+      - NEXT_PUBLIC_IMAGE_DIR=screenshots/
   server:
     build:
       dockerfile: ../docker/server/Dockerfile

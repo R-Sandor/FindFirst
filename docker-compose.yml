@@ -4,7 +4,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - NEXT_PUBLIC_IMAGE_DIR=http://server:9000/api/screenshots/
+      - NEXT_PUBLIC_IMAGE_DIR=screenshots/
   server:
     image: ghcr.io/r-sandor/findfirst-server:latest
     ports:

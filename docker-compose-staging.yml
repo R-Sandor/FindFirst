@@ -1,4 +1,4 @@
-services: 
+services:
   frontend:
     build:
       dockerfile: ../docker/frontend/Dockerfile
@@ -11,23 +11,23 @@ services:
     volumes:
       - ./data/screenshots:/app/public/screenshots
   server:
-    build: 
+    build:
       dockerfile: ../docker/server/Dockerfile
       context: ./server
-    ports: 
-     - "9000:9000"
+    ports:
+      - "9000:9000"
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/findfirst
       - SPRING_PROFILES_ACTIVE=staging
   screenshot:
-    build: 
+    build:
       dockerfile: ../docker/screenshot/Dockerfile
       context: ./screenshot
-    ports: 
-     - "8080:8080"
+    ports:
+      - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=staging
-  db: 
+  db:
     image: postgres:16.2-alpine
     environment:
       - POSTGRES_USER=${POSTGRES_USER}
@@ -38,9 +38,9 @@ services:
       - pgdata:/var/lib/postgresql/data
     ports:
       - 5432:5432
-  mail: 
+  mail:
     image: mailhog/mailhog:latest
-    ports: 
+    ports:
       - 1025:1025
       - 8025:8025
 volumes:
