@@ -11,8 +11,6 @@ import Tag from "@/types/Bookmarks/Tag";
 import api from "@/api/Api";
 import CardBody from "./CardBody";
 
-const IMAGE_DIR = process.env.NEXT_PUBLIC_IMAGE_DIR;
-
 interface BookmarkProp {
   bookmark: Readonly<Bookmark>;
 }
