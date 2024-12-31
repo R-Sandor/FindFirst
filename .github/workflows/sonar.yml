@@ -53,13 +53,12 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 9
-      - name: cd to frontend
-        run: cd frontend
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: "pnpm"
+        run: cd frontend
       - name: Install dependencies
         run: pnpm install
       - name: Run coverage
