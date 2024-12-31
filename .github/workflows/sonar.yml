@@ -56,11 +56,13 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
+          projectBaseDir: frontend/
           node-version: 22
           cache: "pnpm"
-        run: cd frontend
       - name: Install dependencies
-        run: pnpm install
+        run: |
+          cd frontend
+          pnpm install
       - name: Run coverage
         run: pnpm run coverage
       - name: Scan Frontend
