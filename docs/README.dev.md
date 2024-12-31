@@ -11,7 +11,7 @@ Get acquainted with the UI. There are two ways to get started with FindFirst:
 - Docker Compose
 - Java 17
   - JDK & JRE
-- Node 20
+- Node 22
 - OpenSSL
 
 ## Building & Running locally
