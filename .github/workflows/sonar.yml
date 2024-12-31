@@ -46,9 +46,6 @@ jobs:
   sonarQubeFrontend:
     name: sonarQube Frontend
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
         with:
@@ -56,17 +53,11 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 9
-      - name: Install Node.js
-        run: cd frontend
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: "pnpm"
-      - name: Install dependencies
-        run: |
-          pnpm install
+          run_install: true
       - name: Run coverage
-        run: pnpm run coverage
+        run: |
+          cd frontend
+          pnpm run coverage
       - name: Scan Frontend
         uses: sonarsource/sonarqube-scan-action@master
         env:
