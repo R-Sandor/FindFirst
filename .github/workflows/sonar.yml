@@ -57,6 +57,7 @@ jobs:
         with:
           version: 9
       - name: Install Node.js
+        run: cd frontend
         uses: actions/setup-node@v4
         with:
           node-version: 22
