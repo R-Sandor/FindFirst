@@ -17,7 +17,6 @@ export default async function handler(
     IMAGE_DIR ? IMAGE_DIR : "../data/screenshots/",
     screenshot as string,
   );
-  console.log(publicPath);
 
   if (fs.existsSync(publicPath) && screenshot) {
     fs.readFile(publicPath, (err, data) => {

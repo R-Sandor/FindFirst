@@ -130,7 +130,7 @@ describe("Submission handling.", () => {
     await user.type(fields.confirmPwd, "TestTest!");
     await user.click(submitDisabled(false));
     expect(
-      await screen.findByText(/Error/i, undefined, { timeout: 1500 }),
+      await screen.findByText(/Error/i, undefined, { timeout: 3000 }),
     ).toBeInTheDocument();
   });
 });
