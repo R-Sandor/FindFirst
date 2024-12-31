@@ -246,7 +246,7 @@ public class BookmarkService {
         uniques.add(bkmk);
       }
     });
-    if (uniques.isEmpty()) {
+    if (!uniques.isEmpty()) {
       uniqueBkmksWithTag.add(new TagBookmarks(t.title(), uniques));
     }
   }
