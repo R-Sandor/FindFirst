@@ -14,9 +14,10 @@ export default async function handler(
 
   const publicPath = path.join(
     process.cwd(),
-    IMAGE_DIR ? IMAGE_DIR : "",
+    IMAGE_DIR ? IMAGE_DIR : "screenshots/",
     screenshot as string,
   );
+  console.log(publicPath);
 
   if (fs.existsSync(publicPath) && screenshot && IMAGE_DIR) {
     fs.readFile(publicPath, (err, data) => {
