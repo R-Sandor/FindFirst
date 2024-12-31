@@ -53,10 +53,11 @@ jobs:
       - uses: pnpm/action-setup@v4
         with:
           version: 9
+      - name: Change to frontend directory
+        run: cd frontend
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          projectBaseDir: frontend/
           node-version: 22
           cache: "pnpm"
       - name: Install dependencies
