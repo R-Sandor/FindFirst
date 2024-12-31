@@ -89,9 +89,6 @@ importers:
       react-toastify:
         specifier: ^10.0.6
         version: 10.0.6(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
-      react:16.1.0:
-        specifier: link:@testing-library/react:16.1.0
-        version: link:@testing-library/react:16.1.0
       rxjs:
         specifier: ^7.8.1
         version: 7.8.1

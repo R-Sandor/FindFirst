@@ -14,12 +14,12 @@ export default async function handler(
 
   const publicPath = path.join(
     process.cwd(),
-    IMAGE_DIR ? IMAGE_DIR : "screenshots/",
+    IMAGE_DIR ? IMAGE_DIR : "../data/screenshots/",
     screenshot as string,
   );
   console.log(publicPath);
 
-  if (fs.existsSync(publicPath) && screenshot && IMAGE_DIR) {
+  if (fs.existsSync(publicPath) && screenshot) {
     fs.readFile(publicPath, (err, data) => {
       if (err) {
         res.status(500).json({ error: "Unable to read file" });
@@ -31,11 +31,11 @@ export default async function handler(
       );
       res.status(200).send(data);
     });
-  } else if (screenshot && IMAGE_DIR) {
+  } else if (screenshot && SERVED_IMAGE) {
     const fetched = await axios.get(SERVED_IMAGE + screenshot);
     res.status(200).send(fetched);
   } else {
-    res.status(400).send("No files");
+    res.status(400).send("No file");
   }
 }
 export const config = {
