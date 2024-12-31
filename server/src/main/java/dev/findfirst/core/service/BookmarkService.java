@@ -317,20 +317,28 @@ public class BookmarkService {
     var bkmk =
         bookmarkJDBCRepository.findById(updateReq.id()).orElseThrow(BookmarkNotFoundException::new);
 
+    boolean allNull = true;
 
     if (updateReq.title() != null && !updateReq.title().isEmpty()) {
+      allNull = false;
       log.debug("Update request Title {}", updateReq.title());
       bkmk.setTitle(updateReq.title());
     }
 
     if (updateReq.isScrapable() != null) {
+      allNull = false;
       log.debug("is Scrapable {}", updateReq.isScrapable());
       bkmk.setScrapable(updateReq.isScrapable());
     }
 
     if (updateReq.url() != null && !updateReq.url().isBlank()) {
+      allNull = false;
       log.debug("Update request url {}", updateReq.url());
       bkmk.setUrl(updateReq.url());
+    }
+
+    if (allNull) {
+      return convertBookmarkJDBCToDTO(List.of(bkmk), uContext.getUserId()).get(0);
     }
 
     return convertBookmarkJDBCToDTO(List.of(bookmarkJDBCRepository.save(bkmk)),
