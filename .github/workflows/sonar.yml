@@ -58,6 +58,12 @@ jobs:
         run: |
           cd frontend
           pnpm run coverage
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          projectBaseDir: frontend/
+          node-version: 22
+          cache: "pnpm"
       - name: Scan Frontend
         uses: sonarsource/sonarqube-scan-action@master
         env:
