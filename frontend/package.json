@@ -11,7 +11,7 @@
     "lint": "next lint",
     "test": "vitest",
     "test-ui": "vitest --ui --coverage",
-    "coverage": "cp .env.dev .en && vitest run --coverage",
+    "coverage": "cp .env.dev .env && vitest run --coverage",
     "vitest-preview": "vitest-preview"
   },
   "dependencies": {
