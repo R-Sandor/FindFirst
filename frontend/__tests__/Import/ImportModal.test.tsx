@@ -3,6 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import authService, { User } from "@services/auth.service";
 import { bkmkResp } from "../data/SampleData";
 import ImportModal from "@components/Import/ImportModal";
+import { before } from "node:test";
 
 beforeEach(async () => {
   const user: User = { username: "jsmith", refreshToken: "blahblajhdfh34234" };
@@ -13,12 +14,6 @@ beforeEach(async () => {
 });
 
 describe("Reads from Stream", async () => {
-  vi.stubGlobal("fetch", async () => {
-    return {
-      body: new CustomReadable(bkmkResp).getStream(),
-    };
-  });
-
   const fs = require("fs");
   const readFile = async (path: any, callback: any) => {
     await fs.readFile(path, async (err: any, data: any) => {
@@ -30,10 +25,12 @@ describe("Reads from Stream", async () => {
     });
   };
 
-  it("should have 3 bookmarks", async () => {
-    // Not really reading the contents of the file. We could
-    // but for the purpose of this test a file needed to be passed
-    // to force an import.
+  before(async () => {
+    vi.stubGlobal("fetch", async () => {
+      return {
+        body: new CustomReadable(bkmkResp).getStream(),
+      };
+    });
     await readFile("./README.md", (data: File) => {
       const blob = new Blob([data], {});
       render(
@@ -42,6 +39,13 @@ describe("Reads from Stream", async () => {
         </div>,
       );
     });
+  });
+
+  it("should have 3 bookmarks", async () => {
+    // Not really reading the contents of the file. We could
+    // but for the purpose of this test a file needed to be passed
+    // to force an import.
+
     const bt = await screen.findByText(bkmkResp[0].title, undefined, {
       timeout: 5000,
     });

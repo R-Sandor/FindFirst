@@ -11,6 +11,8 @@ import MockAdapter from "axios-mock-adapter";
 import TokenPassword from "@type/account/TokenPassword";
 const user = userEvent.setup();
 
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+
 function getPasswordFields() {
   const inputs = screen.getAllByPlaceholderText(/Password/i);
   const pwd = inputs[0];
@@ -79,7 +81,6 @@ describe("Password field handling", () => {
 describe("Submission handling.", () => {
   test("Successful reset.", async () => {
     const axiosMock = new MockAdapter(axios);
-    const resetUrl = "http://localhost:9000/user/changePassword";
     const expectedResult = {
       text: "Password changed",
     };
@@ -89,7 +90,7 @@ describe("Submission handling.", () => {
       password: "TestTest!",
     };
 
-    axiosMock.onPost(resetUrl, tknPwd).reply(() => {
+    axiosMock.onPost(SERVER_URL, tknPwd).reply(() => {
       return [
         200,
         expectedResult,
@@ -106,7 +107,6 @@ describe("Submission handling.", () => {
 
   test("Unsuccessful reset.", async () => {
     const axiosMock = new MockAdapter(axios);
-    const resetUrl = "http://localhost:9000/user/changePassword";
     const expectedResult = {
       text: "Error: Token or password, try again.",
     };
@@ -115,7 +115,7 @@ describe("Submission handling.", () => {
       token: myParams.token,
       password: "TestTest!",
     };
-    axiosMock.onPost(resetUrl, tknPwd).reply(() => {
+    axiosMock.onPost(SERVER_URL, tknPwd).reply(() => {
       return [
         400,
         expectedResult,
