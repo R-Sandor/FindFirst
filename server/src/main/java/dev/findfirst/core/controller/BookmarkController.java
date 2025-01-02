@@ -5,7 +5,6 @@ import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import dev.findfirst.core.validation.BookmarkImportFileValidator;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -40,6 +39,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 
 @RestController
@@ -52,8 +52,6 @@ public class BookmarkController
   private final BookmarkService bookmarkService;
 
   private final TagService tagService;
-
-  private final BookmarkImportFileValidator bookmarkImportFileValidator;
 
   @GetMapping("/bookmarks")
   public ResponseEntity<List<BookmarkDTO>> getAllBookmarks()
@@ -199,9 +197,19 @@ public class BookmarkController
   public Flux<BookmarkDTO> importBookmarks(@RequestParam("file") MultipartFile file)
           throws IOException
   {
-    // Check file is valid
-    if (!bookmarkImportFileValidator.isFileValid(file)) {
-      throw new IllegalArgumentException("Invalid bookmark file uploaded.");
+    // 1) Check file size
+    final long MAX_FILE_SIZE = 250L * 1024 * 1024; // 250 MB in bytes
+    if (file.getSize() > MAX_FILE_SIZE) {
+      // 413: Payload Too Large
+      throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE,
+              "File too large. Maximum allowed size is 250MB");
+    }
+
+    // 2) Check file extension
+    String fileType = file.getContentType();
+    if (fileType == null || !fileType.equals("text/html")) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+              "Uploaded file must have .html extension");
     }
 
     // Read file content
