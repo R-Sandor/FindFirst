@@ -1,5 +1,6 @@
 package dev.findfirst.core.validation;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -10,6 +11,7 @@ import java.nio.charset.StandardCharsets;
  * Validator class to ensure that the uploaded bookmark file meets the required criteria.
  * It checks for file size, file type, and the structural validity of the HTML content.
  */
+@Component
 public class BookmarkImportFileValidator {
 
     private static final long MAX_FILE_SIZE_BYTES = 250L * 1024 * 1024; // 250 MB
