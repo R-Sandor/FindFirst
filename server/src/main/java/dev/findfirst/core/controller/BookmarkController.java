@@ -197,15 +197,14 @@ public class BookmarkController
   public Flux<BookmarkDTO> importBookmarks(@RequestParam("file") MultipartFile file)
           throws IOException
   {
-    // 1) Check file size
+    // Check file size
     final long MAX_FILE_SIZE = 250L * 1_000_000 / 8; // 250 Mb
     if (file.getSize() > MAX_FILE_SIZE) {
-      // 413: Payload Too Large
-      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+      throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE,
               "File too large. Maximum allowed size is 250MB");
     }
 
-    // 2) Check file extension
+    // Check file extension
     String originalName = file.getOriginalFilename();
     if (originalName == null || !originalName.toLowerCase().endsWith(".html")) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
