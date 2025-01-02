@@ -42,9 +42,10 @@ describe("Reads from Stream", async () => {
         </div>,
       );
     });
-    await waitFor(() => {
-      expect(screen.getByText(bkmkResp[0].title)).toBeInTheDocument();
+    const bt = await screen.findByText(bkmkResp[0].title, undefined, {
+      timeout: 5000,
     });
+    expect(bt).toBeInTheDocument();
     expect(screen.getAllByTestId(/imported-bkmk-/i).length).toEqual(3);
   });
 });
