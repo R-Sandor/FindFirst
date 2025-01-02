@@ -64,7 +64,6 @@ export default function PasswordReset() {
       token: tknVal,
       password: passwordConfirm.password,
     };
-    console.log(SERVER_URL);
     axios.post(SERVER_URL + "changePassword", tknPwd).then(
       (response) => {
         setSubmitMessage(response.data.text);
