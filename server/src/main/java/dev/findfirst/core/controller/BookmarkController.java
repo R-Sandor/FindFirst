@@ -198,16 +198,16 @@ public class BookmarkController
           throws IOException
   {
     // 1) Check file size
-    final long MAX_FILE_SIZE = 250L * 1024 * 1024; // 250 MB in bytes
+    final long MAX_FILE_SIZE = 250L * 1_000_000 / 8; // 250 Mb in bytes
     if (file.getSize() > MAX_FILE_SIZE) {
       // 413: Payload Too Large
-      throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE,
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
               "File too large. Maximum allowed size is 250MB");
     }
 
     // 2) Check file extension
-    String fileType = file.getContentType();
-    if (fileType == null || !fileType.equals("text/html")) {
+    String originalName = file.getOriginalFilename();
+    if (originalName == null || !originalName.toLowerCase().endsWith(".html")) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
               "Uploaded file must have .html extension");
     }
