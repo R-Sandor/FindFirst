@@ -15,7 +15,29 @@ import java.nio.charset.StandardCharsets;
 public class BookmarkImportFileValidator {
 
     private static final long MAX_FILE_SIZE_BYTES = 250L * 1024 * 1024; // 250 MB
-    private static final String HTML_PATTERN = ".*<html.*?>.*</html>.*";
+    private static final String HTML_PATTERN =
+            // DOTALL + CASE-INSENSITIVE
+            "(?is)^" +
+                    "<html>.*?" +                // Must start with <html>
+                    "<body>.*?" +               // Has a <body>
+                    "<h1>Bookmarks</h1>.*?" +    // Has <h1>Bookmarks</h1>
+                    "<dl>\\s*<p>" +             // The main <DL><p> container
+                    "(" +                      // (Capture #1) For all categories
+                    "(?:"
+                    + "<dt>\\s*<h3\\s+add_date=\"\\d+\"\\s+last_modified=\"\\d+\"[^>]*>.*?</h3>\\s*" // <H3> w/ attributes
+                    + "<dl>\\s*<p>\\s*"
+                    + "(?:"                   // 0 or more <DT><A ...> bookmarks
+                    +   "<dt>\\s*<a\\s+href=\"https?://[^\"<>]+\"[^>]*>.*?</a>\\s*</dt>"
+                    + ")*"
+                    + "</dl>\\s*<p>"
+                    + "</dt>"
+                    + ")+"
+                    + ")" +
+                    "</dl>\\s*" +               // Closing </dl> for the main container
+                    "</body>.*?" +              // Closing </body>
+                    "</html>" +                 // Closing </html>
+                    "$";
+
 
     /**
      * Validates the uploaded bookmark file by checking its size, type, and HTML structure.
