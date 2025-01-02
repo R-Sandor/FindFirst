@@ -376,44 +376,56 @@ class BookmarkControllerTest {
   }
 
   /**
-   * Test importing a file with an invalid content type (not text/html).
+   * Tests importing a file with an invalid content type (not text/html).
    */
   @Test
   void importBookmarksWithInvalidContentType() throws IOException {
-    // Create a small byte array with text/plain content type
+    // Create a byte array with text/plain content type
     byte[] fileContent = "<html><body>Test Content</body></html>".getBytes(StandardCharsets.UTF_8);
 
+    // Build the multipart request with the invalid file
     var bodyBuilder = new MultipartBodyBuilder();
-    bodyBuilder.part("file", fileContent).filename("invalid_file.txt").contentType(MediaType.TEXT_PLAIN);
+    bodyBuilder.part("file", fileContent)
+            .filename("invalid_file.txt")
+            .contentType(MediaType.TEXT_PLAIN);
 
+    // Set up headers with basic authentication
     HttpHeaders headers = new HttpHeaders();
-    // Test user authentication
     headers.setBasicAuth("jsmith", "test");
-    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity = new HttpEntity<>(bodyBuilder.build(), headers);
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
+            new HttpEntity<>(bodyBuilder.build(), headers);
 
     // Perform the POST request to import bookmarks
-    ResponseEntity<String> response = restTemplate.exchange(bookmarkURI + "/import", HttpMethod.POST, requestEntity, String.class);
+    ResponseEntity<String> response = restTemplate.exchange(
+            bookmarkURI + "/import",
+            HttpMethod.POST,
+            requestEntity,
+            String.class
+    );
 
     // Assert that the response status is 400 Bad Request
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+    // Assert the error message in the response body
     assertEquals("{\"error\":\"Uploaded file must have .html extension\"}", response.getBody());
   }
 
   /**
-   * Test importing a file that exceeds the maximum allowed size of 250Mb.
+   * Tests importing a file that exceeds the maximum allowed size of 250MB.
    */
   @Test
   void importBookmarksWithFileTooLarge() throws IOException {
-    // Create a byte array slightly larger than 250Mb (e.g., 31,250,001 bytes)
+    // Create a byte array slightly larger than 250MB (31,250,001 bytes)
     byte[] largeFile = new byte[31_250_001];
 
+    // Build the multipart request with the large file
     var bodyBuilder = new MultipartBodyBuilder();
     bodyBuilder.part("file", largeFile)
             .filename("large_file.html")
             .contentType(MediaType.TEXT_HTML);
 
+    // Set up headers with basic authentication
     HttpHeaders headers = new HttpHeaders();
-    // Test user authentication
     headers.setBasicAuth("jsmith", "test");
     HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
             new HttpEntity<>(bodyBuilder.build(), headers);
@@ -428,6 +440,8 @@ class BookmarkControllerTest {
 
     // Assert that the response status is 413 Payload Too Large
     assertEquals(HttpStatus.PAYLOAD_TOO_LARGE, response.getStatusCode());
+
+    // Assert the error message in the response body
     assertEquals("{\"error\":\"File too large. Maximum allowed size is 250MB\"}", response.getBody());
   }
 
