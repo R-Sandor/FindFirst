@@ -92,7 +92,7 @@ public class BookmarkController {
    * Partial update to a bookmark.
    *
    * @param updateBookmarkReq contains all the params accepted; The id, and title are required
-   *                          fields.
+   *        fields.
    * @throws BookmarkNotFoundException
    */
   @PatchMapping("/bookmark")
