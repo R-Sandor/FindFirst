@@ -399,6 +399,38 @@ class BookmarkControllerTest {
     assertEquals("{\"error\":\"Uploaded file must have .html extension\"}", response.getBody());
   }
 
+  /**
+   * Test importing a file that exceeds the maximum allowed size of 250Mb.
+   */
+  @Test
+  void importBookmarksWithFileTooLarge() throws IOException {
+    // Create a byte array slightly larger than 250Mb (e.g., 31,250,001 bytes)
+    byte[] largeFile = new byte[31_250_001];
+
+    var bodyBuilder = new MultipartBodyBuilder();
+    bodyBuilder.part("file", largeFile)
+            .filename("large_file.html")
+            .contentType(MediaType.TEXT_HTML);
+
+    HttpHeaders headers = new HttpHeaders();
+    // Test user authentication
+    headers.setBasicAuth("jsmith", "test");
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
+            new HttpEntity<>(bodyBuilder.build(), headers);
+
+    // Perform the POST request to import bookmarks
+    ResponseEntity<String> response = restTemplate.exchange(
+            bookmarkURI + "/import",
+            HttpMethod.POST,
+            requestEntity,
+            String.class
+    );
+
+    // Assert that the response status is 413 Payload Too Large
+    assertEquals(HttpStatus.PAYLOAD_TOO_LARGE, response.getStatusCode());
+    assertEquals("{\"error\":\"File too large. Maximum allowed size is 250MB\"}", response.getBody());
+  }
+
   @Test
   void jdbcRepo() {
     long count = bookmarkJDBCRepository.count();
