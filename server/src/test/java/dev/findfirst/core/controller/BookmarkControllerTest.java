@@ -40,6 +40,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -372,6 +373,30 @@ class BookmarkControllerTest {
     client.post().uri(bookmarkURI + "/import").accept(MediaType.APPLICATION_NDJSON)
         .cookie("findfirst", cookie).bodyValue(bodyBuilder.build()).exchange().expectStatus().isOk()
         .expectBodyList(BookmarkDTO.class).hasSize(3);
+  }
+
+  /**
+   * Test importing a file with an invalid content type (not text/html).
+   */
+  @Test
+  void importBookmarksWithInvalidContentType() throws IOException {
+    // Create a small byte array with text/plain content type
+    byte[] fileContent = "<html><body>Test Content</body></html>".getBytes(StandardCharsets.UTF_8);
+
+    var bodyBuilder = new MultipartBodyBuilder();
+    bodyBuilder.part("file", fileContent).filename("invalid_file.txt").contentType(MediaType.TEXT_PLAIN);
+
+    HttpHeaders headers = new HttpHeaders();
+    // Test user authentication
+    headers.setBasicAuth("jsmith", "test");
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity = new HttpEntity<>(bodyBuilder.build(), headers);
+
+    // Perform the POST request to import bookmarks
+    ResponseEntity<String> response = restTemplate.exchange(bookmarkURI + "/import", HttpMethod.POST, requestEntity, String.class);
+
+    // Assert that the response status is 400 Bad Request
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("{\"error\":\"Uploaded file must have .html extension\"}", response.getBody());
   }
 
   @Test

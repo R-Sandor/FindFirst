@@ -198,7 +198,7 @@ public class BookmarkController
           throws IOException
   {
     // 1) Check file size
-    final long MAX_FILE_SIZE = 250L * 1_000_000 / 8; // 250 Mb in bytes
+    final long MAX_FILE_SIZE = 250L * 1_000_000 / 8; // 250 Mb
     if (file.getSize() > MAX_FILE_SIZE) {
       // 413: Payload Too Large
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
