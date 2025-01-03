@@ -3,6 +3,8 @@ package dev.findfirst.core.controller;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import jakarta.validation.Valid;
@@ -193,6 +195,14 @@ public class BookmarkController {
     if (originalName == null || !originalName.toLowerCase().endsWith(".html")) {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
               "Uploaded file must have .html extension");
+    }
+
+    // Check content type
+    List<String> supportedContentTypes = Arrays.asList("text/html", "text/plain");
+    String contentType = file.getContentType();
+    if (!supportedContentTypes.contains(contentType)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+              "Unsupported content type. Supported types are text/html and text/plain.");
     }
 
     // Read file content
