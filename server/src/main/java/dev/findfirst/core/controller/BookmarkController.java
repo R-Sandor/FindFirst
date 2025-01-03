@@ -3,6 +3,7 @@ package dev.findfirst.core.controller;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 import jakarta.validation.Valid;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 
 @RestController
@@ -89,7 +91,7 @@ public class BookmarkController {
 
   /**
    * Partial update to a bookmark.
-   * 
+   *
    * @param updateBookmarkReq contains all the params accepted; The id, and title are required
    *        fields.
    * @throws BookmarkNotFoundException
@@ -180,7 +182,29 @@ public class BookmarkController {
   @PostMapping(value = "bookmark/import", produces = MediaType.APPLICATION_NDJSON_VALUE)
   public Flux<BookmarkDTO> importBookmarks(@RequestParam("file") MultipartFile file)
       throws IOException {
+    // Check file size
+    final long MAX_FILE_SIZE = 250L * 1_000_000 / 8; // 250 Mb
+    if (file.getSize() > MAX_FILE_SIZE) {
+      throw new ResponseStatusException(HttpStatus.PAYLOAD_TOO_LARGE,
+          "File too large. Maximum allowed size is 250MB");
+    }
 
+    // Check file extension
+    String originalName = file.getOriginalFilename();
+    if (originalName == null || !originalName.toLowerCase().endsWith(".html")) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+          "Uploaded file must have .html extension");
+    }
+
+    // Check content type
+    List<String> supportedContentTypes = Arrays.asList("text/html", "text/plain");
+    String contentType = file.getContentType();
+    if (!supportedContentTypes.contains(contentType)) {
+      throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+          "Unsupported content type. Supported types are text/html and text/plain.");
+    }
+
+    // Read file content
     var fBytes = file.getBytes();
     String docStr = new String(fBytes, StandardCharsets.UTF_8);
 
