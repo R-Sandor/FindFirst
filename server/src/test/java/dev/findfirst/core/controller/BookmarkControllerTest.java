@@ -40,6 +40,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.servlet.client.MockMvcWebTestClient;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.context.WebApplicationContext;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -359,7 +360,8 @@ class BookmarkControllerTest {
     Mockito.when(securityContext.getAuthentication())
         .thenReturn(new UserAuthenticationToken(authentication, 0, null, 1));
 
-    bodyBuilder.part("file", fileContent).filename("BookmarksExample.html");
+    bodyBuilder.part("file", fileContent).filename("BookmarksExample.html")
+        .contentType(MediaType.TEXT_HTML);
     HttpHeaders headers = new HttpHeaders();
     // test user
     headers.setBasicAuth("jsmith", "test");
@@ -372,6 +374,159 @@ class BookmarkControllerTest {
     client.post().uri(bookmarkURI + "/import").accept(MediaType.APPLICATION_NDJSON)
         .cookie("findfirst", cookie).bodyValue(bodyBuilder.build()).exchange().expectStatus().isOk()
         .expectBodyList(BookmarkDTO.class).hasSize(3);
+  }
+
+  /**
+   * Tests importing a file with an invalid content type (not text/html).
+   */
+  @Test
+  void importBookmarksWithInvalidContentType() throws IOException {
+    // Create a byte array with text/plain content type
+    byte[] fileContent = "<html><body>Test Content</body></html>".getBytes(StandardCharsets.UTF_8);
+
+    // Build the multipart request with the invalid file
+    var bodyBuilder = new MultipartBodyBuilder();
+    bodyBuilder.part("file", fileContent).filename("invalid_file.txt")
+        .contentType(MediaType.TEXT_PLAIN);
+
+    // Set up headers with basic authentication
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBasicAuth("jsmith", "test");
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
+        new HttpEntity<>(bodyBuilder.build(), headers);
+
+    // Perform the POST request to import bookmarks
+    ResponseEntity<String> response = restTemplate.exchange(bookmarkURI + "/import",
+        HttpMethod.POST, requestEntity, String.class);
+
+    // Assert that the response status is 400 Bad Request
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+    // Assert the error message in the response body
+    assertEquals("{\"error\":\"Uploaded file must have .html extension\"}", response.getBody());
+  }
+
+  /**
+   * Tests importing a file that exceeds the maximum allowed size of 250MB.
+   */
+  @Test
+  void importBookmarksWithFileTooLarge() throws IOException {
+    // Create a byte array slightly larger than 250MB (31,250,001 bytes)
+    byte[] largeFile = new byte[31_250_001];
+
+    // Build the multipart request with the large file
+    var bodyBuilder = new MultipartBodyBuilder();
+    bodyBuilder.part("file", largeFile).filename("large_file.html")
+        .contentType(MediaType.TEXT_HTML);
+
+    // Set up headers with basic authentication
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBasicAuth("jsmith", "test");
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
+        new HttpEntity<>(bodyBuilder.build(), headers);
+
+    // Perform the POST request to import bookmarks
+    ResponseEntity<String> response = restTemplate.exchange(bookmarkURI + "/import",
+        HttpMethod.POST, requestEntity, String.class);
+
+    // Assert that the response status is 413 Payload Too Large
+    assertEquals(HttpStatus.PAYLOAD_TOO_LARGE, response.getStatusCode());
+
+    // Assert the error message in the response body
+    assertEquals("{\"error\":\"File too large. Maximum allowed size is 250MB\"}",
+        response.getBody());
+  }
+
+  /**
+   * Tests importing a .html file with an unsupported content type (e.g., application/json).
+   */
+  @Test
+  void importBookmarksWithUnsupportedContentType() throws IOException {
+    // Create a byte array with application/json content
+    byte[] fileContent = "{\"bookmarks\": []}".getBytes(StandardCharsets.UTF_8);
+
+    // Build the multipart request with a .html extension but unsupported content type
+    var bodyBuilder = new MultipartBodyBuilder();
+    bodyBuilder.part("file", fileContent).filename("invalid_content.html")
+        .contentType(MediaType.APPLICATION_JSON); // Unsupported content type
+
+    // Set up headers with basic authentication
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBasicAuth("jsmith", "test");
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
+        new HttpEntity<>(bodyBuilder.build(), headers);
+
+    // Perform the POST request to import bookmarks
+    ResponseEntity<String> response = restTemplate.exchange(bookmarkURI + "/import",
+        HttpMethod.POST, requestEntity, String.class);
+
+    // Assert that the response status is 400 Bad Request
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+    // Assert the error message in the response body
+    assertEquals(
+        "{\"error\":\"Unsupported content type. Supported types are text/html and text/plain.\"}",
+        response.getBody());
+  }
+
+  /**
+   * Tests importing a .html file without specifying a content type.
+   */
+  @Test
+  void importBookmarksWithMissingContentType() throws IOException {
+    // Create a byte array with valid HTML content
+    byte[] fileContent = "<html><body>Test Content</body></html>".getBytes(StandardCharsets.UTF_8);
+
+    // Build the multipart request with a .html extension but no content type
+    var bodyBuilder = new MultipartBodyBuilder();
+    bodyBuilder.part("file", fileContent).filename("no_content_type.html"); // No content type
+                                                                            // specified
+
+    // Set up headers with basic authentication
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBasicAuth("jsmith", "test");
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
+        new HttpEntity<>(bodyBuilder.build(), headers);
+
+    // Perform the POST request to import bookmarks
+    ResponseEntity<String> response = restTemplate.exchange(bookmarkURI + "/import",
+        HttpMethod.POST, requestEntity, String.class);
+
+    // Assert that the response status is 400 Bad Request
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+    // Assert the error message in the response body
+    assertEquals(
+        "{\"error\":\"Unsupported content type. Supported types are text/html and text/plain.\"}",
+        response.getBody());
+  }
+
+  /**
+   * Tests importing a .html file with text/plain content type.
+   */
+  @Test
+  void importBookmarksWithTextPlainContentType() throws IOException {
+    // Create a byte array with text/plain content
+    byte[] fileContent =
+        "<html><body>Plain Text Content</body></html>".getBytes(StandardCharsets.UTF_8);
+
+    // Build the multipart request with a .html extension and text/plain content type
+    var bodyBuilder = new MultipartBodyBuilder();
+    bodyBuilder.part("file", fileContent).filename("plainText.html")
+        .contentType(MediaType.TEXT_PLAIN); // Supported content type
+
+    // Set up headers with basic authentication
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBasicAuth("jsmith", "test");
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
+        new HttpEntity<>(bodyBuilder.build(), headers);
+
+    // Perform the POST request to import bookmarks
+    ResponseEntity<String> response = restTemplate.exchange(bookmarkURI + "/import",
+        HttpMethod.POST, requestEntity, String.class);
+
+    // Assert that the response status is 200 OK
+    assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 
   @Test
