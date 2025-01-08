@@ -254,6 +254,10 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
               <button
                 key={tag}
                 onClick={() => deleteTag(tag)}
+                onContextMenu={(e) => {
+                  e.preventDefault();
+                  deleteTag(tag);
+                }}
                 type="button"
                 className={style.pillButton}
                 data-testid={`${tag}-tag-${bookmark.id}-bk`}
