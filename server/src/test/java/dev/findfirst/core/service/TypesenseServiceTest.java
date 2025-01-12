@@ -1,33 +1,23 @@
 package dev.findfirst.core.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.when;
 
-import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+
+import dev.findfirst.core.model.jdbc.TypesenseInitRecord;
+import dev.findfirst.core.repository.jdbc.TypsenseInitializationRepository;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.typesense.api.ApiCall;
 import org.typesense.api.Client;
 import org.typesense.api.Collections;
-import org.typesense.api.Configuration;
-import org.typesense.api.FieldTypes;
 import org.typesense.model.CollectionResponse;
 import org.typesense.model.CollectionSchema;
-import org.typesense.model.Field;
-import org.typesense.resources.Node;
-
-import dev.findfirst.core.model.jdbc.TypesenseInitRecord;
-import dev.findfirst.core.repository.jdbc.TypsenseInitializationRepository;
 
 /**
  * Tests for typsense operations such as intitilization, queries/imports.
@@ -61,9 +51,7 @@ class TypesenseServiceTest {
 
   @Test
   void initializeRecord() throws Exception {
-    var d = new Date();
-
-    var qRecord = new TypesenseInitRecord(1, "init", null, false, d);
+    var qRecord = new TypesenseInitRecord(1, "init", null, false, new Date());
     when(typesenseRepo.findByScriptName("init")).thenReturn(null);
     when(typesenseRepo.save(any(TypesenseInitRecord.class))).thenReturn(qRecord);
 
@@ -72,6 +60,17 @@ class TypesenseServiceTest {
     var status = typesense.createSchema();
     assertEquals("Successful initialization", status);
   }
-  // Use the file to test typesense service.
-  // Mock saving the initialized file.
+
+  @Test
+  void initializationWasNotFinished() throws Exception {
+    var qRecord = new TypesenseInitRecord(1, "init", null, false, new Date());
+    var postInitialization = new TypesenseInitRecord(1, "init", null, true, new Date());
+    when(typesenseRepo.findByScriptName("init")).thenReturn(qRecord);
+    when(typesenseRepo.save(any(TypesenseInitRecord.class))).thenReturn(postInitialization);
+
+    when(client.collections()).thenReturn(collections);
+    when(collections.create(any(CollectionSchema.class))).thenReturn(collectionResponse);
+    var status = typesense.createSchema();
+    assertEquals("Successful initialization", status);
+  }
 }
