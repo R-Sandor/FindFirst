@@ -54,7 +54,7 @@ public class ScreenshotController {
   }
 
   @GetMapping("/screenshot")
-  public String takeScreenshot(@RequestParam @NotBlank @Size(min = 4, max = 50) String url)
+  public String takeScreenshot(@RequestParam @NotBlank @Size(min = 4, max = 512) String url)
       throws BadRequestException, MalformedURLException, URISyntaxException {
 
     if (!isValid(url)) {
