@@ -22,6 +22,8 @@ public class SearchService {
 
   private final UserContext userContext;
 
+  private final TypesenseService typesense;
+
   public List<BookmarkDTO> titleKeyword(String[] keywords) {
     StringJoiner joiner = new StringJoiner(" | ");
     for (String kw : keywords) {
@@ -36,6 +38,13 @@ public class SearchService {
     var userID = userContext.getUserId();
     return bookmarkService.convertBookmarkJDBCToDTO(bookmarkRepo
         .findBookmarkByTagTitle(tags.stream().map(String::toLowerCase).toList(), userID), userID);
+  }
+
+  public List<BookmarkDTO> bookmarksByText(String text) {
+    var userID = userContext.getUserId();
+    var bookmarks = bookmarkRepo.findAllById(typesense.search(text));
+    return bookmarkService.convertBookmarkJDBCToDTO(bookmarks, userID);
+
   }
 
 }

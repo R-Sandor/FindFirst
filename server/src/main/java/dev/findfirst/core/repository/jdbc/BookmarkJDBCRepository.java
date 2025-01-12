@@ -23,7 +23,6 @@ public interface BookmarkJDBCRepository
 
   public Page<BookmarkJDBC> findAllByUserId(int userId, Pageable pageable);
 
-
   @Query("SELECT b FROM Bookmark b WHERE b.screenshotUrl IS NULL OR TRIM(b.screenshotUrl)=''")
   List<BookmarkJDBC> findBookmarksWithEmptyOrBlankScreenShotUrl();
 

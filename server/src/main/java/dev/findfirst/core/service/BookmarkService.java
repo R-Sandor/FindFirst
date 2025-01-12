@@ -60,6 +60,8 @@ public class BookmarkService {
 
   private final UserManagementService userService;
 
+  private final TypesenseService typesense;
+
   public List<BookmarkDTO> listJDBC() {
     return convertBookmarkJDBCToDTO(
         bookmarkJDBCRepository.findAllBookmarksByUser(uContext.getUserId()), uContext.getUserId());
@@ -156,7 +158,7 @@ public class BookmarkService {
       }
     }
 
-    Document retDoc;
+    Document retDoc = null;
     String title = "";
     var screenshotUrlOpt = Optional.of("");
     boolean shouldScrape = reqBkmk.scrapable();
@@ -174,7 +176,6 @@ public class BookmarkService {
         log.debug("Response: {}\tTitle: {}", retDoc.connection().response().statusMessage(),
             retDoc.title());
         title = !retDoc.title().isEmpty() ? retDoc.title() : reqBkmk.title();
-
       } catch (IOException e) {
         log.error(e.toString());
       }
@@ -194,6 +195,12 @@ public class BookmarkService {
         reqBkmk.scrapable(), savedTags);
 
     var saved = bookmarkJDBCRepository.save(newBkmkJdbc);
+
+    // After saving to PostgresDB grab record to associate document in typesense.
+    if (shouldScrape) {
+      typesense.addText(saved, retDoc);
+    }
+
     for (var tag : tags) {
       var bt = new BookmarkTag(saved.getId(), tag);
       savedTags.add(bt);

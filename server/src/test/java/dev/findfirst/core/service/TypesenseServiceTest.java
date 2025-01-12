@@ -28,7 +28,7 @@ class TypesenseServiceTest {
   private TypsenseInitializationRepository typesenseRepo;
 
   @InjectMocks
-  private TypesesenseService typesense;
+  private TypesenseService typesense;
 
   @Mock
   Client client;
@@ -72,5 +72,10 @@ class TypesenseServiceTest {
     when(collections.create(any(CollectionSchema.class))).thenReturn(collectionResponse);
     var status = typesense.createSchema();
     assertEquals("Successful initialization", status);
+  }
+
+  @Test
+  void storeScrapedText() throws Exception {
+
   }
 }
