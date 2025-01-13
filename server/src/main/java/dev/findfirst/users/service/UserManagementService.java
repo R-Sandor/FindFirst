@@ -81,6 +81,16 @@ public class UserManagementService {
     saveUser(user);
   }
 
+  public void changeUserPhoto(User user, String userPhoto) {
+    user.setUserPhoto(userPhoto);
+    saveUser(user);
+  }
+
+  public void removeUserPhoto(User user) {
+    user.setUserPhoto(null);
+    saveUser(user);
+  }
+
   public String createVerificationToken(User user) {
     String token = UUID.randomUUID().toString();
     Token verificationToken = new Token(AggregateReference.to(user.getUserId()), token);
