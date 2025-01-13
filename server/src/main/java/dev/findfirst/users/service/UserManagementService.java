@@ -1,5 +1,6 @@
 package dev.findfirst.users.service;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.rmi.UnexpectedException;
 import java.time.Instant;
@@ -82,11 +83,20 @@ public class UserManagementService {
   }
 
   public void changeUserPhoto(User user, String userPhoto) {
+    log.info("Changing profile picture for user ID {}: {}", user.getUserId(), userPhoto);
     user.setUserPhoto(userPhoto);
     saveUser(user);
   }
 
   public void removeUserPhoto(User user) {
+    String userPhoto = user.getUserPhoto();
+    if (userPhoto != null) {
+      File photoFile = new File(userPhoto);
+      if (photoFile.exists()) {
+        log.info("Removing profile picture for user ID {}: {}", user.getUserId(), userPhoto);
+        photoFile.delete();
+      }
+    }
     user.setUserPhoto(null);
     saveUser(user);
   }
