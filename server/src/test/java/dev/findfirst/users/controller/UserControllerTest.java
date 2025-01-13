@@ -3,6 +3,9 @@ package dev.findfirst.users.controller;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Optional;
 import java.util.Properties;
@@ -16,6 +19,9 @@ import dev.findfirst.users.model.user.TokenPassword;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -28,7 +34,10 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -43,10 +52,15 @@ class UserControllerTest {
 
   final TestRestTemplate restTemplate;
 
+  @Mock
+  private UserManagementService userManagementService;
+
   @Autowired
   UserControllerTest(TestRestTemplate tRestTemplate) {
     this.restTemplate = tRestTemplate;
   }
+
+  private MockMvc mockMvc;
 
   @Container
   @ServiceConnection
@@ -181,4 +195,39 @@ class UserControllerTest {
         HttpMethod.POST, new HttpEntity<>(new HttpHeaders()), String.class, refreshTkn);
     assertEquals(HttpStatus.OK, resp.getStatusCode());
   }
+
+  @Test
+  void testUploadProfilePicture_Success() throws Exception {
+    mockMvc = MockMvcBuilders.standaloneSetup(new UserController()).build();
+
+    MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "dummy content".getBytes());
+    int userId = 1;
+
+    when(userManagementService.getUserById(userId)).thenReturn(Optional.of(new User(userId, "test@example.com", "testUser")));
+
+    mockMvc.perform(multipart("/users/profile-picture")
+                    .file(file)
+                    .param("userId", String.valueOf(userId)))
+            .andExpect(status().isOk()) // Expected state: 200 OK
+            .andExpect(content().string("File uploaded successfully."));
+
+    verify(userManagementService, times(1)).changeUserPhoto(any(User.class), anyString());
+  }
+
+  @Test
+  void testRemoveUserPhoto_Success() {
+    mockMvc = MockMvcBuilders.standaloneSetup(new UserController()).build();
+
+    User user = new User(1, "test@example.com", "testUser");
+    user.setUserPhoto("uploads/profile-pictures/test.jpg");
+
+    when(userManagementService.getUserById(user.getUserId())).thenReturn(Optional.of(user));
+
+    userManagementService.removeUserPhoto(user);
+
+    verify(userManagementService, times(1)).saveUser(userCaptor.capture());
+    assertNull(userCaptor.getValue().getUserPhoto());
+  }
+
+
 }
