@@ -1,8 +1,14 @@
 package dev.findfirst.users.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.rmi.UnexpectedException;
+import java.util.Arrays;
+import java.util.Optional;
+import java.util.UUID;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -29,8 +35,11 @@ import dev.findfirst.users.service.UserManagementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +49,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/user")
@@ -59,6 +69,10 @@ public class UserController {
 
   @Value("${findfirst.app.domain}")
   private String domain;
+
+  private static final long MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
+  private static final String[] ALLOWED_TYPES = {"image/jpeg", "image/png"};
+  private static final String UPLOAD_DIR = "uploads/profile-pictures/";
 
   @PostMapping("/signup")
   public ResponseEntity<String> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
@@ -153,5 +167,79 @@ public class UserController {
               .sameSite("strict").path("/").domain(domain).httpOnly(true).build();
           return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(token);
         }).orElseThrow(() -> new TokenRefreshException(jwt, "Refresh token is not in database!"));
+  }
+
+  @PostMapping("/profile-picture")
+  public ResponseEntity<?> uploadProfilePicture(@RequestParam("file") MultipartFile file,
+                                                @RequestParam("userId") int userId) {
+    // File size validation
+    if (file.getSize() > MAX_FILE_SIZE) {
+      return ResponseEntity.badRequest().body("File size exceeds the maximum limit of 2 MB.");
+    }
+
+    // File type validation
+    String contentType = file.getContentType();
+    if (Arrays.stream(ALLOWED_TYPES).noneMatch(contentType::equals)) {
+      return ResponseEntity.badRequest().body("Invalid file type. Only JPG and PNG are allowed.");
+    }
+
+    try {
+      // Find user by ID
+      User user = userService.getUserById(userId).orElseThrow(() -> new NoUserFoundException("User not found"));
+
+      // Create directory for uploads
+      File uploadDir = new File(UPLOAD_DIR);
+      if (!uploadDir.exists()) {
+        uploadDir.mkdirs();
+      }
+
+      // Delete old photo (if exists)
+      String oldPhotoPath = user.getUserPhoto();
+      if (oldPhotoPath != null) {
+        File oldPhoto = new File(oldPhotoPath);
+        if (oldPhoto.exists()) {
+          oldPhoto.delete();
+        }
+      }
+
+      // Save new photo
+      String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+      File destinationFile = new File(UPLOAD_DIR + fileName);
+      file.transferTo(destinationFile);
+      userService.changeUserPhoto(user, UPLOAD_DIR + fileName);
+
+      return ResponseEntity.ok("File uploaded successfully.");
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file.");
+    }
+  }
+
+  @GetMapping("/profile-picture")
+  public ResponseEntity<Resource> getUserProfilePicture(@RequestParam("userId") int userId) {
+    try {
+      // Find user by ID
+      User user = userService.getUserById(userId)
+              .orElseThrow(() -> new NoUserFoundException("User not found"));
+      String userPhotoPath = user.getUserPhoto();
+
+      if (userPhotoPath == null || userPhotoPath.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+      }
+
+      // Load file
+      File photoFile = new File(userPhotoPath);
+      if (!photoFile.exists()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+      }
+
+      // Create response
+      Resource fileResource = new FileSystemResource(photoFile);
+      return ResponseEntity.ok()
+              .contentType(MediaType.parseMediaType(Files.probeContentType(photoFile.toPath())))
+              .body(fileResource);
+
+    } catch (IOException e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
   }
 }
