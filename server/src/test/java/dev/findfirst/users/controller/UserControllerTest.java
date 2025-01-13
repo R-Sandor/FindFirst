@@ -2,6 +2,7 @@ package dev.findfirst.users.controller;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -15,10 +16,13 @@ import dev.findfirst.security.userauth.models.TokenRefreshResponse;
 import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
 import dev.findfirst.users.model.MailHogMessage;
 import dev.findfirst.users.model.user.TokenPassword;
+import dev.findfirst.users.model.user.User;
+import dev.findfirst.users.service.UserManagementService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -32,6 +36,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mock.web.MockMultipartFile;
@@ -197,37 +202,99 @@ class UserControllerTest {
   }
 
   @Test
-  void testUploadProfilePicture_Success() throws Exception {
-    mockMvc = MockMvcBuilders.standaloneSetup(new UserController()).build();
-
+  public void testUploadProfilePicture_Success() throws Exception {
     MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "dummy content".getBytes());
     int userId = 1;
 
-    when(userManagementService.getUserById(userId)).thenReturn(Optional.of(new User(userId, "test@example.com", "testUser")));
+    User user = new User();
+    user.setUserId(userId);
+    user.setUsername("testUser");
+    when(userManagementService.getUserById(userId)).thenReturn(Optional.of(user));
 
-    mockMvc.perform(multipart("/users/profile-picture")
-                    .file(file)
-                    .param("userId", String.valueOf(userId)))
-            .andExpect(status().isOk()) // Expected state: 200 OK
-            .andExpect(content().string("File uploaded successfully."));
+    ResponseEntity<?> response = userController.uploadProfilePicture(file, userId);
 
-    verify(userManagementService, times(1)).changeUserPhoto(any(User.class), anyString());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals("File uploaded successfully.", response.getBody());
+    verify(userManagementService, times(1)).changeUserPhoto(eq(user), anyString());
   }
 
   @Test
-  void testRemoveUserPhoto_Success() {
-    mockMvc = MockMvcBuilders.standaloneSetup(new UserController()).build();
-
-    User user = new User(1, "test@example.com", "testUser");
+  public void testRemoveUserPhoto_Success() {
+    User user = new User();
+    user.setUserId(1);
+    user.setUsername("testUser");
     user.setUserPhoto("uploads/profile-pictures/test.jpg");
 
     when(userManagementService.getUserById(user.getUserId())).thenReturn(Optional.of(user));
 
     userManagementService.removeUserPhoto(user);
 
+    ArgumentCaptor<User> userCaptor = ArgumentCaptor.forClass(User.class);
     verify(userManagementService, times(1)).saveUser(userCaptor.capture());
     assertNull(userCaptor.getValue().getUserPhoto());
   }
 
+  @Test
+  public void testUploadProfilePicture_FileSizeExceedsLimit() throws Exception {
+    byte[] largeContent = new byte[3 * 1024 * 1024]; // 3 MB
+    MockMultipartFile file = new MockMultipartFile("file", "large.jpg", "image/jpeg", largeContent);
+    int userId = 1;
 
+    User user = new User();
+    user.setUserId(userId);
+    user.setUsername("testUser");
+    when(userManagementService.getUserById(userId)).thenReturn(Optional.of(user));
+
+    ResponseEntity<?> response = userController.uploadProfilePicture(file, userId);
+
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("File size exceeds the maximum limit of 2 MB.", response.getBody());
+  }
+
+  @Test
+  public void testUploadProfilePicture_InvalidFileType() throws Exception {
+    MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "dummy content".getBytes());
+    int userId = 1;
+
+    User user = new User();
+    user.setUserId(userId);
+    user.setUsername("testUser");
+    when(userManagementService.getUserById(userId)).thenReturn(Optional.of(user));
+
+    ResponseEntity<?> response = userController.uploadProfilePicture(file, userId);
+
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    assertEquals("Invalid file type. Only JPG and PNG are allowed.", response.getBody());
+  }
+
+  @Test
+  public void testGetUserProfilePicture_NotFound() {
+    int userId = 1;
+
+    User user = new User();
+    user.setUserId(userId);
+    user.setUsername("testUser");
+    user.setUserPhoto(null);
+    when(userManagementService.getUserById(userId)).thenReturn(Optional.of(user));
+
+    ResponseEntity<?> response = userController.getUserProfilePicture(userId);
+
+    assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+  }
+
+  @Test
+  public void testGetUserProfilePicture_Success() {
+    int userId = 1;
+
+    User user = new User();
+    user.setUserId(userId);
+    user.setUsername("testUser");
+    user.setUserPhoto("uploads/profile-pictures/test.jpg");
+    when(userManagementService.getUserById(userId)).thenReturn(Optional.of(user));
+
+    ResponseEntity<?> response = userController.getUserProfilePicture(userId);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertNotNull(response.getBody());
+  }
 }
