@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Optional;
 import java.util.Properties;
@@ -41,8 +39,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -60,12 +56,17 @@ class UserControllerTest {
   @Mock
   private UserManagementService userManagementService;
 
+  @InjectMocks
+  private UserController userController;
+
+  public UserControllerTest() {
+    MockitoAnnotations.openMocks(this);
+  }
+
   @Autowired
   UserControllerTest(TestRestTemplate tRestTemplate) {
     this.restTemplate = tRestTemplate;
   }
-
-  private MockMvc mockMvc;
 
   @Container
   @ServiceConnection
@@ -202,7 +203,7 @@ class UserControllerTest {
   }
 
   @Test
-  public void testUploadProfilePicture_Success() throws Exception {
+  void testUploadProfilePicture_Success() throws Exception {
     MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "dummy content".getBytes());
     int userId = 1;
 
@@ -219,7 +220,7 @@ class UserControllerTest {
   }
 
   @Test
-  public void testRemoveUserPhoto_Success() {
+  void testRemoveUserPhoto_Success() {
     User user = new User();
     user.setUserId(1);
     user.setUsername("testUser");
@@ -235,7 +236,7 @@ class UserControllerTest {
   }
 
   @Test
-  public void testUploadProfilePicture_FileSizeExceedsLimit() throws Exception {
+  void testUploadProfilePicture_FileSizeExceedsLimit() throws Exception {
     byte[] largeContent = new byte[3 * 1024 * 1024]; // 3 MB
     MockMultipartFile file = new MockMultipartFile("file", "large.jpg", "image/jpeg", largeContent);
     int userId = 1;
@@ -252,7 +253,7 @@ class UserControllerTest {
   }
 
   @Test
-  public void testUploadProfilePicture_InvalidFileType() throws Exception {
+  void testUploadProfilePicture_InvalidFileType() throws Exception {
     MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "dummy content".getBytes());
     int userId = 1;
 
@@ -268,7 +269,7 @@ class UserControllerTest {
   }
 
   @Test
-  public void testGetUserProfilePicture_NotFound() {
+  void testGetUserProfilePicture_NotFound() {
     int userId = 1;
 
     User user = new User();
@@ -283,7 +284,7 @@ class UserControllerTest {
   }
 
   @Test
-  public void testGetUserProfilePicture_Success() {
+  void testGetUserProfilePicture_Success() {
     int userId = 1;
 
     User user = new User();
