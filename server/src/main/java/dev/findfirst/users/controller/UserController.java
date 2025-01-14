@@ -184,8 +184,12 @@ public class UserController {
     }
 
     try {
-      // Find user by ID
-      User user = userService.getUserById(userId).orElseThrow(() -> new NoUserFoundException("User not found"));
+      User user;
+      try {
+        user = userService.getUserById(userId).orElseThrow(() -> new NoUserFoundException());
+      } catch (NoUserFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+      }
 
       // Create directory for uploads
       File uploadDir = new File(UPLOAD_DIR);
@@ -217,9 +221,12 @@ public class UserController {
   @GetMapping("/profile-picture")
   public ResponseEntity<Resource> getUserProfilePicture(@RequestParam("userId") int userId) {
     try {
-      // Find user by ID
-      User user = userService.getUserById(userId)
-              .orElseThrow(() -> new NoUserFoundException("User not found"));
+      User user;
+      try {
+        user = userService.getUserById(userId).orElseThrow(() -> new NoUserFoundException());
+      } catch (NoUserFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+      }
       String userPhotoPath = user.getUserPhoto();
 
       if (userPhotoPath == null || userPhotoPath.isEmpty()) {

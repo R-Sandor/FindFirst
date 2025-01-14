@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -51,7 +51,7 @@ import org.testcontainers.utility.DockerImageName;
 @TestPropertySource(locations = "classpath:application-test.yml")
 class UserControllerTest {
 
-  final TestRestTemplate restTemplate;
+  TestRestTemplate restTemplate = new TestRestTemplate();
 
   @Mock
   private UserManagementService userManagementService;
