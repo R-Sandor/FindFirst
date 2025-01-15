@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "cp .env.dev .env && next dev --turbopack",
+    "dev": "java CpEnv.java .env.dev .env && next dev --turbopack",
     "build": "cp .env.prod .env && next build",
     "build:dev": "cp .env.dev .env && next build",
     "build:prod": "cp .env.prod .env && next build",
