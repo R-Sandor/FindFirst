@@ -20,7 +20,6 @@ public class TypesenseConfiguration {
 
   @Bean
   public Client typesenseClient() {
-    log.debug(typesSenseApiKey);
     List<Node> nodes = new ArrayList<>();
     nodes.add(new Node("http", // For Typesense Cloud use https
         "localhost", // For Typesense Cloud use xxx.a1.typesense.net
