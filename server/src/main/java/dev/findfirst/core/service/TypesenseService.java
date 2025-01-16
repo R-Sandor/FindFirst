@@ -53,7 +53,8 @@ public class TypesenseService {
 
   private String saveSchema(TypesenseInitRecord initRecord) {
     try {
-      CollectionResponse collectionResponse = client.collections().create(createCollectionSchemaSchema());
+      CollectionResponse collectionResponse =
+          client.collections().create(createCollectionSchemaSchema());
       log.debug(collectionResponse.toString());
       initRecord.setInitialized(true);
       initRepo.save(initRecord);
@@ -85,7 +86,8 @@ public class TypesenseService {
   public List<Long> search(String text) {
     SearchParameters searchParameters = new SearchParameters().q(text).queryBy("text");
     try {
-      SearchResult searchResult = client.collections("bookmark").documents().search(searchParameters);
+      SearchResult searchResult =
+          client.collections("bookmark").documents().search(searchParameters);
       log.info(searchResult.toString());
 
       return searchResult.getHits().stream()
