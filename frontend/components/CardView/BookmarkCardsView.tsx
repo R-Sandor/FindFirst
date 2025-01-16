@@ -6,6 +6,7 @@ import Bookmark from "@type/Bookmarks/Bookmark";
 import { useTags } from "@/contexts/TagContext";
 import { TagWithCnt } from "@type/Bookmarks/Tag";
 import cardView from "styles/cardView.module.scss";
+import { useState, useEffect, useRef } from "react";
 
 function getTagId(map: Map<number, TagWithCnt>, tagTitle: string) {
   for (let [k, v] of map) {
@@ -15,13 +16,50 @@ function getTagId(map: Map<number, TagWithCnt>, tagTitle: string) {
   }
   return -1;
 }
-
 // Bookmark group composed of Bookmarks.
 export default function BookmarkCardsView() {
   const bookmarks = useBookmarks();
   const { selected } = useSelectedTags();
   const tags = useTags();
+  const [currentBookmarks, setCurrentBookmarks] = useState<Bookmark[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const ITEMS_PER_LOAD = 10; // bookmarks to load per batch
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null); 
   const filterMap = new Map<number, Bookmark>();
+
+  useEffect(() => {
+    if (!bookmarks.loading) {
+      const initialBookmarks = filterBookmarks(bookmarks.fetchedBookmarks, 0, ITEMS_PER_LOAD);
+      setCurrentBookmarks(initialBookmarks);
+      setHasMore(initialBookmarks.length < bookmarks.fetchedBookmarks.length);
+    }
+  }, [bookmarks, selected]);
+
+  useEffect(() => {
+    const observerCallback: IntersectionObserverCallback = (entries) => {
+      const [entry] = entries;
+      if (entry.isIntersecting && hasMore) {
+        fetchMoreData();
+      }
+    };
+
+    observerRef.current = new IntersectionObserver(observerCallback, {
+      root: null,
+      rootMargin: "100px", 
+      threshold: 0.1, 
+    });
+
+    if (sentinelRef.current) {
+      observerRef.current.observe(sentinelRef.current);
+    }
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, [hasMore, currentBookmarks]);
 
   function addIfNotInList(ids: number[]) {
     ids.forEach((bkmkId) => {
@@ -30,9 +68,9 @@ export default function BookmarkCardsView() {
     });
   }
 
-  function filterBookmarks(bookmarks: Bookmark[]): Bookmark[] {
-    if (selected.length == 0) {
-      return bookmarks;
+  function filterBookmarks(bookmarks: Bookmark[], start: number = 0, end: number = ITEMS_PER_LOAD): Bookmark[] {
+    if (selected.length === 0) {
+      return bookmarks.slice(start, end);
     } else {
       selected.forEach((selectedTag) => {
         // get tagId of each selected
@@ -44,7 +82,19 @@ export default function BookmarkCardsView() {
           }
         }
       });
-      return [...filterMap.values()];
+      return [...filterMap.values()].slice(start, end);
+    }
+  }
+
+  function fetchMoreData() {
+    const nextStart = currentBookmarks.length;
+    const nextEnd = nextStart + ITEMS_PER_LOAD;
+
+    const moreBookmarks = filterBookmarks(bookmarks.fetchedBookmarks, nextStart, nextEnd);
+    setCurrentBookmarks((prev) => [...prev, ...moreBookmarks]);
+
+    if (moreBookmarks.length === 0 || currentBookmarks.length + moreBookmarks.length >= bookmarks.fetchedBookmarks.length) {
+      setHasMore(false);
     }
   }
 
@@ -55,16 +105,15 @@ export default function BookmarkCardsView() {
           <div className="col-sm-12 col-md-12 col-lg-4">
             <NewBookmarkCard />
           </div>
-          {filterBookmarks(bookmarks.fetchedBookmarks).map((b) => {
-            return (
-              <div key={b.id} className="col-sml-12 col-md-6 col-lg-4">
-                <BookmarkCard bookmark={b} />
-              </div>
-            );
-          })}
+          {currentBookmarks.map((b) => (
+            <div key={b.id} className="col-sml-12 col-md-6 col-lg-4">
+              <BookmarkCard bookmark={b} />
+            </div>
+          ))}
+          {hasMore && <div ref={sentinelRef} style={{ height: "1px", visibility: "hidden" }} />}
         </div>
       ) : (
-        <p>loading</p>
+        <p>Loading...</p>
       )}
     </div>
   );
