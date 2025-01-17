@@ -14,12 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import dev.findfirst.core.dto.AddBkmkReq;
-import dev.findfirst.core.dto.BookmarkDTO;
-import dev.findfirst.core.dto.BookmarkOnly;
-import dev.findfirst.core.dto.TagDTO;
-import dev.findfirst.core.dto.TagOnly;
-import dev.findfirst.core.dto.UpdateBookmarkReq;
+import dev.findfirst.core.dto.*;
 import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
 import dev.findfirst.core.exceptions.BookmarkNotFoundException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
@@ -37,6 +32,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -65,6 +62,20 @@ public class BookmarkService {
   public List<BookmarkDTO> listJDBC() {
     return convertBookmarkJDBCToDTO(
         bookmarkJDBCRepository.findAllBookmarksByUser(uContext.getUserId()), uContext.getUserId());
+  }
+
+  public PaginatedBookmarkRes listPaginatedJDBC(PaginatedBookmarkReq reqBkmk) {
+    Pageable pageable = Pageable.ofSize(reqBkmk.size()).withPage(reqBkmk.page());
+
+    Page<BookmarkJDBC> pageResult =
+        bookmarkJDBCRepository.findAllByUserId(uContext.getUserId(), pageable);
+    List<BookmarkJDBC> pageContent = pageResult.getContent();
+    Integer totalPages = pageResult.getTotalPages();
+    List<BookmarkDTO> bookmarks = convertBookmarkJDBCToDTO(pageContent, uContext.getUserId());
+
+    return new PaginatedBookmarkRes(bookmarks, totalPages, reqBkmk.page());
+
+
   }
 
   public Optional<BookmarkDTO> getBookmarkById(long id) {
