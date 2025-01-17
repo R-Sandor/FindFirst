@@ -8,13 +8,13 @@ import java.nio.file.Files;
 import java.rmi.UnexpectedException;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.UUID;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 
 import dev.findfirst.security.jwt.exceptions.TokenRefreshException;
 import dev.findfirst.security.jwt.service.RefreshTokenService;
+import dev.findfirst.security.userauth.context.UserContext;
 import dev.findfirst.security.userauth.models.RefreshToken;
 import dev.findfirst.security.userauth.models.TokenRefreshResponse;
 import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
@@ -49,6 +49,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -57,6 +58,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 public class UserController {
   private final UserManagementService userService;
+
+  private final UserContext uContext;
 
   private final RegistrationService regService;
 
@@ -70,9 +73,11 @@ public class UserController {
   @Value("${findfirst.app.domain}")
   private String domain;
 
-  private static final long MAX_FILE_SIZE = 2 * 1024 * 1024; // 2 MB
-  private static final String[] ALLOWED_TYPES = {"image/jpeg", "image/png"};
-  private static final String UPLOAD_DIR = "uploads/profile-pictures/";
+  @Value("${findfirst.upload.max-file-size}")
+  private int maxFileSize;
+
+  @Value("${findfirst.upload.allowed-types}")
+  private String[] allowedTypes;
 
   @PostMapping("/signup")
   public ResponseEntity<String> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
@@ -170,49 +175,21 @@ public class UserController {
   }
 
   @PostMapping("/profile-picture")
-  public ResponseEntity<?> uploadProfilePicture(@RequestParam("file") MultipartFile file,
-                                                @RequestParam("userId") int userId) {
-    // File size validation
-    if (file.getSize() > MAX_FILE_SIZE) {
-      return ResponseEntity.badRequest().body("File size exceeds the maximum limit of 2 MB.");
-    }
+  public ResponseEntity<?> uploadProfilePicture(@RequestParam("file") @Size(max = maxFileSize) MultipartFile file) {
 
     // File type validation
     String contentType = file.getContentType();
-    if (Arrays.stream(ALLOWED_TYPES).noneMatch(contentType::equals)) {
+    if (Arrays.stream(allowedTypes).noneMatch(contentType::equals)) {
       return ResponseEntity.badRequest().body("Invalid file type. Only JPG and PNG are allowed.");
     }
 
     try {
-      User user;
-      try {
-        user = userService.getUserById(userId).orElseThrow(() -> new NoUserFoundException());
-      } catch (NoUserFoundException e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
-      }
-
-      // Create directory for uploads
-      File uploadDir = new File(UPLOAD_DIR);
-      if (!uploadDir.exists()) {
-        uploadDir.mkdirs();
-      }
-
-      // Delete old photo (if exists)
-      String oldPhotoPath = user.getUserPhoto();
-      if (oldPhotoPath != null) {
-        File oldPhoto = new File(oldPhotoPath);
-        if (oldPhoto.exists()) {
-          oldPhoto.delete();
-        }
-      }
-
-      // Save new photo
-      String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
-      File destinationFile = new File(UPLOAD_DIR + fileName);
-      file.transferTo(destinationFile);
-      userService.changeUserPhoto(user, UPLOAD_DIR + fileName);
+      User user = userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
+      userService.changeUserPhoto(user, file);
 
       return ResponseEntity.ok("File uploaded successfully.");
+    } catch (NoUserFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
     } catch (Exception e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file.");
     }
