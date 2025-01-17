@@ -17,8 +17,10 @@ services:
       - SPRING_MAIL_HOST=mail
       - SCREENSHOT_SERVICE_URL=${SCREENSHOT_SERVICE_URL}
       - FINDFIRST_SCREENSHOT_LOCATION=/app/screenshots
+      - FINDFIRST_UPLOAD_LOCATION=/app/profile-pictures/
     volumes:
       - ./data/screenshots:/app/screenshots
+      - ./data/uploads/profile-pictures:/app/profile-pictures
   screenshot:
     image: ghcr.io/r-sandor/findfirst-screenshot:latest
     ports:
