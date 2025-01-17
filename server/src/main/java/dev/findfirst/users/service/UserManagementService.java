@@ -1,5 +1,6 @@
 package dev.findfirst.users.service;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.rmi.UnexpectedException;
 import java.time.Instant;
@@ -32,6 +33,7 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +49,9 @@ public class UserManagementService {
 
   @Value("${findfirst.app.jwtExpirationMs}")
   private int jwtExpirationMs;
+
+  @Value("${findfirst.upload.location}")
+  private String uploadLocation;
 
   public User getUserByEmail(String email) throws NoUserFoundException {
     return userRepo.findByEmail(email).orElseThrow(NoUserFoundException::new);
@@ -79,6 +84,41 @@ public class UserManagementService {
   public void changeUserPassword(User user, String password) {
     user.setPassword(encodePassword(password));
     saveUser(user);
+  }
+
+  public void changeUserPhoto(User user, MultipartFile file) {
+
+    // Create directory for uploads
+    File uploadDir = new File(uploadLocation);
+    if (!uploadDir.exists()) {
+      uploadDir.mkdirs();
+    }
+
+    // Delete old photo (if exists)
+    removeUserPhoto(user);
+
+    // Save new photo
+    String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+    File destinationFile = new File(uploadLocation + fileName);
+    file.transferTo(destinationFile);
+    String userPhoto = uploadLocation + fileName;
+
+    log.info("Changing profile picture for user ID {}: {}", user.getUserId(), userPhoto);
+    user.setUserPhoto(userPhoto);
+    saveUser(user);
+  }
+
+  public void removeUserPhoto(User user) {
+    String userPhoto = user.getUserPhoto();
+    if (userPhoto != null) {
+      File photoFile = new File(userPhoto);
+      if (photoFile.exists()) {
+        log.info("Removing profile picture for user ID {}: {}", user.getUserId(), userPhoto);
+        photoFile.delete();
+        user.setUserPhoto(null);
+        saveUser(user);
+      }
+    }
   }
 
   public String createVerificationToken(User user) {

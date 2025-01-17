@@ -1,14 +1,20 @@
 package dev.findfirst.users.controller;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.rmi.UnexpectedException;
+import java.util.Arrays;
+import java.util.Optional;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 
 import dev.findfirst.security.jwt.exceptions.TokenRefreshException;
 import dev.findfirst.security.jwt.service.RefreshTokenService;
+import dev.findfirst.security.userauth.context.UserContext;
 import dev.findfirst.security.userauth.models.RefreshToken;
 import dev.findfirst.security.userauth.models.TokenRefreshResponse;
 import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
@@ -29,8 +35,11 @@ import dev.findfirst.users.service.UserManagementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,6 +49,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/user")
@@ -47,6 +58,8 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class UserController {
   private final UserManagementService userService;
+
+  private final UserContext uContext;
 
   private final RegistrationService regService;
 
@@ -59,6 +72,12 @@ public class UserController {
 
   @Value("${findfirst.app.domain}")
   private String domain;
+
+  @Value("${findfirst.upload.max-file-size}")
+  private int maxFileSize;
+
+  @Value("${findfirst.upload.allowed-types}")
+  private String[] allowedTypes;
 
   @PostMapping("/signup")
   public ResponseEntity<String> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
@@ -153,5 +172,58 @@ public class UserController {
               .sameSite("strict").path("/").domain(domain).httpOnly(true).build();
           return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(token);
         }).orElseThrow(() -> new TokenRefreshException(jwt, "Refresh token is not in database!"));
+  }
+
+  @PostMapping("/profile-picture")
+  public ResponseEntity<?> uploadProfilePicture(@RequestParam("file") @Size(max = maxFileSize) MultipartFile file) {
+
+    // File type validation
+    String contentType = file.getContentType();
+    if (Arrays.stream(allowedTypes).noneMatch(contentType::equals)) {
+      return ResponseEntity.badRequest().body("Invalid file type. Only JPG and PNG are allowed.");
+    }
+
+    try {
+      User user = userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
+      userService.changeUserPhoto(user, file);
+
+      return ResponseEntity.ok("File uploaded successfully.");
+    } catch (NoUserFoundException e) {
+      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
+    } catch (Exception e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file.");
+    }
+  }
+
+  @GetMapping("/profile-picture")
+  public ResponseEntity<Resource> getUserProfilePicture(@RequestParam("userId") int userId) {
+    try {
+      User user;
+      try {
+        user = userService.getUserById(userId).orElseThrow(() -> new NoUserFoundException());
+      } catch (NoUserFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+      }
+      String userPhotoPath = user.getUserPhoto();
+
+      if (userPhotoPath == null || userPhotoPath.isEmpty()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+      }
+
+      // Load file
+      File photoFile = new File(userPhotoPath);
+      if (!photoFile.exists()) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+      }
+
+      // Create response
+      Resource fileResource = new FileSystemResource(photoFile);
+      return ResponseEntity.ok()
+              .contentType(MediaType.parseMediaType(Files.probeContentType(photoFile.toPath())))
+              .body(fileResource);
+
+    } catch (IOException e) {
+      return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
   }
 }

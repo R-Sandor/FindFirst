@@ -43,4 +43,7 @@ public class User {
   @Column("role_role_id")
   private AggregateReference<Role, Integer> role;
 
+  @Column("user_photo")
+  private String userPhoto;
+
 }
