@@ -7,8 +7,8 @@ Get acquainted with the UI. There are two ways to get started with FindFirst:
 
 ## Required Software For Development
 
-- Docker
-- Docker Compose
+- [Docker](https://docs.docker.com/engine/install/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
 - Java 17
   - JDK & JRE
 - Node 22
