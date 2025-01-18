@@ -11,11 +11,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import dev.findfirst.core.dto.AddBkmkReq;
-import dev.findfirst.core.dto.BookmarkDTO;
-import dev.findfirst.core.dto.TagDTO;
-import dev.findfirst.core.dto.UpdateBookmarkReq;
+import dev.findfirst.core.dto.*;
 import dev.findfirst.core.exceptions.BookmarkNotFoundException;
+import dev.findfirst.core.exceptions.PageGreaterThanTotalException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.jdbc.BookmarkTag;
 import dev.findfirst.core.service.BookmarkService;
@@ -56,6 +54,12 @@ public class BookmarkController {
   @GetMapping("/bookmarks")
   public ResponseEntity<List<BookmarkDTO>> getAllBookmarks() {
     return new Response<>(bookmarkService.listJDBC(), HttpStatus.OK).get();
+  }
+
+  @GetMapping("/paginated/bookmarks")
+  public ResponseEntity<PaginatedBookmarkRes> getPaginatedBookmarks(@Valid PaginatedBookmarkReq req)
+      throws PageGreaterThanTotalException {
+    return new Response<>(bookmarkService.listPaginatedJDBC(req), HttpStatus.OK).get();
   }
 
   @GetMapping(value = "/bookmarks/export", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)

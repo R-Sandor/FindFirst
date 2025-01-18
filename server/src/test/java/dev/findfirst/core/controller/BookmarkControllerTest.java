@@ -1,8 +1,7 @@
 package dev.findfirst.core.controller;
 
 import static dev.findfirst.utilities.HttpUtility.getHttpEntity;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -12,10 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import dev.findfirst.core.annotations.IntegrationTest;
-import dev.findfirst.core.dto.AddBkmkReq;
-import dev.findfirst.core.dto.BookmarkDTO;
-import dev.findfirst.core.dto.TagDTO;
-import dev.findfirst.core.dto.UpdateBookmarkReq;
+import dev.findfirst.core.dto.*;
 import dev.findfirst.core.exceptions.BookmarkNotFoundException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.jdbc.BookmarkTag;
@@ -77,6 +73,15 @@ class BookmarkControllerTest {
 
   private String bookmarksURI = "/api/bookmarks";
   private String bookmarkURI = "/api/bookmark";
+  private String bookmarksPaginationURI = "/api/paginated/bookmarks";
+
+  private List<String> expectedBkmkTitles = List.of("Best Cheesecake Recipe", "Dark mode guide",
+      "Chicken Parm", "Best Cheesecake Recipe2", "Best Cheesecake Recipe3",
+      "Best Cheesecake Recipe4", "Best Cheesecake Recipe5", "Best Cheesecake Recipe6",
+      "Ultimate Chocolate Cake", "Top 10 Travel Destinations", "Effective Java Programming",
+      "Healthy Meal Plans", "Best Running Shoes 2024", "Beginner’s Guide to Investing",
+      "How to Brew the Perfect Coffee");
+
 
   @Test
   void containerStarupTest() {
@@ -105,6 +110,74 @@ class BookmarkControllerTest {
     var bkmkOpt = Optional.ofNullable(response.getBody());
     var bkmk = bkmkOpt.orElseThrow();
     assertEquals("Best Cheesecake Recipe", bkmk.title());
+  }
+
+  @Test
+  void getBookmarksFromPage1WithSize6() {
+    Integer page = 1;
+    Integer size = 6;
+    var response = restTemplate.exchange(bookmarksPaginationURI + "?page={page}&size={size}",
+        HttpMethod.GET, getHttpEntity(restTemplate), PaginatedBookmarkRes.class, page, size);
+
+    var bkmkOpt = Optional.ofNullable(response.getBody());
+    PaginatedBookmarkRes bkmksResponse = bkmkOpt.orElseThrow();
+    List<BookmarkDTO> bkmks = bkmksResponse.bookmarks();
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(size, bkmks.size());
+    assertEquals(4, bkmksResponse.totalPages());
+
+    // Check that the titles are as expected.
+    for (int i = 0; i < bkmks.size(); i++) {
+      assertEquals(expectedBkmkTitles.get(i), bkmks.get(i).title());
+    }
+
+  }
+
+  @Test
+  void pageGreaterThanTotalPage() {
+    Integer page = 6;
+    Integer size = 6;
+
+
+    var response = restTemplate.exchange(bookmarksPaginationURI + "?page={page}&size={size}",
+        HttpMethod.GET, getHttpEntity(restTemplate), PaginatedBookmarkRes.class, page, size);
+
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+
+  }
+
+  @Test
+  void pageLowerThanOne() {
+    Integer page = 0;
+    Integer size = 6;
+
+    var response = restTemplate.exchange(bookmarksPaginationURI + "?page={page}&size={size}",
+        HttpMethod.GET, getHttpEntity(restTemplate), PaginatedBookmarkRes.class, page, size);
+
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+  }
+
+  @Test
+  void sizeLowerThanMinValue() {
+    Integer page = 1;
+    Integer size = 2;
+
+    var response = restTemplate.exchange(bookmarksPaginationURI + "?page={page}&size={size}",
+        HttpMethod.GET, getHttpEntity(restTemplate), PaginatedBookmarkRes.class, page, size);
+
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+  }
+
+  @Test
+  void sizeGreaterThanMaxValue() {
+    Integer page = 1;
+    Integer size = 50;
+
+    var response = restTemplate.exchange(bookmarksPaginationURI + "?page={page}&size={size}",
+        HttpMethod.GET, getHttpEntity(restTemplate), PaginatedBookmarkRes.class, page, size);
+
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
   }
 
   @Test
