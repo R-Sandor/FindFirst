@@ -17,6 +17,7 @@ import java.util.Optional;
 import dev.findfirst.core.dto.*;
 import dev.findfirst.core.exceptions.BookmarkAlreadyExistsException;
 import dev.findfirst.core.exceptions.BookmarkNotFoundException;
+import dev.findfirst.core.exceptions.PageGreaterThanTotalException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.ExportBookmark;
 import dev.findfirst.core.model.TagBookmarks;
@@ -64,13 +65,21 @@ public class BookmarkService {
         bookmarkJDBCRepository.findAllBookmarksByUser(uContext.getUserId()), uContext.getUserId());
   }
 
-  public PaginatedBookmarkRes listPaginatedJDBC(PaginatedBookmarkReq reqBkmk) {
-    Pageable pageable = Pageable.ofSize(reqBkmk.size()).withPage(reqBkmk.page());
+  public PaginatedBookmarkRes listPaginatedJDBC(PaginatedBookmarkReq reqBkmk)
+      throws PageGreaterThanTotalException {
+    // Page is 0 indexed.
+    int page = reqBkmk.page() - 1;
+
+    Pageable pageable = Pageable.ofSize(reqBkmk.size()).withPage(page);
 
     Page<BookmarkJDBC> pageResult =
         bookmarkJDBCRepository.findAllByUserId(uContext.getUserId(), pageable);
     List<BookmarkJDBC> pageContent = pageResult.getContent();
     Integer totalPages = pageResult.getTotalPages();
+
+    if (pageContent.isEmpty() && page > 0)
+      throw new PageGreaterThanTotalException(page + 1);
+
     List<BookmarkDTO> bookmarks = convertBookmarkJDBCToDTO(pageContent, uContext.getUserId());
 
     return new PaginatedBookmarkRes(bookmarks, totalPages, reqBkmk.page());

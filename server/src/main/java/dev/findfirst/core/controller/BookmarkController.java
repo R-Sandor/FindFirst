@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Size;
 
 import dev.findfirst.core.dto.*;
 import dev.findfirst.core.exceptions.BookmarkNotFoundException;
+import dev.findfirst.core.exceptions.PageGreaterThanTotalException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
 import dev.findfirst.core.model.jdbc.BookmarkTag;
 import dev.findfirst.core.service.BookmarkService;
@@ -56,8 +57,8 @@ public class BookmarkController {
   }
 
   @GetMapping("/paginated/bookmarks")
-  public ResponseEntity<PaginatedBookmarkRes> getPaginatedBookmarks(
-      @Valid PaginatedBookmarkReq req) {
+  public ResponseEntity<PaginatedBookmarkRes> getPaginatedBookmarks(@Valid PaginatedBookmarkReq req)
+      throws PageGreaterThanTotalException {
     return new Response<>(bookmarkService.listPaginatedJDBC(req), HttpStatus.OK).get();
   }
 
