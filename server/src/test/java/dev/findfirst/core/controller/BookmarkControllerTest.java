@@ -77,6 +77,15 @@ class BookmarkControllerTest {
 
   private String bookmarksURI = "/api/bookmarks";
   private String bookmarkURI = "/api/bookmark";
+  private String bookmarksPaginationURI = "/api/paginated/bookmarks";
+
+  private List<String> expectedBkmkTitles = List.of("Best Cheesecake Recipe", "Dark mode guide",
+      "Chicken Parm", "Best Cheesecake Recipe2", "Best Cheesecake Recipe3",
+      "Best Cheesecake Recipe4", "Best Cheesecake Recipe5", "Best Cheesecake Recipe6",
+      "Ultimate Chocolate Cake", "Top 10 Travel Destinations", "Effective Java Programming",
+      "Healthy Meal Plans", "Best Running Shoes 2024", "Beginner’s Guide to Investing",
+      "How to Brew the Perfect Coffee");
+
 
   @Test
   void containerStarupTest() {
