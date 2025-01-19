@@ -146,6 +146,7 @@ public class UserController {
       @RequestHeader(value = "Authorization") String authorization) {
     SigninTokens tkns;
     try {
+      log.debug("User Signing in");
       tkns = userService.signinUser(authorization);
     } catch (NoUserFoundException e) {
       return ResponseEntity.badRequest().body(new TokenRefreshResponse(null, null, e.toString()));

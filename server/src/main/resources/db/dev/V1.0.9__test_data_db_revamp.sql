@@ -1,3 +1,61 @@
+-- login is jsmith/test
+insert into
+  users(
+    enabled,
+    username,
+    email,
+    password,
+    role_role_id,
+    user_id
+  )
+values
+(
+    TRUE,
+    'jsmith',
+    'jsmith@google.com',
+    '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', -- pwd: test
+    0,
+    1
+  );
+
+insert into
+  users(
+    enabled,
+    username,
+    email,
+    password,
+    role_role_id,
+    user_id 
+  )
+values
+(
+    TRUE,
+    'king',
+    'king@google.com',
+    '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', -- pwd: test
+    0,
+    2
+  );
+
+insert into
+  users(
+    enabled,
+    username,
+    email,
+    password,
+    role_role_id,
+    user_id 
+  )
+values
+(
+    TRUE,
+    'linus',
+    'linus@google.com',
+    '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', -- pwd: test
+    0,
+    3
+  );
+
 -- jsmith's bookmarks
 -- id: 1
 insert into
@@ -35,177 +93,177 @@ values
     true
   );
 
--- id: 4
+-- id: 24
 insert into
     bookmark (id, title, url, user_id, scrapable)
 values
 (
-  4,
+  24,
   'Best Cheesecake Recipe2',
   'https://sugarspunrun.com/best-cheesecake-recipe/',
-  1,
+  3,
   true
 );
 
--- id: 5
+-- id: 25
 insert into
   bookmark (id, title, url, user_id, scrapable)
 values
 (
-    5,
+    25,
     'Best Cheesecake Recipe3',
     'https://sugarspunrun.com/best-cheesecake-recipe/',
-    1,
+    3,
     true
 );
 
--- id: 6
+-- id: 26
 insert into
   bookmark (id, title, url, user_id, scrapable)
 values
 (
-    6,
+    26,
     'Best Cheesecake Recipe4',
     'https://sugarspunrun.com/best-cheesecake-recipe/',
-    1,
+    3,
     true
 );
 
--- id: 7
+-- id: 27
 insert into
   bookmark (id, title, url, user_id, scrapable)
 values
 (
-    7,
+    27,
     'Best Cheesecake Recipe5',
     'https://sugarspunrun.com/best-cheesecake-recipe/',
-    1,
+    3,
     true
 );
 
--- id: 8
+-- id: 28
 insert into
   bookmark (id, title, url, user_id, scrapable)
 values
 (
-    8,
+    28,
     'Best Cheesecake Recipe6',
     'https://sugarspunrun.com/best-cheesecake-recipe/',
-    1,
+    3,
     true
 );
 
--- id: 9
+-- id: 29
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
-    9,
+    29,
     'Ultimate Chocolate Cake',
     'https://sallysbakingaddiction.com/triple-chocolate-layer-cake/',
-    1,
+    3,
     true
 );
 
--- id: 10
+-- id: 30
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
-    10,
+    30,
     'Top 10 Travel Destinations',
     'https://www.lonelyplanet.com/articles/top-travel-destinations',
-    1,
+    3,
     true
 );
 
--- id: 11
+-- id: 31
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
-    11,
+    31,
     'Effective Java Programming',
     'https://www.oreilly.com/library/view/effective-java-3rd/',
-    1,
+    3,
     true
 );
 
--- id: 12
+-- id: 32
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
-    12,
+    32,
     'Healthy Meal Plans',
     'https://www.eatingwell.com/category/4286/meal-plans/',
-    1,
+    3,
     true
 );
 
--- id: 13
+-- id: 33
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
-    13,
+    33,
     'Best Running Shoes 2024',
     'https://www.runnersworld.com/gear/a20865505/best-running-shoes/',
-    1,
+    3,
     true
 );
 
--- id: 14
+-- id: 34
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
-    14,
+    34,
     'Beginner’s Guide to Investing',
     'https://www.investopedia.com/investing-4427765',
-    1,
+    3,
     true
 );
 
--- id: 15
+-- id: 35
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
-    15,
+    35,
     'How to Brew the Perfect Coffee',
     'https://www.javapresse.com/blogs/buying-coffee/how-to-make-coffee',
-    1,
+    3,
     true
 );
 
--- id: 16
+-- id: 36
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
-    16,
+    36,
     'Essential Hiking Gear',
     'https://www.rei.com/learn/expert-advice/day-hiking-checklist.html',
-    1,
+    3,
     true
 );
 
--- id: 17
+-- id: 37
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
-    17,
+    37,
     'Mastering React',
     'https://react.dev/learn',
-    1,
+    3,
     true
 );
 
--- id: 18
+-- id: 38
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
-    18,
+    38,
     'Top 5 Budget Travel Tips',
     'https://www.nomadicmatt.com/travel-tips/',
-    1,
+    3,
     true
 );
 
--- id: 19
+-- id: 39
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
-    19,
+    39,
     'Home Workout Routines',
     'https://www.nerdfitness.com/blog/beginner-bodyweight-workout/',
-    1,
+    3,
     true
 );
 
--- id: 20
+-- id: 40
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
     20,
@@ -215,30 +273,30 @@ VALUES (
     true
 );
 
--- id: 21
+-- id: 41
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
-    21,
+    41,
     'Understanding Stock Markets',
     'https://www.wallstreetmojo.com/stock-market-basics/',
     1,
     true
 );
 
--- id: 22
+-- id: 42
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
-    22,
+    42,
     'Gourmet Pizza Recipes',
     'https://www.bonappetit.com/gallery/pizza-recipes',
     1,
     true
 );
 
--- id: 23
+-- id: 43
 INSERT INTO bookmark (id, title, url, user_id, scrapable)
 VALUES (
-    23,
+    43,
     'The Best Coding Practices',
     'https://stackify.com/top-20-coding-best-practices/',
     1,
@@ -246,12 +304,12 @@ VALUES (
 );
 
 -- king's bookmark 
--- id: 24
+-- id: 4
 insert into
   bookmark (id, title, url, user_id, scrapable)
 values
 (
-    24,
+    4,
     'Favorite Chicken Parm',
     'https://www.foodnetwork.com/recipes/bobby-flay/chicken-parmigiana-recipe-1952359',
     2, 
@@ -338,41 +396,4 @@ insert into
 values
 (4, 7);
 
--- login is jsmith/test
-insert into
-  users(
-    enabled,
-    username,
-    email,
-    password,
-    role_role_id,
-    user_id
-  )
-values
-(
-    TRUE,
-    'jsmith',
-    'jsmith@google.com',
-    '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', -- pwd: test
-    0,
-    1
-  );
 
-insert into
-  users(
-    enabled,
-    username,
-    email,
-    password,
-    role_role_id,
-    user_id 
-  )
-values
-(
-    TRUE,
-    'king',
-    'king@google.com',
-    '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', -- pwd: test
-    0,
-    2
-  );
