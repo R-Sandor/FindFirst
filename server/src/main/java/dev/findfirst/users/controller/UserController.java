@@ -7,11 +7,11 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.rmi.UnexpectedException;
 import java.util.Arrays;
-import java.util.Optional;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 
+import dev.findfirst.core.config.FileSize;
 import dev.findfirst.security.jwt.exceptions.TokenRefreshException;
 import dev.findfirst.security.jwt.service.RefreshTokenService;
 import dev.findfirst.security.userauth.context.UserContext;
@@ -49,7 +49,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import jakarta.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -73,8 +72,6 @@ public class UserController {
   @Value("${findfirst.app.domain}")
   private String domain;
 
-  @Value("${findfirst.upload.max-file-size}")
-  private int maxFileSize;
 
   @Value("${findfirst.upload.allowed-types}")
   private String[] allowedTypes;
@@ -175,7 +172,8 @@ public class UserController {
   }
 
   @PostMapping("/profile-picture")
-  public ResponseEntity<?> uploadProfilePicture(@RequestParam("file") @Size(max = maxFileSize) MultipartFile file) {
+  public ResponseEntity<?> uploadProfilePicture(
+      @RequestParam("file") @FileSize MultipartFile file) {
 
     // File type validation
     String contentType = file.getContentType();
@@ -184,7 +182,8 @@ public class UserController {
     }
 
     try {
-      User user = userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
+      User user =
+          userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
       userService.changeUserPhoto(user, file);
 
       return ResponseEntity.ok("File uploaded successfully.");
@@ -219,8 +218,8 @@ public class UserController {
       // Create response
       Resource fileResource = new FileSystemResource(photoFile);
       return ResponseEntity.ok()
-              .contentType(MediaType.parseMediaType(Files.probeContentType(photoFile.toPath())))
-              .body(fileResource);
+          .contentType(MediaType.parseMediaType(Files.probeContentType(photoFile.toPath())))
+          .body(fileResource);
 
     } catch (IOException e) {
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

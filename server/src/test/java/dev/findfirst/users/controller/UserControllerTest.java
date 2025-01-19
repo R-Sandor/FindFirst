@@ -204,7 +204,8 @@ class UserControllerTest {
 
   @Test
   void testUploadProfilePicture_Success() throws Exception {
-    MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "dummy content".getBytes());
+    MockMultipartFile file =
+        new MockMultipartFile("file", "test.jpg", "image/jpeg", "dummy content".getBytes());
     int userId = 1;
 
     User user = new User();
@@ -212,11 +213,11 @@ class UserControllerTest {
     user.setUsername("testUser");
     when(userManagementService.getUserById(userId)).thenReturn(Optional.of(user));
 
-    ResponseEntity<?> response = userController.uploadProfilePicture(file, userId);
+    ResponseEntity<?> response = userController.uploadProfilePicture(file);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("File uploaded successfully.", response.getBody());
-    verify(userManagementService, times(1)).changeUserPhoto(eq(user), anyString());
+    verify(userManagementService, times(1)).changeUserPhoto(eq(user), file);
   }
 
   @Test
@@ -246,7 +247,7 @@ class UserControllerTest {
     user.setUsername("testUser");
     when(userManagementService.getUserById(userId)).thenReturn(Optional.of(user));
 
-    ResponseEntity<?> response = userController.uploadProfilePicture(file, userId);
+    ResponseEntity<?> response = userController.uploadProfilePicture(file);
 
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("File size exceeds the maximum limit of 2 MB.", response.getBody());
@@ -254,7 +255,8 @@ class UserControllerTest {
 
   @Test
   void testUploadProfilePicture_InvalidFileType() throws Exception {
-    MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "dummy content".getBytes());
+    MockMultipartFile file =
+        new MockMultipartFile("file", "test.txt", "text/plain", "dummy content".getBytes());
     int userId = 1;
 
     User user = new User();
@@ -262,7 +264,7 @@ class UserControllerTest {
     user.setUsername("testUser");
     when(userManagementService.getUserById(userId)).thenReturn(Optional.of(user));
 
-    ResponseEntity<?> response = userController.uploadProfilePicture(file, userId);
+    ResponseEntity<?> response = userController.uploadProfilePicture(file);
 
     assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     assertEquals("Invalid file type. Only JPG and PNG are allowed.", response.getBody());
