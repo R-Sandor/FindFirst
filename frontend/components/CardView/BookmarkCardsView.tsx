@@ -16,6 +16,7 @@ function getTagId(map: Map<number, TagWithCnt>, tagTitle: string) {
   }
   return -1;
 }
+
 // Bookmark group composed of Bookmarks.
 export default function BookmarkCardsView() {
   const bookmarks = useBookmarks();
@@ -25,8 +26,8 @@ export default function BookmarkCardsView() {
   const [hasMore, setHasMore] = useState(true);
   const ITEMS_PER_LOAD = 10; // bookmarks to load per batch
   const observerRef = useRef<IntersectionObserver | null>(null);
-  const sentinelRef = useRef<HTMLDivElement>(null); 
-  const filterMap = new Map<number, Bookmark>();
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const filterMap = useRef(new Map<number, Bookmark>());
 
   useEffect(() => {
     if (!bookmarks.loading) {
@@ -46,8 +47,8 @@ export default function BookmarkCardsView() {
 
     observerRef.current = new IntersectionObserver(observerCallback, {
       root: null,
-      rootMargin: "100px", 
-      threshold: 0.1, 
+      rootMargin: "100px",
+      threshold: 0.1,
     });
 
     if (sentinelRef.current) {
@@ -63,17 +64,16 @@ export default function BookmarkCardsView() {
 
   function addIfNotInList(ids: number[]) {
     ids.forEach((bkmkId) => {
-      const fnd = bookmarks.fetchedBookmarks.find((v) => v.id == bkmkId);
-      if (fnd) filterMap.set(bkmkId, fnd);
+      const fnd = bookmarks.fetchedBookmarks.find((v) => v.id === bkmkId);
+      if (fnd) filterMap.current.set(bkmkId, fnd);
     });
   }
 
-  function filterBookmarks(bookmarks: Bookmark[], start: number = 0, end: number = ITEMS_PER_LOAD): Bookmark[] {
+  function filterBookmarks(bookmarks: Bookmark[], start = 0, end = ITEMS_PER_LOAD): Bookmark[] {
     if (selected.length === 0) {
       return bookmarks.slice(start, end);
     } else {
       selected.forEach((selectedTag) => {
-        // get tagId of each selected
         const key = getTagId(tags, selectedTag);
         if (key > 0) {
           const selectedBkmks = tags.get(key)?.associatedBkmks.map((v) => v.id);
@@ -82,7 +82,7 @@ export default function BookmarkCardsView() {
           }
         }
       });
-      return [...filterMap.values()].slice(start, end);
+      return [...filterMap.current.values()].slice(start, end);
     }
   }
 
@@ -93,7 +93,10 @@ export default function BookmarkCardsView() {
     const moreBookmarks = filterBookmarks(bookmarks.fetchedBookmarks, nextStart, nextEnd);
     setCurrentBookmarks((prev) => [...prev, ...moreBookmarks]);
 
-    if (moreBookmarks.length === 0 || currentBookmarks.length + moreBookmarks.length >= bookmarks.fetchedBookmarks.length) {
+    if (
+      moreBookmarks.length === 0 ||
+      currentBookmarks.length + moreBookmarks.length >= bookmarks.fetchedBookmarks.length
+    ) {
       setHasMore(false);
     }
   }

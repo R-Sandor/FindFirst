@@ -38,7 +38,7 @@ instance.interceptors.response.use(
       failCount++;
       api.refreshToken(user!.refreshToken);
     } else {
-      // propogate the error.
+      // propagate the error.
       return error;
     }
   },
@@ -68,6 +68,12 @@ const api = {
   // Get all bookmarks.
   getAllBookmarks() {
     return this.execute("GET", "bookmarks", null, {});
+  },
+  // Get paginated bookmarks.
+  getPaginatedBookmarks(page: number, size: number) {
+    return instance.get("paginated/bookmarks", {
+      params: { page, size },
+    });
   },
   // Delete all bookmarks.
   removeAllBookmarks() {
@@ -111,7 +117,6 @@ const api = {
   addBookmarks(bkmks: NewBookmarkRequest[]) {
     return instance.post("bookmark/addBookmarks", bkmks);
   },
-
   // Adds a tag to an existing bookmark by bookmark Id with just string title of tag.
   addBookmarkTag(bkmkId: number, title: string) {
     return instance.post(`bookmark/${bkmkId}/tag?tag=${title}`);
