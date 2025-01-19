@@ -6,6 +6,12 @@
 # About FindFirst
 
 [![Codetree](https://codetree.com/images/managed-with-codetree.svg)](https://codetree.com/projects/7YRv)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=findfirst_frontend&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=findfirst_frontend)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=findfirst_frontend&metric=coverage)](https://sonarcloud.io/summary/new_code?id=findfirst_frontend)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=findfirst_server&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=findfirst_server)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=findfirst_server&metric=coverage)](https://sonarcloud.io/summary/new_code?id=findfirst_server)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=findfirst_screenshot&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=findfirst_screenshot)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=findfirst_screenshot&metric=coverage)](https://sonarcloud.io/summary/new_code?id=findfirst_screenshot)
 
 This application sets out to simplify and enrich individuals and teams
 knowledge resources such as bookmarks, PDFs, notes, etc. Allowing them to be

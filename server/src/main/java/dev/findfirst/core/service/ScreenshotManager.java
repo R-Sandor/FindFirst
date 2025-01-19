@@ -21,9 +21,11 @@ public class ScreenshotManager {
 
   public Optional<String> getScreenshot(String reqUrl) {
     log.debug("Getting screenshot request");
+    log.debug("screenshot service url: {}", screenshotServiceUrl);
     String url = screenshotServiceUrl + "/screenshot?url=" + reqUrl;
     String screenshotUrl;
     try {
+      log.debug("requestURL: {}", url);
       screenshotUrl = rest.getForObject(url, String.class);
     } catch (ResourceAccessException ex) {
       log.error("Exeception: {}" + ex.getMessage());
