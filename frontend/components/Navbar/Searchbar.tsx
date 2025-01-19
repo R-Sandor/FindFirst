@@ -175,7 +175,9 @@ export default function Searchbar() {
           searchData = successResult.data as Bookmark[];
         });
     } else if (searchType == SearchTypeEnum.textSearch) {
-      await api.searchBookmarkByText(searchText);
+      await api.searchBookmarkByText(searchText).then((success) => {
+        searchData = success.data as Bookmark[];
+      });
     }
     if (searchData.length > 0) {
       bkmkDispatch({

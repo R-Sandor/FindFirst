@@ -5,3 +5,4 @@ findfirst.app.frontend-url: https://example.com
 # spring.mail.properties.mail.smtp.auth: false
 # spring.mail.properties.mail.smtp.starttls.enable: false
 findfirst.screenshot.location: ../data/test_screenshots
+typesense_api_key: xyz

@@ -8,12 +8,12 @@ import dev.findfirst.core.model.jdbc.BookmarkJDBC;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jdbc.repository.query.Query;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 public interface BookmarkJDBCRepository
-    extends CrudRepository<BookmarkJDBC, Long>, PagingAndSortingRepository<BookmarkJDBC, Long> {
+    extends ListCrudRepository<BookmarkJDBC, Long>, PagingAndSortingRepository<BookmarkJDBC, Long> {
 
   @Query("SELECT * FROM bookmark where bookmark.url = :url AND bookmark.user_id = :userID")
   public Optional<BookmarkJDBC> findByUrl(@Param("url") String url, @Param("userID") int userID);
@@ -22,7 +22,6 @@ public interface BookmarkJDBCRepository
   public List<BookmarkJDBC> findAllBookmarksByUser(@Param("userID") int userID);
 
   public Page<BookmarkJDBC> findAllByUserId(int userId, Pageable pageable);
-
 
   @Query("SELECT b FROM Bookmark b WHERE b.screenshotUrl IS NULL OR TRIM(b.screenshotUrl)=''")
   List<BookmarkJDBC> findBookmarksWithEmptyOrBlankScreenShotUrl();

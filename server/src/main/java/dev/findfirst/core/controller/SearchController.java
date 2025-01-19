@@ -44,7 +44,6 @@ public class SearchController {
   @GetMapping("/api/search/text")
   public ResponseEntity<List<BookmarkDTO>> searchBookmarkByText(
       @Valid @ModelAttribute SearchBkmkByTextReq searchBkmkByTextReq) {
-    return new Response<>(List.of(new BookmarkDTO(0, null, null, null, false, null, null, null)),
-        HttpStatus.OK).get();
+    return ResponseEntity.ok(search.bookmarksByText(searchBkmkByTextReq.text()));
   }
 }

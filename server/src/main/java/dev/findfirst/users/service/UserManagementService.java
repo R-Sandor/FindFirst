@@ -1,6 +1,7 @@
 package dev.findfirst.users.service;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.rmi.UnexpectedException;
 import java.time.Instant;
@@ -86,7 +87,8 @@ public class UserManagementService {
     saveUser(user);
   }
 
-  public void changeUserPhoto(User user, MultipartFile file) {
+  public void changeUserPhoto(User user, MultipartFile file)
+      throws IllegalStateException, IOException {
 
     // Create directory for uploads
     File uploadDir = new File(uploadLocation);
