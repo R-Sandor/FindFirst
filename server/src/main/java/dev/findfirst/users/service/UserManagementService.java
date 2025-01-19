@@ -174,15 +174,16 @@ public class UserManagementService {
     }
 
     // Create new user's account
-    User user = new User(signupRequest, encodePassword(signupRequest.password()));
     AggregateReference<Role, Integer> ref = AggregateReference.to(0);
-    user.setRole(ref);
+    User user = new User(3, false, signupRequest.username(), signupRequest.username(),
+        signupRequest.password(), ref, "test");
 
     // create a new tenant
     try {
       return saveUser(user);
     } catch (Exception e) {
       // If any exception occurs we should delete the records that were just made.
+      log.debug(e.getMessage());
       deleteUser(user);
       throw new UnexpectedException("Unexpected error occured during signup, try again");
     }
