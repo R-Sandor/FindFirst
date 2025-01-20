@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.core.annotations.MockTypesense;
 import dev.findfirst.core.dto.*;
 import dev.findfirst.core.exceptions.BookmarkNotFoundException;
 import dev.findfirst.core.exceptions.TagNotFoundException;
@@ -44,6 +45,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @IntegrationTest
+@MockTypesense
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Slf4j
 class BookmarkControllerTest {

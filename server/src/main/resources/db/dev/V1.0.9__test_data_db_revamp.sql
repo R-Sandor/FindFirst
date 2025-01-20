@@ -1,61 +1,3 @@
--- login is jsmith/test
-insert into
-  users(
-    enabled,
-    username,
-    email,
-    password,
-    role_role_id,
-    user_id
-  )
-values
-(
-    TRUE,
-    'jsmith',
-    'jsmith@google.com',
-    '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', -- pwd: test
-    0,
-    1
-  );
-
-insert into
-  users(
-    enabled,
-    username,
-    email,
-    password,
-    role_role_id,
-    user_id 
-  )
-values
-(
-    TRUE,
-    'king',
-    'king@google.com',
-    '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', -- pwd: test
-    0,
-    2
-  );
-
-insert into
-  users(
-    enabled,
-    username,
-    email,
-    password,
-    role_role_id,
-    user_id 
-  )
-values
-(
-    TRUE,
-    'linus',
-    'linus@google.com',
-    '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', -- pwd: test
-    0,
-    3
-  );
-
 -- jsmith's bookmarks
 -- id: 1
 insert into
@@ -396,4 +338,54 @@ insert into
 values
 (4, 7);
 
+-- login is jsmith/test
+insert into
+  users(
+    enabled,
+    username,
+    email,
+    password,
+    role_role_id
+  )
+values
+(
+    TRUE,
+    'jsmith',
+    'jsmith@google.com',
+    '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', -- pwd: test
+    0
+  );
 
+insert into
+  users(
+    enabled,
+    username,
+    email,
+    password,
+    role_role_id
+  )
+values
+(
+    TRUE,
+    'king',
+    'king@google.com',
+    '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', -- pwd: test
+    0
+  );
+
+insert into
+  users(
+    enabled,
+    username,
+    email,
+    password,
+    role_role_id
+  )
+values
+(
+    TRUE,
+    'linus',
+    'linus@google.com',
+    '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', -- pwd: test
+    0
+  );

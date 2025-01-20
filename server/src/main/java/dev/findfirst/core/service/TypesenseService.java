@@ -32,7 +32,7 @@ public class TypesenseService {
   private final Client client;
 
   @PostConstruct
-  String createSchema() {
+  public String createSchema() {
     var q = initRepo.findByScriptName("init");
     if (q == null) {
       var initRecord = new TypesenseInitRecord(null, "init", null, false, new Date());
