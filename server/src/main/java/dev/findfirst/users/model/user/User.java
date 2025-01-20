@@ -28,6 +28,7 @@ public class User {
   }
 
   @Id
+  @Column("user_id")
   private Integer userId;
 
   private boolean enabled;
@@ -38,10 +39,11 @@ public class User {
 
   private String password;
 
+  @Column("user_photo")
+  private String userPhoto;
+
   @Column("role_role_id")
   private AggregateReference<Role, Integer> role;
 
-  @Column("user_photo")
-  private String userPhoto;
 
 }

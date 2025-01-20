@@ -86,7 +86,6 @@ public class BookmarkService {
 
     return new PaginatedBookmarkRes(bookmarks, totalPages, reqBkmk.page());
 
-
   }
 
   public Optional<BookmarkDTO> getBookmarkById(long id) {
@@ -307,8 +306,12 @@ public class BookmarkService {
     bookmarkTagRepository.saveBookmarkTag(new BookmarkTag(bookmark.getId(), tag.getId()));
   }
 
-  public BookmarkTag deleteTag(BookmarkTag bt) {
-    bookmarkTagRepository.deleteBookmarkTag(bt);
+  public BookmarkTag deleteTag(BookmarkTag bt) throws TagNotFoundException {
+    var deletedCount = bookmarkTagRepository.deleteBookmarkTag(bt);
+    log.debug("DELETED: {} BookmarkTags", deletedCount);
+    if (deletedCount == 0) {
+      throw new TagNotFoundException();
+    }
     return bt;
   }
 

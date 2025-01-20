@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.core.annotations.MockTypesense;
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.TagDTO;
 import dev.findfirst.core.model.BookmarkTagPair;
@@ -25,6 +26,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
+@MockTypesense
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @IntegrationTest
 @Slf4j

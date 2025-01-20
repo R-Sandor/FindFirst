@@ -3,6 +3,7 @@ package dev.findfirst.core.controller;
 import static dev.findfirst.utilities.HttpUtility.getHttpEntity;
 
 import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.core.annotations.MockTypesense;
 
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
@@ -18,6 +19,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @IntegrationTest
+@MockTypesense
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class ImageControllerTest {

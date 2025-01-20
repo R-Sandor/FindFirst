@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.Properties;
 
 import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.core.annotations.MockTypesense;
+import dev.findfirst.core.service.TypesenseService;
 import dev.findfirst.security.userauth.models.TokenRefreshResponse;
 import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
 import dev.findfirst.users.model.MailHogMessage;
@@ -17,6 +19,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -38,11 +41,15 @@ import org.testcontainers.utility.DockerImageName;
 
 @Testcontainers
 @IntegrationTest
+@MockTypesense
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-test.yml")
 class UserControllerTest {
 
   TestRestTemplate restTemplate = new TestRestTemplate();
+
+  @InjectMocks
+  private TypesenseService typesense;
 
 
   @Autowired
@@ -85,7 +92,6 @@ class UserControllerTest {
    * Tests that a user should be able to sign up. After signing up another user should not be able
    * use the same username or email.
    */
-  @Disabled
   @Test
   void userSignup() {
     var headers = new HttpHeaders();

@@ -5,7 +5,7 @@ insert into
     username,
     email,
     password,
-    role_role_id,
+    role_role_id, 
     user_id
   )
 values
@@ -25,7 +25,7 @@ insert into
     email,
     password,
     role_role_id,
-    user_id 
+    user_id
   )
 values
 (
@@ -34,7 +34,7 @@ values
     'king@google.com',
     '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', -- pwd: test
     0,
-    2
+    2 
   );
 
 insert into
@@ -44,7 +44,7 @@ insert into
     email,
     password,
     role_role_id,
-    user_id 
+    user_id
   )
 values
 (
@@ -53,7 +53,7 @@ values
     'linus@google.com',
     '$2a$10$uhmwgpRI0vxF51s8pxt94Ojs8Cwrg7uLwhf3sK7EYv1i7QLML7aJ6', -- pwd: test
     0,
-    3
+    30
   );
 
 -- jsmith's bookmarks
@@ -101,7 +101,7 @@ values
   24,
   'Best Cheesecake Recipe2',
   'https://sugarspunrun.com/best-cheesecake-recipe/',
-  3,
+  30,
   true
 );
 
@@ -113,7 +113,7 @@ values
     25,
     'Best Cheesecake Recipe3',
     'https://sugarspunrun.com/best-cheesecake-recipe/',
-    3,
+    30,
     true
 );
 
@@ -125,7 +125,7 @@ values
     26,
     'Best Cheesecake Recipe4',
     'https://sugarspunrun.com/best-cheesecake-recipe/',
-    3,
+    30,
     true
 );
 
@@ -137,7 +137,7 @@ values
     27,
     'Best Cheesecake Recipe5',
     'https://sugarspunrun.com/best-cheesecake-recipe/',
-    3,
+    30,
     true
 );
 
@@ -149,7 +149,7 @@ values
     28,
     'Best Cheesecake Recipe6',
     'https://sugarspunrun.com/best-cheesecake-recipe/',
-    3,
+    30,
     true
 );
 
@@ -159,7 +159,7 @@ VALUES (
     29,
     'Ultimate Chocolate Cake',
     'https://sallysbakingaddiction.com/triple-chocolate-layer-cake/',
-    3,
+    30,
     true
 );
 
@@ -169,7 +169,7 @@ VALUES (
     30,
     'Top 10 Travel Destinations',
     'https://www.lonelyplanet.com/articles/top-travel-destinations',
-    3,
+    30,
     true
 );
 
@@ -179,7 +179,7 @@ VALUES (
     31,
     'Effective Java Programming',
     'https://www.oreilly.com/library/view/effective-java-3rd/',
-    3,
+    30,
     true
 );
 
@@ -189,7 +189,7 @@ VALUES (
     32,
     'Healthy Meal Plans',
     'https://www.eatingwell.com/category/4286/meal-plans/',
-    3,
+    30,
     true
 );
 
@@ -199,7 +199,7 @@ VALUES (
     33,
     'Best Running Shoes 2024',
     'https://www.runnersworld.com/gear/a20865505/best-running-shoes/',
-    3,
+    30,
     true
 );
 
@@ -209,7 +209,7 @@ VALUES (
     34,
     'Beginner’s Guide to Investing',
     'https://www.investopedia.com/investing-4427765',
-    3,
+    30,
     true
 );
 
@@ -219,7 +219,7 @@ VALUES (
     35,
     'How to Brew the Perfect Coffee',
     'https://www.javapresse.com/blogs/buying-coffee/how-to-make-coffee',
-    3,
+    30,
     true
 );
 
@@ -229,7 +229,7 @@ VALUES (
     36,
     'Essential Hiking Gear',
     'https://www.rei.com/learn/expert-advice/day-hiking-checklist.html',
-    3,
+    30,
     true
 );
 
@@ -239,7 +239,7 @@ VALUES (
     37,
     'Mastering React',
     'https://react.dev/learn',
-    3,
+    30,
     true
 );
 
@@ -249,7 +249,7 @@ VALUES (
     38,
     'Top 5 Budget Travel Tips',
     'https://www.nomadicmatt.com/travel-tips/',
-    3,
+    30,
     true
 );
 
@@ -259,7 +259,7 @@ VALUES (
     39,
     'Home Workout Routines',
     'https://www.nerdfitness.com/blog/beginner-bodyweight-workout/',
-    3,
+    30,
     true
 );
 

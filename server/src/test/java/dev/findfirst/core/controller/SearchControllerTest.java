@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 
 import dev.findfirst.core.annotations.IntegrationTest;
+import dev.findfirst.core.annotations.MockTypesense;
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.dto.BookmarkOnly;
 import dev.findfirst.core.model.SearchBkmkByTextReq;
@@ -27,6 +28,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 @Testcontainers
 @IntegrationTest
+@MockTypesense
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 class SearchControllerTest {

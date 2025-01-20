@@ -162,10 +162,13 @@ public class BookmarkController {
       @RequestParam("tag") @NotBlank String title)
       throws TagNotFoundException, BookmarkNotFoundException {
 
+    log.debug("Attempt Delete");
     // verify that the bookmark exists.
     var b = bookmarkService.findByIdJDBC(bookmarkID).orElseThrow(BookmarkNotFoundException::new);
+    log.debug("Found bookmark");
 
     var t = tagService.findIdByTagTitleJDBC(title).orElseThrow(TagNotFoundException::new);
+    log.debug("Found tag");
 
     return new ResponseEntity<>(bookmarkService.deleteTag(new BookmarkTag(b.getId(), t)),
         HttpStatus.OK);
