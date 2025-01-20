@@ -21,7 +21,6 @@ import dev.findfirst.security.userauth.models.TokenRefreshResponse;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,7 +81,6 @@ class BookmarkControllerTest {
       "Effective Java Programming", "Healthy Meal Plans", "Best Running Shoes 2024",
       "Beginner’s Guide to Investing", "How to Brew the Perfect Coffee");
 
-
   @Test
   void containerStarupTest() {
     assertEquals(true, postgres.isRunning());
@@ -139,7 +137,6 @@ class BookmarkControllerTest {
   void pageGreaterThanTotalPage() {
     Integer page = 6;
     Integer size = 6;
-
 
     var response = restTemplate.exchange(bookmarksPaginationURI + "?page={page}&size={size}",
         HttpMethod.GET, getHttpEntity(restTemplate), PaginatedBookmarkRes.class, page, size);
@@ -394,22 +391,21 @@ class BookmarkControllerTest {
   }
 
   @Test
-  // flaky test need to investigate why.
-  @Disabled
   void attemptToDeleteBookmarkTagThatDoesNotExist() {
 
+    var header = getHttpEntity(restTemplate);
     var delResp = restTemplate.exchange(bookmarkURI + "/100" + "/tag?tag={tag}", HttpMethod.DELETE,
-        getHttpEntity(restTemplate), String.class, "random");
+        header, String.class, "random");
 
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, delResp.getStatusCode());
     assertEquals(new BookmarkNotFoundException().getMessage(), delResp.getBody());
 
     // add the tag.
     restTemplate.exchange("/api/tags", HttpMethod.POST,
-        getHttpEntity(restTemplate, List.of("buildings")), TagDTO[].class);
+        new HttpEntity<>(List.of("buildings"), header.getHeaders()), TagDTO[].class);
 
-    delResp = restTemplate.exchange(bookmarkURI + "/5" + "/tag?tag={tag}", HttpMethod.DELETE,
-        getHttpEntity(restTemplate), String.class, "buildings");
+    delResp = restTemplate.exchange(bookmarkURI + "/2" + "/tag?tag={tag}", HttpMethod.DELETE,
+        header, String.class, "buildings");
 
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, delResp.getStatusCode());
     assertEquals(new TagNotFoundException().getMessage(), delResp.getBody());
@@ -521,7 +517,8 @@ class BookmarkControllerTest {
     // Create a byte array with application/json content
     byte[] fileContent = "{\"bookmarks\": []}".getBytes(StandardCharsets.UTF_8);
 
-    // Build the multipart request with a .html extension but unsupported content type
+    // Build the multipart request with a .html extension but unsupported content
+    // type
     var bodyBuilder = new MultipartBodyBuilder();
     bodyBuilder.part("file", fileContent).filename("invalid_content.html")
         .contentType(MediaType.APPLICATION_JSON); // Unsupported content type
@@ -586,7 +583,8 @@ class BookmarkControllerTest {
     byte[] fileContent =
         "<html><body>Plain Text Content</body></html>".getBytes(StandardCharsets.UTF_8);
 
-    // Build the multipart request with a .html extension and text/plain content type
+    // Build the multipart request with a .html extension and text/plain content
+    // type
     var bodyBuilder = new MultipartBodyBuilder();
     bodyBuilder.part("file", fileContent).filename("plainText.html")
         .contentType(MediaType.TEXT_PLAIN); // Supported content type

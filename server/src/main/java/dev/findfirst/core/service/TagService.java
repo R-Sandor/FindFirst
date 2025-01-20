@@ -165,6 +165,7 @@ public class TagService {
   public Optional<Long> findIdByTagTitleJDBC(@NotBlank String title) {
     var tag = tagRepositoryJDBC.findIdByTitle(title, userContext.getUserId());
     if (tag.isPresent()) {
+      log.debug("found tag {}", tag.get());
       return Optional.of(tag.get());
     } else {
       return Optional.ofNullable(null);
