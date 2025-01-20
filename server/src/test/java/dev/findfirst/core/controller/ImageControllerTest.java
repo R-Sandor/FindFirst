@@ -4,6 +4,7 @@ import static dev.findfirst.utilities.HttpUtility.getHttpEntity;
 
 import dev.findfirst.core.annotations.IntegrationTest;
 import dev.findfirst.core.annotations.MockTypesense;
+
 import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
