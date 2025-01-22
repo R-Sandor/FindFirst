@@ -5,6 +5,19 @@ import axios from "axios";
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/api";
 
 let failCount = 0;
+export interface PaginatedBookmarkReq {
+  page: number;
+  size: number;
+}
+export interface Bookmark {
+  id: number;
+  title: string;
+  url: string;
+}
+export interface PaginatedBookmarkRes {
+  bookmarks: Bookmark[];
+  total: number;
+}
 
 export const instance = axios.create({
   withCredentials: true,
@@ -70,9 +83,9 @@ const api = {
     return this.execute("GET", "bookmarks", null, {});
   },
   // Get paginated bookmarks.
-  getPaginatedBookmarks(page: number, size: number) {
-    return instance.get("paginated/bookmarks", {
-      params: { page, size },
+  getPaginatedBookmarks(req: PaginatedBookmarkReq) {
+    return instance.get<PaginatedBookmarkRes>("bookmarks", {
+      params: { page: req.page, size: req.size },
     });
   },
   // Delete all bookmarks.

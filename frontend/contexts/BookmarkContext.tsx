@@ -1,5 +1,6 @@
 "use client";
 
+
 import api from "@/api/Api";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 import UseAuth from "@components/UseAuth";
@@ -13,7 +14,6 @@ import {
   useState,
   useMemo,
 } from "react";
-
 interface ProviderProps {
   fetchedBookmarks: Bookmark[];
   loading: boolean;
@@ -47,7 +47,7 @@ export function BookmarkProvider({
 
   useEffect(() => {
     if (userAuth && bookmarks.length === 0) {
-      setIsLoading(true); // Ensure loading state consistency
+      setIsLoading(true); 
       api
         .getAllBookmarks()
         .then((resp) => {

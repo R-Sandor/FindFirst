@@ -7,6 +7,7 @@ import { useTags } from "@/contexts/TagContext";
 import { TagWithCnt } from "@type/Bookmarks/Tag";
 import cardView from "styles/cardView.module.scss";
 import { useState, useEffect, useRef } from "react";
+import api, { PaginatedBookmarkReq, PaginatedBookmarkRes } from "@/api/Api";
 
 function getTagId(map: Map<number, TagWithCnt>, tagTitle: string) {
   for (let [k, v] of map) {
@@ -19,29 +20,26 @@ function getTagId(map: Map<number, TagWithCnt>, tagTitle: string) {
 
 // Bookmark group composed of Bookmarks.
 export default function BookmarkCardsView() {
-  const bookmarks = useBookmarks();
-  const { selected } = useSelectedTags();
+
+  const bookmarks = useBookmarks();  const { selected } = useSelectedTags();
   const tags = useTags();
   const [currentBookmarks, setCurrentBookmarks] = useState<Bookmark[]>([]);
   const [hasMore, setHasMore] = useState(true);
-  const ITEMS_PER_LOAD = 10; // bookmarks to load per batch
+  const [page, setPage] = useState(1);
+  const size = 10;
   const observerRef = useRef<IntersectionObserver | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
   const filterMap = useRef(new Map<number, Bookmark>());
 
   useEffect(() => {
-    if (!bookmarks.loading) {
-      const initialBookmarks = filterBookmarks(bookmarks.fetchedBookmarks, 0, ITEMS_PER_LOAD);
-      setCurrentBookmarks(initialBookmarks);
-      setHasMore(initialBookmarks.length < bookmarks.fetchedBookmarks.length);
-    }
-  }, [bookmarks, selected]);
+    fetchPaginatedBookmarks(page, size);
+  }, [page, selected]);
 
   useEffect(() => {
     const observerCallback: IntersectionObserverCallback = (entries) => {
       const [entry] = entries;
       if (entry.isIntersecting && hasMore) {
-        fetchMoreData();
+        setPage((prevPage) => prevPage + 1);
       }
     };
 
@@ -60,8 +58,7 @@ export default function BookmarkCardsView() {
         observerRef.current.disconnect();
       }
     };
-  }, [hasMore, currentBookmarks]);
-
+  }, [hasMore]);
   function addIfNotInList(ids: number[]) {
     ids.forEach((bkmkId) => {
       const fnd = bookmarks.fetchedBookmarks.find((v) => v.id === bkmkId);
@@ -86,35 +83,57 @@ export default function BookmarkCardsView() {
     }
   }
 
-  function fetchMoreData() {
-    const nextStart = currentBookmarks.length;
-    const nextEnd = nextStart + ITEMS_PER_LOAD;
+  async function fetchPaginatedBookmarks(page: number, size: number) {
+    try {
+      const req: PaginatedBookmarkReq = { page, size };
+      console.log("Request:", req);
+      const response = await api.getPaginatedBookmarks(req);
+      // console.log("Response:", response.data);
+      // const res:PaginatedBookmarkRes = response.data;
+      // console.log("Response:", res);
+      const paginatedResponse: PaginatedBookmarkRes = {
+        bookmarks: response.data.map((bookmark: Bookmark) => ({
+          id: bookmark.id,
+          title: bookmark.title,
+          url: bookmark.url,
+          screenshotUrl: bookmark.screenshotUrl,
+          tags: bookmark.tags,
+          scrapable: bookmark.scrapable,
+        })),
+        total: response.data.length, 
+      };
+  
+      // Log the transformed response
+      console.log("Transformed Response:", paginatedResponse);
+      setCurrentBookmarks((prev) => {
+        const bookmarkMap = new Map<number, Bookmark>();
+        [...prev, ...paginatedResponse.bookmarks].forEach((bookmark) => {
+          bookmarkMap.set(bookmark.id, bookmark);
+        });
+        return Array.from(bookmarkMap.values());
+      });
+      console.log("Current Bookmarks:", currentBookmarks);
 
-    const moreBookmarks = filterBookmarks(bookmarks.fetchedBookmarks, nextStart, nextEnd);
-    setCurrentBookmarks((prev) => [...prev, ...moreBookmarks]);
-
-    if (
-      moreBookmarks.length === 0 ||
-      currentBookmarks.length + moreBookmarks.length >= bookmarks.fetchedBookmarks.length
-    ) {
-      setHasMore(false);
+      setHasMore(paginatedResponse.bookmarks.length === size);
+    } catch (error) {
+      console.error("Error fetching paginated bookmarks:", error);
     }
   }
 
   return (
     <div>
       {!bookmarks.loading ? (
-        <div className={`${cardView.content} row`}>
-          <div className="col-sm-12 col-md-12 col-lg-4">
-            <NewBookmarkCard />
-          </div>
-          {currentBookmarks.map((b) => (
-            <div key={b.id} className="col-sml-12 col-md-6 col-lg-4">
-              <BookmarkCard bookmark={b} />
-            </div>
-          ))}
-          {hasMore && <div ref={sentinelRef} style={{ height: "1px", visibility: "hidden" }} />}
+      <div className={`${cardView.content} row`}>
+        <div className="col-sm-12 col-md-12 col-lg-4">
+          <NewBookmarkCard />
         </div>
+        {currentBookmarks.map((b) => (
+          <div key={b.id} className="col-sml-12 col-md-6 col-lg-4">
+            <BookmarkCard bookmark={b} />
+          </div>
+        ))}
+        {hasMore && <div ref={sentinelRef} style={{ height: "1px", visibility: "hidden" }} />}
+      </div>
       ) : (
         <p>Loading...</p>
       )}
