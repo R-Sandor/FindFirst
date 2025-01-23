@@ -1,7 +1,11 @@
 package dev.findfirst;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Collections;
+
+import dev.findfirst.security.util.KeyGenerator;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
@@ -22,8 +26,9 @@ public class FindFirstApplication {
 
   public static void main(String[] args) {
     try {
+      KeyGenerator.generateKeys("app.key", "app.pub");
       SpringApplication.run(FindFirstApplication.class, args);
-    } catch (ApplicationContextException ude) {
+    } catch (ApplicationContextException | NoSuchAlgorithmException | IOException ude) {
       log.error("""
 
 
