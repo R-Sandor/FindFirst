@@ -57,6 +57,11 @@ spotless {
   }
 }
 
+task createKeys(type: JavaExec) {
+    main = 'dev.findfirst.security.util.KeyGenerator'  // Replace with the fully qualified class name of your utility
+    classpath = sourceSets.main.runtimeClasspath
+}
+
 tasks.named("build") {
   dependsOn("spotlessApply")
 }
@@ -64,6 +69,8 @@ tasks.named("build") {
 tasks.named("bootRun") {
   dependsOn('flywayMigrate')
 }
+
+
 
 repositories {
   mavenCentral()
@@ -127,6 +134,7 @@ test {
   useJUnitPlatform()
   testLogging.showStandardStreams = true
   finalizedBy jacocoTestReport // report is always generated after tests run
+  dependsOn("createKeys")
 }
 
 jacocoTestReport {
