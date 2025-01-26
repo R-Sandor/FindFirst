@@ -67,6 +67,7 @@ public class TypesenseService {
   }
 
   public void addText(BookmarkJDBC bookmark, Document retDoc) {
+    log.debug("Adding text to typesense");
     if (retDoc == null) {
       return;
     }
@@ -86,9 +87,11 @@ public class TypesenseService {
   public List<Long> search(String text) {
     SearchParameters searchParameters = new SearchParameters().q(text).queryBy("text");
     try {
+      log.debug("searching");
+      // log.debug(client.collections("bookmark").documents().;
       SearchResult searchResult =
           client.collections("bookmark").documents().search(searchParameters);
-      log.info(searchResult.toString());
+      log.debug(searchResult.toString());
 
       return searchResult.getHits().stream()
           .map(h -> Long.parseLong(h.getDocument().get("id").toString())).toList();

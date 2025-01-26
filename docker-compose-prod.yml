@@ -52,5 +52,15 @@ services:
     ports:
       - 5432:5432
     restart: always
+  typesense:
+    image: typesense/typesense:27.1
+    restart: on-failure
+    ports:
+      - "8108:8108"
+    environment:
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
+    volumes:
+      - ./data/typesense-data:/data
+    command: "--data-dir /data --enable-cors"
 volumes:
   pgdata:

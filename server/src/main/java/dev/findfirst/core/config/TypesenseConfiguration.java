@@ -26,7 +26,7 @@ public class TypesenseConfiguration {
         "8108" // For Typesense Cloud use 443
     ));
     org.typesense.api.Configuration configuration =
-        new org.typesense.api.Configuration(nodes, Duration.ofSeconds(2), typesSenseApiKey);
+        new org.typesense.api.Configuration(nodes, Duration.ofSeconds(9), typesSenseApiKey);
     return new Client(configuration);
   }
 
