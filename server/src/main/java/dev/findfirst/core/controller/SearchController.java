@@ -12,6 +12,8 @@ import dev.findfirst.core.service.SearchService;
 import dev.findfirst.core.utilies.Response;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 public class SearchController {
 
   private final SearchService search;
@@ -44,6 +47,7 @@ public class SearchController {
   @GetMapping("/api/search/text")
   public ResponseEntity<List<BookmarkDTO>> searchBookmarkByText(
       @Valid @ModelAttribute SearchBkmkByTextReq searchBkmkByTextReq) {
+    log.debug("Text search");
     return ResponseEntity.ok(search.bookmarksByText(searchBkmkByTextReq.text()));
   }
 }
