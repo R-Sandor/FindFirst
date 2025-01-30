@@ -175,8 +175,8 @@ public class UserManagementService {
 
     // Create new user's account
     AggregateReference<Role, Integer> ref = AggregateReference.to(0);
-    User user = new User(null, false, signupRequest.username(), signupRequest.username(),
-        signupRequest.password(), "", ref);
+    User user = new User(null, false, signupRequest.username(), signupRequest.email(),
+        encodePassword(signupRequest.password()), "", ref);
 
     // create a new tenant
     try {
