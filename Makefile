@@ -16,11 +16,11 @@ ifeq ( ,$(wildcard $(CERT_FILE)))
 	@echo ">Creating certificates"
 	cd ./server/scripts && ./createServerKeys.sh
 endif
-	cd ./server && ./gradlew clean build
+	cd ./server && ./gradlew clean build $(args)
 	docker build -t ghcr.io/r-sandor/findfirst-server -f ./docker/server/Dockerfile.buildlocal ./server
 
 build_screenshot:
-	cd ./screenshot && ./gradlew clean build
+	cd ./screenshot && ./gradlew clean build $(args)
 	docker build -t ghcr.io/r-sandor/findfirst-screenshot -f ./docker/screenshot/Dockerfile.buildlocal ./screenshot
 
 build_frontend: 

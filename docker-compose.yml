@@ -18,13 +18,18 @@ services:
       - SCREENSHOT_SERVICE_URL=${SCREENSHOT_SERVICE_URL}
       - FINDFIRST_SCREENSHOT_LOCATION=/app/screenshots
       - FINDFIRST_UPLOAD_LOCATION=/app/profile-pictures/
+      - FINDFIRST_TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
+      - FINDFIRST_TYPESENSE_HOST=${TYPESENSE_SERVICE_HOST}
     volumes:
       - ./data/screenshots:/app/screenshots
       - ./data/uploads/profile-pictures:/app/profile-pictures
+    depends_on:
+      - db
+      - typesense
   screenshot:
     image: ghcr.io/r-sandor/findfirst-screenshot:latest
     ports:
-      - "8080:8080"
+      - 8080:8080
     environment:
       - SPRING_PROFILES_ACTIVE=dev
       - FINDFIRST_SCREENSHOT_LOCATION=/app/screenshots
@@ -34,7 +39,7 @@ services:
     image: typesense/typesense:27.1
     restart: on-failure
     ports:
-      - "8108:8108"
+      - 8108:8108
     environment:
       - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
     volumes:

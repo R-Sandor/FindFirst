@@ -23,11 +23,14 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - SCREENSHOT_SERVICE_URL=http://screenshot:8080/
       - FINDFIRST_SCREENSHOT_LOCATION=/app/screenshots
+      - FINDFIRST_TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
+      - FINDFIRST_TYPESENSE_HOST=${TYPESENSE_SERVICE_HOST}
     volumes:
       - ./server/prod.yml:/app/prod.yml
       - ./data/screenshots:/app/screenshots
     depends_on:
       - db
+      - typesense
     restart: always
   screenshot:
     build:
@@ -52,5 +55,15 @@ services:
     ports:
       - 5432:5432
     restart: always
+  typesense:
+    image: typesense/typesense:27.1
+    restart: on-failure
+    ports:
+      - "8108:8108"
+    environment:
+      - TYPESENSE_API_KEY=${TYPESENSE_API_KEY}
+    volumes:
+      - ./data/typesense-data:/data
+    command: "--data-dir /data --enable-cors"
 volumes:
   pgdata:

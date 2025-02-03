@@ -15,18 +15,18 @@ import org.typesense.resources.Node;
 @Slf4j
 public class TypesenseConfiguration {
 
-  @Value("${typesense_api_key}")
+  @Value("${findfirst.typesense.api_key}")
   String typesSenseApiKey;
+
+  @Value("${findfirst.typesense.host}")
+  String host;
 
   @Bean
   public Client typesenseClient() {
     List<Node> nodes = new ArrayList<>();
-    nodes.add(new Node("http", // For Typesense Cloud use https
-        "localhost", // For Typesense Cloud use xxx.a1.typesense.net
-        "8108" // For Typesense Cloud use 443
-    ));
+    nodes.add(new Node("http", host, "8108"));
     org.typesense.api.Configuration configuration =
-        new org.typesense.api.Configuration(nodes, Duration.ofSeconds(2), typesSenseApiKey);
+        new org.typesense.api.Configuration(nodes, Duration.ofSeconds(9), typesSenseApiKey);
     return new Client(configuration);
   }
 
