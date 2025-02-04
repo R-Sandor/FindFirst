@@ -9,7 +9,8 @@ WORKDIR /app
 
 # Install dependencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN corepack enable pnpm && pnpm i --frozen-lockfile
+RUN npm install --global corepack@latest
+RUN corepack use pnpm@10.1.0 && pnpm i --frozen-lockfile
 
 
 # Rebuild the source code only when needed
@@ -25,6 +26,7 @@ ARG BUILDENV=prod
 # Uncomment the following line in case you want to disable telemetry during the build.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
+RUN npm install --global corepack@latest && corepack use pnpm@10.1.0
 RUN corepack enable pnpm && pnpm run build:$BUILDENV; 
 
 # Production image, copy all the files and run next
