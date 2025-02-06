@@ -42,13 +42,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -71,7 +65,6 @@ public class UserController {
 
   @Value("${findfirst.app.domain}")
   private String domain;
-
 
   @Value("${findfirst.upload.allowed-types}")
   private String[] allowedTypes;
@@ -175,6 +168,11 @@ public class UserController {
   @PostMapping("/profile-picture")
   public ResponseEntity<?> uploadProfilePicture(
       @RequestParam("file") @FileSize MultipartFile file) {
+
+    // File size validation
+    if (file.getSize() > 2 * 1024 * 1024) {
+      return ResponseEntity.badRequest().body("File size exceeds the maximum limit of 2 MB.");
+    }
 
     // File type validation
     String contentType = file.getContentType();
