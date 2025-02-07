@@ -3,6 +3,7 @@ package dev.findfirst.users.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.rmi.UnexpectedException;
 import java.time.Instant;
 import java.util.Base64;
@@ -100,7 +101,7 @@ public class UserManagementService {
     removeUserPhoto(user);
 
     // Save new photo
-    String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+    String fileName =  Path.of(UUID.randomUUID() + "_" + file.getName()).normalize().toString();
     File destinationFile = new File(uploadLocation + fileName);
     file.transferTo(destinationFile);
     String userPhoto = uploadLocation + fileName;
