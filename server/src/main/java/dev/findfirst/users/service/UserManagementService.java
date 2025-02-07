@@ -101,7 +101,7 @@ public class UserManagementService {
     removeUserPhoto(user);
 
     // Save new photo
-    String fileName =  Path.of(UUID.randomUUID() + "_" + file.getName()).normalize().toString();
+    String fileName =  Path.of("userphoto_" + UUID.randomUUID()).normalize().toString();
     File destinationFile = new File(uploadLocation + fileName);
     file.transferTo(destinationFile);
     String userPhoto = uploadLocation + fileName;
