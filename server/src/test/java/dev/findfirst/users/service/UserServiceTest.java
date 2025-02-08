@@ -1,9 +1,13 @@
 package dev.findfirst.users.service;
 
-import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
@@ -62,25 +66,21 @@ class UserServiceTest {
     mockUser.setUserPhoto("uploads/profile-pictures/test.jpg");
 
     // Mocking the allowedTypes field
-    ReflectionTestUtils.setField(userController, "allowedTypes", new String[]{"image/jpeg", "image/png"});
+    ReflectionTestUtils.setField(userController, "allowedTypes",
+        new String[] {"image/jpeg", "image/png"});
   }
 
   @Test
   @Disabled
   void testUploadProfilePicture_Success() throws Exception {
 
-    MockMultipartFile file = new MockMultipartFile(
-            "file",
-            "test.jpg",
-            "image/jpeg",
-            "dummy content".getBytes()
-    );
+    MockMultipartFile file =
+        new MockMultipartFile("file", "test.jpg", "image/jpeg", "dummy content".getBytes());
 
-    when(userManagementService.getUserById(mockUser.getUserId()))
-            .thenReturn(Optional.of(mockUser));
+    when(userManagementService.getUserById(mockUser.getUserId())).thenReturn(Optional.of(mockUser));
 
-    ResponseEntity<?> response =
-            userController.uploadProfilePicture(file);
+    ResponseEntity<?> response = userController.uploadProfilePicture(file);
+    System.out.println(response.getBody());
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertEquals("File uploaded successfully.", response.getBody());
@@ -92,15 +92,10 @@ class UserServiceTest {
   @Disabled
   void testRemoveUserPhoto_Success() throws Exception {
 
-    MockMultipartFile file = new MockMultipartFile(
-            "file",
-            "test.jpg",
-            "image/jpeg",
-            "dummy content".getBytes()
-    );
+    MockMultipartFile file =
+        new MockMultipartFile("file", "test.jpg", "image/jpeg", "dummy content".getBytes());
 
-    when(userManagementService.getUserById(mockUser.getUserId()))
-            .thenReturn(Optional.of(mockUser));
+    when(userManagementService.getUserById(mockUser.getUserId())).thenReturn(Optional.of(mockUser));
 
     ResponseEntity<?> response = userController.uploadProfilePicture(file);
 
@@ -118,12 +113,7 @@ class UserServiceTest {
 
     byte[] largeContent = new byte[3 * 1024 * 1024]; // 3 MB
 
-    MockMultipartFile file = new MockMultipartFile(
-            "file",
-            "large.jpg",
-            "image/jpeg",
-            largeContent
-    );
+    MockMultipartFile file = new MockMultipartFile("file", "large.jpg", "image/jpeg", largeContent);
 
     ResponseEntity<?> response = userController.uploadProfilePicture(file);
 
@@ -136,12 +126,7 @@ class UserServiceTest {
   void testUploadProfilePicture_InvalidFileType() throws Exception {
 
     MockMultipartFile file =
-        new MockMultipartFile(
-                "file",
-                "test.txt",
-                "text/plain",
-                "dummy content".getBytes()
-        );
+        new MockMultipartFile("file", "test.txt", "text/plain", "dummy content".getBytes());
 
     ResponseEntity<?> response = userController.uploadProfilePicture(file);
 
@@ -154,11 +139,9 @@ class UserServiceTest {
 
     mockUser.setUserPhoto(null);
 
-    when(userManagementService.getUserById(mockUser.getUserId()))
-            .thenReturn(Optional.of(mockUser));
+    when(userManagementService.getUserById(mockUser.getUserId())).thenReturn(Optional.of(mockUser));
 
-    ResponseEntity<?> response =
-            userController.getUserProfilePicture(mockUser.getUserId());
+    ResponseEntity<?> response = userController.getUserProfilePicture(mockUser.getUserId());
 
     assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
   }
@@ -174,11 +157,9 @@ class UserServiceTest {
 
     mockUser.setUserPhoto(tempFilePath);
 
-    when(userManagementService.getUserById(mockUser.getUserId()))
-            .thenReturn(Optional.of(mockUser));
+    when(userManagementService.getUserById(mockUser.getUserId())).thenReturn(Optional.of(mockUser));
 
-    ResponseEntity<?> response =
-            userController.getUserProfilePicture(mockUser.getUserId());
+    ResponseEntity<?> response = userController.getUserProfilePicture(mockUser.getUserId());
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertNotNull(response.getBody());

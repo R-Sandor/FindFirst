@@ -75,6 +75,7 @@ public class UserController {
     try {
       user = userService.createNewUserAccount(signUpRequest);
     } catch (UserNameTakenException | EmailAlreadyRegisteredException | UnexpectedException e) {
+      log.debug(e.getMessage());
       return ResponseEntity.badRequest().body(e.getMessage());
     }
 
@@ -166,17 +167,14 @@ public class UserController {
   }
 
   @PostMapping("/profile-picture")
-  public ResponseEntity<?> uploadProfilePicture(
-      @RequestParam("file") @FileSize MultipartFile file) {
-
-    // File size validation
-    if (file.getSize() > 2 * 1024 * 1024) {
-      return ResponseEntity.badRequest().body("File size exceeds the maximum limit of 2 MB.");
-    }
+  public ResponseEntity<String> uploadProfilePicture(
+      @Valid @RequestParam("file") @FileSize MultipartFile file) {
+    log.debug("saving profile picture");
 
     // File type validation
     String contentType = file.getContentType();
     if (Arrays.stream(allowedTypes).noneMatch(contentType::equals)) {
+      log.debug("Attempt upload wrong file type");
       return ResponseEntity.badRequest().body("Invalid file type. Only JPG and PNG are allowed.");
     }
 
@@ -189,6 +187,7 @@ public class UserController {
     } catch (NoUserFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
     } catch (Exception e) {
+      log.debug(e.getMessage());
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file.");
     }
   }
