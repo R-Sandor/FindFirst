@@ -109,6 +109,7 @@ class UserServiceTest {
   }
 
   @Test
+  @Disabled("move this to userController test")
   void testUploadProfilePicture_FileSizeExceedsLimit() throws Exception {
 
     byte[] largeContent = new byte[3 * 1024 * 1024]; // 3 MB
