@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Component
 public class FileSizeValidator implements ConstraintValidator<FileSize, MultipartFile> {
-  @Value("${findfirst.upload.max-file-size:}")
+  @Value("${findfirst.upload.max-file-size}")
   private int maxFileSize;
 
   @Override

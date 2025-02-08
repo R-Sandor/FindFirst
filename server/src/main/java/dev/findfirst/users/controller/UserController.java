@@ -42,13 +42,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -72,7 +66,6 @@ public class UserController {
   @Value("${findfirst.app.domain}")
   private String domain;
 
-
   @Value("${findfirst.upload.allowed-types}")
   private String[] allowedTypes;
 
@@ -82,6 +75,7 @@ public class UserController {
     try {
       user = userService.createNewUserAccount(signUpRequest);
     } catch (UserNameTakenException | EmailAlreadyRegisteredException | UnexpectedException e) {
+      log.debug(e.getMessage());
       return ResponseEntity.badRequest().body(e.getMessage());
     }
 
@@ -173,12 +167,14 @@ public class UserController {
   }
 
   @PostMapping("/profile-picture")
-  public ResponseEntity<?> uploadProfilePicture(
-      @RequestParam("file") @FileSize MultipartFile file) {
+  public ResponseEntity<String> uploadProfilePicture(
+      @Valid @RequestParam("file") @FileSize MultipartFile file) {
+    log.debug("saving profile picture");
 
     // File type validation
     String contentType = file.getContentType();
     if (Arrays.stream(allowedTypes).noneMatch(contentType::equals)) {
+      log.debug("Attempt upload wrong file type");
       return ResponseEntity.badRequest().body("Invalid file type. Only JPG and PNG are allowed.");
     }
 
@@ -191,6 +187,7 @@ public class UserController {
     } catch (NoUserFoundException e) {
       return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
     } catch (Exception e) {
+      log.debug(e.getMessage());
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file.");
     }
   }

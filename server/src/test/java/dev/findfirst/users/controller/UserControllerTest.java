@@ -16,7 +16,6 @@ import dev.findfirst.users.model.MailHogMessage;
 import dev.findfirst.users.model.user.TokenPassword;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -30,9 +29,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.util.MultiValueMap;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -96,7 +98,7 @@ class UserControllerTest {
   void userSignup() {
     var headers = new HttpHeaders();
     var ent = new HttpEntity<>(
-        new SignupRequest("Steve-Man", "steve@test.com", "$tev3s_sup3rH@rdPassword"), headers);
+        new SignupRequest("Steve-Man2", "steve2@google.com", "$tev3s_sup3rH@rdPassword"), headers);
     var response = restTemplate.exchange(userUrl + "/signup", HttpMethod.POST, ent, String.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
 
@@ -110,7 +112,6 @@ class UserControllerTest {
    * registration.
    */
   @Test
-  @Disabled
   void completeSignupAndRegistration() {
     var headers = new HttpHeaders();
     var ent = new HttpEntity<>(
@@ -191,4 +192,36 @@ class UserControllerTest {
     assertEquals(HttpStatus.OK, resp.getStatusCode());
   }
 
+  @Test
+  void testGetUserProfilePicture_NotFound() {
+
+    byte[] largeContent = new byte[2 * 1024 * 1024]; // 2 MB Max
+
+    // Use MultipartBodyBuilder to build the multipart request
+    MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+    bodyBuilder.part("file", largeContent).filename("fakePic.png").contentType(MediaType.IMAGE_PNG);
+
+    bodyBuilder.part("file", largeContent).filename("image.jpg").contentType(MediaType.IMAGE_JPEG);
+
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBasicAuth("king", "test");
+    HttpEntity<String> entity = new HttpEntity<>(headers);
+    var signResp = restTemplate.postForEntity("/user/signin", entity, TokenRefreshResponse.class);
+
+    // Get the cookie from signin.
+    var cookieOpt = Optional.ofNullable(signResp.getHeaders().get("Set-Cookie"));
+    var cookie = cookieOpt.orElseThrow().get(0);
+
+    // Add the cookie to next request.
+    headers = new HttpHeaders();
+    headers.add("Cookie", cookie);
+
+    // Set up headers with basic authentication
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
+        new HttpEntity<>(bodyBuilder.build(), headers);
+
+    var response = restTemplate.postForEntity("/user/profile-picture", requestEntity, String.class);
+
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+  }
 }
