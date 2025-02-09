@@ -9,6 +9,7 @@ frontend/node_modules
 !**/src/test/**/build/
 data/screenshots
 data/typesense-data
+data/uploads
 
 ### STS ###
 .apt_generated

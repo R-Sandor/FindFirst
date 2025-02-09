@@ -1,9 +1,12 @@
 package dev.findfirst.users.controller;
 
+import static dev.findfirst.utilities.HttpUtility.getHttpEntity;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -20,6 +23,7 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -34,7 +38,6 @@ import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.util.MultiValueMap;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -50,9 +53,11 @@ class UserControllerTest {
 
   TestRestTemplate restTemplate = new TestRestTemplate();
 
+  @Value("${findfirst.screenshot.location}")
+  String testPicture;
+
   @InjectMocks
   private TypesenseService typesense;
-
 
   @Autowired
   UserControllerTest(TestRestTemplate tRestTemplate) {
@@ -193,6 +198,20 @@ class UserControllerTest {
   }
 
   @Test
+  void testUserProfile_PhotoTooLarg() {
+    byte[] largeContent = new byte[3 * 1024 * 1024]; // 2 MB Max
+    // Use MultipartBodyBuilder to build the multipart request
+    MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+    bodyBuilder.part("file", largeContent).filename("fakePic.png").contentType(MediaType.IMAGE_PNG);
+
+    var requestEntity = getHttpEntity(restTemplate, "king", "test", bodyBuilder.build());
+
+    var response = restTemplate.postForEntity("/user/profile-picture", requestEntity, String.class);
+
+    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+  }
+
+  @Test
   void testGetUserProfilePicture_NotFound() {
 
     byte[] largeContent = new byte[2 * 1024 * 1024]; // 2 MB Max
@@ -201,27 +220,23 @@ class UserControllerTest {
     MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
     bodyBuilder.part("file", largeContent).filename("fakePic.png").contentType(MediaType.IMAGE_PNG);
 
-    bodyBuilder.part("file", largeContent).filename("image.jpg").contentType(MediaType.IMAGE_JPEG);
-
-    HttpHeaders headers = new HttpHeaders();
-    headers.setBasicAuth("king", "test");
-    HttpEntity<String> entity = new HttpEntity<>(headers);
-    var signResp = restTemplate.postForEntity("/user/signin", entity, TokenRefreshResponse.class);
-
-    // Get the cookie from signin.
-    var cookieOpt = Optional.ofNullable(signResp.getHeaders().get("Set-Cookie"));
-    var cookie = cookieOpt.orElseThrow().get(0);
-
-    // Add the cookie to next request.
-    headers = new HttpHeaders();
-    headers.add("Cookie", cookie);
-
-    // Set up headers with basic authentication
-    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
-        new HttpEntity<>(bodyBuilder.build(), headers);
+    var requestEntity = getHttpEntity(restTemplate, "king", "test", bodyBuilder.build());
 
     var response = restTemplate.postForEntity("/user/profile-picture", requestEntity, String.class);
 
-    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  void testRemoveUserPhoto_Success() throws Exception {
+    MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+    bodyBuilder.part("file", Files.readAllBytes(Path.of(testPicture + "/facebook.com.png")))
+        .filename("facebook.com.png").contentType(MediaType.IMAGE_PNG);
+
+    var requestEntity = getHttpEntity(restTemplate, "king", "test", bodyBuilder.build());
+
+    var response = restTemplate.postForEntity("/user/profile-picture", requestEntity, String.class);
+
+    assertEquals(HttpStatus.OK, response.getStatusCode());
   }
 }

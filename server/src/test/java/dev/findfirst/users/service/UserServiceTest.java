@@ -2,11 +2,7 @@ package dev.findfirst.users.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
@@ -19,7 +15,6 @@ import dev.findfirst.users.controller.UserController;
 import dev.findfirst.users.model.user.User;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -29,7 +24,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
@@ -70,70 +64,6 @@ class UserServiceTest {
         new String[] {"image/jpeg", "image/png"});
   }
 
-  @Test
-  @Disabled
-  void testUploadProfilePicture_Success() throws Exception {
-
-    MockMultipartFile file =
-        new MockMultipartFile("file", "test.jpg", "image/jpeg", "dummy content".getBytes());
-
-    when(userManagementService.getUserById(mockUser.getUserId())).thenReturn(Optional.of(mockUser));
-
-    ResponseEntity<?> response = userController.uploadProfilePicture(file);
-    System.out.println(response.getBody());
-
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals("File uploaded successfully.", response.getBody());
-
-    verify(userManagementService, times(1)).changeUserPhoto(eq(mockUser), eq(file));
-  }
-
-  @Test
-  @Disabled
-  void testRemoveUserPhoto_Success() throws Exception {
-
-    MockMultipartFile file =
-        new MockMultipartFile("file", "test.jpg", "image/jpeg", "dummy content".getBytes());
-
-    when(userManagementService.getUserById(mockUser.getUserId())).thenReturn(Optional.of(mockUser));
-
-    ResponseEntity<?> response = userController.uploadProfilePicture(file);
-
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals("File uploaded successfully.", response.getBody());
-
-    verify(userManagementService, times(1)).changeUserPhoto(eq(mockUser), eq(file));
-    verify(userManagementService, times(1)).removeUserPhoto(eq(mockUser));
-
-    assertNull(mockUser.getUserPhoto());
-  }
-
-  @Test
-  @Disabled("move this to userController test")
-  void testUploadProfilePicture_FileSizeExceedsLimit() throws Exception {
-
-    byte[] largeContent = new byte[3 * 1024 * 1024]; // 3 MB
-
-    MockMultipartFile file = new MockMultipartFile("file", "large.jpg", "image/jpeg", largeContent);
-
-    ResponseEntity<?> response = userController.uploadProfilePicture(file);
-
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertEquals("File size exceeds the maximum limit of 2 MB.", response.getBody());
-
-  }
-
-  @Test
-  void testUploadProfilePicture_InvalidFileType() throws Exception {
-
-    MockMultipartFile file =
-        new MockMultipartFile("file", "test.txt", "text/plain", "dummy content".getBytes());
-
-    ResponseEntity<?> response = userController.uploadProfilePicture(file);
-
-    assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-    assertEquals("Invalid file type. Only JPG and PNG are allowed.", response.getBody());
-  }
 
   @Test
   void testGetUserProfilePicture_NotFound() {

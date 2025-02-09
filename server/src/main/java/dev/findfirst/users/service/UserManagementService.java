@@ -101,8 +101,9 @@ public class UserManagementService {
     removeUserPhoto(user);
 
     // Save new photo
-    String fileName =  Path.of("userphoto_" + UUID.randomUUID()).normalize().toString();
-    File destinationFile = new File(uploadLocation + fileName);
+    String fileName = "userphoto_" + UUID.randomUUID() + ".png";
+    File destinationFile = new File(Path.of(uploadLocation).normalize() + "/" + fileName);
+
     file.transferTo(destinationFile);
     String userPhoto = uploadLocation + fileName;
 
@@ -114,6 +115,7 @@ public class UserManagementService {
   public void removeUserPhoto(User user) {
     String userPhoto = user.getUserPhoto();
     if (userPhoto != null) {
+      log.debug("Existing User photo {}", userPhoto);
       File photoFile = new File(userPhoto);
       if (photoFile.exists()) {
         log.info("Removing profile picture for user ID {}: {}", user.getUserId(), userPhoto);
