@@ -8,12 +8,16 @@ import { TagReqPayload, TagWithCnt } from "@/types/Bookmarks/Tag";
 import itemStyle from "./tag-list-item.module.scss";
 import menuStyle from "styles/tag.module.scss";
 import { useSelectedTags } from "@/contexts/SelectedContext";
-
+import { useScreenSize } from "@/contexts/ScreenSizeContext";
+import tagStyles from "@/styles/tag.module.scss";
 const TagList = () => {
   const userAuth = useAuth();
   const tagMap = useTags();
   const [loading, setLoading] = useState(false);
   const { selected, setSelected } = useSelectedTags();
+  const isPC = useScreenSize();
+  // console.log(isPC)
+  // if (!isPC) return null; 
   useEffect(() => {
     if (userAuth && tagMap.size == 0) {
       setLoading(true);
@@ -54,6 +58,7 @@ const TagList = () => {
   let groupItems: any = [];
   tagMap.forEach((tagCnt) => {
     groupItems.push(
+
       <ListGroup.Item
         key={`${tagCnt.title}-item`}
         className={`${itemStyle.item}`}
@@ -93,16 +98,16 @@ const TagList = () => {
   }
 
   return (
+  isPC && (
     <div>
       {!loading ? (
-        <ListGroup variant="flush" className={`${menuStyle.tagList}`}>
-          {groupItems}
+        <ListGroup variant="flush" className={menuStyle.tagList}>
+          {groupItems || []} {/* Make sure groupItems is defined */}
         </ListGroup>
-      ) : (
-        <div></div>
-      )}
+      ) : null}
     </div>
-  );
+  )
+);
 };
 
 export default TagList;
