@@ -69,6 +69,12 @@ const api = {
   getAllBookmarks() {
     return this.execute("GET", "bookmarks", null, {});
   },
+  // Get paginated bookmarks.
+  getPaginatedBookmarks(page: number, size: number = 10) {
+    return this.execute("GET", "paginated/bookmarks", null, {
+      params: { page, size }
+    });
+  },
   // Delete all bookmarks.
   removeAllBookmarks() {
     return instance.delete("bookmarks");
