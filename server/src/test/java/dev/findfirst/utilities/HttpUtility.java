@@ -7,6 +7,7 @@ import dev.findfirst.security.userauth.models.TokenRefreshResponse;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.util.MultiValueMap;
 
 public class HttpUtility {
 
@@ -60,5 +61,18 @@ public class HttpUtility {
     headers = new HttpHeaders();
     headers.add("Cookie", cookie);
     return new HttpEntity<>(body, headers);
+  }
+
+  public static HttpEntity<?> getHttpEntity(TestRestTemplate restTemplate, String username,
+      String password, MultiValueMap<String, HttpEntity<?>> multipart) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setBasicAuth(username, password);
+    HttpEntity<String> entity = new HttpEntity<>(headers);
+    var signResp = restTemplate.postForEntity("/user/signin", entity, TokenRefreshResponse.class);
+    var cookieOpt = Optional.ofNullable(signResp.getHeaders().get("Set-Cookie"));
+    var cookie = cookieOpt.orElseThrow().get(0);
+    headers = new HttpHeaders();
+    headers.add("Cookie", cookie);
+    return new HttpEntity<>(multipart, headers);
   }
 }

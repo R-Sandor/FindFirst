@@ -74,7 +74,7 @@ public class KeyGenerator {
         e.printStackTrace();
       }
     } else {
-      System.out.println("Keys already exist.");
+      logger.info("Keys already exist.");
     }
   }
 }

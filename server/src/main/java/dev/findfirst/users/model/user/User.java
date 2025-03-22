@@ -27,6 +27,13 @@ public class User {
     this(signup.username(), signup.email(), encodedPasswd, false);
   }
 
+  // For testing purposes only!
+  public User(int userId, String username, String userPhoto) {
+    this.userId = userId;
+    this.username = username;
+    this.userPhoto = userPhoto;
+  }
+
   @Id
   @Column("user_id")
   private Integer userId;
@@ -44,6 +51,5 @@ public class User {
 
   @Column("role_role_id")
   private AggregateReference<Role, Integer> role;
-
 
 }
