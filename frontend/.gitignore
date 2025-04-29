@@ -39,3 +39,10 @@ next-env.d.ts
 *.log
 # Switches based on env
 .env
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
