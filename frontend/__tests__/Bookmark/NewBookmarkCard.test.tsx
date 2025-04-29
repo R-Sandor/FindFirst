@@ -327,8 +327,8 @@ describe("Success Toast", () => {
       scrapable: true,
     };
 
-    axiosMock.onPost(tagsAPI, ["testtag"]).reply(() => {
-      return [200, expectedResult];
+    axiosMock.onPost(tagsAPI).reply(() => {
+      return [200, JSON.stringify(expectedResult)];
     });
 
     axiosMock
@@ -339,14 +339,14 @@ describe("Success Toast", () => {
         scrapable: true,
       })
       .reply(() => {
-        return [200, expectedBookmark];
+        return [200, JSON.stringify(expectedBookmark)];
       });
 
     await user.click(submit);
 
     // Wait for the success toast to appear
     expect(
-      await screen.findByText("Bookmark added successfully!")
+      await screen.findByText("Bookmark added successfully!"),
     ).toBeInTheDocument();
   });
 });
