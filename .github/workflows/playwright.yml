@@ -20,7 +20,7 @@ jobs:
         run: pnpm exec playwright install --with-deps
         working-directory: frontend/
       - name: Run Playwright tests
-        run: pnpm exec playwright test
+        run: export DEBUG=testcontainers* && pnpm exec playwright test
         working-directory: frontend/
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
