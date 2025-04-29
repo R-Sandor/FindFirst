@@ -12,6 +12,8 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  globalSetup: require.resolve('./tests_e2e/setup.ts'),
+  globalTeardown: require.resolve('./tests_e2e/teardown.ts'),
   testDir: './tests_e2e',
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -31,7 +33,6 @@ export default defineConfig({
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
   },
-
   /* Configure projects for major browsers */
   projects: [
     {

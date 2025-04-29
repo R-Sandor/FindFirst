@@ -1,48 +1,20 @@
 import { test, expect } from '@playwright/test';
-import { createClient, RedisClientType } from "redis";
-import { GenericContainer, StartedTestContainer } from "testcontainers";
 
-test('has title', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
+test.describe("Composed", () => {
 
-  // Expect a title "to contain" a substring.
-  await expect(page).toHaveTitle(/Playwright/);
-});
-
-test('get started link', async ({ page }) => {
-  await page.goto('https://playwright.dev/');
-
-  // Click the get started link.
-  await page.getByRole('link', { name: 'Get started' }).click();
-
-  // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
-});
-
-describe("Redis", () => {
-  let container: StartedTestContainer;
-  let redisClient: RedisClientType;
-
-  beforeAll(async () => {
-    container = await new GenericContainer("redis")
-      .withExposedPorts(6379)
-      .start();
-
-    redisClient = createClient({ 
-      url: `redis://${container.getHost()}:${container.getMappedPort(6379)}` 
-    });
-
-    await redisClient.connect();
+  test("compose works", async ({ page }) => {
+    await page.goto('localhost:3000');
+    await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
   });
 
-  afterAll(async () => {
-    await redisClient.disconnect();
-    await container.stop();
-  });
-
-  it("works", async () => {
-    await redisClient.set("key", "val");
-    expect(await redisClient.get("key")).toBe("val");
-  });
+  test("User can login", async ({ page }) => {
+    await page.goto('localhost:3000');
+    await page.getByRole('textbox', { name: 'Username' }).click();
+    await page.keyboard.type('jsmith');
+    await page.getByRole('textbox', { name: 'Password' }).click();
+    await page.keyboard.type('test');
+    await page.getByTestId('login-btn').click();
+    await expect(page.getByText(/add bookmark/i)).toBeVisible();
+  })
 });
 
