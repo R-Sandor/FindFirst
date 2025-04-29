@@ -41,6 +41,7 @@ export default defineConfig({
         memoryLimit: "500mb",
       },
     },
+    exclude: [...configDefaults.exclude, "tests_e2e/**"],
   },
   resolve: {
     alias: {
