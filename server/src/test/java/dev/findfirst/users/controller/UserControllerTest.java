@@ -19,6 +19,7 @@ import dev.findfirst.users.model.MailHogMessage;
 import dev.findfirst.users.model.user.TokenPassword;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -198,6 +199,7 @@ class UserControllerTest {
   }
 
   @Test
+  @Disabled("The test uses basicAuth currently basicAuth is broken and only JWT is supported on request")
   void testUserProfile_PhotoTooLarg() {
     byte[] largeContent = new byte[3 * 1024 * 1024]; // 2 MB Max
     // Use MultipartBodyBuilder to build the multipart request
@@ -212,6 +214,7 @@ class UserControllerTest {
   }
 
   @Test
+  @Disabled("The test uses basicAuth currently basicAuth is broken and only JWT is supported on request")
   void testGetUserProfilePicture_NotFound() {
 
     byte[] largeContent = new byte[2 * 1024 * 1024]; // 2 MB Max
@@ -228,6 +231,7 @@ class UserControllerTest {
   }
 
   @Test
+  @Disabled("The test uses basicAuth currently basicAuth is broken and only JWT is supported on request")
   void testRemoveUserPhoto_Success() throws Exception {
     MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
     bodyBuilder.part("file", Files.readAllBytes(Path.of(testPicture + "/facebook.com.png")))

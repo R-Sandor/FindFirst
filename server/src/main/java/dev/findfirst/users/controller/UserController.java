@@ -69,6 +69,11 @@ public class UserController {
   @Value("${findfirst.upload.allowed-types}")
   private String[] allowedTypes;
 
+  // Webkit has some issues with local development where localhost
+  // can't be a secure cookie. - https://bugs.webkit.org/show_bug.cgi?id=218980
+  @Value("${findfirst.secure-cookies:true}")
+  private boolean secure;
+
   @PostMapping("/signup")
   public ResponseEntity<String> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
     User user;
@@ -146,7 +151,7 @@ public class UserController {
       return ResponseEntity.badRequest().body(new TokenRefreshResponse(null, null, e.toString()));
     }
 
-    ResponseCookie cookie = ResponseCookie.from("findfirst", tkns.jwt()).secure(true).path("/")
+    ResponseCookie cookie = ResponseCookie.from("findfirst", tkns.jwt()).secure(secure).path("/")
         .domain(domain).httpOnly(true).build();
 
     return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
@@ -160,7 +165,7 @@ public class UserController {
     return refreshTokenService.findByToken(jwt).map(refreshTokenService::verifyExpiration)
         .map(RefreshToken::getUser).map(user -> {
           String token = userService.generateTokenFromUser(user.getId());
-          ResponseCookie cookie = ResponseCookie.from("findfirst", token).secure(true)
+          ResponseCookie cookie = ResponseCookie.from("findfirst", token).secure(secure)
               .sameSite("strict").path("/").domain(domain).httpOnly(true).build();
           return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(token);
         }).orElseThrow(() -> new TokenRefreshException(jwt, "Refresh token is not in database!"));
