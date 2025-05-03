@@ -19,6 +19,8 @@ export type AuthObserver = (autherizedState: AuthStatus) => void;
 class AuthService {
   private observers: AuthObserver[] = [];
 
+  private user: User | null = null;
+
   private authorizedState: AuthStatus = AuthStatus.Unauthorized;
 
   public attach(observer: AuthObserver) {
@@ -30,6 +32,9 @@ class AuthService {
   }
 
   public getUser(): User | null {
+    if (this.user) {
+      return this.user;
+    }
     let user = localStorage.getItem("user");
     return user ? JSON.parse(user) : null;
   }
@@ -56,6 +61,7 @@ class AuthService {
             refreshToken: response.data.refreshToken,
           };
           localStorage.setItem("user", JSON.stringify(signedinUser));
+          this.user = signedinUser;
           this.authorizedState = AuthStatus.Authorized;
           this.notify(this.authorizedState);
           success = true;

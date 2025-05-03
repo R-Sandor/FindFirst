@@ -12,7 +12,9 @@
     "test": "vitest",
     "test-ui": "vitest --ui --coverage",
     "coverage": "cp .env.dev .env && vitest run --coverage",
-    "vitest-preview": "vitest-preview"
+    "vitest-preview": "vitest-preview",
+    "local-e2e": "playwright test",
+    "tc-e2e": "playwright test -c ./playwright.config.testcontainers.ts"
   },
   "dependencies": {
     "@next/env": "15.1.3",

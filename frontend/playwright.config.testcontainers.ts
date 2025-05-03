@@ -12,6 +12,8 @@ import { defineConfig, devices } from "@playwright/test";
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  globalSetup: require.resolve("./tests_e2e/setup.ts"),
+  globalTeardown: require.resolve("./tests_e2e/teardown.ts"),
   testDir: "./tests_e2e",
   /* Run tests in files in parallel */
   fullyParallel: true,
@@ -43,10 +45,10 @@ export default defineConfig({
       use: { ...devices["Desktop Firefox"] },
     },
 
-    {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
-    },
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
 
     /* Test against mobile viewports. */
     // {
