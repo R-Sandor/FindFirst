@@ -3,9 +3,7 @@
 import { useEffect, useState } from "react";
 
 export default function LightDarkToggle() {
-  const [theme, setTheme] = useState<string | null>(
-    typeof window !== "undefined" ? localStorage.theme : "light",
-  );
+  const [theme, setTheme] = useState<string | null>(null);
 
   function changeTheme() {
     if (theme === "dark" || theme == undefined) {
@@ -18,9 +16,14 @@ export default function LightDarkToggle() {
   }
 
   useEffect(() => {
-    if (theme === undefined) {
-      setTheme("dark");
-      localStorage.setItem("theme", "dark");
+    if (theme === null) {
+      let ls = localStorage.getItem("theme");
+      if (ls) {
+        setTheme(ls)
+      } else {
+        setTheme("dark");
+        localStorage.setItem("theme", "dark");
+      }
     }
     if (theme) {
       document.body.setAttribute("data-bs-theme", theme);
@@ -30,7 +33,7 @@ export default function LightDarkToggle() {
   return (
     <div className="float-left text-center items-center mr-5 ">
       <button className="btn" data-testid="light-dark" onClick={changeTheme}
-                title = { theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode" } >
+        title={theme === "light" ? "Switch to Dark Mode" : "Switch to Light Mode"} >
         <i className="bi bi-lamp-fill"></i>
       </button>
     </div>
