@@ -24,8 +24,7 @@ export default function LightDarkToggle() {
         setTheme("dark");
         localStorage.setItem("theme", "dark");
       }
-    }
-    if (theme) {
+    } else {
       document.body.setAttribute("data-bs-theme", theme);
     }
   }, [theme]);
