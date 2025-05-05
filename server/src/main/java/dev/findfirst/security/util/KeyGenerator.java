@@ -35,7 +35,6 @@ public class KeyGenerator {
     PrivateKey privateKey = pair.getPrivate();
     PublicKey publicKey = pair.getPublic();
 
-    // Encoder encoder = Base64.getEncoder();
     Base64.Encoder encoder = Base64.getEncoder();
 
     // Save the public key in PEM format
@@ -71,7 +70,7 @@ public class KeyGenerator {
         generateKeys(privateKeyPath, publicKeyPath);
         logger.info("Keys Generated");
       } catch (NoSuchAlgorithmException | IOException e) {
-        e.printStackTrace();
+        logger.error(e.getMessage());
       }
     } else {
       logger.info("Keys already exist.");

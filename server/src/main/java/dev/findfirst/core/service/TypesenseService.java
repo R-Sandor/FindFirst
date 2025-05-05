@@ -31,6 +31,8 @@ public class TypesenseService {
 
   private final Client client;
 
+  private final String schemaName = "bookmark";
+
   @PostConstruct
   public String createSchema() {
     var q = initRepo.findByScriptName("init");
@@ -45,7 +47,7 @@ public class TypesenseService {
 
   private CollectionSchema createCollectionSchemaSchema() {
     CollectionSchema collectionSchema = new CollectionSchema();
-    collectionSchema.name("bookmark")
+    collectionSchema.name(schemaName)
         .addFieldsItem(new Field().name("title").type(FieldTypes.STRING))
         .addFieldsItem(new Field().name("text").type(FieldTypes.STRING));
     return collectionSchema;
@@ -78,7 +80,7 @@ public class TypesenseService {
     document.put("text", retDoc.text());
 
     try {
-      client.collections("bookmark").documents().create(document);
+      client.collections(schemaName).documents().create(document);
     } catch (Exception e) {
       log.error(e.toString());
     }
@@ -88,9 +90,8 @@ public class TypesenseService {
     SearchParameters searchParameters = new SearchParameters().q(text).queryBy("text");
     try {
       log.debug("searching");
-      // log.debug(client.collections("bookmark").documents().;
       SearchResult searchResult =
-          client.collections("bookmark").documents().search(searchParameters);
+          client.collections(schemaName).documents().search(searchParameters);
       log.debug(searchResult.toString());
 
       return searchResult.getHits().stream()

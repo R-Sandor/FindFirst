@@ -9,6 +9,7 @@ import java.util.Date;
 import dev.findfirst.core.model.jdbc.TypesenseInitRecord;
 import dev.findfirst.core.repository.jdbc.TypsenseInitializationRepository;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -75,6 +76,7 @@ class TypesenseServiceTest {
   }
 
   @Test
+  @Disabled("Implement test to save storeScrapedText")
   void storeScrapedText() throws Exception {
 
   }

@@ -13,7 +13,9 @@ public class FileSizeValidator implements ConstraintValidator<FileSize, Multipar
   private int maxFileSize;
 
   @Override
-  public void initialize(FileSize constraintAnnotation) {}
+  public void initialize(FileSize constraintAnnotation) {
+    // no op - need to Override ConstraintValidator
+  }
 
   @Override
   public boolean isValid(MultipartFile file, ConstraintValidatorContext context) {

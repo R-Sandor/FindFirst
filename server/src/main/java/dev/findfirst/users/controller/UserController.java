@@ -184,8 +184,7 @@ public class UserController {
     }
 
     try {
-      User user =
-          userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
+      User user = userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
       userService.changeUserPhoto(user, file);
 
       return ResponseEntity.ok("File uploaded successfully.");
@@ -200,13 +199,12 @@ public class UserController {
   @GetMapping("/profile-picture")
   public ResponseEntity<Resource> getUserProfilePicture(@RequestParam("userId") int userId) {
     try {
-      User user;
-      try {
-        user = userService.getUserById(userId).orElseThrow(() -> new NoUserFoundException());
-      } catch (NoUserFoundException e) {
+      var opt = userService.getUserById(userId);
+      if (opt.isEmpty()) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-      }
-      String userPhotoPath = user.getUserPhoto();
+      } 
+
+      String userPhotoPath = opt.get().getUserPhoto();
 
       if (userPhotoPath == null || userPhotoPath.isEmpty()) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
