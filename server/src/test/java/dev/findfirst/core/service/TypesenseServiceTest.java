@@ -77,7 +77,5 @@ class TypesenseServiceTest {
 
   @Test
   @Disabled("Implement test to save storeScrapedText")
-  void storeScrapedText() throws Exception {
-
-  }
+  void storeScrapedText() throws Exception {}
 }

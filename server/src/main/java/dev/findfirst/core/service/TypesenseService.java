@@ -31,7 +31,7 @@ public class TypesenseService {
 
   private final Client client;
 
-  private final String schemaName = "bookmark";
+  private final static String schemaName = "bookmark";
 
   @PostConstruct
   public String createSchema() {

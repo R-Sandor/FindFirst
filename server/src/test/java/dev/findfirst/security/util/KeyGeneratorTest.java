@@ -74,12 +74,12 @@ class KeyGeneratorTest {
     String pubKeyContent1 = Files.readString(publicKeyPath1);
     String pubKeyContent2 = Files.readString(publicKeyPath2);
 
-    String pubKeyBase64_1 = pubKeyContent1.replace("-----BEGIN PUBLIC KEY-----", "")
+    String pubKeyBase64One = pubKeyContent1.replace("-----BEGIN PUBLIC KEY-----", "")
         .replace("-----END PUBLIC KEY-----", "").replaceAll("\\s", "");
-    String pubKeyBase64_2 = pubKeyContent2.replace("-----BEGIN PUBLIC KEY-----", "")
+    String pubKeyBase64Two = pubKeyContent2.replace("-----BEGIN PUBLIC KEY-----", "")
         .replace("-----END PUBLIC KEY-----", "").replaceAll("\\s", "");
 
-    assertNotEquals(pubKeyBase64_1, pubKeyBase64_2, "Each generated public key should be unique");
+    assertNotEquals(pubKeyBase64One, pubKeyBase64Two, "Each generated public key should be unique");
 
   }
 

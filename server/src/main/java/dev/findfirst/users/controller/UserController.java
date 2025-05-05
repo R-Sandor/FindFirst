@@ -184,7 +184,8 @@ public class UserController {
     }
 
     try {
-      User user = userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
+      User user =
+          userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
       userService.changeUserPhoto(user, file);
 
       return ResponseEntity.ok("File uploaded successfully.");
@@ -202,7 +203,7 @@ public class UserController {
       var opt = userService.getUserById(userId);
       if (opt.isEmpty()) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-      } 
+      }
 
       String userPhotoPath = opt.get().getUserPhoto();
 

@@ -454,7 +454,7 @@ class BookmarkControllerTest {
    * Tests importing a file with an invalid content type (not text/html).
    */
   @Test
-  void importBookmarksWithInvalidContentType() throws IOException {
+  void importBookmarksWithInvalidContentType() {
     // Create a byte array with text/plain content type
     byte[] fileContent = "<html><body>Test Content</body></html>".getBytes(StandardCharsets.UTF_8);
 
@@ -484,7 +484,7 @@ class BookmarkControllerTest {
    * Tests importing a file that exceeds the maximum allowed size of 250MB.
    */
   @Test
-  void importBookmarksWithFileTooLarge() throws IOException {
+  void importBookmarksWithFileTooLarge() {
     // Create a byte array slightly larger than 250MB (31,250,001 bytes)
     byte[] largeFile = new byte[31_250_001];
 
@@ -515,7 +515,7 @@ class BookmarkControllerTest {
    * Tests importing a .html file with an unsupported content type (e.g., application/json).
    */
   @Test
-  void importBookmarksWithUnsupportedContentType() throws IOException {
+  void importBookmarksWithUnsupportedContentType() {
     // Create a byte array with application/json content
     byte[] fileContent = "{\"bookmarks\": []}".getBytes(StandardCharsets.UTF_8);
 
@@ -548,7 +548,7 @@ class BookmarkControllerTest {
    * Tests importing a .html file without specifying a content type.
    */
   @Test
-  void importBookmarksWithMissingContentType() throws IOException {
+  void importBookmarksWithMissingContentType() {
     // Create a byte array with valid HTML content
     byte[] fileContent = "<html><body>Test Content</body></html>".getBytes(StandardCharsets.UTF_8);
 
@@ -580,7 +580,7 @@ class BookmarkControllerTest {
    * Tests importing a .html file with text/plain content type.
    */
   @Test
-  void importBookmarksWithTextPlainContentType() throws IOException {
+  void importBookmarksWithTextPlainContentType() {
     // Create a byte array with text/plain content
     byte[] fileContent =
         "<html><body>Plain Text Content</body></html>".getBytes(StandardCharsets.UTF_8);
