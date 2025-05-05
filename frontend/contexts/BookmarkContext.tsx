@@ -2,6 +2,7 @@
 
 import api from "@/api/Api";
 import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
+import PaginatedBookmarkRes from "@/types/Bookmarks/PaginatedBookmarkRes";
 import UseAuth from "@components/UseAuth";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import {
@@ -12,15 +13,24 @@ import {
   useReducer,
   useState,
   useMemo,
+  useCallback,
 } from "react";
 
 interface ProviderProps {
   fetchedBookmarks: Bookmark[];
   loading: boolean;
+  currentPage: number;
+  totalPages: number;
+  hasMore: boolean;
+  loadNextPage: () => void;
 }
 export const BookmarkContext = createContext<ProviderProps>({
   fetchedBookmarks: [],
   loading: true,
+  currentPage: 1,
+  totalPages: 1,
+  hasMore: false,
+  loadNextPage: () => {},
 });
 
 export const BookmarkDispatchContext = createContext<Dispatch<BookmarkAction>>(
@@ -42,16 +52,56 @@ export function BookmarkProvider({
 }) {
   const [bookmarks, dispatch] = useReducer(bookmarkReducer, []);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const userAuth = UseAuth();
+  const PAGE_SIZE = 10;
+
+  const loadBookmarks = useCallback((page: number = 1) => {
+    if (!userAuth) return;
+    
+    setIsLoading(true);
+    api.getPaginatedBookmarks(page, PAGE_SIZE).then((resp) => {
+      const data = resp.data as PaginatedBookmarkRes;
+      
+      if (page === 1) {
+        // First page, replace all bookmarks
+        dispatch({ 
+          type: "replace", 
+          bookmarks: data.bookmarks,
+          currentPage: data.currentPage,
+          totalPages: data.totalPages
+        });
+      } else {
+        // Additional pages, append bookmarks
+        dispatch({ 
+          type: "append", 
+          bookmarks: data.bookmarks,
+          currentPage: data.currentPage,
+          totalPages: data.totalPages
+        });
+      }
+      
+      setCurrentPage(data.currentPage);
+      setTotalPages(data.totalPages);
+      setIsLoading(false);
+    }).catch(error => {
+      console.error("Error loading bookmarks:", error);
+      setIsLoading(false);
+    });
+  }, [userAuth]);
+
+  const loadNextPage = useCallback(() => {
+    if (currentPage < totalPages && !isLoading) {
+      loadBookmarks(currentPage + 1);
+    }
+  }, [currentPage, totalPages, isLoading, loadBookmarks]);
 
   useEffect(() => {
-    if (userAuth && bookmarks.length == 0) {
-      api.getAllBookmarks().then((resp) => {
-        dispatch({ type: "add", bookmarks: resp.data as Bookmark[] });
-        setIsLoading(false);
-      });
+    if (userAuth && bookmarks.length === 0) {
+      loadBookmarks(1);
     }
-  }, [bookmarks.length, userAuth]);
+  }, [userAuth, bookmarks.length, loadBookmarks]);
 
   useEffect(() => {
     return () => {
@@ -63,8 +113,15 @@ export function BookmarkProvider({
   }, [userAuth]);
 
   const value = useMemo(
-    () => ({ fetchedBookmarks: bookmarks, loading: isLoading }),
-    [bookmarks, isLoading],
+    () => ({ 
+      fetchedBookmarks: bookmarks, 
+      loading: isLoading,
+      currentPage,
+      totalPages,
+      hasMore: currentPage < totalPages,
+      loadNextPage
+    }),
+    [bookmarks, isLoading, currentPage, totalPages, loadNextPage],
   );
 
   return (
@@ -80,6 +137,12 @@ function bookmarkReducer(bookmarkList: Bookmark[], action: BookmarkAction) {
   switch (action.type) {
     case "add": {
       return [...bookmarkList, ...action.bookmarks];
+    }
+    case "append": {
+      return [...bookmarkList, ...action.bookmarks];
+    }
+    case "replace": {
+      return [...action.bookmarks];
     }
     case "delete": {
       if (action.bookmarkId) {
