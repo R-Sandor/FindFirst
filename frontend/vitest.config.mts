@@ -30,6 +30,8 @@ export default defineConfig({
         "*/**/index.js",
         "api",
         "app/layout.tsx",
+        "tests_e2e/**",
+        "playwright*.ts",
         ...defaults,
       ],
       reporter: ["text", "lcov", "html"],
