@@ -173,8 +173,9 @@ public class UserController {
 
   @PostMapping("/profile-picture")
   public ResponseEntity<String> uploadProfilePicture(
-      @Valid @RequestParam("file") @FileSize MultipartFile file) {
-    log.debug("saving profile picture");
+      @Valid @RequestParam("file") @FileSize MultipartFile file) throws NoUserFoundException {
+    log.debug("Attempting to add user profile picture");
+    User user = userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
 
     // File type validation
     String contentType = file.getContentType();
@@ -184,13 +185,8 @@ public class UserController {
     }
 
     try {
-      User user =
-          userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
       userService.changeUserPhoto(user, file);
-
       return ResponseEntity.ok("File uploaded successfully.");
-    } catch (NoUserFoundException e) {
-      return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found.");
     } catch (Exception e) {
       log.debug(e.getMessage());
       return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file.");

@@ -9,7 +9,8 @@ frontend/node_modules
 !**/src/test/**/build/
 data/screenshots
 data/typesense-data
-data/uploads
+# Allow for this director to be created
+data/uploads/profile-pictures/*.png
 
 ### STS ###
 .apt_generated

@@ -115,7 +115,7 @@ public class UserManagementService {
 
   public void removeUserPhoto(User user) {
     String userPhoto = user.getUserPhoto();
-    if (userPhoto != null) {
+    if (userPhoto != null && !userPhoto.isBlank()) {
       log.debug("Existing User photo {}", userPhoto);
       File photoFile = new File(userPhoto);
       if (photoFile.exists()) {
