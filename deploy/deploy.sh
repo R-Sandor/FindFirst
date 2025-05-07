@@ -1,6 +1,7 @@
 #!/bin/sh
 # Intended to be run from the project root directory.
 cd $(dirname "$0")
+./backup.sh ../.env
 cd ..
 
 git pull
