@@ -30,7 +30,7 @@ export default defineConfig({
         "*/**/index.js",
         "api",
         "app/layout.tsx",
-        "tests_e2e/**",
+        "tests_e2e/",
         "playwright*.ts",
         ...defaults,
       ],
