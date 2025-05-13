@@ -1,10 +1,13 @@
 package dev.findfirst.security.config;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
 import dev.findfirst.security.filters.CookieAuthenticationFilter;
 import dev.findfirst.security.jwt.AuthEntryPointJwt;
+import dev.findfirst.security.jwt.handlers.Oauth2LoginSuccessHandler;
 import dev.findfirst.security.userauth.service.UserDetailsServiceImpl;
 
 import com.nimbusds.jose.jwk.JWK;
@@ -33,6 +36,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -49,6 +53,8 @@ public class SecSecurityConfig {
   private final UserDetailsServiceImpl userDetailsService;
 
   private final AuthEntryPointJwt unauthorizedHandler;
+
+  private final Oauth2LoginSuccessHandler oauth2Success;
 
   @Bean
   public CookieAuthenticationFilter cookieJWTAuthFilter() {
@@ -78,18 +84,31 @@ public class SecSecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/user/**").permitAll()
-        .anyRequest().authenticated());
-    http.csrf(csrf -> csrf.disable())
-        .httpBasic(httpBasicCustomizer -> httpBasicCustomizer
-            .authenticationEntryPoint(unauthorizedHandler))
-        .oauth2ResourceServer(rs -> rs.jwt(jwt -> jwt.decoder(jwtDecoder())))
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(unauthorizedHandler)
-            .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
+    http.oauth2Login(withDefaults());
+
+    http.formLogin(withDefaults());
+    http.authorizeHttpRequests(
+        authorize -> authorize.requestMatchers("/**").permitAll().anyRequest().authenticated());
+
+    http.csrf(csrf -> csrf.disable());
+
+    http.httpBasic(
+        httpBasicCustomizer -> httpBasicCustomizer.authenticationEntryPoint(unauthorizedHandler));
+
+    http.oauth2ResourceServer(rs -> rs.jwt(jwt -> jwt.decoder(jwtDecoder()))).sessionManagement(
+        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+    http.exceptionHandling(exceptions -> exceptions
+        .defaultAuthenticationEntryPointFor(unauthorizedHandler,
+            new AntPathRequestMatcher("/user/signin"))
+        .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
+
     http.authenticationProvider(authenticationProvider());
+
+    // filters
     http.addFilterBefore(cookieJWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+
+    // wrap it all up.
     return http.build();
   }
 
