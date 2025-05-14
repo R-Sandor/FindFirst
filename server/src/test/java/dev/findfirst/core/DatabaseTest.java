@@ -23,8 +23,8 @@ import org.junit.jupiter.api.TestMethodOrder;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -35,7 +35,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @TestMethodOrder(OrderAnnotation.class)
 class DatabaseTest {
 
-  @MockBean
+  @MockitoBean
   private UserContext userContext;
 
   @Container

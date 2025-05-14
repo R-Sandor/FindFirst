@@ -175,7 +175,8 @@ public class UserController {
   public ResponseEntity<String> uploadProfilePicture(
       @Valid @RequestParam("file") @FileSize MultipartFile file) throws NoUserFoundException {
     log.debug("Attempting to add user profile picture");
-    User user = userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
+    User user =
+        userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
 
     // File type validation
     String contentType = file.getContentType();
