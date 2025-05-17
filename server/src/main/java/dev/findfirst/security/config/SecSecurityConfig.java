@@ -5,6 +5,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
+import dev.findfirst.security.conditions.OAuthClientsCondition;
 import dev.findfirst.security.filters.CookieAuthenticationFilter;
 import dev.findfirst.security.jwt.AuthEntryPointJwt;
 import dev.findfirst.security.jwt.handlers.Oauth2LoginSuccessHandler;
@@ -19,7 +20,9 @@ import com.nimbusds.jose.proc.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -83,32 +86,46 @@ public class SecSecurityConfig {
   }
 
   @Bean
+  @Order(1)
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.oauth2Login(withDefaults());
 
-    http.formLogin(withDefaults());
-    http.authorizeHttpRequests(
-        authorize -> authorize.requestMatchers("/**").permitAll().anyRequest().authenticated());
+    http.securityMatcher("/user/**", "/api/**") // Include /login
+        .authorizeHttpRequests(auth -> auth.requestMatchers("/").denyAll())
+        .authorizeHttpRequests(authorize -> authorize
+            .requestMatchers("/user/**").permitAll()
+            .anyRequest().authenticated());
 
-    http.csrf(csrf -> csrf.disable());
+    // stateless cookie app
+    http.csrf(csrf -> csrf.disable())
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .oauth2ResourceServer(rs -> rs.jwt(jwt -> jwt.decoder(jwtDecoder())));
 
     http.httpBasic(
-        httpBasicCustomizer -> httpBasicCustomizer.authenticationEntryPoint(unauthorizedHandler));
+        httpBasicCustomizer -> httpBasicCustomizer.authenticationEntryPoint(unauthorizedHandler))
 
-    http.oauth2ResourceServer(rs -> rs.jwt(jwt -> jwt.decoder(jwtDecoder()))).sessionManagement(
-        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        // use this exeception only for /user/signin
+        .exceptionHandling(exceptions -> exceptions
+            .defaultAuthenticationEntryPointFor(unauthorizedHandler,
+                new AntPathRequestMatcher("/user/signin"))
+            .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
 
-    http.exceptionHandling(exceptions -> exceptions
-        .defaultAuthenticationEntryPointFor(unauthorizedHandler,
-            new AntPathRequestMatcher("/user/signin"))
-        .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
+        .authenticationProvider(authenticationProvider())
 
-    http.authenticationProvider(authenticationProvider());
-
-    // filters
-    http.addFilterBefore(cookieJWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+        // filters
+        .addFilterBefore(cookieJWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
 
     // wrap it all up.
+    return http.build();
+  }
+
+  @Bean
+  @Order(2)
+  @Conditional(OAuthClientsCondition.class)
+  public SecurityFilterChain oauth2ClientsFilterChain(HttpSecurity http) throws Exception {
+    http.securityMatcher("/oauth2/**", "/login/**", "/error/**", "/*") // Apply only for OAuth paths
+        .oauth2Login(withDefaults())
+        .formLogin(withDefaults());
     return http.build();
   }
 
