@@ -124,7 +124,7 @@ public class SecSecurityConfig {
   @Conditional(OAuthClientsCondition.class)
   public SecurityFilterChain oauth2ClientsFilterChain(HttpSecurity http) throws Exception {
     http.securityMatcher("/oauth2/**", "/login/**", "/error/**", "/*") // Apply only for OAuth paths
-        .oauth2Login(withDefaults())
+        .oauth2Login(oauth -> oauth.successHandler(oauth2Success))
         .formLogin(withDefaults());
     return http.build();
   }

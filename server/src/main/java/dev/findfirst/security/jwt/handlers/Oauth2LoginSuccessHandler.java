@@ -20,7 +20,7 @@ public class Oauth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
   @Override
   public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
       Authentication authentication) throws ServletException, IOException {
-    System.out.println("auth success");
+    log.debug("successful login");
   }
 
 }
