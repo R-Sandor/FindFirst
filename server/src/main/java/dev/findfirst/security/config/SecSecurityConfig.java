@@ -8,7 +8,7 @@ import java.security.interfaces.RSAPublicKey;
 import dev.findfirst.security.conditions.OAuthClientsCondition;
 import dev.findfirst.security.filters.CookieAuthenticationFilter;
 import dev.findfirst.security.jwt.AuthEntryPointJwt;
-import dev.findfirst.security.jwt.handlers.Oauth2LoginSuccessHandler;
+import dev.findfirst.security.oauth2client.handlers.Oauth2LoginSuccessHandler;
 import dev.findfirst.security.userauth.service.UserDetailsServiceImpl;
 
 import com.nimbusds.jose.jwk.JWK;

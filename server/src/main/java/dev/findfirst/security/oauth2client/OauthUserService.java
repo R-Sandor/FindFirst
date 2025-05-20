@@ -17,9 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
 import dev.findfirst.users.exceptions.UserNameTakenException;
-import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.repository.UserRepo;
 import dev.findfirst.users.service.UserManagementService;
+import dev.findfirst.users.model.user.User;
 
 @Service
 @RequiredArgsConstructor
@@ -34,6 +34,7 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
     OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new DefaultOAuth2UserService();
     OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
+    User user = null;
 
     // user exists in database by email
     var attrs = oAuth2User.getAttributes();
@@ -41,17 +42,24 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
     var username = (String) attrs.get("login");
     if (email != null && !email.isEmpty()) {
       log.debug("attempt login with email {}", email);
+      // user = userRepo.findByEmail(email).or()
     } else if (username != null && !username.isEmpty()) {
       log.debug("looking up if user exist with username {}", username);
+      var userOpt = userRepo.findByUsername(username);
       var oauth2PlaceholderEmail = username + userRequest.getClientRegistration().getClientId();
-      if (userRepo.findByUsername(username).isEmpty()) {
+      if (userOpt.isEmpty()) {
         try {
-          ums.createNewUserAccount(new SignupRequest(username, oauth2PlaceholderEmail, UUID.randomUUID().toString()));
+          log.debug("creating a new user for oauth2");
+          user = ums.createNewUserAccount(new SignupRequest(username, oauth2PlaceholderEmail, UUID.randomUUID().toString()));
         } catch (UnexpectedException | UserNameTakenException | EmailAlreadyRegisteredException e) {
-          // TODO Auto-generated catch block
-          log.debug("errors occured");
+          log.debug("errors occured: {}", e.getMessage());
         }
+      } else { 
+        user = userOpt.get();
       }
+    }
+    if (user.getUserId() != null) { 
+      oAuth2User.getAttributes().put("id", user.getUserId());
     }
 
     return oAuth2User;

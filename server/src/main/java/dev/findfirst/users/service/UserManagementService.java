@@ -31,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
+import dev.findfirst.security.jwt.service.TokenService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -48,10 +49,7 @@ public class UserManagementService {
   private final PasswordTokenRepository passwordTokenRepository;
   private final RefreshTokenService refreshTokenService;
   private final PasswordEncoder passwdEncoder;
-  private final JwtEncoder encoder;
-
-  @Value("${findfirst.app.jwtExpirationMs}")
-  private int jwtExpirationMs;
+  private final TokenService ts; 
 
   @Value("${findfirst.upload.location}")
   private String uploadLocation;
@@ -188,6 +186,7 @@ public class UserManagementService {
 
     // create a new tenant
     try {
+      log.debug("new user - saving user");
       return saveUser(user);
     } catch (Exception e) {
       // If any exception occurs we should delete the records that were just made.
@@ -197,17 +196,12 @@ public class UserManagementService {
     }
   }
 
+  /**
+   * Wrapper for the Token Service.
+   * @param userId the userId for token generation.
+   */
   public String generateTokenFromUser(int userId) {
-    Instant now = Instant.now();
-    var user = userRepo.findById(userId).orElseThrow();
-    String email = user.getEmail();
-    Integer roleId = user.getRole().getId();
-    var roleName = URole.values()[roleId].toString();
-    JwtClaimsSet claims = JwtClaimsSet.builder().issuer("self").issuedAt(Instant.now())
-        .expiresAt(now.plusSeconds(jwtExpirationMs)).subject(email).claim("scope", email)
-        .claim(Constants.ROLE_ID_CLAIM, roleId).claim(Constants.ROLE_NAME_CLAIM, roleName)
-        .claim("userId", userId).build();
-    return encoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    return ts.generateTokenFromUser(userId);
   }
 
   public SigninTokens signinUser(String authorization) throws NoUserFoundException {
