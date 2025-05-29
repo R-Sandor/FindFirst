@@ -50,9 +50,6 @@ public class JwtService {
     return jwtParser.parseClaimsJws(jwt);
   }
 
-  public String getUserNameFromJwtToken(String token) {
-    return jwtDecoder.decode(token).getClaimAsString("sub");
-  }
 
   public boolean validateJwtToken(String authToken) {
     Map<String, Object> claims = jwtDecoder.decode(authToken).getClaims();
