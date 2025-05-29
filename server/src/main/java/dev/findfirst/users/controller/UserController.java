@@ -115,7 +115,7 @@ public class UserController {
     }
   }
 
-  @GetMapping("changePassword")
+  @GetMapping("/changePassword")
   public ResponseEntity<String> frontendPasswordWithToken(@RequestParam("token") String token)
       throws URISyntaxException {
 
@@ -130,7 +130,7 @@ public class UserController {
     return new ResponseEntity<>(httpHeaders, HttpStatus.SEE_OTHER);
   }
 
-  @PostMapping("changePassword")
+  @PostMapping("/changePassword")
   public ResponseEntity<String> passwordChange(@RequestBody TokenPassword tokenPassword) {
     try {
       pwdService.changePassword(tokenPassword);

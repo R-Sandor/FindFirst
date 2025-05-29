@@ -1,10 +1,14 @@
 package dev.findfirst.security.config;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
+import dev.findfirst.security.conditions.OAuthClientsCondition;
 import dev.findfirst.security.filters.CookieAuthenticationFilter;
 import dev.findfirst.security.jwt.AuthEntryPointJwt;
+import dev.findfirst.security.oauth2client.handlers.Oauth2LoginSuccessHandler;
 import dev.findfirst.security.userauth.service.UserDetailsServiceImpl;
 
 import com.nimbusds.jose.jwk.JWK;
@@ -16,7 +20,9 @@ import com.nimbusds.jose.proc.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -33,6 +39,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -49,6 +56,8 @@ public class SecSecurityConfig {
   private final UserDetailsServiceImpl userDetailsService;
 
   private final AuthEntryPointJwt unauthorizedHandler;
+
+  private final Oauth2LoginSuccessHandler oauth2Success;
 
   @Bean
   public CookieAuthenticationFilter cookieJWTAuthFilter() {
@@ -77,19 +86,46 @@ public class SecSecurityConfig {
   }
 
   @Bean
+  @Order(1)
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(authorize -> authorize.requestMatchers("/user/**").permitAll()
-        .anyRequest().authenticated());
+
+    http.securityMatcher("/user/**", "/api/**") // Include /login
+        .authorizeHttpRequests(auth -> auth.requestMatchers("/").denyAll())
+        .authorizeHttpRequests(authorize -> authorize
+            .requestMatchers("/user/**").permitAll()
+            .anyRequest().authenticated());
+
+    // stateless cookie app
     http.csrf(csrf -> csrf.disable())
-        .httpBasic(httpBasicCustomizer -> httpBasicCustomizer
-            .authenticationEntryPoint(unauthorizedHandler))
-        .oauth2ResourceServer(rs -> rs.jwt(jwt -> jwt.decoder(jwtDecoder())))
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(unauthorizedHandler)
-            .accessDeniedHandler(new BearerTokenAccessDeniedHandler()));
-    http.authenticationProvider(authenticationProvider());
-    http.addFilterBefore(cookieJWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+        .oauth2ResourceServer(rs -> rs.jwt(jwt -> jwt.decoder(jwtDecoder())));
+
+    http.httpBasic(
+        httpBasicCustomizer -> httpBasicCustomizer.authenticationEntryPoint(unauthorizedHandler))
+
+        // use this exeception only for /user/signin
+        .exceptionHandling(exceptions -> exceptions
+            .defaultAuthenticationEntryPointFor(unauthorizedHandler,
+                new AntPathRequestMatcher("/user/signin"))
+            .accessDeniedHandler(new BearerTokenAccessDeniedHandler()))
+
+        .authenticationProvider(authenticationProvider())
+
+        // filters
+        .addFilterBefore(cookieJWTAuthFilter(), UsernamePasswordAuthenticationFilter.class);
+
+    // wrap it all up.
+    return http.build();
+  }
+
+  @Bean
+  @Order(2)
+  @Conditional(OAuthClientsCondition.class)
+  public SecurityFilterChain oauth2ClientsFilterChain(HttpSecurity http) throws Exception {
+    http.securityMatcher("/oauth2/**", "/login/**", "/error/**", "/*") // Apply only for OAuth paths
+        .oauth2Login(oauth -> oauth.successHandler(oauth2Success))
+        .formLogin(withDefaults());
     return http.build();
   }
 

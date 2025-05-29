@@ -31,12 +31,14 @@ public class RefreshTokenService {
   }
 
   public RefreshToken createRefreshToken(User user) {
+    return createRefreshToken(user.getUserId());
+  }
 
-    RefreshToken refreshToken = new RefreshToken(null, AggregateReference.to(user.getUserId()),
+  public RefreshToken createRefreshToken(int userID) {
+    RefreshToken refreshToken = new RefreshToken(null, AggregateReference.to(userID),
         UUID.randomUUID().toString(), Instant.now().plusMillis(refreshTokenDurationMs));
 
-    refreshToken = refreshTokenRepository.save(refreshToken);
-    return refreshToken;
+    return refreshTokenRepository.save(refreshToken);
   }
 
   public RefreshToken verifyExpiration(RefreshToken token) {
