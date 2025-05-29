@@ -6,22 +6,20 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.rmi.UnexpectedException;
-import java.time.Instant;
 import java.util.Base64;
 import java.util.Optional;
 import java.util.UUID;
 
 import dev.findfirst.security.jwt.service.RefreshTokenService;
+import dev.findfirst.security.userauth.context.UserContext;
 import dev.findfirst.security.userauth.models.RefreshToken;
 import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
-import dev.findfirst.security.userauth.utils.Constants;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
 import dev.findfirst.users.exceptions.NoUserFoundException;
 import dev.findfirst.users.exceptions.UserNameTakenException;
 import dev.findfirst.users.model.user.Role;
 import dev.findfirst.users.model.user.SigninTokens;
 import dev.findfirst.users.model.user.Token;
-import dev.findfirst.users.model.user.URole;
 import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.repository.PasswordTokenRepository;
 import dev.findfirst.users.repository.UserRepo;
@@ -32,10 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
 import dev.findfirst.security.jwt.service.TokenService;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,10 +45,15 @@ public class UserManagementService {
   private final PasswordTokenRepository passwordTokenRepository;
   private final RefreshTokenService refreshTokenService;
   private final PasswordEncoder passwdEncoder;
-  private final TokenService ts; 
+  private final TokenService ts;
+  private final UserContext ut;
 
   @Value("${findfirst.upload.location}")
   private String uploadLocation;
+
+  public User getUserInfo() throws NoUserFoundException {
+   return getUserById(ut.getUserId()).orElseThrow(NoUserFoundException::new);
+  }
 
   public User getUserByEmail(String email) throws NoUserFoundException {
     return userRepo.findByEmail(email).orElseThrow(NoUserFoundException::new);
@@ -198,6 +199,7 @@ public class UserManagementService {
 
   /**
    * Wrapper for the Token Service.
+   * 
    * @param userId the userId for token generation.
    */
   public String generateTokenFromUser(int userId) {
