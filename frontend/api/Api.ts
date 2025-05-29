@@ -45,7 +45,7 @@ instance.interceptors.response.use(
   },
 );
 
-function parseData(data: string) {
+export function parseData(data: string) {
   if (data.length != 0 || data || data != "") {
     return JSON.parse(data);
   }
