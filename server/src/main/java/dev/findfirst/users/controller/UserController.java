@@ -74,6 +74,12 @@ public class UserController {
   @Value("${findfirst.secure-cookies:true}")
   private boolean secure;
 
+  @GetMapping("/user-info")
+  public ResponseEntity<User> userInfo() throws NoUserFoundException {
+    log.debug("getting user info");
+    return ResponseEntity.ofNullable(userService.getUserInfo());
+  }
+
   @PostMapping("/signup")
   public ResponseEntity<String> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
     User user;
