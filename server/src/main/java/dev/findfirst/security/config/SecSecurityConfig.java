@@ -89,9 +89,10 @@ public class SecSecurityConfig {
   @Order(1)
   public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-    http.securityMatcher("/user/**", "/api/**") // Include /login
+    http.securityMatcher("/user/**", "/api/**")
         .authorizeHttpRequests(auth -> auth.requestMatchers("/").denyAll())
         .authorizeHttpRequests(authorize -> authorize
+            .requestMatchers("/user/user-info").authenticated() 
             .requestMatchers("/user/**").permitAll()
             .anyRequest().authenticated());
 
@@ -124,8 +125,7 @@ public class SecSecurityConfig {
   @Conditional(OAuthClientsCondition.class)
   public SecurityFilterChain oauth2ClientsFilterChain(HttpSecurity http) throws Exception {
     http.securityMatcher("/oauth2/**", "/login/**", "/error/**", "/*") // Apply only for OAuth paths
-        .oauth2Login(oauth -> oauth.successHandler(oauth2Success))
-        .formLogin(withDefaults());
+        .oauth2Login(oauth -> oauth.successHandler(oauth2Success));
     return http.build();
   }
 
