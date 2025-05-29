@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
 import { Credentials } from "../app/account/login/page";
+import userApi from "@api/userApi";
 export interface User {
   username: string;
   refreshToken: string;
@@ -39,6 +40,24 @@ class AuthService {
     return user ? JSON.parse(user) : null;
   }
 
+  public setUser(user: User): void {
+    this.user = user;
+  }
+
+  // Gets the user info implicitly using the cookie 
+  // and sets the user info.
+  public async getUserInfoOauth2(): Promise<User | null> {
+    let cookieuser = (await userApi.userInfo() as unknown) as User;
+    if (cookieuser) {
+      this.setUser(cookieuser);
+    }
+    localStorage.setItem("user", JSON.stringify(cookieuser));
+    this.authorizedState = AuthStatus.Authorized;
+    this.notify(this.authorizedState);
+
+    return cookieuser;
+  }
+
   public getAuthorized(): AuthStatus {
     return this.getUser() ? AuthStatus.Authorized : AuthStatus.Unauthorized;
   }
@@ -67,7 +86,7 @@ class AuthService {
           success = true;
         }
       })
-      .catch(() => {});
+      .catch(() => { });
     return success;
   }
 
