@@ -6,7 +6,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.rmi.UnexpectedException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -42,6 +44,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -60,6 +64,8 @@ public class UserController {
 
   private final RefreshTokenService refreshTokenService;
 
+  private final InMemoryClientRegistrationRepository oauth2Providers;
+
   @Value("${findfirst.app.frontend-url}")
   private String frontendUrl;
 
@@ -76,8 +82,17 @@ public class UserController {
 
   @GetMapping("/user-info")
   public ResponseEntity<User> userInfo() throws NoUserFoundException {
-    log.debug("getting user info");
     return ResponseEntity.ofNullable(userService.getUserInfo());
+  }
+
+  @GetMapping("/oauth2Providers")
+  public ResponseEntity<List<String>> oauth2Providers() { 
+    List<String>  listOfAuth2Providers = new ArrayList<>();
+    oauth2Providers.iterator().forEachRemaining(provider -> { 
+      log.debug(provider.getProviderDetails().getTokenUri());
+      listOfAuth2Providers.add(provider.getRegistrationId());
+    });
+    return ResponseEntity.ofNullable(listOfAuth2Providers);
   }
 
   @PostMapping("/signup")
