@@ -63,18 +63,4 @@ public class TokenService {
     return new NimbusJwtEncoder(jwks);
   }
 
-  // private String extractUserId(Authentication authentication) {
-  // if (authentication.getPrincipal() instanceof UserDetails) {
-  // String details = ((UserDetails) authentication.getPrincipal()).getUsername();
-  // System.out.println("If details " + details);
-  // return details;
-  // } else if (authentication.getPrincipal() instanceof DefaultOAuth2User) {
-  // DefaultOAuth2User oAuth2User = (DefaultOAuth2User)
-  // authentication.getPrincipal();
-  // String details = oAuth2User.getAttribute("id");
-  // System.out.println("Else details " + details);
-  // return details;
-  // }
-  // return null;
-  // }
 }
