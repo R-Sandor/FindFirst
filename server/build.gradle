@@ -133,6 +133,7 @@ bootRun
 }
 
 test {
+  jvmArgs "-javaagent:${configurations.testRuntimeClasspath.find { it.name.contains('mockito-core') }}", '-Xshare:off'
   systemProperty 'spring.profiles.active', 'integration'
   useJUnitPlatform()
   testLogging.showStandardStreams = true
