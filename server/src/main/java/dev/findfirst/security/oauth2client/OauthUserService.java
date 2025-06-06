@@ -1,14 +1,23 @@
 package dev.findfirst.security.oauth2client;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
 import java.rmi.UnexpectedException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
+import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
+import dev.findfirst.users.exceptions.UserNameTakenException;
+import dev.findfirst.users.model.user.URole;
+import dev.findfirst.users.model.user.User;
+import dev.findfirst.users.repository.UserRepo;
+import dev.findfirst.users.service.UserManagementService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -17,16 +26,6 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
-import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
-import dev.findfirst.users.exceptions.UserNameTakenException;
-import dev.findfirst.users.repository.UserRepo;
-import dev.findfirst.users.service.UserManagementService;
-import dev.findfirst.users.model.user.URole;
-import dev.findfirst.users.model.user.User;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +38,8 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
   @Transactional
   @Override
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-    OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new DefaultOAuth2UserService();
+    OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService =
+        new DefaultOAuth2UserService();
     OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
     User user = null;
 
@@ -59,8 +59,8 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
       if (userOpt.isEmpty()) {
         try {
           log.debug("creating a new user for oauth2");
-          user = ums
-              .createNewUserAccount(new SignupRequest(username, oauth2PlaceholderEmail, UUID.randomUUID().toString()));
+          user = ums.createNewUserAccount(
+              new SignupRequest(username, oauth2PlaceholderEmail, UUID.randomUUID().toString()));
         } catch (UnexpectedException | UserNameTakenException | EmailAlreadyRegisteredException e) {
           log.debug("errors occured: {}", e.getMessage());
         }
@@ -69,25 +69,22 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
       }
     }
     if (user.getUserId() != null) {
-      GrantedAuthority authority = new SimpleGrantedAuthority(URole.values()[user.getRole().getId()].toString());
-      String userNameAttributeName = userRequest
-          .getClientRegistration()
-          .getProviderDetails()
-          .getUserInfoEndpoint()
-          .getUserNameAttributeName();
+      GrantedAuthority authority =
+          new SimpleGrantedAuthority(URole.values()[user.getRole().getId()].toString());
+      String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
+          .getUserInfoEndpoint().getUserNameAttributeName();
       log.debug("USER ATTRIBUTE NAME: {}", userNameAttributeName);
-      var attributes = customAttribute(attrs, userNameAttributeName, user.getUserId(), registrationId);
-      return new DefaultOAuth2User(Collections.singletonList(authority), attributes, userNameAttributeName);
+      var attributes =
+          customAttribute(attrs, userNameAttributeName, user.getUserId(), registrationId);
+      return new DefaultOAuth2User(Collections.singletonList(authority), attributes,
+          userNameAttributeName);
     }
 
     return oAuth2User;
   }
 
-  private Map<String, Object> customAttribute(
-      Map<String, Object> attributes,
-      String userNameAttributeName,
-      int userID,
-      String registrationId) {
+  private Map<String, Object> customAttribute(Map<String, Object> attributes,
+      String userNameAttributeName, int userID, String registrationId) {
     Map<String, Object> customAttribute = new HashMap<>();
     customAttribute.put(userNameAttributeName, attributes.get(userNameAttributeName));
     customAttribute.put("provider", registrationId);

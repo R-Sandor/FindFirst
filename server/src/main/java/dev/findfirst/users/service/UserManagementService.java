@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import dev.findfirst.security.jwt.service.RefreshTokenService;
+import dev.findfirst.security.jwt.service.TokenService;
 import dev.findfirst.security.userauth.context.UserContext;
 import dev.findfirst.security.userauth.models.RefreshToken;
 import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
@@ -29,8 +30,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.jdbc.core.mapping.AggregateReference;
-import dev.findfirst.security.jwt.service.TokenService;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -52,7 +51,7 @@ public class UserManagementService {
   private String uploadLocation;
 
   public User getUserInfo() throws NoUserFoundException {
-   return getUserById(ut.getUserId()).orElseThrow(NoUserFoundException::new);
+    return getUserById(ut.getUserId()).orElseThrow(NoUserFoundException::new);
   }
 
   public User getUserByEmail(String email) throws NoUserFoundException {

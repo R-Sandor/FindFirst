@@ -1,9 +1,7 @@
 package dev.findfirst.security.conditions;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.bind.Bindable;
@@ -17,43 +15,46 @@ public class OAuthClientsCondition implements Condition {
   @Override
   public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
     Binder binder = Binder.get(context.getEnvironment());
-    Map<String, String> properties = binder
-        .bind("spring.security.oauth2.client.registration", Bindable.mapOf(String.class, String.class))
-        .orElse(Collections.emptyMap());
+    Map<String, String> properties = binder.bind("spring.security.oauth2.client.registration",
+        Bindable.mapOf(String.class, String.class)).orElse(Collections.emptyMap());
 
-    Map<String, ClientPair> client = new HashMap<>();
+    Map<String, ClientPair> clients = new HashMap<>();
     properties.forEach((prop, val) -> {
       if (prop.contains("client-secret")) {
         String c = prop.substring(0, prop.lastIndexOf("."));
-        var p = client.get(c);
+        var p = clients.get(c);
+        System.out.println(c);
         if (p != null) {
-          client.put(prop, new ClientPair(p.clientId(), val));
+          clients.put(c, new ClientPair(p.clientId(), val));
         } else {
           if (val != null && !val.isBlank()) {
-            client.put(prop, new ClientPair(null, val));
+            clients.put(c, new ClientPair(null, val));
           }
         }
       } else if (prop.contains("client-id")) {
         if (val != null && !val.isBlank()) {
           String c = prop.substring(0, prop.lastIndexOf("."));
-          var p = client.get(c);
+          var p = clients.get(c);
+          System.out.println(c);
           if (p != null) {
-            client.put(prop, new ClientPair(val, p.clientSecret()));
+            clients.put(c, new ClientPair(val, p.clientSecret()));
           } else {
             if (val != null && !val.isBlank()) {
-              client.put(prop, new ClientPair(val, null));
+              clients.put(c, new ClientPair(val, null));
             }
           }
         }
       }
     });
-
-    var registrations = client.values().stream().filter(cp -> cp.clientId() == null || cp.clientSecret() == null)
-        .toList();
+    System.out.println(clients);
+    var registrations = clients.values().stream().peek(System.out::println).filter(cp -> {
+      System.out.println(!cp.clientId().isEmpty() && !cp.clientSecret().isEmpty());
+      return (!cp.clientId().isBlank() && !cp.clientSecret().isBlank());
+    }).toList();
+    System.out.println(registrations);
     return !properties.isEmpty() && !registrations.isEmpty();
   }
 
-  record ClientPair(String clientId, String clientSecret) {
-  };
+  record ClientPair(String clientId, String clientSecret) {};
 
 }

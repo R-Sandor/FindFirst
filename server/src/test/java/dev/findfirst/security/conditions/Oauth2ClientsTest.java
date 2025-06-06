@@ -33,15 +33,28 @@ class Oauth2ClientsTest {
 
   @Test
   void conditionShouldReturnTrueWithOneClientRegistered() {
-    this.mockEnvironment.setProperty("spring.security.oauth2.client.registration.github.client-id", "testvalues");
-    this.mockEnvironment.setProperty("spring.security.oauth2.client.registration.github.client-secret", "testvalues");
+    this.mockEnvironment.setProperty("spring.security.oauth2.client.registration.github.client-id",
+        "testvalues");
+    this.mockEnvironment.setProperty(
+        "spring.security.oauth2.client.registration.github.client-secret", "testvalues");
     assertTrue(new OAuthClientsCondition().matches(context, null));
   }
 
   @Test
+  void conditionShouldReturnFalseMissingData() {
+    this.mockEnvironment.setProperty("spring.security.oauth2.client.registration.github.client-id",
+        "testvalues");
+    this.mockEnvironment
+        .setProperty("spring.security.oauth2.client.registration.github.client-secret", "");
+    assertFalse(new OAuthClientsCondition().matches(context, null));
+  }
+
+  @Test
   void emptyRegistrationsShouldReturnFalse() {
-    this.mockEnvironment.setProperty("spring.security.oauth2.client.registration.github.client-id", "");
-    this.mockEnvironment.setProperty("spring.security.oauth2.client.registration.github.client-secret", "");
+    this.mockEnvironment.setProperty("spring.security.oauth2.client.registration.github.client-id",
+        "");
+    this.mockEnvironment
+        .setProperty("spring.security.oauth2.client.registration.github.client-secret", "");
     assertFalse(new OAuthClientsCondition().matches(context, null));
   }
 }
