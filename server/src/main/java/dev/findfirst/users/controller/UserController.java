@@ -14,7 +14,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 
 import dev.findfirst.core.config.FileSize;
-import dev.findfirst.security.conditions.OAuthClientsCondition;
 import dev.findfirst.security.jwt.exceptions.TokenRefreshException;
 import dev.findfirst.security.jwt.service.RefreshTokenService;
 import dev.findfirst.security.userauth.context.UserContext;
@@ -37,10 +36,8 @@ import dev.findfirst.users.service.UserManagementService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -90,12 +87,12 @@ public class UserController {
   }
 
   @GetMapping("/oauth2Providers")
-  public ResponseEntity<List<String>> oauth2Providers() { 
-    List<String>  listOfAuth2Providers = new ArrayList<>();
-    if (oauth2Providers == null) { 
+  public ResponseEntity<List<String>> oauth2Providers() {
+    List<String> listOfAuth2Providers = new ArrayList<>();
+    if (oauth2Providers == null) {
       return ResponseEntity.ofNullable(listOfAuth2Providers);
     }
-    oauth2Providers.iterator().forEachRemaining(provider -> { 
+    oauth2Providers.iterator().forEachRemaining(provider -> {
       log.debug(provider.getProviderDetails().getTokenUri());
       listOfAuth2Providers.add(provider.getRegistrationId());
     });
