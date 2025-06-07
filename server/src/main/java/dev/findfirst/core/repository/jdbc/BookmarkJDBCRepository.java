@@ -23,7 +23,7 @@ public interface BookmarkJDBCRepository
 
   public Page<BookmarkJDBC> findAllByUserId(int userId, Pageable pageable);
 
-  @Query("SELECT b FROM Bookmark b WHERE b.screenshotUrl IS NULL OR TRIM(b.screenshotUrl)=''")
+  @Query("SELECT * FROM Bookmark b WHERE b.screenshot_url IS NULL OR TRIM(b.screenshot_url)=''")
   List<BookmarkJDBC> findBookmarksWithEmptyOrBlankScreenShotUrl();
 
   @Query("select * from bookmark where to_tsvector(title) @@ to_tsquery(:keywords) AND bookmark.user_id = :userID")
