@@ -31,8 +31,7 @@ public class OAuthClientsCondition implements Condition {
     });
 
     var registrations = clients.values().stream()
-        .filter(cp -> !cp.clientId().isBlank() && !cp.clientSecret().isBlank())
-        .toList();
+        .filter(cp -> !cp.clientId().isBlank() && !cp.clientSecret().isBlank()).toList();
     return !properties.isEmpty() && !registrations.isEmpty();
 
   }
@@ -62,7 +61,6 @@ public class OAuthClientsCondition implements Condition {
     }
   }
 
-  record ClientPair(String clientId, String clientSecret) {
-  };
+  record ClientPair(String clientId, String clientSecret) {};
 
 }
