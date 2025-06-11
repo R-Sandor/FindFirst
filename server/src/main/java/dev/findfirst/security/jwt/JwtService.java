@@ -1,6 +1,7 @@
 package dev.findfirst.security.jwt;
 
 import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
 
 import jakarta.annotation.PostConstruct;
@@ -27,6 +28,8 @@ public class JwtService {
 
   @Value("${jwt.private.key}")
   private RSAPrivateKey priv;
+  @Value("${jwt.public.key}")
+  private RSAPublicKey pubKey;
 
   @Value("${findfirst.app.jwtCookieName}")
   private String jwtCookie;
@@ -37,7 +40,7 @@ public class JwtService {
 
   @PostConstruct
   private void init() {
-    jwtParser = Jwts.parserBuilder().setSigningKey(priv).build();
+    jwtParser = Jwts.parser().verifyWith(pubKey).build();
   }
 
   public String getJwtFromCookies(HttpServletRequest request) {
@@ -47,7 +50,7 @@ public class JwtService {
 
   public Jws<Claims> parseJwt(String jwt) throws ExpiredJwtException, UnsupportedJwtException,
       MalformedJwtException, SignatureException, IllegalArgumentException {
-    return jwtParser.parseClaimsJws(jwt);
+    return jwtParser.parseSignedClaims(jwt);
   }
 
 
