@@ -4,15 +4,9 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
-import org.springframework.stereotype.Service;
+import dev.findfirst.security.userauth.utils.Constants;
+import dev.findfirst.users.model.user.URole;
+import dev.findfirst.users.repository.UserRepo;
 
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -20,12 +14,13 @@ import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
-
-import dev.findfirst.users.repository.UserRepo;
-import dev.findfirst.users.model.user.URole;
-import dev.findfirst.security.userauth.utils.Constants;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -63,18 +58,4 @@ public class TokenService {
     return new NimbusJwtEncoder(jwks);
   }
 
-  // private String extractUserId(Authentication authentication) {
-  // if (authentication.getPrincipal() instanceof UserDetails) {
-  // String details = ((UserDetails) authentication.getPrincipal()).getUsername();
-  // System.out.println("If details " + details);
-  // return details;
-  // } else if (authentication.getPrincipal() instanceof DefaultOAuth2User) {
-  // DefaultOAuth2User oAuth2User = (DefaultOAuth2User)
-  // authentication.getPrincipal();
-  // String details = oAuth2User.getAttribute("id");
-  // System.out.println("Else details " + details);
-  // return details;
-  // }
-  // return null;
-  // }
 }

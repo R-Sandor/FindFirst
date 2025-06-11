@@ -3,19 +3,18 @@ package dev.findfirst.security.oauth2client.handlers;
 import java.io.IOException;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import dev.findfirst.security.jwt.service.RefreshTokenService;
+import dev.findfirst.security.jwt.service.TokenService;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-
-import dev.findfirst.security.jwt.service.RefreshTokenService;
-import dev.findfirst.security.jwt.service.TokenService;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -52,7 +51,7 @@ public class Oauth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     response.getWriter().write("""
           { refreshToken: %s}
         """.formatted(rt.createRefreshToken(userID)));
-    getRedirectStrategy().sendRedirect(request, response, redirectURL);
+    getRedirectStrategy().sendRedirect(request, response, redirectURL + "/account/login/oauth2");
 
   }
 
