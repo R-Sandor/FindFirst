@@ -60,8 +60,7 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
           return signupUser(username, oauth2PlaceholderEmail);
         }
       } catch (UnexpectedException | UserNameTakenException | EmailAlreadyRegisteredException e) {
-        throw new RuntimeException(e.getMessage());
-        // no-op just return null;
+        throw new RuntimeException("signup failed", e);
       }
     };
 
@@ -80,7 +79,8 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
       throw new RuntimeException("Error with user signup/signin");
     }
 
-    int userRole = user.getRole().getId() != null ? user.getUserId() : 0;
+    Integer roleId = user.getRole().getId();
+    int userRole = roleId != null ? roleId : 0;
 
     GrantedAuthority authority = new SimpleGrantedAuthority(URole.values()[userRole].toString());
     String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
