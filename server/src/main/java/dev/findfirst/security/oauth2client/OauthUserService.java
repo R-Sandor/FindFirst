@@ -50,7 +50,7 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
     final var email = (String) attrs.get("email");
     final var username = (String) attrs.get("login");
     final var registrationId = userRequest.getClientRegistration().getClientId();
-    final var oauth2PlaceholderEmail = username + registrationId;
+    final var oauth2PlaceholderEmail = "generated-" + username + registrationId + "@noemail.invalid";
 
     Supplier<User> signup = () -> {
       try {
