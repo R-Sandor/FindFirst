@@ -68,9 +68,10 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
         user = userOpt.get();
       }
     }
-    if (user.getUserId() != null) {
+    if (user != null && user.getUserId() != null) {
+      int userRole = user.getRole().getId() != null? user.getUserId(): 0;
       GrantedAuthority authority =
-          new SimpleGrantedAuthority(URole.values()[user.getRole().getId()].toString());
+          new SimpleGrantedAuthority(URole.values()[userRole].toString());
       String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
           .getUserInfoEndpoint().getUserNameAttributeName();
       log.debug("USER ATTRIBUTE NAME: {}", userNameAttributeName);

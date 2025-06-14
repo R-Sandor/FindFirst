@@ -14,6 +14,7 @@ public class OAuthClientsCondition implements Condition {
 
   Map<String, ClientPair> clients = new HashMap<>();
 
+  @SuppressWarnings("null")
   @Override
   public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
     Binder binder = Binder.get(context.getEnvironment());

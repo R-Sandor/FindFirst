@@ -10,6 +10,7 @@ import dev.findfirst.security.jwt.service.RefreshTokenService;
 import dev.findfirst.security.jwt.service.TokenService;
 
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
+@Setter
 public class Oauth2LoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
   @Value("${findfirst.app.frontend-url}")
