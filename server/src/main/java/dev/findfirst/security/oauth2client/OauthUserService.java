@@ -40,7 +40,8 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
   @Transactional
   @Override
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-    OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new DefaultOAuth2UserService();
+    OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService =
+        new DefaultOAuth2UserService();
     OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
     User user = null;
 
@@ -52,30 +53,30 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
     final var oauth2PlaceholderEmail = username + registrationId;
 
     Supplier<User> signup = () -> {
-        try {
-          if (email != null && !email.isEmpty()) {
-            return signupUser(username, email);
-          } else { 
-            return signupUser(username, oauth2PlaceholderEmail);
-          }
-        } catch (UnexpectedException | UserNameTakenException | EmailAlreadyRegisteredException e) {
-          throw new RuntimeException(e.getMessage());
-          // no-op just return null;
+      try {
+        if (email != null && !email.isEmpty()) {
+          return signupUser(username, email);
+        } else {
+          return signupUser(username, oauth2PlaceholderEmail);
         }
-      };
+      } catch (UnexpectedException | UserNameTakenException | EmailAlreadyRegisteredException e) {
+        throw new RuntimeException(e.getMessage());
+        // no-op just return null;
+      }
+    };
 
     // Oauth2 with email
     if (email != null && !email.isEmpty()) {
       log.debug("attempt login with email {}", email);
       user = getUserFromOpt(userRepo.findByEmail(email), signup);
-    } 
+    }
     // Oauth2 by username (github, etc.)
     else if (username != null && !username.isEmpty()) {
       log.debug("looking up if user exist with username {}", username);
       user = getUserFromOpt(userRepo.findByUsername(username), signup);
     }
 
-    if (user == null) { 
+    if (user == null) {
       throw new RuntimeException("Error with user signup/signin");
     }
 
@@ -85,7 +86,8 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
     String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
         .getUserInfoEndpoint().getUserNameAttributeName();
 
-    var attributes = customAttribute(attrs, userNameAttributeName, user.getUserId(), registrationId);
+    var attributes =
+        customAttribute(attrs, userNameAttributeName, user.getUserId(), registrationId);
 
     return new DefaultOAuth2User(Collections.singletonList(authority), attributes,
         userNameAttributeName);
@@ -101,14 +103,14 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
   }
 
   public User getUserFromOpt(Optional<User> userOpt, Supplier<User> signupUser) {
-    return userOpt.isEmpty()? signupUser.get(): userOpt.get();
+    return userOpt.isEmpty() ? signupUser.get() : userOpt.get();
   }
 
   private User signupUser(String username, String email)
       throws UnexpectedException, UserNameTakenException, EmailAlreadyRegisteredException {
     log.debug("creating a new user for oauth2");
-    return ums.createNewUserAccount(
-        new SignupRequest(username, email, UUID.randomUUID().toString()));
+    return ums
+        .createNewUserAccount(new SignupRequest(username, email, UUID.randomUUID().toString()));
   }
 
 }
