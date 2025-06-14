@@ -4,7 +4,9 @@ import java.rmi.UnexpectedException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
@@ -38,50 +40,55 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
   @Transactional
   @Override
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-    OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService =
-        new DefaultOAuth2UserService();
+    OAuth2UserService<OAuth2UserRequest, OAuth2User> oAuth2UserService = new DefaultOAuth2UserService();
     OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
     User user = null;
 
     // user exists in database by email
-    var attrs = oAuth2User.getAttributes();
-    var email = (String) attrs.get("email");
-    var username = (String) attrs.get("login");
-    String registrationId = userRequest.getClientRegistration().getClientId();
+    final var attrs = oAuth2User.getAttributes();
+    final var email = (String) attrs.get("email");
+    final var username = (String) attrs.get("login");
+    final var registrationId = userRequest.getClientRegistration().getClientId();
+    final var oauth2PlaceholderEmail = username + registrationId;
+
+    Supplier<User> signup = () -> {
+        try {
+          if (email != null && !email.isEmpty()) {
+            return signupUser(username, email);
+          } else { 
+            return signupUser(username, oauth2PlaceholderEmail);
+          }
+        } catch (UnexpectedException | UserNameTakenException | EmailAlreadyRegisteredException e) {
+          throw new RuntimeException(e.getMessage());
+          // no-op just return null;
+        }
+      };
+
+    // Oauth2 with email
     if (email != null && !email.isEmpty()) {
       log.debug("attempt login with email {}", email);
-      // user = userRepo.findByEmail(email).or()
-    } else if (username != null && !username.isEmpty()) {
+      user = getUserFromOpt(userRepo.findByEmail(email), signup);
+    } 
+    // Oauth2 by username (github, etc.)
+    else if (username != null && !username.isEmpty()) {
       log.debug("looking up if user exist with username {}", username);
-      var userOpt = userRepo.findByUsername(username);
-
-      var oauth2PlaceholderEmail = username + registrationId;
-      if (userOpt.isEmpty()) {
-        try {
-          log.debug("creating a new user for oauth2");
-          user = ums.createNewUserAccount(
-              new SignupRequest(username, oauth2PlaceholderEmail, UUID.randomUUID().toString()));
-        } catch (UnexpectedException | UserNameTakenException | EmailAlreadyRegisteredException e) {
-          log.debug("errors occured: {}", e.getMessage());
-        }
-      } else {
-        user = userOpt.get();
-      }
-    }
-    if (user != null && user.getUserId() != null) {
-      int userRole = user.getRole().getId() != null? user.getUserId(): 0;
-      GrantedAuthority authority =
-          new SimpleGrantedAuthority(URole.values()[userRole].toString());
-      String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
-          .getUserInfoEndpoint().getUserNameAttributeName();
-      log.debug("USER ATTRIBUTE NAME: {}", userNameAttributeName);
-      var attributes =
-          customAttribute(attrs, userNameAttributeName, user.getUserId(), registrationId);
-      return new DefaultOAuth2User(Collections.singletonList(authority), attributes,
-          userNameAttributeName);
+      user = getUserFromOpt(userRepo.findByUsername(username), signup);
     }
 
-    return oAuth2User;
+    if (user == null) { 
+      throw new RuntimeException("Error with user signup/signin");
+    }
+
+    int userRole = user.getRole().getId() != null ? user.getUserId() : 0;
+
+    GrantedAuthority authority = new SimpleGrantedAuthority(URole.values()[userRole].toString());
+    String userNameAttributeName = userRequest.getClientRegistration().getProviderDetails()
+        .getUserInfoEndpoint().getUserNameAttributeName();
+
+    var attributes = customAttribute(attrs, userNameAttributeName, user.getUserId(), registrationId);
+
+    return new DefaultOAuth2User(Collections.singletonList(authority), attributes,
+        userNameAttributeName);
   }
 
   private Map<String, Object> customAttribute(Map<String, Object> attributes,
@@ -91,6 +98,17 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
     customAttribute.put("provider", registrationId);
     customAttribute.put("userID", userID);
     return customAttribute;
+  }
+
+  public User getUserFromOpt(Optional<User> userOpt, Supplier<User> signupUser) {
+    return userOpt.isEmpty()? signupUser.get(): userOpt.get();
+  }
+
+  private User signupUser(String username, String email)
+      throws UnexpectedException, UserNameTakenException, EmailAlreadyRegisteredException {
+    log.debug("creating a new user for oauth2");
+    return ums.createNewUserAccount(
+        new SignupRequest(username, email, UUID.randomUUID().toString()));
   }
 
 }
