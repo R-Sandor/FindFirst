@@ -11,6 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import dev.findfirst.security.oauth2client.OauthUserService;
+import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
+import dev.findfirst.users.exceptions.UserNameTakenException;
+import dev.findfirst.users.model.user.Role;
+import dev.findfirst.users.model.user.User;
+import dev.findfirst.users.repository.UserRepo;
+import dev.findfirst.users.service.UserManagementService;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -24,220 +32,175 @@ import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import dev.findfirst.security.oauth2client.OauthUserService;
-import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
-import dev.findfirst.users.exceptions.UserNameTakenException;
-import dev.findfirst.users.model.user.Role;
-import dev.findfirst.users.model.user.User;
-import dev.findfirst.users.repository.UserRepo;
-import dev.findfirst.users.service.UserManagementService;
-
 /**
- * This code tests the Oauth2
- * _Test Code borrowed from_:
+ * This code tests the Oauth2 _Test Code borrowed from_:
  * https://github.com/i-moonlight/Suricate/blob/8fe4f0f87b2c8ecfefc881efc370f3eae5c97209/src/test/java/com/michelin/suricate/security/oauth2/Oauth2UserServiceTest.java#L60
  * 
  */
 @ExtendWith(MockitoExtension.class)
 public class OauthUserServiceTest {
 
-    @Mock
-    UserRepo userRepo;
-    @Mock
-    UserManagementService ums;
+  @Mock
+  UserRepo userRepo;
+  @Mock
+  UserManagementService ums;
 
-    @Mock
-    OAuth2UserRequest oAuth2UserRequest;
+  @Mock
+  OAuth2UserRequest oAuth2UserRequest;
 
-    @InjectMocks
-    private OauthUserService oAuthService;
+  @Mock
+  DefaultOAuth2UserService defaultOAuth2UserService;
 
-    @Mock
-    DefaultOAuth2UserService defaultOAuth2UserService;
+  @Mock
+  private OAuth2User oAuth2User;
 
-    @Mock
-    private OAuth2User oAuth2User;
+  @InjectMocks
+  private OauthUserService oAuthService;
 
-    @Test
-    void signupUser() {
+  @Test
+  void userAlreadyExistByEmail() {
+    final String username = "jsmith";
+    final String email = "jsmith@gmail.com";
 
-    }
+    OAuth2AccessToken token = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "token",
+        Instant.now(), Instant.now().plusSeconds(3600));
 
-    @Test
-    void userAlreadyExistByEmail() {
-        final String username = "jsmith";
-        final String email = "jsmith@gmail.com";
+    ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("gmail")
+        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE).clientId("clientId")
+        .clientSecret("clientSecret").redirectUri("localhost:8080")
+        .authorizationUri("localhost:8080/authorizationUri").tokenUri("localhost:8080/tokenUri")
+        .userInfoUri("http://localhost:8080/userInfoUri").userNameAttributeName("username").build();
+    OAuth2UserRequest request = new OAuth2UserRequest(clientRegistration, token);
 
-        OAuth2AccessToken token = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "token", Instant.now(),
-                Instant.now().plusSeconds(3600));
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put("email", email);
+    attributes.put("username", username);
 
-        ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("gmail")
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .clientId("clientId")
-                .clientSecret("clientSecret")
-                .redirectUri("localhost:8080")
-                .authorizationUri("localhost:8080/authorizationUri")
-                .tokenUri("localhost:8080/tokenUri")
-                .userInfoUri("http://localhost:8080/userInfoUri")
-                .userNameAttributeName("username")
-                .build();
-        OAuth2UserRequest request = new OAuth2UserRequest(clientRegistration, token);
+    when(defaultOAuth2UserService.loadUser(request)).thenReturn(oAuth2User);
+    when(oAuth2User.getAttributes()).thenReturn(attributes);
+    when(userRepo.findByEmail(email)).thenReturn(Optional.of(User.builder().username(username)
+        .email(email).role(new IdOnlyAggregateReference<Role, Integer>(0)).userId(1).build()));
+    var oauth2User = oAuthService.loadUser(request);
 
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("email", email);
-        attributes.put("username", username);
+    assertEquals(username, oauth2User.getAttribute("username"));
+  }
 
-        when(defaultOAuth2UserService.loadUser(request)).thenReturn(oAuth2User);
-        when(oAuth2User.getAttributes()).thenReturn(attributes);
-        when(userRepo.findByEmail(email))
-                .thenReturn(Optional.of(User.builder().username(username).email(email)
-                        .role(new IdOnlyAggregateReference<Role, Integer>(0)).userId(1).build()));
-        var oauth2User = oAuthService.loadUser(request);
+  @Test
+  void userAlreadyExistByUsername() {
+    final String username = "jsmith";
 
-        assertEquals(username, oauth2User.getAttribute("username"));
-    }
+    OAuth2AccessToken token = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "token",
+        Instant.now(), Instant.now().plusSeconds(3600));
 
-    @Test
-    void userAlreadyExistByUsername() {
-        final String username = "jsmith";
+    ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("github")
+        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE).clientId("clientId")
+        .clientSecret("clientSecret").redirectUri("localhost:8080")
+        .authorizationUri("localhost:8080/authorizationUri").tokenUri("localhost:8080/tokenUri")
+        .userInfoUri("http://localhost:8080/userInfoUri").userNameAttributeName("login").build();
+    OAuth2UserRequest request = new OAuth2UserRequest(clientRegistration, token);
 
-        OAuth2AccessToken token = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "token", Instant.now(),
-                Instant.now().plusSeconds(3600));
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put("login", username);
 
-        ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("github")
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .clientId("clientId")
-                .clientSecret("clientSecret")
-                .redirectUri("localhost:8080")
-                .authorizationUri("localhost:8080/authorizationUri")
-                .tokenUri("localhost:8080/tokenUri")
-                .userInfoUri("http://localhost:8080/userInfoUri")
-                .userNameAttributeName("login")
-                .build();
-        OAuth2UserRequest request = new OAuth2UserRequest(clientRegistration, token);
+    when(defaultOAuth2UserService.loadUser(request)).thenReturn(oAuth2User);
+    when(oAuth2User.getAttributes()).thenReturn(attributes);
+    when(userRepo.findByUsername(username)).thenReturn(Optional
+        .of(User.builder().username(username).email("generated-github-jsmith@noemail.invalid")
+            .role(new IdOnlyAggregateReference<Role, Integer>(0)).userId(1).build()));
+    var oauth2User = oAuthService.loadUser(request);
 
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("login", username);
+    assertEquals(username, oauth2User.getAttribute("login"));
+  }
 
-        when(defaultOAuth2UserService.loadUser(request)).thenReturn(oAuth2User);
-        when(oAuth2User.getAttributes()).thenReturn(attributes);
-        when(userRepo.findByUsername(username))
-                .thenReturn(
-                        Optional.of(User.builder().username(username).email("generated-github-jsmith@noemail.invalid")
-                                .role(new IdOnlyAggregateReference<Role, Integer>(0)).userId(1).build()));
-        var oauth2User = oAuthService.loadUser(request);
+  @Test
+  void hasUsernameFromOauthNoEmailButDoesNotExistAsUserAccountYet()
+      throws UnexpectedException, UserNameTakenException, EmailAlreadyRegisteredException {
+    final String username = "jsmith";
 
-        assertEquals(username, oauth2User.getAttribute("login"));
-    }
+    OAuth2AccessToken token = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "token",
+        Instant.now(), Instant.now().plusSeconds(3600));
 
-    @Test
-    void hasUsernameFromOauthNoEmailButDoesNotExistAsUserAccountYet()
-            throws UnexpectedException, UserNameTakenException, EmailAlreadyRegisteredException {
-        final String username = "jsmith";
+    ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("github")
+        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE).clientId("clientId")
+        .clientSecret("clientSecret").redirectUri("localhost:8080")
+        .authorizationUri("localhost:8080/authorizationUri").tokenUri("localhost:8080/tokenUri")
+        .userInfoUri("http://localhost:8080/userInfoUri").userNameAttributeName("login").build();
+    OAuth2UserRequest request = new OAuth2UserRequest(clientRegistration, token);
 
-        OAuth2AccessToken token = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "token", Instant.now(),
-                Instant.now().plusSeconds(3600));
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put("login", username);
 
-        ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("github")
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .clientId("clientId")
-                .clientSecret("clientSecret")
-                .redirectUri("localhost:8080")
-                .authorizationUri("localhost:8080/authorizationUri")
-                .tokenUri("localhost:8080/tokenUri")
-                .userInfoUri("http://localhost:8080/userInfoUri")
-                .userNameAttributeName("login")
-                .build();
-        OAuth2UserRequest request = new OAuth2UserRequest(clientRegistration, token);
+    when(defaultOAuth2UserService.loadUser(request)).thenReturn(oAuth2User);
+    when(oAuth2User.getAttributes()).thenReturn(attributes);
+    when(userRepo.findByUsername(username)).thenReturn(Optional.ofNullable(null));
+    when(ums.createNewUserAccount(any())).thenReturn(
+        User.builder().username(username).email("generated-github-jsmith@noemail.invalid")
+            .role(new IdOnlyAggregateReference<Role, Integer>(0)).userId(1).build());
+    var oauth2User = oAuthService.loadUser(request);
 
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("login", username);
+    assertEquals(username, oauth2User.getAttribute("login"));
+  }
 
-        when(defaultOAuth2UserService.loadUser(request)).thenReturn(oAuth2User);
-        when(oAuth2User.getAttributes()).thenReturn(attributes);
-        when(userRepo.findByUsername(username))
-                .thenReturn(
-                        Optional.ofNullable(null));
-        when(ums.createNewUserAccount(any()))
-                .thenReturn(User.builder().username(username).email("generated-github-jsmith@noemail.invalid")
-                        .role(new IdOnlyAggregateReference<Role, Integer>(0)).userId(1).build());
-        var oauth2User = oAuthService.loadUser(request);
+  @Test
+  void hasUsernameFromOauthEmailButDoesNotExistAsUserAccountYet()
+      throws UnexpectedException, UserNameTakenException, EmailAlreadyRegisteredException {
+    final String username = "jsmith";
+    final String email = "jsmith@gmail.com";
 
-        assertEquals(username, oauth2User.getAttribute("login"));
-    }
+    OAuth2AccessToken token = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "token",
+        Instant.now(), Instant.now().plusSeconds(3600));
 
-    @Test
-    void hasUsernameFromOauthEmailButDoesNotExistAsUserAccountYet()
-            throws UnexpectedException, UserNameTakenException, EmailAlreadyRegisteredException {
-        final String username = "jsmith";
-        final String email = "jsmith@gmail.com";
+    ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("github")
+        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE).clientId("clientId")
+        .clientSecret("clientSecret").redirectUri("localhost:8080")
+        .authorizationUri("localhost:8080/authorizationUri").tokenUri("localhost:8080/tokenUri")
+        .userInfoUri("http://localhost:8080/userInfoUri").userNameAttributeName("username").build();
+    OAuth2UserRequest request = new OAuth2UserRequest(clientRegistration, token);
 
-        OAuth2AccessToken token = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "token", Instant.now(),
-                Instant.now().plusSeconds(3600));
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put("username", username);
+    attributes.put("email", email);
 
-        ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("github")
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .clientId("clientId")
-                .clientSecret("clientSecret")
-                .redirectUri("localhost:8080")
-                .authorizationUri("localhost:8080/authorizationUri")
-                .tokenUri("localhost:8080/tokenUri")
-                .userInfoUri("http://localhost:8080/userInfoUri")
-                .userNameAttributeName("username")
-                .build();
-        OAuth2UserRequest request = new OAuth2UserRequest(clientRegistration, token);
+    when(defaultOAuth2UserService.loadUser(request)).thenReturn(oAuth2User);
+    when(oAuth2User.getAttributes()).thenReturn(attributes);
+    when(userRepo.findByEmail(email)).thenReturn(Optional.ofNullable(null));
+    when(ums.createNewUserAccount(any()))
+        .thenReturn(User.builder().username(username).email("jsmith@gmail.com")
+            .role(new IdOnlyAggregateReference<Role, Integer>(0)).userId(1).build());
+    var oauth2User = oAuthService.loadUser(request);
 
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("username", username);
-        attributes.put("email", email);
+    assertEquals(username, oauth2User.getAttribute("username"));
+  }
 
-        when(defaultOAuth2UserService.loadUser(request)).thenReturn(oAuth2User);
-        when(oAuth2User.getAttributes()).thenReturn(attributes);
-        when(userRepo.findByEmail(email))
-                .thenReturn(
-                        Optional.ofNullable(null));
-        when(ums.createNewUserAccount(any())).thenReturn(User.builder().username(username).email("jsmith@gmail.com")
-                .role(new IdOnlyAggregateReference<Role, Integer>(0)).userId(1).build());
-        var oauth2User = oAuthService.loadUser(request);
+  @Test
+  void strangeSignupError()
+      throws UnexpectedException, UserNameTakenException, EmailAlreadyRegisteredException {
+    final String username = "jsmith";
+    final String email = "jsmith@gmail.com";
 
-        assertEquals(username, oauth2User.getAttribute("username"));
-    }
+    OAuth2AccessToken token = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "token",
+        Instant.now(), Instant.now().plusSeconds(3600));
 
-    @Test
-    void strangeSignupError() throws UnexpectedException, UserNameTakenException, EmailAlreadyRegisteredException {
-        final String username = "jsmith";
-        final String email = "jsmith@gmail.com";
+    ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("github")
+        .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE).clientId("clientId")
+        .clientSecret("clientSecret").redirectUri("localhost:8080")
+        .authorizationUri("localhost:8080/authorizationUri").tokenUri("localhost:8080/tokenUri")
+        .userInfoUri("http://localhost:8080/userInfoUri").userNameAttributeName("username").build();
+    OAuth2UserRequest request = new OAuth2UserRequest(clientRegistration, token);
 
-        OAuth2AccessToken token = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "token", Instant.now(),
-                Instant.now().plusSeconds(3600));
+    Map<String, Object> attributes = new HashMap<>();
+    attributes.put("username", username);
+    attributes.put("email", email);
 
-        ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("github")
-                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-                .clientId("clientId")
-                .clientSecret("clientSecret")
-                .redirectUri("localhost:8080")
-                .authorizationUri("localhost:8080/authorizationUri")
-                .tokenUri("localhost:8080/tokenUri")
-                .userInfoUri("http://localhost:8080/userInfoUri")
-                .userNameAttributeName("username")
-                .build();
-        OAuth2UserRequest request = new OAuth2UserRequest(clientRegistration, token);
+    when(defaultOAuth2UserService.loadUser(request)).thenReturn(oAuth2User);
+    when(oAuth2User.getAttributes()).thenReturn(attributes);
+    when(userRepo.findByEmail(email)).thenReturn(Optional.ofNullable(null));
+    when(ums.createNewUserAccount(any())).thenThrow(new UserNameTakenException());
 
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("username", username);
-        attributes.put("email", email);
+    assertThrows(RuntimeException.class, () -> {
+      oAuthService.loadUser(request);
+    });
 
-        when(defaultOAuth2UserService.loadUser(request)).thenReturn(oAuth2User);
-        when(oAuth2User.getAttributes()).thenReturn(attributes);
-        when(userRepo.findByEmail(email))
-                .thenReturn(
-                        Optional.ofNullable(null));
-        when(ums.createNewUserAccount(any())).thenThrow(new UserNameTakenException());
-        
-        assertThrows(RuntimeException.class, () -> { 
-            oAuthService.loadUser(request);
-        });
-
-    }
+  }
 
 }
