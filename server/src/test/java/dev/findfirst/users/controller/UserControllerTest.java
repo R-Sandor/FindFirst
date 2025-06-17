@@ -1,6 +1,7 @@
 package dev.findfirst.users.controller;
 
 import static dev.findfirst.utilities.HttpUtility.getHttpEntity;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -48,7 +49,9 @@ import org.testcontainers.utility.DockerImageName;
 @IntegrationTest
 @MockTypesense
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application-test.yml")
+@TestPropertySource(locations = "classpath:application-test.yml",
+    properties = {"spring.security.oauth2.client.registration.github.client-secret=secret-oauth",
+        "spring.security.oauth2.client.registration.github.client-id=test-id"})
 class UserControllerTest {
 
   TestRestTemplate restTemplate = new TestRestTemplate();
@@ -238,5 +241,13 @@ class UserControllerTest {
     var response = restTemplate.postForEntity("/user/profile-picture", requestEntity, String.class);
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
+  }
+
+  @Test
+  void getAllProivders() {
+    var response = restTemplate.getForEntity("/user/oauth2Providers", String[].class);
+
+    assertArrayEquals(new String[] {"github"}, response.getBody());
+
   }
 }
