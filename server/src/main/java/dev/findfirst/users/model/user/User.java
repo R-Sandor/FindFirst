@@ -3,6 +3,7 @@ package dev.findfirst.users.model.user;
 import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -14,6 +15,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "users")
+@Builder
 public class User {
 
   public User(String username, String email, String encodedPasswd, boolean enabled) {
