@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import dev.findfirst.security.conditions.OAuthClientsCondition;
 import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
 import dev.findfirst.users.exceptions.UserNameTakenException;
@@ -18,8 +19,12 @@ import dev.findfirst.users.service.UserManagementService;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Conditional;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -32,25 +37,24 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Conditional(OAuthClientsCondition.class)
 @Slf4j
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
+@Primary
 public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-  @Autowired
-  private UserRepo userRepo;
+  private final UserRepo userRepo;
 
-  @Autowired
-  private UserManagementService ums;
+  private final UserManagementService ums;
 
-  @Autowired(required = false)
-  private DefaultOAuth2UserService oAuth2UserService;
+  @Qualifier("defaultOauthService")
+  private final OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate;
 
   @Transactional
   @Override
   public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
     log.debug("attempt to loadUser");
-    OAuth2User oAuth2User = oAuth2UserService.loadUser(userRequest);
+    OAuth2User oAuth2User = delegate.loadUser(userRequest);
     User user = null;
 
     // user exists in database by email
@@ -67,8 +71,7 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
 
     var username = attrs.get(userNameAttributeName).toString();
     final var registrationId = userRequest.getClientRegistration().getClientId();
-    final var oauth2PlaceholderEmail =
-        "generated-" + username + registrationId + "@noemail.invalid";
+    final var oauth2PlaceholderEmail = "generated-" + username + registrationId + "@noemail.invalid";
 
     Supplier<User> signup = () -> {
       try {
@@ -98,12 +101,10 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
       throw new RuntimeException("Error with user signup/signin");
     }
 
-    int userRole =
-        (user.getRole() == null || user.getRole().getId() == null) ? 0 : user.getRole().getId();
+    int userRole = (user.getRole() == null || user.getRole().getId() == null) ? 0 : user.getRole().getId();
 
     GrantedAuthority authority = new SimpleGrantedAuthority(URole.values()[userRole].toString());
-    var attributes =
-        customAttribute(attrs, userNameAttributeName, user.getUserId(), registrationId);
+    var attributes = customAttribute(attrs, userNameAttributeName, user.getUserId(), registrationId);
 
     return new DefaultOAuth2User(Collections.singletonList(authority), attributes,
         userNameAttributeName);

@@ -150,7 +150,7 @@ public class OauthUserServiceTest {
     OAuth2AccessToken token = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER, "token",
         Instant.now(), Instant.now().plusSeconds(3600));
 
-    ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("github")
+    ClientRegistration clientRegistration = ClientRegistration.withRegistrationId("gmail")
         .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE).clientId("clientId")
         .clientSecret("clientSecret").redirectUri("localhost:8080")
         .authorizationUri("localhost:8080/authorizationUri").tokenUri("localhost:8080/tokenUri")
@@ -158,7 +158,7 @@ public class OauthUserServiceTest {
     OAuth2UserRequest request = new OAuth2UserRequest(clientRegistration, token);
 
     Map<String, Object> attributes = new HashMap<>();
-    attributes.put("login", username);
+    attributes.put("username", username);
     attributes.put("email", email);
 
     when(defaultOAuth2UserService.loadUser(request)).thenReturn(oAuth2User);
