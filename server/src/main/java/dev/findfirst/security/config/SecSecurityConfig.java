@@ -1,6 +1,5 @@
 package dev.findfirst.security.config;
 
-
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 
@@ -10,6 +9,7 @@ import dev.findfirst.security.jwt.AuthEntryPointJwt;
 import dev.findfirst.security.oauth2client.handlers.Oauth2LoginSuccessHandler;
 import dev.findfirst.security.userauth.service.UserDetailsServiceImpl;
 
+import dev.findfirst.security.oauth2client.OauthUserService;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
