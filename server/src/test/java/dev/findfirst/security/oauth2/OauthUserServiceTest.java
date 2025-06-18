@@ -158,7 +158,7 @@ public class OauthUserServiceTest {
     OAuth2UserRequest request = new OAuth2UserRequest(clientRegistration, token);
 
     Map<String, Object> attributes = new HashMap<>();
-    attributes.put("username", username);
+    attributes.put("login", username);
     attributes.put("email", email);
 
     when(defaultOAuth2UserService.loadUser(request)).thenReturn(oAuth2User);
@@ -189,12 +189,12 @@ public class OauthUserServiceTest {
     OAuth2UserRequest request = new OAuth2UserRequest(clientRegistration, token);
 
     Map<String, Object> attributes = new HashMap<>();
-    attributes.put("username", username);
+    attributes.put("login", username);
     attributes.put("email", email);
 
     when(defaultOAuth2UserService.loadUser(request)).thenReturn(oAuth2User);
     when(oAuth2User.getAttributes()).thenReturn(attributes);
-    when(userRepo.findByEmail(email)).thenReturn(Optional.ofNullable(null));
+    // when(userRepo.findByEmail(email)).thenReturn(Optional.ofNullable(null));
     when(ums.createNewUserAccount(any())).thenThrow(new UserNameTakenException());
 
     assertThrows(RuntimeException.class, () -> {

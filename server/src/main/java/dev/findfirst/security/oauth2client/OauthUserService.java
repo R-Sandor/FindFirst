@@ -8,7 +8,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import dev.findfirst.security.conditions.OAuthClientsCondition;
 import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
 import dev.findfirst.users.exceptions.UserNameTakenException;
@@ -21,7 +20,6 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Conditional;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -34,7 +32,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Conditional(OAuthClientsCondition.class)
 @Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
@@ -70,7 +67,8 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
 
     var username = attrs.get(userNameAttributeName).toString();
     final var registrationId = userRequest.getClientRegistration().getClientId();
-    final var oauth2PlaceholderEmail = "generated-" + username + registrationId + "@noemail.invalid";
+    final var oauth2PlaceholderEmail =
+        "generated-" + username + registrationId + "@noemail.invalid";
 
     Supplier<User> signup = () -> {
       try {
@@ -100,10 +98,12 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
       throw new RuntimeException("Error with user signup/signin");
     }
 
-    int userRole = (user.getRole() == null || user.getRole().getId() == null) ? 0 : user.getRole().getId();
+    int userRole =
+        (user.getRole() == null || user.getRole().getId() == null) ? 0 : user.getRole().getId();
 
     GrantedAuthority authority = new SimpleGrantedAuthority(URole.values()[userRole].toString());
-    var attributes = customAttribute(attrs, userNameAttributeName, user.getUserId(), registrationId);
+    var attributes =
+        customAttribute(attrs, userNameAttributeName, user.getUserId(), registrationId);
 
     return new DefaultOAuth2User(Collections.singletonList(authority), attributes,
         userNameAttributeName);

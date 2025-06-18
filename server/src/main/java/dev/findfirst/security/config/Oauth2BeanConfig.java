@@ -1,27 +1,25 @@
 package dev.findfirst.security.config;
 
+import dev.findfirst.security.conditions.OAuthClientsCondition;
+import dev.findfirst.security.jwt.service.RefreshTokenService;
+import dev.findfirst.security.jwt.service.TokenService;
+import dev.findfirst.security.oauth2client.handlers.Oauth2LoginSuccessHandler;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
-
-import dev.findfirst.security.conditions.OAuthClientsCondition;
-import dev.findfirst.security.oauth2client.OauthUserService;
-import dev.findfirst.users.repository.UserRepo;
-import dev.findfirst.users.service.UserManagementService;
-import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
 public class Oauth2BeanConfig {
 
-  final UserManagementService ums;
-  final UserRepo userRepo;
+  final TokenService ts;
+  final RefreshTokenService rt;
 
-  @Conditional(OAuthClientsCondition.class)
   @Bean
-  public OauthUserService oauthUserService() {
-    return new OauthUserService(userRepo, ums, new DefaultOAuth2UserService());
+  @Conditional(OAuthClientsCondition.class)
+  public Oauth2LoginSuccessHandler oauth2Success() {
+    return new Oauth2LoginSuccessHandler(ts, rt);
   }
-
 }
