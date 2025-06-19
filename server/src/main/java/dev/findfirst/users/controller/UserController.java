@@ -27,6 +27,7 @@ import dev.findfirst.users.exceptions.NoTokenFoundException;
 import dev.findfirst.users.exceptions.NoUserFoundException;
 import dev.findfirst.users.exceptions.TokenExpiredException;
 import dev.findfirst.users.exceptions.UserNameTakenException;
+import dev.findfirst.users.model.oauth2.Oauth2Source;
 import dev.findfirst.users.model.user.SigninTokens;
 import dev.findfirst.users.model.user.TokenPassword;
 import dev.findfirst.users.model.user.User;
@@ -87,14 +88,28 @@ public class UserController {
   }
 
   @GetMapping("/oauth2Providers")
-  public ResponseEntity<List<String>> oauth2Providers() {
-    List<String> listOfAuth2Providers = new ArrayList<>();
+  public ResponseEntity<List<Oauth2Source>> oauth2Providers() {
+    List<Oauth2Source> listOfAuth2Providers = new ArrayList<>();
     if (oauth2Providers == null) {
       return ResponseEntity.ofNullable(listOfAuth2Providers);
     }
     oauth2Providers.iterator().forEachRemaining(provider -> {
-      log.debug(provider.getProviderDetails().getTokenUri());
-      listOfAuth2Providers.add(provider.getRegistrationId());
+      var tknUri = provider.getProviderDetails().getTokenUri();
+      log.debug("Token URI {}", tknUri);
+      // skip http(s)://
+      var noProto = "";
+      if (tknUri.contains("https://")) {
+        noProto = tknUri.substring(8);
+      } else {
+        log.debug("provider without https {}", tknUri);
+        // do we really want to trust anything that isn't https?
+        return;
+      }
+      var domain = noProto.indexOf("/");
+      var faviconURI = "https://" + noProto.substring(0, domain) + "/favicon.ico";
+
+      log.debug("Favicon URI {}", faviconURI);
+      listOfAuth2Providers.add(new Oauth2Source(provider.getClientName(), faviconURI));
     });
     return ResponseEntity.ofNullable(listOfAuth2Providers);
   }
@@ -200,8 +215,7 @@ public class UserController {
   public ResponseEntity<String> uploadProfilePicture(
       @Valid @RequestParam("file") @FileSize MultipartFile file) throws NoUserFoundException {
     log.debug("Attempting to add user profile picture");
-    User user =
-        userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
+    User user = userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
 
     // File type validation
     String contentType = file.getContentType();
