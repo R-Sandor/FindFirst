@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import authService, { User } from "@services/auth.service";
 import { bkmkResp } from "../data/SampleData";
 import ImportModal from "@components/Import/ImportModal";
@@ -42,6 +42,7 @@ describe("Reads from Stream", async () => {
   });
 
   it("should have 3 bookmarks", async () => {
+    vi.stubEnv("NEXT_PUBLIC_SERVER_URL", "https://localhost");
     // Not really reading the contents of the file. We could
     // but for the purpose of this test a file needed to be passed
     // to force an import.

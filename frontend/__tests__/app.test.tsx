@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
-import { render, screen, act } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import Page from "../app/page";
 import authService, { User } from "@services/auth.service";
 import { instance } from "@api/Api";
@@ -25,16 +25,14 @@ beforeEach(async () => {
   mock.onGet("/tags").reply(200, JSON.stringify(tagsData));
   vi.spyOn(authService, "getUser").mockImplementation(() => user);
   vi.spyOn(authService, "getAuthorized").mockImplementation(() => 1);
-  await act(async () => {
-    render(
-      <div>
-        <Providers>
-          <Navbar />
-          <Page />
-        </Providers>
-      </div>,
-    );
-  });
+  render(
+    <div>
+      <Providers>
+        <Navbar />
+        <Page />
+      </Providers>
+    </div>,
+  );
 });
 
 describe("User is authenticated and bookmark/tag data is present.", () => {
@@ -46,16 +44,16 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
   });
 
   test("User clicks a tag in list", async () => {
-    const bkmkCard = await screen.findByText(/Best Cheesecake Recipe/i);
+    const bkmkCard = await screen.findByText(
+      /Best Cheesecake Recipe/i,
+      undefined,
+      { timeout: 1000 },
+    );
     expect(bkmkCard).toBeInTheDocument();
-    await act(async () => {
-      await userEvnt.click(screen.getByTestId("deserts-list-item"));
-    });
+    await userEvnt.click(screen.getByTestId("deserts-list-item"));
     let allbkmks = screen.getAllByTestId(/bookmark-/i);
     expect(allbkmks.length).toBe(1);
-    await act(async () => {
-      await userEvnt.click(screen.getByTestId("deserts-list-item"));
-    });
+    await userEvnt.click(screen.getByTestId("deserts-list-item"));
     allbkmks = screen.getAllByTestId(/bookmark-/i);
     expect(allbkmks.length).toBe(3);
   });
@@ -81,22 +79,20 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
         }),
       ];
     });
-    const inputForCheeseCakeCard = screen.getByTestId(
+    const inputForCheeseCakeCard = await screen.findByTestId(
       "Best Cheesecake Recipe-input",
+      undefined,
+      { timeout: 1000 },
     );
-    await act(async () => {
-      await userEvnt.type(inputForCheeseCakeCard, "Cooking");
-      hitEnter(inputForCheeseCakeCard);
-    });
+    await userEvnt.type(inputForCheeseCakeCard, "Cooking");
+    hitEnter(inputForCheeseCakeCard);
 
-    await act(async () => {
-      await userEvnt.type(inputForCheeseCakeCard, "new");
-      hitEnter(inputForCheeseCakeCard);
-    });
+    await userEvnt.type(inputForCheeseCakeCard, "new");
+    hitEnter(inputForCheeseCakeCard);
     expect(screen.getByTestId("Cooking-list-item-cnt")).toContainHTML(
       "<div data-testid='Cooking-list-item-cnt'>2</div>",
     );
-    expect(screen.getByTestId("new-list-item-cnt")).toContainHTML(
+    expect(await screen.findByTestId("new-list-item-cnt")).toContainHTML(
       "<div data-testid='new-list-item-cnt'>1</div>",
     );
   });
@@ -133,21 +129,17 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
       ];
     });
 
-    const inputForCheeseCakeCard = screen.getByTestId(
+    const inputForCheeseCakeCard = await screen.findByTestId(
       "Best Cheesecake Recipe-input",
+      undefined,
+      { timeout: 1000 },
     );
-    await act(async () => {
-      await userEvnt.type(inputForCheeseCakeCard, "Cooking");
-      hitEnter(inputForCheeseCakeCard);
-    });
+    await userEvnt.type(inputForCheeseCakeCard, "Cooking");
+    hitEnter(inputForCheeseCakeCard);
 
-    await act(async () => {
-      await userEvnt.click(screen.getByTestId("web_dev-tag-2-bk"));
-    });
+    await userEvnt.click(screen.getByTestId("web_dev-tag-2-bk"));
 
-    await act(async () => {
-      await userEvnt.click(screen.getByTestId("Cooking-tag-1-bk"));
-    });
+    await userEvnt.click(screen.getByTestId("Cooking-tag-1-bk"));
     expect(screen.getByTestId("Cooking-list-item-cnt")).toContainHTML(
       "<div data-testid='Cooking-list-item-cnt'>1</div>",
     );
@@ -156,22 +148,16 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
 
 describe("Clicks around the page.", () => {
   test("Change theme.", async () => {
-    await act(async () => {
-      const toggle = screen.getByTestId("light-dark");
-      await userEvnt.click(toggle);
-    });
+    let toggle = screen.getByTestId("light-dark");
+    await userEvnt.click(toggle);
     expect(localStorage.getItem("theme")).toBe("light");
-    const toggle = screen.getByTestId("light-dark");
-    await act(async () => {
-      await userEvnt.click(toggle);
-    });
+    toggle = screen.getByTestId("light-dark");
+    await userEvnt.click(toggle);
     expect(localStorage.getItem("theme")).toBe("dark");
   });
 
   test("Logout click", async () => {
-    await act(async () => {
-      await userEvnt.click(screen.getByText(/logout/i));
-    });
+    await userEvnt.click(screen.getByText(/logout/i));
     const allbkmks = screen.queryAllByTestId(/bookmark-/i);
     expect(allbkmks).toEqual([]);
   });
@@ -183,24 +169,18 @@ describe("Bookmark Operation.", () => {
       return [200, JSON.stringify("Deleting Bookmark 1")];
     });
     const bkId = 1;
-    await act(async () => {
-      await userEvnt.click(screen.getByTestId(`bk-id-${bkId}-deleteBtn`));
-    });
-    await act(async () => {
-      await userEvnt.click(screen.getByText(/yes/i));
-    });
+    await userEvnt.click(await screen.findByTestId(`bk-id-${bkId}-deleteBtn`));
+    await userEvnt.click(await screen.findByText(/yes/i));
     const allbkmks = screen.getAllByTestId(/bookmark-/i);
     expect(allbkmks.length).toBe(2);
   });
 
   test("Add Bookmark: Testing bookmark context.", async () => {
-    const submit = screen.getByText("Submit");
+    const submit = await screen.findByText("Submit");
     const tags = screen.getByTestId("new-bk-tag-input");
     const url = screen.getByPlaceholderText(/discover/i);
-    await act(async () => {
-      await userEvnt.type(url, "foodnetwork.com");
-      await userEvnt.type(tags, "cooking");
-    });
+    await userEvnt.type(url, "foodnetwork.com");
+    await userEvnt.type(tags, "cooking");
     hitEnter(tags);
     expect(submit).not.toBeDisabled();
 
@@ -248,9 +228,7 @@ describe("Bookmark Operation.", () => {
         return [200, JSON.stringify(expectedBookmark)];
       });
 
-    await act(async () => {
-      await userEvnt.click(submit);
-    });
+    await userEvnt.click(submit);
     const allbkmks = screen.getAllByTestId(/bookmark-/i);
     expect(allbkmks.length).toBe(4);
   });
