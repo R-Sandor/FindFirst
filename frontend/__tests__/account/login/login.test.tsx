@@ -7,6 +7,7 @@ import { typePassword } from "../signup/signup.test";
 import { submitDisabled } from "@/__tests__/utilities/TestingUtilities";
 import { bkmkResp } from "@/__tests__/data/SampleData";
 import { instance } from "@api/Api";
+import { instance as userInstance } from "@api/userApi";
 import authService from "@services/auth.service";
 import axios from "axios";
 const user = userEvent.setup();
@@ -93,4 +94,11 @@ describe("Errors on fields.", () => {
   test("Submit button should be disabled no usename or password.", async () => {
     submitDisabled(true, "Login");
   });
+});
+
+describe("Oauth2 Signin", () => {
+  beforeEach(() => {
+    render(<Page />);
+  });
+  test("Oauth2Providers are listed", async () => {});
 });
