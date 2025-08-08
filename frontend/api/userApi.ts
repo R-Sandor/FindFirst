@@ -27,9 +27,13 @@ const userApi = {
       ...config,
     });
   },
-  userInfo() { 
-    return instance.get("/user-info")
-  }
-}
+  userInfo() {
+    return instance.get("/user-info");
+  },
+  oauth2Providers() {
+    console.log("getOauth2Providers");
+    return instance.get("/oauth2Providers");
+  },
+};
 
 export default userApi;
