@@ -1,9 +1,9 @@
 "use client";
 /**
  *  Once a user logins with OAuth2 from backend service
- *  they should be brought here. This will quickly read
- *  the call authService which will make a request to 
- *  the endpoint /user-info with the already attached 
+ *  they should be brought here. This will quickly make
+ *  a call to authService which will make a request to
+ *  the endpoint /user-info with the already attached
  *  cookie and save the User info.
  */
 import authService from "@/services/auth.service";
@@ -18,7 +18,6 @@ export default function OauthLogin() {
       if (user) {
         router.push("/");
       }
-    })
-}, [authService])
-
+    });
+  }, [authService]);
 }
