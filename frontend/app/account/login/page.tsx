@@ -4,11 +4,20 @@ import styles from "./login-form.module.scss";
 import authService from "@/services/auth.service";
 import * as Yup from "yup";
 import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import userApi from "@api/userApi";
 
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+const AUTH_ENDPOINT = SERVER_URL + "/";
 export interface Credentials {
   username: string;
   password: string;
+}
+
+interface Oauth2Sources {
+  provider: string;
+  iconUrl: string;
+  authEndpoint: string;
 }
 
 function failureMessage(submitMessage: string) {
@@ -22,7 +31,16 @@ function submitFailureDisplay(submissionMessage: string) {
 export default function Page() {
   const [signinFailure, setSigninFailure] = useState<boolean>(false);
   const attemptCount = useRef<number>(0);
+  const [oauth2Providers, setOauth2Provider] = useState<Oauth2Sources[]>([]);
   const router = useRouter();
+
+  useEffect(() => {
+    userApi.oauth2Providers().then((resp) => {
+      console.log(resp.data);
+      setOauth2Provider(resp.data as Oauth2Sources[]);
+    });
+  }, []);
+
   const handleOnSubmit = async (credentials: Credentials) => {
     if (await authService.login(credentials)) {
       attemptCount.current = 0;
@@ -96,7 +114,35 @@ export default function Page() {
             </Form>
           )}
         </Formik>
+        {oauth2Providers ? (
+          <div className={styles.oauth}>
+            <h4>
+              <i>or login with:</i>
+            </h4>
+            <ul className={`list-group list-group-flush `}>
+              {oauth2Providers.map((oauth, index) => (
+                <a
+                  href={AUTH_ENDPOINT + oauth.authEndpoint}
+                  target="_self"
+                  key={index}
+                  className="list-group-item rounded"
+                >
+                  {oauth.provider}
+                  <span className="float-end">
+                    <img
+                      src={oauth.iconUrl}
+                      alt={`${oauth.provider} icon`}
+                      style={{ width: 25, height: 25, marginRight: 10 }}
+                    />
+                  </span>
+                </a>
+              ))}
+            </ul>
+          </div>
+        ) : null}
       </div>
     </div>
   );
 }
+
+// src={oauth.iconUrl}
