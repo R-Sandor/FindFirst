@@ -105,11 +105,12 @@ public class UserController {
         // do we really want to trust anything that isn't https?
         return;
       }
-      var domain = noProto.indexOf("/");
-      var faviconURI = "https://" + noProto.substring(0, domain) + "/favicon.ico";
-
+      var favDomain = noProto.indexOf("/");
+      var faviconURI = "https://" + noProto.substring(0, favDomain) + "/favicon.ico";
+      var registrationId = provider.getRegistrationId();
       log.debug("Favicon URI {}", faviconURI);
-      listOfAuth2Providers.add(new Oauth2Source(provider.getClientName(), faviconURI));
+      listOfAuth2Providers.add(new Oauth2Source(provider.getClientName(), faviconURI,
+          "oauth2/authorization/" + registrationId));
     });
     return ResponseEntity.ofNullable(listOfAuth2Providers);
   }
@@ -215,7 +216,8 @@ public class UserController {
   public ResponseEntity<String> uploadProfilePicture(
       @Valid @RequestParam("file") @FileSize MultipartFile file) throws NoUserFoundException {
     log.debug("Attempting to add user profile picture");
-    User user = userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
+    User user =
+        userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
 
     // File type validation
     String contentType = file.getContentType();
