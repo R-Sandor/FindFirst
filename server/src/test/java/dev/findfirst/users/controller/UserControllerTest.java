@@ -50,9 +50,9 @@ import org.testcontainers.utility.DockerImageName;
 @IntegrationTest
 @MockTypesense
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@TestPropertySource(locations = "classpath:application-test.yml", properties = {
-    "spring.security.oauth2.client.registration.github.client-secret=secret-oauth",
-    "spring.security.oauth2.client.registration.github.client-id=test-id" })
+@TestPropertySource(locations = "classpath:application-test.yml",
+    properties = {"spring.security.oauth2.client.registration.github.client-secret=secret-oauth",
+        "spring.security.oauth2.client.registration.github.client-id=test-id"})
 class UserControllerTest {
 
   TestRestTemplate restTemplate = new TestRestTemplate();
@@ -73,8 +73,8 @@ class UserControllerTest {
   static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
 
   @Container
-  public static GenericContainer<?> mailhog = new GenericContainer<>(DockerImageName.parse("mailhog/mailhog:latest"))
-      .withExposedPorts(1025,
+  public static GenericContainer<?> mailhog =
+      new GenericContainer<>(DockerImageName.parse("mailhog/mailhog:latest")).withExposedPorts(1025,
           8025);
 
   @TestConfiguration
@@ -100,8 +100,7 @@ class UserControllerTest {
   private String userUrl = "/user";
 
   /**
-   * Tests that a user should be able to sign up. After signing up another user
-   * should not be able
+   * Tests that a user should be able to sign up. After signing up another user should not be able
    * use the same username or email.
    */
   @Test
@@ -118,8 +117,7 @@ class UserControllerTest {
   }
 
   /**
-   * Create a user, gets the registration token from the email. Uses the token to
-   * complete
+   * Create a user, gets the registration token from the email. Uses the token to complete
    * registration.
    */
   @Test
@@ -250,8 +248,8 @@ class UserControllerTest {
   void getAllProivders() {
     var response = restTemplate.getForEntity("/user/oauth2Providers", Oauth2Source[].class);
 
-    assertArrayEquals(new Oauth2Source[] { new Oauth2Source("GitHub", "https://github.com/favicon.ico") },
-        response.getBody());
+    assertArrayEquals(new Oauth2Source[] {new Oauth2Source("GitHub",
+        "https://github.com/favicon.ico", "oauth2/authorization/github")}, response.getBody());
 
   }
 }
