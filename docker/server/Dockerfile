@@ -2,7 +2,7 @@
 FROM alpine:3.20.2 AS linux
 RUN apk add openssl openjdk17 
 
-FROM openjdk:17-slim AS builder
+FROM openjdk:21-slim AS builder
 WORKDIR /app
 COPY --exclude=build/ . .
 RUN ./gradlew assemble
