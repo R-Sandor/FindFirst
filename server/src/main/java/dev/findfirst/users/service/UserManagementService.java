@@ -190,7 +190,7 @@ public class UserManagementService {
       return saveUser(user);
     } catch (Exception e) {
       // If any exception occurs we should delete the records that were just made.
-      log.debug(e.getMessage());
+      log.error(e.getMessage());
       deleteUser(user);
       throw new UnexpectedException("Unexpected error occured during signup, try again");
     }
