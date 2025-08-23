@@ -114,7 +114,7 @@ export default function Page() {
             </Form>
           )}
         </Formik>
-        {oauth2Providers ? (
+        {oauth2Providers.length > 0 ? (
           <div className={styles.oauth}>
             <h4>
               <i>or login with:</i>
