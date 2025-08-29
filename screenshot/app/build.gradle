@@ -10,7 +10,7 @@ plugins {
     id 'org.jetbrains.kotlin.plugin.spring' version '1.8.10' // For Spring support
     id 'org.springframework.boot' version '3.2.4' // Adjust the Spring Boot version as needed
     id 'io.spring.dependency-management' version '1.1.0' // For dependency management
-    id 'org.sonarqube' version '5.3.1'
+    id 'org.sonarqube' version '6.3.1.5724'
     id 'jacoco'
     id 'application'
     id "com.diffplug.spotless" version "6.19.0"
