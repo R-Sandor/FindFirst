@@ -21,7 +21,7 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: 21 
+          java-version: 21
           distribution: "temurin"
       - name: Cache SonarQube packages
         uses: actions/cache@v4
@@ -41,7 +41,6 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
           cd server/
-          ./scripts/createServerKeys.sh  
           ./gradlew build sonar --info
   sonarQubeFrontend:
     name: sonarQube Frontend
@@ -59,7 +58,7 @@ jobs:
           cd frontend
           pnpm run coverage
       - name: Scan Frontend
-        uses: sonarsource/sonarqube-scan-action@master
+        uses: SonarSource/sonarqube-scan-action@v5.3.1
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }} # analysis token associated to your project
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST }}
@@ -72,10 +71,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: 17
+          java-version: 21
           distribution: "temurin"
       - name: Cache SonarQube packages
         uses: actions/cache@v4
