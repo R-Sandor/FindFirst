@@ -72,7 +72,7 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
     Supplier<User> signup = () -> {
       try {
         if (email != null && !email.isEmpty()) {
-          return signupUser(username, email);
+          return signupUser(email, email);
         } else {
           return signupUser(username, oauth2PlaceholderEmail);
         }

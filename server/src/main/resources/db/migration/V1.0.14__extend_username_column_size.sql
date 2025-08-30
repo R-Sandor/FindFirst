@@ -1,0 +1,3 @@
+ALTER TABLE "users"
+  ALTER COLUMN username TYPE VARCHAR(255),
+  ALTER COLUMN username SET NOT NULL;
