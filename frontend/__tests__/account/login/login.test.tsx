@@ -7,10 +7,13 @@ import { typePassword } from "../signup/signup.test";
 import { submitDisabled } from "@/__tests__/utilities/TestingUtilities";
 import { bkmkResp } from "@/__tests__/data/SampleData";
 import { instance } from "@api/Api";
-import { instance as userInstance } from "@api/userApi";
 import authService from "@services/auth.service";
 import axios from "axios";
+import { userApiInstance } from "@api/userApi";
+const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 const user = userEvent.setup();
+const userApiMock = new MockAdapter(userApiInstance);
+userApiMock.onGet("/oauth2Providers").reply(200, JSON.stringify([]));
 
 describe("Login events.", () => {
   vi.mock("next/navigation", () => {
@@ -38,7 +41,6 @@ describe("Login events.", () => {
     const mock = new MockAdapter(axios);
 
     // Create a custom response
-    const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
     axiosMock.onGet().reply(200, bkmkResp);
 
     const SIGNIN_URL = SERVER_URL + "/user/signin";
@@ -96,9 +98,9 @@ describe("Errors on fields.", () => {
   });
 });
 
-describe("Oauth2 Signin", () => {
-  beforeEach(() => {
-    render(<Page />);
-  });
-  test("Oauth2Providers are listed", async () => {});
-});
+// describe("Oauth2 Signin", () => {
+//   beforeEach(() => {
+//     render(<Page />);
+//   });
+//   test("Oauth2Providers are listed", async () => {});
+// });

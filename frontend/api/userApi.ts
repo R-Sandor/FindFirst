@@ -2,7 +2,7 @@ import axios from "axios";
 import { parseData } from "./Api";
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/user";
 
-export const instance = axios.create({
+export const userApiInstance = axios.create({
   withCredentials: true,
   baseURL: SERVER_URL,
   timeout: 10000,
@@ -20,7 +20,7 @@ const userApi = {
     data: any,
     config: {} | undefined,
   ) {
-    return instance({
+    return userApiInstance({
       method: method,
       url: resource,
       data,
@@ -28,11 +28,11 @@ const userApi = {
     });
   },
   userInfo() {
-    return instance.get("/user-info");
+    return userApiInstance.get("/user-info");
   },
   oauth2Providers() {
     console.log("getOauth2Providers");
-    return instance.get("/oauth2Providers");
+    return userApiInstance.get("/oauth2Providers");
   },
 };
 

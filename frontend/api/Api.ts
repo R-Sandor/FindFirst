@@ -46,9 +46,14 @@ instance.interceptors.response.use(
 );
 
 export function parseData(data: string) {
-  if (data.length != 0 || data || data != "") {
+  if (data === undefined || data === "") {
+    return null;
+  }
+
+  if (data || data.length != 0) {
     return JSON.parse(data);
   }
+
   return data;
 }
 
