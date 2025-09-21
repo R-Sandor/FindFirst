@@ -12,10 +12,11 @@ import navbarView from "styles/navbar.module.scss";
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
+  const user = authService.getUser();
 
   const router = useRouter();
   function authButton() {
-    if (userAuth.status === AuthStatus.Unauthorized || userAuth.status === undefined) {
+    if (userAuth == AuthStatus.Unauthorized || userAuth === undefined) {
       return (
         <ButtonGroup>
           <Button
@@ -49,6 +50,12 @@ const GlobalNavbar: React.FC = () => {
     router.push("/account/login");
   };
 
+  console.log(user?.profileImage && user?.profileImage.trim() !== "");
+  console.log(
+    user?.profileImage && user?.profileImage.trim() !== ""
+      ? `/api/user/avatar?userId=${user.id}`
+      : "/img_avatar.png",
+  );
   return (
     <Navbar
       expand="md"
@@ -69,33 +76,33 @@ const GlobalNavbar: React.FC = () => {
           />
           FindFirst
         </Navbar.Brand>
-        {userAuth.status === AuthStatus.Authorized ? <Searchbar /> : null}
+        {userAuth === AuthStatus.Authorized ? <Searchbar /> : null}
         <div className={`btn-group  ${navbarView.navBtns}`}>
-          {userAuth.status === AuthStatus.Authorized ? (
+          {userAuth === AuthStatus.Authorized ? (
             <ImportModal
               file={undefined}
               show={false}
               data-testid="import-modal"
             />
           ) : null}
-          {userAuth.status === AuthStatus.Authorized ? (
+          {userAuth === AuthStatus.Authorized ? (
             <Export data-testid="export-component" />
           ) : null}
           <LightDarkToggle />
           {authButton()}
-            {userAuth.status === AuthStatus.Authorized && (
+          {userAuth === AuthStatus.Authorized && (
             <Image
-                src={
-                    userAuth.profileImage && userAuth.profileImage.trim() !== ""
-                        ? `/api/user/avatar?userId=${userAuth.userId}`
-                        : "/img_avatar.png"
-                }
-                alt="Profile"
-                width={36}
-                height={36}
-                className="rounded-circle ms-6"
+              src={
+                user?.profileImage && user?.profileImage.trim() !== ""
+                  ? `/api/user/avatar?userId=${user.id}`
+                  : "/img_avatar.png"
+              }
+              alt="Profile"
+              width={36}
+              height={36}
+              className="rounded-circle ms-6"
             />
-            )}
+          )}
         </div>
       </Container>
     </Navbar>

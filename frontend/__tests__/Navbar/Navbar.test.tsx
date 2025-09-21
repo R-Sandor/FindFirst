@@ -18,6 +18,13 @@ vi.mock("@components/UseAuth", () => ({
   default: vi.fn(),
 }));
 
+vi.mock("next/image", () => ({
+  default: (props: any) => {
+    // eslint-disable-next-line jsx-a11y/alt-text, @next/next/no-img-element
+    return <img {...props} />;
+  },
+}));
+
 vi.mock(
   "@services/auth.service",
   async (
@@ -30,6 +37,14 @@ vi.mock(
       default: {
         ...actual.default,
         logout: vi.fn(),
+        getUser: vi.fn().mockImplementation(() => {
+          return {
+            id: 1,
+            username: "test",
+            refreshToken: "test",
+            profileImage: "",
+          };
+        }),
         AuthStatus: {
           Unauthorized: "Unauthorized",
           Authorized: "Authorized",
@@ -152,28 +167,44 @@ describe("GlobalNavbar", () => {
     expect(mockPush).toHaveBeenCalledWith("/");
   });
 
-    it("renders default avatar when authorized and no profileImage", () => {
-        (useAuth as MockedFunction<typeof useAuth>).mockReturnValue({
-            status: AuthStatus.Authorized,
-            userId: 1,
-            profileImage: "",
-        });
-        render(<GlobalNavbar />);
-        const avatar = screen.getByAltText("Profile") as HTMLImageElement;
-        expect(avatar).toBeInTheDocument();
-        expect(avatar.src).toContain("/img_avatar.png");
+  it("renders default avatar when authorized and no profileImage", () => {
+    (useAuth as MockedFunction<typeof useAuth>).mockReturnValue(
+      AuthStatus.Authorized,
+    );
+
+    const mock = vi.fn().mockImplementation(authService.getUser);
+    mock.mockImplementationOnce(() => {
+      return {
+        id: 1,
+        username: "test",
+        refreshToken: "test",
+        profileImage: "",
+      };
     });
 
-    it("renders user avatar when authorized and profileImage exists", () => {
-        (useAuth as MockedFunction<typeof useAuth>).mockReturnValue({
-            status: AuthStatus.Authorized,
-            userId: 1,
-            profileImage: "avatars/1.png",
-        });
-        render(<GlobalNavbar />);
-        const avatar = screen.getByAltText("Profile") as HTMLImageElement;
-        expect(avatar).toBeInTheDocument();
-        expect(avatar.src).toContain("/api/user/avatar?userId=1");
+    render(<GlobalNavbar />);
+    const avatar = screen.getByAltText("Profile") as HTMLImageElement;
+    expect(avatar).toBeInTheDocument();
+    expect(avatar.src).toContain("/img_avatar.png");
+  });
+
+  it("renders user avatar when authorized and profileImage exists", () => {
+    (useAuth as MockedFunction<typeof useAuth>).mockReturnValue(
+      AuthStatus.Authorized,
+    );
+
+    (authService.getUser as ReturnType<typeof vi.fn>).mockReturnValue({
+      id: 1,
+      username: "test",
+      refreshToken: "test",
+      profileImage: "avatars/1.png",
     });
 
+    // In your test setup file or at the top of the test file
+
+    render(<GlobalNavbar />);
+    const avatar = screen.getByAltText("Profile") as HTMLImageElement;
+    expect(avatar).toBeInTheDocument();
+    expect(avatar.src).toContain("/api/user/avatar?userId=1");
+  });
 });
