@@ -9,10 +9,9 @@ Get acquainted with the UI. There are two ways to get started with FindFirst:
 
 - [Docker](https://docs.docker.com/engine/install/)
 - [Docker Compose](https://docs.docker.com/compose/install/)
-- Java 17
+- Java 21
   - JDK & JRE
 - Node 22
-- OpenSSL
 
 ## Building & Running locally
 
@@ -32,7 +31,7 @@ host and docker without any problems.
 
 ### Running Most the stack on Host
 
-- `docker compose up db mail`
+- `docker compose up db mail screenshot`
 - `cd frontend; pnpm run dev`
   - All changes to the frontend code are hot reloaded.
   - Now user your favorite IDE!
