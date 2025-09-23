@@ -2,11 +2,12 @@
 import axios from "axios";
 import { Credentials } from "../app/account/login/page";
 import userApi from "@api/userApi";
+
 export interface User {
-    id: number;
-    username: string;
-    refreshToken: string;
-    profileImage?: string | null;
+  id: number;
+  username: string;
+  refreshToken: string;
+  profileImage?: string | null;
 }
 
 const SIGNIN_URL = process.env.NEXT_PUBLIC_SERVER_URL + "/user/signin";
@@ -35,6 +36,10 @@ class AuthService {
   }
 
   public getUser(): User | null {
+    if (typeof window === "undefined") {
+      return null;
+    }
+
     if (this.user) {
       return this.user;
     }
@@ -46,30 +51,21 @@ class AuthService {
     this.user = user;
   }
 
-  // Gets the user info implicitly using the cookie 
+  // Gets the user info implicitly using the cookie
   // and sets the user info.
-    public async getUserInfoOauth2(): Promise<User | null> {
-        const backendUser = (await userApi.userInfo()) as any; // the response from backend
-
-        if (backendUser) {
-            const user: User = {
-                id: backendUser.userId,
-                username: backendUser.username,
-                refreshToken: "",
-                profileImage: backendUser.userPhoto || null,
-            };
-
-            this.setUser(user);
-            localStorage.setItem("user", JSON.stringify(user));
-            this.authorizedState = AuthStatus.Authorized;
-            this.notify(this.authorizedState);
-
-            return user;
-        }
-        return null;
+  public async getUserInfoOauth2(): Promise<User | null> {
+    let cookieuser = (await userApi.userInfo()) as unknown as User;
+    if (cookieuser) {
+      this.setUser(cookieuser);
     }
+    localStorage.setItem("user", JSON.stringify(cookieuser));
+    this.authorizedState = AuthStatus.Authorized;
+    this.notify(this.authorizedState);
 
-    public getAuthorized(): AuthStatus {
+    return cookieuser;
+  }
+
+  public getAuthorized(): AuthStatus {
     return this.getUser() ? AuthStatus.Authorized : AuthStatus.Unauthorized;
   }
 
@@ -86,20 +82,20 @@ class AuthService {
     })
       .then((response) => {
         if (response.status == 200) {
-            let signedInUser: User = {
-                id: response.data.id,
-                username: credentials.username,
-                refreshToken: response.data.refreshToken,
-                profileImage: response.data.profileImage || null,
-            };
-            localStorage.setItem("user", JSON.stringify(signedInUser));
-          this.user = signedInUser;
+          let signedinUser: User = {
+            id: response.data.id,
+            username: credentials.username,
+            refreshToken: response.data.refreshToken,
+            profileImage: response.data.profileImage,
+          };
+          localStorage.setItem("user", JSON.stringify(signedinUser));
+          this.user = signedinUser;
           this.authorizedState = AuthStatus.Authorized;
           this.notify(this.authorizedState);
           success = true;
         }
       })
-      .catch(() => { });
+      .catch(() => {});
     return success;
   }
 
