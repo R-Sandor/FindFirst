@@ -60,20 +60,16 @@ export default function ImportModal({
     while (true) {
       const { done, value } = await reader.read();
       if (done) {
-        console.log("DONE");
         setDone(true);
         return;
       }
       const chunk = decoder.decode(value);
-      console.log(chunk);
       if (chunk.length > 1) {
-        console.log("Parse Chunk");
         chunk
           .trim()
           .split("\n")
           .map((str) => JSON.parse(str))
           .forEach((obj) => {
-            console.log(obj);
             if (obj.id) {
               bkmks.push(obj as Bookmark);
               setImported([...bkmks]);

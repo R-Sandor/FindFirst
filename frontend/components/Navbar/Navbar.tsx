@@ -50,12 +50,6 @@ const GlobalNavbar: React.FC = () => {
     router.push("/account/login");
   };
 
-  console.log(user?.profileImage && user?.profileImage.trim() !== "");
-  console.log(
-    user?.profileImage && user?.profileImage.trim() !== ""
-      ? `/api/user/avatar?userId=${user.id}`
-      : "/img_avatar.png",
-  );
   return (
     <Navbar
       expand="md"

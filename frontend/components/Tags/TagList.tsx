@@ -9,15 +9,12 @@ import itemStyle from "./tag-list-item.module.scss";
 import menuStyle from "styles/tag.module.scss";
 import { useSelectedTags } from "@/contexts/SelectedContext";
 import { useScreenSize } from "@/contexts/ScreenSizeContext";
-import tagStyles from "@/styles/tag.module.scss";
 const TagList = () => {
   const userAuth = useAuth();
   const tagMap = useTags();
   const [loading, setLoading] = useState(false);
   const { selected, setSelected } = useSelectedTags();
   const isPC = useScreenSize();
-  // console.log(isPC)
-  // if (!isPC) return null; 
   useEffect(() => {
     if (userAuth && tagMap.size == 0) {
       setLoading(true);
@@ -25,7 +22,6 @@ const TagList = () => {
         .getAllTags()
         .then((results) => {
           const tags: TagReqPayload[] = results.data as TagReqPayload[];
-          console.log("getting all Tags:", tags);
           for (let tag of tags) {
             const twc: TagWithCnt = {
               title: tag.title,
@@ -43,7 +39,6 @@ const TagList = () => {
 
   function selectTag(event: any, title: string) {
     const idx = selected.indexOf(title);
-    console.log(idx);
     if (idx >= 0) {
       const updated = [...selected];
       updated.splice(idx, 1);
@@ -58,7 +53,6 @@ const TagList = () => {
   let groupItems: any = [];
   tagMap.forEach((tagCnt) => {
     groupItems.push(
-
       <ListGroup.Item
         key={`${tagCnt.title}-item`}
         className={`${itemStyle.item}`}
@@ -98,16 +92,16 @@ const TagList = () => {
   }
 
   return (
-  isPC && (
-    <div>
-      {!loading ? (
-        <ListGroup variant="flush" className={menuStyle.tagList}>
-          {groupItems || []} {/* Make sure groupItems is defined */}
-        </ListGroup>
-      ) : null}
-    </div>
-  )
-);
+    isPC && (
+      <div>
+        {!loading ? (
+          <ListGroup variant="flush" className={menuStyle.tagList}>
+            {groupItems || []} {/* Make sure groupItems is defined */}
+          </ListGroup>
+        ) : null}
+      </div>
+    )
+  );
 };
 
 export default TagList;

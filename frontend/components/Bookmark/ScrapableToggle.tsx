@@ -51,7 +51,6 @@ export function ScrapableBookmarkToggle({
   setScrapable,
   id,
 }: Readonly<ScrapableBookmarkToggleProp>) {
-  console.log(isScrapable);
   return (
     <div className="form-check form-switch isScrapable">
       <input

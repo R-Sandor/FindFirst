@@ -82,7 +82,6 @@ describe("Submission handling.", () => {
   test("Successful reset.", async () => {
     const axiosMock = new MockAdapter(axios);
     const resetUrl = SERVER_URL + "changePassword";
-    console.log(resetUrl);
     const expectedResult = {
       text: "Password changed",
     };

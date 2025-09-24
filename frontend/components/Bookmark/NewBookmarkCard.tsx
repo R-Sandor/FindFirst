@@ -26,7 +26,6 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
     tagIds: [],
     scrapable: createBmk.scrapable,
   };
-  console.log(createBmk.scrapable);
   let tagTitles: string[] = createBmk.tags.map((t) => t.title);
 
   await api.addAllTag(tagTitles).then((response) => {

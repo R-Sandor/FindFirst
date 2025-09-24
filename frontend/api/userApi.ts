@@ -31,7 +31,6 @@ const userApi = {
     return userApiInstance.get("/user-info");
   },
   oauth2Providers() {
-    console.log("getOauth2Providers");
     return userApiInstance.get("/oauth2Providers");
   },
 };

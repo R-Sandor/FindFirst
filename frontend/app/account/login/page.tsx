@@ -36,7 +36,6 @@ export default function Page() {
 
   useEffect(() => {
     userApi.oauth2Providers().then((resp) => {
-      console.log(resp.data);
       setOauth2Provider(resp.data as Oauth2Sources[]);
     });
   }, []);
