@@ -99,6 +99,7 @@ java {
 
 sonar {
     properties {
+        property('sonar.projectName', 'screenshot')
         property('sonar.projectKey', 'findfirst_screenshot')
         property('sonar.organization', 'findfirst')
         property('sonar.host.url', 'https://sonarcloud.io')
