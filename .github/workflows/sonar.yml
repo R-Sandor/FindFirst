@@ -60,8 +60,9 @@ jobs:
       - name: Scan Frontend
         uses: SonarSource/sonarqube-scan-action@v6.0.0
         env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }} # analysis token associated to your project
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST }}
+          SONAR_PROJECT_NAME: findfirst_frontend
         with:
           projectBaseDir: frontend/
   sonarQubeScreenshot:
