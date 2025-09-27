@@ -1,5 +1,5 @@
 #syntax=docker/dockerfile:1.7-labs
-FROM gradle:8.10.0-jdk17-alpine AS base
+FROM gradle:jdk21-alpine AS base
 FROM mcr.microsoft.com/playwright/java:jammy-amd64 AS playwright
 
 FROM base AS builder

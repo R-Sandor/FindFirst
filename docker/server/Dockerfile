@@ -1,5 +1,5 @@
 #syntax=docker/dockerfile:1.7-labs
-FROM alpine:3.20.2 AS linux
+FROM alpine:3.22.1 AS linux
 RUN apk add openssl openjdk21
 
 FROM openjdk:21-slim AS builder
