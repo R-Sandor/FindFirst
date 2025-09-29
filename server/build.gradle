@@ -58,10 +58,10 @@ spotless {
 }
 
 task createKeys(type: JavaExec) {
-    main = 'dev.findfirst.security.util.KeyGenerator'  // Replace with the fully qualified class name of your utility
+    main = 'dev.findfirst.security.util.KeyGenerator'
     classpath = sourceSets.main.runtimeClasspath
     executable = javaToolchains.launcherFor(java.toolchain).get().executablePath
-     doLast {
+    doLast {
         def keyFile = file("${projectDir}/src/main/resources/app.key") 
         println "Keys generated at: ${keyFile}"
     
@@ -69,8 +69,9 @@ task createKeys(type: JavaExec) {
         from keyFile.getParent()
         include "app.*"
         into "${buildDir}/resources/main"
+        }
     }
-}}
+}
 
 tasks.named("build") {
   dependsOn("spotlessApply")
