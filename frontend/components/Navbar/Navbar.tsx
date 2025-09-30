@@ -15,7 +15,7 @@ const GlobalNavbar: React.FC = () => {
 
   const router = useRouter();
   function authButton() {
-    if (userAuth == AuthStatus.Unauthorized || userAuth === undefined) {
+    if (userAuth.status === AuthStatus.Unauthorized || userAuth.status === undefined) {
       return (
         <ButtonGroup>
           <Button
@@ -69,20 +69,33 @@ const GlobalNavbar: React.FC = () => {
           />
           FindFirst
         </Navbar.Brand>
-        {userAuth === AuthStatus.Authorized ? <Searchbar /> : null}
+        {userAuth.status === AuthStatus.Authorized ? <Searchbar /> : null}
         <div className={`btn-group  ${navbarView.navBtns}`}>
-          {userAuth === AuthStatus.Authorized ? (
+          {userAuth.status === AuthStatus.Authorized ? (
             <ImportModal
               file={undefined}
               show={false}
               data-testid="import-modal"
             />
           ) : null}
-          {userAuth === AuthStatus.Authorized ? (
+          {userAuth.status === AuthStatus.Authorized ? (
             <Export data-testid="export-component" />
           ) : null}
           <LightDarkToggle />
           {authButton()}
+            {userAuth.status === AuthStatus.Authorized && (
+            <Image
+                src={
+                    userAuth.profileImage && userAuth.profileImage.trim() !== ""
+                        ? `/api/user/avatar?userId=${userAuth.userId}`
+                        : "/img_avatar.png"
+                }
+                alt="Profile"
+                width={36}
+                height={36}
+                className="rounded-circle ms-6"
+            />
+            )}
         </div>
       </Container>
     </Navbar>

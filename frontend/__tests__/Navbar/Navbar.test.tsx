@@ -151,4 +151,29 @@ describe("GlobalNavbar", () => {
     await user.click(brandLogo);
     expect(mockPush).toHaveBeenCalledWith("/");
   });
+
+    it("renders default avatar when authorized and no profileImage", () => {
+        (useAuth as MockedFunction<typeof useAuth>).mockReturnValue({
+            status: AuthStatus.Authorized,
+            userId: 1,
+            profileImage: "",
+        });
+        render(<GlobalNavbar />);
+        const avatar = screen.getByAltText("Profile") as HTMLImageElement;
+        expect(avatar).toBeInTheDocument();
+        expect(avatar.src).toContain("/img_avatar.png");
+    });
+
+    it("renders user avatar when authorized and profileImage exists", () => {
+        (useAuth as MockedFunction<typeof useAuth>).mockReturnValue({
+            status: AuthStatus.Authorized,
+            userId: 1,
+            profileImage: "avatars/1.png",
+        });
+        render(<GlobalNavbar />);
+        const avatar = screen.getByAltText("Profile") as HTMLImageElement;
+        expect(avatar).toBeInTheDocument();
+        expect(avatar.src).toContain("/api/user/avatar?userId=1");
+    });
+
 });
