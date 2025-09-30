@@ -41,7 +41,7 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
           cd server/
-          ./gradlew build sonar --info
+          ./gradlew createKeys sonar --stacktrace
   sonarQubeFrontend:
     name: sonarQube Frontend
     runs-on: ubuntu-latest
