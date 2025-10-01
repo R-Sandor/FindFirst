@@ -38,10 +38,10 @@ jobs:
       - name: Scan server
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # analysis token associated to your project
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST }}
         run: |
           cd server/
-          ./gradlew createKeys sonar --stacktrace
+          ./gradlew createKeys sonar
   sonarQubeFrontend:
     name: sonarQube Frontend
     runs-on: ubuntu-latest
@@ -92,7 +92,7 @@ jobs:
       - name: Scan screenshot
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }} # analysis token associated to your project
-          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST }}
         run: |
           cd screenshot/
-          ./gradlew sonar --debug
+          ./gradlew sonar
