@@ -95,4 +95,4 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         run: |
           cd screenshot/
-          ./gradlew build sonar --info
+          ./gradlew sonar --debug
