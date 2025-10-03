@@ -165,7 +165,7 @@ def setFlywayDev(dbScripts) {
 }
 
 def isDevProfile(String profile) {
- return profile == null || profile.equalsIgnoreCase("integration") || profiles.equalsIgnoreCase("dev");
+    profile in ["integration", "dev", "test", "local"]
 }
 
 def addDevScriptsToMigrations(dbScripts) {
@@ -175,9 +175,23 @@ def addDevScriptsToMigrations(dbScripts) {
 
 def setFlywayPrefrences(profiles, dbScripts) {
   if(profiles != null) {
+    def ListOfProfiles = []
     boolean isList = profiles instanceof List;
+    boolean isStr = profiles instanceof String;
+
+   if(isList) { 
+      ListOfProfiles = profiles
+   }
+
+    // string of profiles delimated by a comma.
+    if(isStr) { 
+     ListOfProfiles = profiles.split(',');
+     isList = ListOfProfiles.size() > 1;
+    }
+
     if (isList) {
-      for(String prof in profiles) {
+      for(String prof in ListOfProfiles) {
+        println(prof)
         if(isDevProfile(prof)) {
           setFlywayDev(dbScripts);
           break;
