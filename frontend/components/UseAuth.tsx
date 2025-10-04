@@ -1,21 +1,37 @@
-import authService, { AuthObserver, AuthStatus } from "@services/auth.service";
+"use client";
 import { useEffect, useState } from "react";
+import authService, { AuthStatus } from "@services/auth.service";
 
-export default function UseAuth() {
-  const [authorized, setAuthorized] = useState<AuthStatus>();
+interface UserAuth {
+    status: AuthStatus;
+    userId?: number | null;
+    profileImage?: string | null;
+}
 
-  const onAuthUpdated: AuthObserver = (authState: AuthStatus) => {
-    setAuthorized(authState);
-  };
+export default function useAuth(): UserAuth {
+    const [auth, setAuth] = useState<UserAuth>({
+        status: AuthStatus.Unauthorized,
+        userId: null,
+        profileImage: null,
+    });
 
-  useEffect(() => {
-    authService.attach(onAuthUpdated);
-    return () => authService.detach(onAuthUpdated);
-  }, []);
+    useEffect(() => {
+        async function checkAuth() {
+            const status = authService.getAuthorized();
+            let userId: number | null = null;
+            let profileImage: string | null = null;
 
-  useEffect(() => {
-    setAuthorized(authService.getAuthorized());
-  }, []);
+            if (status === AuthStatus.Authorized) {
+                const user = authService.getUser(); // your backend returns { id, profileImage }
+                userId = user?.id || null;
+                profileImage = user?.profileImage || null;
+            }
 
-  return authorized;
+            setAuth({ status, userId, profileImage });
+        }
+
+        checkAuth();
+    }, []);
+
+    return auth;
 }
