@@ -58,7 +58,7 @@ jobs:
           cd frontend
           pnpm run coverage
       - name: Scan Frontend
-        uses: SonarSource/sonarqube-scan-action@v5.3.1
+        uses: SonarSource/sonarqube-scan-action@v6.0.0
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONTEND }} # analysis token associated to your project
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST }}
