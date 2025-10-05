@@ -57,12 +57,6 @@ spotless {
   }
 }
 
-task createKeys(type: JavaExec) {
-    main = 'dev.findfirst.security.util.KeyGenerator'  // Replace with the fully qualified class name of your utility
-    classpath = sourceSets.main.runtimeClasspath
-    executable = javaToolchains.launcherFor(java.toolchain).get().executablePath
-}
-
 tasks.named("build") {
   dependsOn("spotlessApply")
 }
