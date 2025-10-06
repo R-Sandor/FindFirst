@@ -62,9 +62,9 @@ task createKeys(type: JavaExec) {
     classpath = sourceSets.main.runtimeClasspath
     executable = javaToolchains.launcherFor(java.toolchain).get().executablePath
     doLast {
-        def keyFile = file("${projectDir}/src/main/resources/app.key") 
+        def keyFile = file("${projectDir}/src/main/resources/app.key")
         println "Keys generated at: ${keyFile}"
-    
+
         copy {
         from keyFile.getParent()
         include "app.*"
@@ -192,12 +192,12 @@ def setFlywayPrefrences(profiles, dbScripts) {
     boolean isList = profiles instanceof List;
     boolean isStr = profiles instanceof String;
 
-   if(isList) { 
+   if(isList) {
       ListOfProfiles = profiles
    }
 
     // string of profiles delimated by a comma.
-    if(isStr) { 
+    if(isStr) {
      ListOfProfiles = profiles.split(',');
      isList = ListOfProfiles.size() > 1;
     }
