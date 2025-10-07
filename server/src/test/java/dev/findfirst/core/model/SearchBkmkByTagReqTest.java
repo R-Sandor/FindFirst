@@ -11,10 +11,12 @@ class SearchBkmkByTagReqTest {
 
   @Test
   void tagRequestsEqual() {
+    var tags = new SearchBkmkByTagReq(List.of("tech", "docs"));
     assertEquals(new SearchBkmkByTagReq(List.of("tech", "docs")),
         new SearchBkmkByTagReq(List.of("tech", "docs")));
     assertNotEquals(new SearchBkmkByTagReq(List.of("tech", "docs")),
         new SearchBkmkByTagReq(List.of("tech")));
-    assertNotEquals("String", new SearchBkmkByTagReq(List.of("tech", "docs")));
+    assertNotEquals(tags, "Strings");
+    assertNotEquals(tags, null);
   }
 }
