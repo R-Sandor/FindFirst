@@ -17,9 +17,10 @@ public class RobotsFetcher {
   public RobotsTxtResponse getRobotsTxt(String url) {
 
     try {
-      URL urlObj = new URI(url).toURL();
-      URL robotsUrl =
-          new URL(urlObj.getProtocol(), urlObj.getHost(), urlObj.getPort(), "/robots.txt");
+      URI uri = new URI(url);
+      URL robotsUrl = new URI(uri.getScheme(), uri.getAuthority(), "/robots.txt", uri.getQuery(),
+          uri.getFragment()).toURL();
+
       HttpURLConnection conn = (HttpURLConnection) robotsUrl.openConnection();
       conn.setRequestMethod("GET");
       conn.setConnectTimeout(2000);
@@ -54,7 +55,7 @@ public class RobotsFetcher {
       return this.statusCode() + Arrays.hashCode(this.text()) + this.contentType().hashCode();
     }
 
-    @Override 
+    @Override
     public final String toString() {
       return String.format("Status: %s, contentType: %s", this.statusCode(), this.contentType());
     }
