@@ -1,5 +1,6 @@
 package dev.findfirst.core.model;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -16,7 +17,7 @@ class SearchBkmkByTagReqTest {
         new SearchBkmkByTagReq(List.of("tech", "docs")));
     assertNotEquals(new SearchBkmkByTagReq(List.of("tech", "docs")),
         new SearchBkmkByTagReq(List.of("tech")));
-    assertNotEquals(tags, "Strings");
-    assertNotEquals(tags, null);
+    assertFalse(tags.equals(null));
+    assertFalse(tags.equals((Object) "Strings"));
   }
 }
