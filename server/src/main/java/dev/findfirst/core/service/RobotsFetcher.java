@@ -41,9 +41,9 @@ public class RobotsFetcher {
 
     @Override
     public final boolean equals(Object obj) {
-      if (obj != null && obj instanceof RobotsTxtResponse robotTxt) {
-        return robotTxt.statusCode() == this.statusCode() && robotTxt.text() == this.text()
-            && robotTxt.contentType.equals(this.contentType());
+      if (obj != null && obj instanceof RobotsTxtResponse(int statusCode, byte[] text, String ct)) {
+        return statusCode == this.statusCode() && Arrays.equals(this.text(), text)
+            && this.contentType.equals(ct);
       } else {
         return false;
       }
