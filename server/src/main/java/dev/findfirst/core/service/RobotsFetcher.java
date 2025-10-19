@@ -52,7 +52,11 @@ public class RobotsFetcher {
 
     @Override
     public final int hashCode() {
-      return this.statusCode() + Arrays.hashCode(this.text()) + this.contentType().hashCode();
+      int contentTypeHash = 0;
+      if (contentType() != null) {
+        contentTypeHash = contentType.hashCode();
+      }
+      return this.statusCode + Arrays.hashCode(this.text) + contentTypeHash;
     }
 
     @Override
