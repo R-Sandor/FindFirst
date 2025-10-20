@@ -32,7 +32,14 @@ public class RobotsTxtResponseTest {
 
   @Test
   void hashingTests() {
-    // response1
+    assertEquals(response200.hashCode(), response200.hashCode());
+    assertEquals(response200Same.hashCode(), response200.hashCode());
+    assertNotEquals(response200.hashCode(), responseContentJson.hashCode());
+    assertNotEquals(response200.hashCode(), response400.hashCode());
+    assertNotEquals(response200.hashCode(), (Object) "".hashCode());
+    assertNotEquals(response200.hashCode(), responseContentHtml.hashCode());
+    assertNotEquals(responseContentHtml.hashCode(), responseContent2.hashCode());
+
   }
 
 }
