@@ -61,7 +61,8 @@ public class RobotsFetcher {
 
     @Override
     public final String toString() {
-      return String.format("Status: %s, contentType: %s", this.statusCode(), this.contentType());
+      return String.format("Status: %s, contentType: %s, text %s", this.statusCode, this.contentType,
+          new String(this.text));
     }
 
   }
