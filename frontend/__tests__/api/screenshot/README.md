@@ -13,38 +13,38 @@ The screenshot API route serves images from either:
 The test suite provides **100% code coverage** and includes the following test categories:
 
 ### Local File Serving (3 tests)
-- ✅ Serves existing screenshots from local filesystem
-- ✅ Returns 500 error when file read fails
-- ✅ Handles screenshots with special characters in filename
+- Serves existing screenshots from local filesystem
+- Returns 500 error when file read fails
+- Handles screenshots with special characters in filename
 
 ### Remote File Serving (2 tests)
-- ✅ Fetches screenshots from remote server when file doesn't exist locally
-- ✅ Handles axios errors when fetching remote screenshots
+- Fetches screenshots from remote server when file doesn't exist locally
+- Handles axios errors when fetching remote screenshots
 
 ### Invalid Requests (4 tests)
-- ✅ Returns 400 when screenshot parameter is missing
-- ✅ Returns 400 when screenshot parameter is empty string
-- ✅ Returns 400 when screenshot parameter is null
-- ✅ Returns 400 when screenshot parameter is undefined
+- Returns 400 when screenshot parameter is missing
+- Returns 400 when screenshot parameter is empty string
+- Returns 400 when screenshot parameter is null
+- Returns 400 when screenshot parameter is undefined
 
 ### Edge Cases & Security (5 tests)
-- ✅ Handles array query parameters (returns 400)
-- ✅ Rejects path traversal attempts with `..`
-- ✅ Rejects filenames with forward slashes
-- ✅ Rejects filenames with backslashes
-- ✅ Handles very long filenames
+- Handles array query parameters (returns 400)
+- Rejects path traversal attempts with `..`
+- Rejects filenames with forward slashes
+- Rejects filenames with backslashes
+- Handles very long filenames
 
 ### Environment Variable Handling (2 tests)
-- ✅ Uses default path when `NEXT_PUBLIC_IMAGE_DIR` is not set
-- ✅ Returns 400 when `NEXT_PUBLIC_SERVER_URL` is missing and file doesn't exist locally
+- Uses default path when `NEXT_PUBLIC_IMAGE_DIR` is not set
+- Returns 400 when `NEXT_PUBLIC_SERVER_URL` is missing and file doesn't exist locally
 
 ### Content-Type and Headers (2 tests)
-- ✅ Sets correct Content-Type header for PNG images
-- ✅ Sets correct Content-Disposition header with filename
+- Sets correct Content-Type header for PNG images
+- Sets correct Content-Disposition header with filename
 
 ### File System Operations (2 tests)
-- ✅ Correctly constructs file path from environment variable
-- ✅ Handles case when `fs.existsSync` returns false
+- Correctly constructs file path from environment variable
+- Handles case when `fs.existsSync` returns false
 
 **Total: 20 tests with 100% coverage**
 
