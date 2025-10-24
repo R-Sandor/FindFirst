@@ -39,7 +39,17 @@ public class RobotsTxtResponseTest {
     assertNotEquals(response200.hashCode(), (Object) "".hashCode());
     assertNotEquals(response200.hashCode(), responseContentHtml.hashCode());
     assertNotEquals(responseContentHtml.hashCode(), responseContent2.hashCode());
+  }
 
+  @Test
+  void toStringTest() {
+    assertEquals(response200.toString(), response200.toString());
+    assertEquals(response200Same.toString(), response200.toString());
+    assertNotEquals(response200.toString(), responseContentJson.toString());
+    assertNotEquals(response200.toString(), response400.toString());
+    assertNotEquals(response200.toString(), (Object) "".toString());
+    assertNotEquals(response200.toString(), responseContentHtml.toString());
+    assertNotEquals(responseContentHtml.toString(), responseContent2.toString());
   }
 
 }
