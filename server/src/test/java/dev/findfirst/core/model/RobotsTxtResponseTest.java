@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import dev.findfirst.core.service.RobotsFetcher;
 import dev.findfirst.core.service.RobotsFetcher.RobotsTxtResponse;
 
-public class RobotsTxtResponseTest {
+class RobotsTxtResponseTest {
   RobotsTxtResponse response200 = new RobotsFetcher.RobotsTxtResponse(200, "response from server".getBytes(), "json");
   RobotsTxtResponse response200Same = new RobotsFetcher.RobotsTxtResponse(200, "response from server".getBytes(),
       "json");
