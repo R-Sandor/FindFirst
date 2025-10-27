@@ -1,37 +1,37 @@
 package dev.findfirst.core.service;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.Arrays;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class RobotsFetcher {
+
+  private final RestTemplate rest;
 
   public RobotsTxtResponse getRobotsTxt(String url) {
 
     try {
       URI uri = new URI(url);
-      URL robotsUrl = new URI(uri.getScheme(), uri.getAuthority(), "/robots.txt", uri.getQuery(),
-          uri.getFragment()).toURL();
+      URI robotsUri = new URI(uri.getScheme(), uri.getAuthority(), "/robots.txt", uri.getQuery(),
+          uri.getFragment());
 
-      HttpURLConnection conn = (HttpURLConnection) robotsUrl.openConnection();
-      conn.setRequestMethod("GET");
-      conn.setConnectTimeout(2000);
-      conn.setReadTimeout(2000);
-      int statusCode = conn.getResponseCode();
-      byte[] robotsContent = conn.getInputStream().readAllBytes();
-      String contentType = conn.getContentType();
-      conn.disconnect();
-      return new RobotsTxtResponse(statusCode, robotsContent, contentType);
+      ResponseEntity<String> robots = rest.getForEntity(robotsUri, String.class);
 
-    } catch (URISyntaxException | IOException ex) {
+      return new RobotsTxtResponse(robots.getStatusCode().value(), robots.getBody().getBytes(),
+          robots.getHeaders().getContentType() == null ? "" : robots.getHeaders().getContentType().toString());
+
+    } catch (URISyntaxException | HttpClientErrorException ex) {
       log.error(ex.toString());
       return new RobotsTxtResponse(500, "".getBytes(), "");
     }
