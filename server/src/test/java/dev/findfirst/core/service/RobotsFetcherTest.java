@@ -1,12 +1,13 @@
 package dev.findfirst.core.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 import java.net.URI;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import dev.findfirst.core.service.RobotsFetcher.RobotsTxtResponse;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -15,8 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-
-import dev.findfirst.core.service.RobotsFetcher.RobotsTxtResponse;
 
 class RobotsFetcherTest {
 
@@ -31,7 +30,8 @@ class RobotsFetcherTest {
 
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.TEXT_PLAIN);
-    ResponseEntity<String> mockReturn = new ResponseEntity<String>(new String(expectedContent), headers, HttpStatus.OK);
+    ResponseEntity<String> mockReturn =
+        new ResponseEntity<String>(new String(expectedContent), headers, HttpStatus.OK);
 
     when(restMock.getForEntity(any(URI.class), eq(String.class))).thenReturn(mockReturn);
     RobotsTxtResponse rTxtResponse = instance.getRobotsTxt(domain);

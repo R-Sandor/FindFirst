@@ -6,7 +6,6 @@ import java.util.Arrays;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -29,7 +28,8 @@ public class RobotsFetcher {
       ResponseEntity<String> robots = rest.getForEntity(robotsUri, String.class);
 
       return new RobotsTxtResponse(robots.getStatusCode().value(), robots.getBody().getBytes(),
-          robots.getHeaders().getContentType() == null ? "" : robots.getHeaders().getContentType().toString());
+          robots.getHeaders().getContentType() == null ? ""
+              : robots.getHeaders().getContentType().toString());
 
     } catch (URISyntaxException | HttpClientErrorException ex) {
       log.error(ex.toString());

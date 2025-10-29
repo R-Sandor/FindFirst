@@ -1,23 +1,26 @@
 package dev.findfirst.core.model;
 
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 import dev.findfirst.core.service.RobotsFetcher;
 import dev.findfirst.core.service.RobotsFetcher.RobotsTxtResponse;
 
+import org.junit.jupiter.api.Test;
+
 class RobotsTxtResponseTest {
-  RobotsTxtResponse response200 = new RobotsFetcher.RobotsTxtResponse(200, "response from server".getBytes(), "json");
-  RobotsTxtResponse response200Same = new RobotsFetcher.RobotsTxtResponse(200, "response from server".getBytes(),
-      "json");
-  RobotsTxtResponse response400 = new RobotsFetcher.RobotsTxtResponse(400, "response from server".getBytes(), "json");
-  RobotsTxtResponse responseContentJson = new RobotsFetcher.RobotsTxtResponse(200, "new message".getBytes(), "json");
-  RobotsTxtResponse responseContentHtml = new RobotsFetcher.RobotsTxtResponse(400, "response from server".getBytes(),
-      "html");
-  RobotsTxtResponse responseContent2 = new RobotsFetcher.RobotsTxtResponse(400, "response from server".getBytes(),
-      null);
+  RobotsTxtResponse response200 =
+      new RobotsFetcher.RobotsTxtResponse(200, "response from server".getBytes(), "json");
+  RobotsTxtResponse response200Same =
+      new RobotsFetcher.RobotsTxtResponse(200, "response from server".getBytes(), "json");
+  RobotsTxtResponse response400 =
+      new RobotsFetcher.RobotsTxtResponse(400, "response from server".getBytes(), "json");
+  RobotsTxtResponse responseContentJson =
+      new RobotsFetcher.RobotsTxtResponse(200, "new message".getBytes(), "json");
+  RobotsTxtResponse responseContentHtml =
+      new RobotsFetcher.RobotsTxtResponse(400, "response from server".getBytes(), "html");
+  RobotsTxtResponse responseContent2 =
+      new RobotsFetcher.RobotsTxtResponse(400, "response from server".getBytes(), null);
 
   @Test
   void robotsTxtResponseEquality() {
