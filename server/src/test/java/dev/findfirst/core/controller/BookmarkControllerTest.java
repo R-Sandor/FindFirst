@@ -22,7 +22,6 @@ import dev.findfirst.security.userauth.models.TokenRefreshResponse;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,9 +116,8 @@ class BookmarkControllerTest {
   void getBookmarksFromPage1WithSize6() {
     Integer page = 1;
     Integer size = 6;
-    var response =
-        restTemplate.exchange(bookmarksPaginationURI + "?page={page}&size={size}", HttpMethod.GET,
-            getHttpEntity(restTemplate, "linus", "test"), PaginatedBookmarkRes.class, page, size);
+    var response = restTemplate.exchange(bookmarksPaginationURI + "?page={page}&size={size}", HttpMethod.GET,
+        getHttpEntity(restTemplate, "linus", "test"), PaginatedBookmarkRes.class, page, size);
 
     var bkmkOpt = Optional.ofNullable(response.getBody());
     PaginatedBookmarkRes bkmksResponse = bkmkOpt.orElseThrow();
@@ -194,8 +192,7 @@ class BookmarkControllerTest {
     // Test with scraping (but not allowed as per robot.txt)
     var entFailScrape = getHttpEntity(restTemplate,
         new AddBkmkReq("Facebook", "https://facebook.com", List.of(), true));
-    var responseFailScrape =
-        restTemplate.exchange(bookmarkURI, HttpMethod.POST, entFailScrape, BookmarkDTO.class);
+    var responseFailScrape = restTemplate.exchange(bookmarkURI, HttpMethod.POST, entFailScrape, BookmarkDTO.class);
     assertEquals(HttpStatus.OK, responseFailScrape.getStatusCode());
     var bkmkFailScrape = Optional.ofNullable(responseFailScrape.getBody());
     assertEquals("facebook.com", bkmkFailScrape.orElseThrow().title());
@@ -203,8 +200,7 @@ class BookmarkControllerTest {
     // Test without scrapping
     var entNoScrape = getHttpEntity(restTemplate,
         new AddBkmkReq("Wikipedia", "https://wikipedia.org", List.of(), false));
-    var noScrapeResponse =
-        restTemplate.exchange(bookmarkURI, HttpMethod.POST, entNoScrape, BookmarkDTO.class);
+    var noScrapeResponse = restTemplate.exchange(bookmarkURI, HttpMethod.POST, entNoScrape, BookmarkDTO.class);
     assertEquals(HttpStatus.OK, noScrapeResponse.getStatusCode());
 
     var noScrapeBkmk = Optional.ofNullable(noScrapeResponse.getBody());
@@ -317,10 +313,8 @@ class BookmarkControllerTest {
   }
 
   @Test
-  @Disabled("TODO fix test")
   void deleteTagFromBookmarkById() {
-    var bkmkResp = saveBookmarks(
-        new AddBkmkReq("Color Picker2", "https://htmlcolorcodes2.com", List.of(), true));
+    var bkmkResp = saveBookmarks(new AddBkmkReq("X", "https://x.com", List.of(), true));
     var bkmk = bkmkResp.get(0);
 
     // Add Tag web_dev
@@ -331,9 +325,8 @@ class BookmarkControllerTest {
     // Add Tag design
     // Store tag response to delete the tag next
     ent = getHttpEntity(restTemplate);
-    var tagOpt =
-        Optional.ofNullable(restTemplate.exchange(bookmarkURI + "/{bookmarkID}/tag?tag={title}",
-            HttpMethod.POST, ent, TagDTO.class, bkmk.id(), "design").getBody());
+    var tagOpt = Optional.ofNullable(restTemplate.exchange(bookmarkURI + "/{bookmarkID}/tag?tag={title}",
+        HttpMethod.POST, ent, TagDTO.class, bkmk.id(), "design").getBody());
     long tagId = tagOpt.orElseThrow().id();
 
     // Delete by the id.
@@ -362,8 +355,7 @@ class BookmarkControllerTest {
 
   @Test
   void addTagToBookmarkById() {
-    var bkmk =
-        saveBookmarks(new AddBkmkReq("duckduckgo", "https://duckduckgo.com", List.of(1L), true));
+    var bkmk = saveBookmarks(new AddBkmkReq("duckduckgo", "https://duckduckgo.com", List.of(1L), true));
 
     var addReq = restTemplate.exchange(bookmarkURI + "/{bookmarkID}/tagId?tagId={id}",
         HttpMethod.POST, getHttpEntity(restTemplate), BookmarkDTO.class, bkmk.get(0).id(), 5);
@@ -426,8 +418,7 @@ class BookmarkControllerTest {
   void importBookmarks() throws IOException {
     assertNotNull(new File("google_bookmarks_1_21_24.html"));
     var bodyBuilder = new MultipartBodyBuilder();
-    byte[] fileContent =
-        new ClassPathResource("google_bookmarks_1_21_24.html").getInputStream().readAllBytes();
+    byte[] fileContent = new ClassPathResource("google_bookmarks_1_21_24.html").getInputStream().readAllBytes();
 
     SecurityContext securityContext = Mockito.mock(SecurityContext.class);
     Authentication authentication = Mockito.mock(Authentication.class);
@@ -468,8 +459,7 @@ class BookmarkControllerTest {
     // Set up headers with basic authentication
     HttpHeaders headers = new HttpHeaders();
     headers.setBasicAuth("jsmith", "test");
-    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
-        new HttpEntity<>(bodyBuilder.build(), headers);
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity = new HttpEntity<>(bodyBuilder.build(), headers);
 
     // Perform the POST request to import bookmarks
     ResponseEntity<String> response = restTemplate.exchange(bookmarkURI + "/import",
@@ -498,8 +488,7 @@ class BookmarkControllerTest {
     // Set up headers with basic authentication
     HttpHeaders headers = new HttpHeaders();
     headers.setBasicAuth("jsmith", "test");
-    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
-        new HttpEntity<>(bodyBuilder.build(), headers);
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity = new HttpEntity<>(bodyBuilder.build(), headers);
 
     // Perform the POST request to import bookmarks
     ResponseEntity<String> response = restTemplate.exchange(bookmarkURI + "/import",
@@ -514,7 +503,8 @@ class BookmarkControllerTest {
   }
 
   /**
-   * Tests importing a .html file with an unsupported content type (e.g., application/json).
+   * Tests importing a .html file with an unsupported content type (e.g.,
+   * application/json).
    */
   @Test
   void importBookmarksWithUnsupportedContentType() {
@@ -530,8 +520,7 @@ class BookmarkControllerTest {
     // Set up headers with basic authentication
     HttpHeaders headers = new HttpHeaders();
     headers.setBasicAuth("jsmith", "test");
-    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
-        new HttpEntity<>(bodyBuilder.build(), headers);
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity = new HttpEntity<>(bodyBuilder.build(), headers);
 
     // Perform the POST request to import bookmarks
     ResponseEntity<String> response = restTemplate.exchange(bookmarkURI + "/import",
@@ -562,8 +551,7 @@ class BookmarkControllerTest {
     // Set up headers with basic authentication
     HttpHeaders headers = new HttpHeaders();
     headers.setBasicAuth("jsmith", "test");
-    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
-        new HttpEntity<>(bodyBuilder.build(), headers);
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity = new HttpEntity<>(bodyBuilder.build(), headers);
 
     // Perform the POST request to import bookmarks
     ResponseEntity<String> response = restTemplate.exchange(bookmarkURI + "/import",
@@ -584,8 +572,7 @@ class BookmarkControllerTest {
   @Test
   void importBookmarksWithTextPlainContentType() {
     // Create a byte array with text/plain content
-    byte[] fileContent =
-        "<html><body>Plain Text Content</body></html>".getBytes(StandardCharsets.UTF_8);
+    byte[] fileContent = "<html><body>Plain Text Content</body></html>".getBytes(StandardCharsets.UTF_8);
 
     // Build the multipart request with a .html extension and text/plain content
     // type
@@ -596,8 +583,7 @@ class BookmarkControllerTest {
     // Set up headers with basic authentication
     HttpHeaders headers = new HttpHeaders();
     headers.setBasicAuth("jsmith", "test");
-    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity =
-        new HttpEntity<>(bodyBuilder.build(), headers);
+    HttpEntity<MultiValueMap<String, HttpEntity<?>>> requestEntity = new HttpEntity<>(bodyBuilder.build(), headers);
 
     // Perform the POST request to import bookmarks
     ResponseEntity<String> response = restTemplate.exchange(bookmarkURI + "/import",
@@ -626,8 +612,7 @@ class BookmarkControllerTest {
   @Test
   void export() {
     var ent = getHttpEntity(restTemplate);
-    var response =
-        restTemplate.exchange(bookmarksURI + "/export", HttpMethod.GET, ent, byte[].class);
+    var response = restTemplate.exchange(bookmarksURI + "/export", HttpMethod.GET, ent, byte[].class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     assertTrue(response.getBody().length > 0);
   }
