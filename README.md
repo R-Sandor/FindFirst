@@ -20,6 +20,8 @@ searched not only by keyword but semantic meaning.
 Create organization to the copious amount of knowledge available, for students,
 devs, teachers, and the common person.
 
+##FindFirst Survey
+[Google Form](<https://forms.gle/FLUAwj8sUCWp96pt7>)
 ## Key Features
 
 ### Easy Searching
