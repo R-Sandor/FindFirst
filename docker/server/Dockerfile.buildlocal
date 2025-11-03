@@ -1,4 +1,4 @@
-FROM openjdk:21-oracle
+FROM alpine:3.22.1 AS linux
 WORKDIR /app
 COPY ./build/libs/findfirst-1.0.0.jar findfirst.jar
 ENTRYPOINT ["java", "-jar", "findfirst.jar"]
