@@ -1,16 +1,12 @@
 #syntax=docker/dockerfile:1.7-labs
-FROM alpine:3.22.1 AS linux
-RUN apk add openssl openjdk21
-
-FROM openjdk:21-slim AS builder
+FROM gradle:jdk21-alpine AS builder
 WORKDIR /app
 COPY --exclude=build/ . .
 RUN ./gradlew assemble
 
-FROM linux AS runner
+FROM openjdk:26-ea-slim  AS runner
 WORKDIR /app
 COPY --from=builder /app/build/libs/findfirst-1.0.0.jar findfirst.jar
 COPY scripts/ scripts/
-RUN chmod u+x scripts/*
 
 ENTRYPOINT ["scripts/entrypoint.sh"]
