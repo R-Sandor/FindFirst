@@ -27,7 +27,7 @@ class RobotsTxtResponseTest {
     assertEquals(response200, response200Same);
     assertNotEquals(response200, responseContentJson);
     assertNotEquals(response200, response400);
-    assertNotEquals(response200, null);
+    assertNotEquals(response200, (Object) null);
     assertNotEquals(response200, (Object) "");
     assertNotEquals(response200, responseContentHtml);
     assertNotEquals(responseContentHtml, responseContent2);
