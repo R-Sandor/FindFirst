@@ -25,6 +25,10 @@ java {
   }
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.release.set(21)
+}
+
 spotless {
   // optional: limit format enforcement to just the files changed by this feature branch
   //ratchetFrom 'origin/main'
@@ -141,6 +145,9 @@ bootRun
   }
 }
 
+// compileJava {
+//     options.compilerArgs << '-parameters'
+// }
 
 
 compileTestJava {
