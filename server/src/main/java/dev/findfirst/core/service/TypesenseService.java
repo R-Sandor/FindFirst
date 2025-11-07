@@ -27,6 +27,7 @@ import org.typesense.model.SearchResult;
 @Slf4j
 public class TypesenseService {
 
+    public record SearchHighlightResult(Long id, String highlight) {};
   private final TypsenseInitializationRepository initRepo;
 
   private final Client client;
@@ -86,8 +87,13 @@ public class TypesenseService {
     }
   }
 
-  public List<Long> search(String text) {
-    SearchParameters searchParameters = new SearchParameters().q(text).queryBy("text");
+  public List<SearchHighlightResult> search(String text) {
+    SearchParameters searchParameters = new SearchParameters()
+            .q(text)
+            .queryBy("text")
+            .highlightBy("text")
+            .highlightStartTag("<mark>")
+            .highlightEndTag("<mark>");
     try {
       log.debug("searching");
       SearchResult searchResult =
@@ -95,7 +101,15 @@ public class TypesenseService {
       log.debug(searchResult.toString());
 
       return searchResult.getHits().stream()
-          .map(h -> Long.parseLong(h.getDocument().get("id").toString())).toList();
+          .map(hit -> {
+                  Long id = Long.parseLong(hit.getDocument().get("id").toString());
+                  String highlight = hit.getHighlights().stream()
+                          .filter(h -> "text".equals(h.getField()))
+                          .map(h-> h.getSnippet())
+                          .findFirst()
+                          .orElse("");
+                  return new SearchHighlightResult(id, highlight);
+          }).toList();
     } catch (Exception e) {
       log.error(e.toString());
     }
