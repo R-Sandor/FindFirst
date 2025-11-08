@@ -42,7 +42,10 @@ public class SearchService {
 
   public List<BookmarkDTO> bookmarksByText(String text) {
     var userID = userContext.getUserId();
-    var bookmarks = bookmarkRepo.findAllById(typesense.search(text));
+      var ids = typesense.search(text).stream()
+              .map(TypesenseService.SearchHighlightResult::id)
+              .toList();
+    var bookmarks = bookmarkRepo.findAllById(ids);
     return bookmarkService.convertBookmarkJDBCToDTO(bookmarks, userID);
 
   }
