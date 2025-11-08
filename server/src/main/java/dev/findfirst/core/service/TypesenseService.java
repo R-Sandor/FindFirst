@@ -91,7 +91,7 @@ public class TypesenseService {
     SearchParameters searchParameters = new SearchParameters()
             .q(text)
             .queryBy("text")
-            .highlightBy("text")
+            .highlightFields("text")
             .highlightStartTag("<mark>")
             .highlightEndTag("<mark>");
     try {
