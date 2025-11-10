@@ -6,6 +6,7 @@ import { ScrapableBookmarkToggle } from "./ScrapableToggle";
 
 interface CardBodyProp {
   bookmark: Readonly<Bookmark>;
+  highlight: String | null;
   inEditMode: Readonly<boolean>;
   edit: Readonly<RefObject<Bookmark>>;
   changeEditMode: Readonly<Function>;
@@ -13,11 +14,13 @@ interface CardBodyProp {
 
 export default function CardBody({
   bookmark,
+  highlight,
   inEditMode,
   edit,
   changeEditMode,
 }: Readonly<CardBodyProp>) {
   const [isScrapable, setIsScrapable] = useState(bookmark.scrapable);
+
   return (
     <Card.Body>
       <Card.Title>
@@ -62,6 +65,12 @@ export default function CardBody({
           {bookmark.url}
         </Card.Link>
       )}
+      {highlight ? (
+        <div>
+          <hr />
+          <p dangerouslySetInnerHTML={{ __html: highlight }}></p>
+        </div>
+      ) : null}
     </Card.Body>
   );
 }

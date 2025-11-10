@@ -113,6 +113,16 @@ public class BookmarkService {
   }
 
   public List<BookmarkDTO> convertBookmarkJDBCToDTO(List<BookmarkJDBC> bookmarkEntities,
+      List<String> highlights, int userId) {
+    var bks = convertBookmarkJDBCToDTO(bookmarkEntities, userId);
+
+    for (int i = 0; i < highlights.size() && i < bookmarkEntities.size(); i++) {
+      bks.get(i).textHighlight(highlights.get(i));
+    }
+    return bks;
+  }
+
+  public List<BookmarkDTO> convertBookmarkJDBCToDTO(List<BookmarkJDBC> bookmarkEntities,
       int userId) {
 
     // Get the bookmarks that are associated to the Tag.

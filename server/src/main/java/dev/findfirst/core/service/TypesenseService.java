@@ -27,7 +27,9 @@ import org.typesense.model.SearchResult;
 @Slf4j
 public class TypesenseService {
 
-    public record SearchHighlightResult(Long id, String highlight) {};
+  public record SearchHighlightResult(Long id, String highlight) {
+  };
+
   private final TypsenseInitializationRepository initRepo;
 
   private final Client client;
@@ -56,8 +58,7 @@ public class TypesenseService {
 
   private String saveSchema(TypesenseInitRecord initRecord) {
     try {
-      CollectionResponse collectionResponse =
-          client.collections().create(createCollectionSchemaSchema());
+      CollectionResponse collectionResponse = client.collections().create(createCollectionSchemaSchema());
       log.debug(collectionResponse.toString());
       initRecord.setInitialized(true);
       initRepo.save(initRecord);
@@ -88,28 +89,20 @@ public class TypesenseService {
   }
 
   public List<SearchHighlightResult> search(String text) {
-    SearchParameters searchParameters = new SearchParameters()
-            .q(text)
-            .queryBy("text")
-            .highlightFields("text")
-            .highlightStartTag("<mark>")
-            .highlightEndTag("<mark>");
+    SearchParameters searchParameters = new SearchParameters().q(text).queryBy("text")
+        .highlightFields("text").highlightStartTag("<mark>").highlightEndTag("</mark>");
     try {
       log.debug("searching");
-      SearchResult searchResult =
-          client.collections(schemaName).documents().search(searchParameters);
+      SearchResult searchResult = client.collections(schemaName).documents().search(searchParameters);
       log.debug(searchResult.toString());
 
-      return searchResult.getHits().stream()
-          .map(hit -> {
-                  Long id = Long.parseLong(hit.getDocument().get("id").toString());
-                  String highlight = hit.getHighlights().stream()
-                          .filter(h -> "text".equals(h.getField()))
-                          .map(h-> h.getSnippet())
-                          .findFirst()
-                          .orElse("");
-                  return new SearchHighlightResult(id, highlight);
-          }).toList();
+      return searchResult.getHits().stream().map(hit -> {
+        Long id = Long.parseLong(hit.getDocument().get("id").toString());
+
+        String highlight = hit.getHighlights().stream().filter(h -> "text".equals(h.getField()))
+            .map(h -> h.getSnippet()).findFirst().orElse("");
+        return new SearchHighlightResult(id, highlight);
+      }).toList();
     } catch (Exception e) {
       log.error(e.toString());
     }

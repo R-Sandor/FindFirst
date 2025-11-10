@@ -218,6 +218,7 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
     return (
       <CardBody
         bookmark={currentBookmark.current}
+        highlight={bookmark.textHighlight}
         inEditMode={inEditMode}
         edit={edit}
         changeEditMode={changeEditMode}

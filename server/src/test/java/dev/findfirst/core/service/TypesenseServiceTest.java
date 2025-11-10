@@ -4,13 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.typesense.model.*;
-import org.typesense.api.Documents;
-import org.typesense.api.Collection;
 
 import dev.findfirst.core.model.jdbc.TypesenseInitRecord;
 import dev.findfirst.core.repository.jdbc.TypsenseInitializationRepository;
@@ -22,7 +17,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.typesense.api.Client;
+import org.typesense.api.Collection;
 import org.typesense.api.Collections;
+import org.typesense.api.Documents;
+import org.typesense.model.*;
 
 /**
  * Tests for typsense operations such as intitilization, queries/imports.
@@ -83,41 +81,41 @@ class TypesenseServiceTest {
   @Disabled("Implement test to save storeScrapedText")
   void storeScrapedText() throws Exception {}
 
-    @Test
-    void returnSearchHighlighted() throws Exception {
+  @Test
+  void returnSearchHighlighted() throws Exception {
 
-        String query = "example";
-        Long expectedId = 123L;
-        String expectedSnippet = "<mark>example</mark> text around";
+    String query = "example";
+    Long expectedId = 123L;
+    String expectedSnippet = "<mark>example</mark> text around";
 
-        // Mock highlight
-        SearchHighlight highlight = mock(SearchHighlight.class);
-        when(highlight.getField()).thenReturn("text");
-        when(highlight.getSnippet()).thenReturn(expectedSnippet);
+    // Mock highlight
+    SearchHighlight highlight = mock(SearchHighlight.class);
+    when(highlight.getField()).thenReturn("text");
+    when(highlight.getSnippet()).thenReturn(expectedSnippet);
 
-        // Simula un hit como Map
-        SearchResultHit hit = mock(SearchResultHit.class);
-        when(hit.getDocument()).thenReturn(Map.of("id", expectedId.toString()));
-        when(hit.getHighlights()).thenReturn(List.of(highlight));
+    // Simula un hit como Map
+    SearchResultHit hit = mock(SearchResultHit.class);
+    when(hit.getDocument()).thenReturn(Map.of("id", expectedId.toString()));
+    when(hit.getHighlights()).thenReturn(List.of(highlight));
 
-        // Mock search result
-        SearchResult searchResult = new SearchResult();
-        searchResult.setHits(List.of(hit));
+    // Mock search result
+    SearchResult searchResult = new SearchResult();
+    searchResult.setHits(List.of(hit));
 
 
-        // Mock client behavior
-        var documents = mock(Documents.class);
-        var collection = mock(Collection.class);
-        when(client.collections("bookmark")).thenReturn(collection);
-        when(collection.documents()).thenReturn(documents);
-        when(documents.search(any(SearchParameters.class))).thenReturn(searchResult);
+    // Mock client behavior
+    var documents = mock(Documents.class);
+    var collection = mock(Collection.class);
+    when(client.collections("bookmark")).thenReturn(collection);
+    when(collection.documents()).thenReturn(documents);
+    when(documents.search(any(SearchParameters.class))).thenReturn(searchResult);
 
-        // Act
-        var results = typesense.search(query);
+    // Act
+    var results = typesense.search(query);
 
-        // Assert
-        assertEquals(1, results.size());
-        assertEquals(expectedId, results.get(0).id());
-        assertEquals(expectedSnippet, results.get(0).highlight());
-    }
+    // Assert
+    assertEquals(1, results.size());
+    assertEquals(expectedId, results.get(0).id());
+    assertEquals(expectedSnippet, results.get(0).highlight());
+  }
 }

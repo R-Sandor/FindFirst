@@ -2,9 +2,11 @@ package dev.findfirst.core.service;
 
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 import dev.findfirst.core.dto.BookmarkDTO;
 import dev.findfirst.core.repository.jdbc.BookmarkJDBCRepository;
+import dev.findfirst.core.service.TypesenseService.SearchHighlightResult;
 import dev.findfirst.security.userauth.context.UserContext;
 
 import lombok.RequiredArgsConstructor;
@@ -42,11 +44,18 @@ public class SearchService {
 
   public List<BookmarkDTO> bookmarksByText(String text) {
     var userID = userContext.getUserId();
-      var ids = typesense.search(text).stream()
-              .map(TypesenseService.SearchHighlightResult::id)
-              .toList();
-    var bookmarks = bookmarkRepo.findAllById(ids);
-    return bookmarkService.convertBookmarkJDBCToDTO(bookmarks, userID);
+    List<SearchHighlightResult> searchHighlightResults = typesense.search(text);
+
+    record IdHighlight(List<Long> ids, List<String> hightlights) {
+    }
+
+    IdHighlight ih = searchHighlightResults.stream()
+        .collect(Collectors.teeing(Collectors.mapping(hit -> hit.id(), Collectors.toList()),
+            Collectors.mapping(hit -> hit.highlight(), Collectors.toList()),
+            (ids, highlights) -> new IdHighlight(ids, highlights)));
+
+    var bookmarks = bookmarkRepo.findAllById(ih.ids());
+    return bookmarkService.convertBookmarkJDBCToDTO(bookmarks, ih.hightlights(), userID);
 
   }
 
