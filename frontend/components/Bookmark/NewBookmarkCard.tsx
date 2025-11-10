@@ -115,6 +115,7 @@ export default function NewBookmarkCard() {
       screenshotUrl: "",
       tags: tags,
       scrapable: isScrapable,
+      textHighlight: null,
     };
 
     actions.resetForm({ newcard });
