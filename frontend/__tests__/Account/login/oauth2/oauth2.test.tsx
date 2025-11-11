@@ -19,7 +19,6 @@ vi.mock("next/navigation", async (importOriginal) => {
 
 vi.mock(
   "@services/auth.service",
-
   async (
     importOriginal: () => Promise<typeof import("@services/auth.service")>,
   ) => {
