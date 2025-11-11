@@ -20,4 +20,5 @@ export default function OauthLogin() {
       }
     });
   }, [authService]);
+  return null;
 }
