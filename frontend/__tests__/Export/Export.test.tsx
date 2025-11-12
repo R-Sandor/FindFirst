@@ -9,7 +9,12 @@ const user = userEvent;
 import fs from "node:fs";
 
 beforeEach(async () => {
-  const user: User = { username: "jsmith", refreshToken: "blahblajhdfh34234" };
+  const user: User = {
+    id: 1,
+    username: "jsmith",
+    refreshToken: "blahblajhdfh34234",
+    profileImage: null,
+  };
   const axiosMock = new MockAdapter(instance);
   let blobData: Blob | undefined = undefined;
   fs.readFile("./README.md", (err, data) => {

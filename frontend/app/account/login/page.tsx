@@ -14,7 +14,7 @@ export interface Credentials {
   password: string;
 }
 
-interface Oauth2Sources {
+export interface Oauth2Sources {
   provider: string;
   iconUrl: string;
   authEndpoint: string;

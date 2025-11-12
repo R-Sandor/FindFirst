@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import Page from "app/account/login/page";
+import Page, { Oauth2Sources } from "app/account/login/page";
 import MockAdapter from "axios-mock-adapter";
 import { typePassword } from "../signup/signup.test";
 import { submitDisabled } from "@/__tests__/utilities/TestingUtilities";
@@ -10,6 +10,7 @@ import { instance } from "@api/Api";
 import authService from "@services/auth.service";
 import axios from "axios";
 import { userApiInstance } from "@api/userApi";
+import { act } from "react";
 const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 const user = userEvent.setup();
 const userApiMock = new MockAdapter(userApiInstance);
@@ -98,9 +99,23 @@ describe("Errors on fields.", () => {
   });
 });
 
-// describe("Oauth2 Signin", () => {
-//   beforeEach(() => {
-//     render(<Page />);
-//   });
-//   test("Oauth2Providers are listed", async () => {});
-// });
+describe("Oauth2 Signin", () => {
+  test("Oauth2Providers are listed", async () => {
+    userApiMock.reset();
+
+    const sources: Oauth2Sources[] = [
+      {
+        provider: "github",
+        iconUrl: "http://localhost/.favicon",
+        authEndpoint: "http://localhost",
+      },
+    ];
+
+    userApiMock.onGet().reply(200, JSON.stringify(sources));
+
+    render(<Page />);
+
+    const login = await screen.findByText(/or login with/i);
+    expect(login).toBeInTheDocument();
+  });
+});
