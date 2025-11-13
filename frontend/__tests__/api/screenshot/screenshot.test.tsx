@@ -193,7 +193,7 @@ describe("Screenshot API Route", () => {
     });
 
     test("should return 400 when screenshot parameter is null", async () => {
-      req.query = { screenshot: null };
+      req.query = { screenshot: [] };
 
       await handler(req as NextApiRequest, res as NextApiResponse);
 
