@@ -16,7 +16,11 @@ const data = JSON.stringify(bkmkResp, null, 2);
 
 let mock: any;
 beforeEach(async () => {
-  const user: User = { username: "jsmith", refreshToken: "blahblajhdfh34234" };
+  const user: User = {
+    username: "jsmith",
+    refreshToken: "blahblajhdfh34234",
+    id: 1,
+  };
   let MockAdapter = require("axios-mock-adapter");
   mock = new MockAdapter(instance);
   // Mock GET request to /users when param `searchText` is 'John'
@@ -211,6 +215,7 @@ describe("Bookmark Operation.", () => {
         },
       ],
       scrapable: true,
+      textHighlight: "",
     };
 
     mock.onPost(tagsAPI, ["cooking"]).reply(() => {
