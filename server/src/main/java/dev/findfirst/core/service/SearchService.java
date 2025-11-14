@@ -52,7 +52,7 @@ public class SearchService {
     IdHighlight ih = searchHighlightResults.stream()
         .collect(Collectors.teeing(Collectors.mapping(hit -> hit.id(), Collectors.toList()),
             Collectors.mapping(hit -> hit.highlight(), Collectors.toList()),
-            (ids, highlights) -> new IdHighlight(ids, highlights)));
+            IdHighlight::new));
 
     var bookmarks = bookmarkRepo.findAllById(ih.ids());
     return bookmarkService.convertBookmarkJDBCToDTO(bookmarks, ih.hightlights(), userID);
