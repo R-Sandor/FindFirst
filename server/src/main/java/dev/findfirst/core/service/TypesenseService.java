@@ -27,7 +27,7 @@ import org.typesense.model.SearchResult;
 @Slf4j
 public class TypesenseService {
 
-  public record SearchHighlightResult(Long id, String highlight) {};
+  public record SearchHighlightResult(Long id, String highlight) {}
 
   private final TypsenseInitializationRepository initRepo;
 
