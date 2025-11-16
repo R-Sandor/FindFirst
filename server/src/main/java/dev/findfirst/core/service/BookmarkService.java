@@ -137,8 +137,12 @@ public class BookmarkService {
         tagDTOs.add(new TagOnly(t.getId(), t.getTitle()));
       }
 
-      return new BookmarkDTO(ent.getId(), ent.getTitle(), ent.getUrl(), ent.getScreenshotUrl(),
-          ent.getScrapable(), ent.getCreatedDate(), ent.getLastModifiedDate(), tagDTOs);
+      var dto = BookmarkDTO.builder().id(ent.getId()).title(ent.getTitle()).url(ent.getUrl())
+          .screenshotUrl(ent.getScreenshotUrl()).scrapable(ent.getScrapable())
+          .createdDate(ent.getCreatedDate()).lastModifiedOn(ent.getLastModifiedDate()).tags(tagDTOs)
+          .build();
+
+      return dto;
     }).toList();
   }
 
@@ -349,7 +353,8 @@ public class BookmarkService {
           | URISyntaxException ex) {
         log.error(ex.getMessage());
       }
-      return new BookmarkDTO(0, null, null, null, false, null, null, null);
+      // empty bookmark.
+      return new BookmarkDTO();
     }).delayElements(Duration.ofMillis(100));
   }
 
