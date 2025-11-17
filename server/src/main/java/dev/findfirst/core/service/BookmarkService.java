@@ -137,12 +137,11 @@ public class BookmarkService {
         tagDTOs.add(new TagOnly(t.getId(), t.getTitle()));
       }
 
-      var dto = BookmarkDTO.builder().id(ent.getId()).title(ent.getTitle()).url(ent.getUrl())
+      return BookmarkDTO.builder().id(ent.getId()).title(ent.getTitle()).url(ent.getUrl())
           .screenshotUrl(ent.getScreenshotUrl()).scrapable(ent.getScrapable())
           .createdDate(ent.getCreatedDate()).lastModifiedOn(ent.getLastModifiedDate()).tags(tagDTOs)
           .build();
 
-      return dto;
     }).toList();
   }
 
