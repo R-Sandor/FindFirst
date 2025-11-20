@@ -56,8 +56,12 @@ public class SecSecurityConfig {
 
   private final AuthEntryPointJwt unauthorizedHandler;
 
+  private Oauth2LoginSuccessHandler oauth2Success;
+
   @Autowired(required = false)
-  private final Oauth2LoginSuccessHandler oauth2Success;
+  public void setMyServiceB(Oauth2LoginSuccessHandler oauth2LoginSuccessHandler) {
+    this.oauth2Success = oauth2LoginSuccessHandler;
+  }
 
   @Bean
   public CookieAuthenticationFilter cookieJWTAuthFilter() {
