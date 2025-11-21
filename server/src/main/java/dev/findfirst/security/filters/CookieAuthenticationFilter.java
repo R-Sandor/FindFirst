@@ -41,7 +41,7 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
   }
 
   private List<SimpleGrantedAuthority> getSimpleGrantedAuthorities(Jws<Claims> jwsClaims) {
-    String role = jwsClaims.getBody().get(Constants.ROLE_NAME_CLAIM, String.class);
+    String role = jwsClaims.getPayload().get(Constants.ROLE_NAME_CLAIM, String.class);
     SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(role);
     return Collections.singletonList(simpleGrantedAuthority);
   }
