@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import dev.findfirst.core.exceptions.SignupFailure;
 import dev.findfirst.security.conditions.OAuthClientsCondition;
 import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
@@ -43,7 +44,8 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
 
   private final UserManagementService ums;
 
-  @Qualifier("defaultOauthService") private final OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate;
+  @Qualifier("defaultOauthService")
+  private final OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate;
 
   @Transactional
   @Override
@@ -66,8 +68,7 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
 
     var username = attrs.get(userNameAttributeName).toString();
     final var registrationId = userRequest.getClientRegistration().getClientId();
-    final var oauth2PlaceholderEmail =
-        "generated-" + username + registrationId + "@noemail.invalid";
+    final var oauth2PlaceholderEmail = "generated-" + username + registrationId + "@noemail.invalid";
 
     Supplier<User> signup = () -> {
       try {
@@ -78,7 +79,8 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
         }
       } catch (UnexpectedException | UserNameTakenException | EmailAlreadyRegisteredException e) {
         log.error("User that doesn't exist tried to signup but the signup failed", e);
-        throw new RuntimeException("signup failed", e);
+        throw new SignupFailure(e);
+
       }
     };
 
@@ -94,15 +96,13 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
     }
 
     if (user == null) {
-      throw new RuntimeException("Error with user signup/signin");
+      throw new SignupFailure("Error with user signup/signin");
     }
 
-    int userRole =
-        (user.getRole() == null || user.getRole().getId() == null) ? 0 : user.getRole().getId();
+    int userRole = (user.getRole() == null || user.getRole().getId() == null) ? 0 : user.getRole().getId();
 
     GrantedAuthority authority = new SimpleGrantedAuthority(URole.values()[userRole].toString());
-    var attributes =
-        customAttribute(attrs, userNameAttributeName, user.getUserId(), registrationId);
+    var attributes = customAttribute(attrs, userNameAttributeName, user.getUserId(), registrationId);
 
     return new DefaultOAuth2User(Collections.singletonList(authority), attributes,
         userNameAttributeName);
