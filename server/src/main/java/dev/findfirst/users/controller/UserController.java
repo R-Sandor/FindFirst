@@ -65,8 +65,12 @@ public class UserController {
 
   private final RefreshTokenService refreshTokenService;
 
-  @Autowired(required = false)
   private InMemoryClientRegistrationRepository oauth2Providers;
+
+  @Autowired(required = false)
+  public void setOauth2(InMemoryClientRegistrationRepository clients) {
+    this.oauth2Providers = clients;
+  }
 
   @Value("${findfirst.app.frontend-url}")
   private String frontendUrl;
@@ -216,8 +220,7 @@ public class UserController {
   public ResponseEntity<String> uploadProfilePicture(
       @Valid @RequestParam("file") @FileSize MultipartFile file) throws NoUserFoundException {
     log.debug("Attempting to add user profile picture");
-    User user =
-        userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
+    User user = userService.getUserById(uContext.getUserId()).orElseThrow(NoUserFoundException::new);
 
     // File type validation
     String contentType = file.getContentType();

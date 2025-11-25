@@ -59,7 +59,7 @@ public class SecSecurityConfig {
   private Oauth2LoginSuccessHandler oauth2Success;
 
   @Autowired(required = false)
-  public void setMyServiceB(Oauth2LoginSuccessHandler oauth2LoginSuccessHandler) {
+  public void setOauth2(Oauth2LoginSuccessHandler oauth2LoginSuccessHandler) {
     this.oauth2Success = oauth2LoginSuccessHandler;
   }
 
