@@ -211,11 +211,12 @@ public class UserManagementService {
     String credentials = new String(credDecoded, StandardCharsets.UTF_8);
     // credentials = username:password
     final String[] values = credentials.split(":", 2);
-
-    User user = getUserByUsername(values[0]);
-    final RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
-    String jwt = generateTokenFromUser(user.getUserId());
-
-    return new SigninTokens(jwt, refreshToken.getToken());
+    if (values.length == 2) {
+      User user = getUserByUsername(values[0]);
+      final RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+      String jwt = generateTokenFromUser(user.getUserId());
+      return new SigninTokens(jwt, refreshToken.getToken());
+    }
+    throw new NoUserFoundException();
   }
 }
