@@ -28,7 +28,7 @@ public class Oauth2BeanConfig {
     return new Oauth2LoginSuccessHandler(ts, rt);
   }
 
-  @Bean(name = { "defaultOauthService", "defaultOAuth2UserService" })
+  @Bean(name = {"defaultOauthService", "defaultOAuth2UserService"})
   public OAuth2UserService<OAuth2UserRequest, OAuth2User> defaultOAuth2UserService() {
     return new DefaultOAuth2UserService();
   }

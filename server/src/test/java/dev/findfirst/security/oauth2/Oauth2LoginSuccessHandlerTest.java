@@ -1,7 +1,7 @@
 package dev.findfirst.security.oauth2;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -64,7 +64,6 @@ class Oauth2LoginSuccessHandlerTest {
     authenticateUserByProvider("github");
   }
 
-
   private void authenticateUserByProvider(String provider) throws Exception {
     OAuth2AuthenticationToken oAuthToken =
         mockAuthentication(provider.toString().toLowerCase(), ID).getFirst();
@@ -75,7 +74,6 @@ class Oauth2LoginSuccessHandlerTest {
     assertTrue(response.getHeader("Set-Cookie") != null);
     assertEquals("localhost/account/login/oauth2", response.getRedirectedUrl());
   }
-
 
   private Entry<OAuth2AuthenticationToken, OAuth2User> mockAuthentication(String provider, int id) {
     OAuth2AuthenticationToken oauthToken = mock(OAuth2AuthenticationToken.class);

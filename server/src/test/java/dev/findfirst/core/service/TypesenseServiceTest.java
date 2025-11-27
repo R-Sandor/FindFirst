@@ -4,12 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dev.findfirst.core.model.jdbc.BookmarkJDBC;
 import dev.findfirst.core.model.jdbc.TypesenseInitRecord;
 import dev.findfirst.core.repository.jdbc.TypsenseInitializationRepository;
 
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +24,12 @@ import org.typesense.api.Client;
 import org.typesense.api.Collection;
 import org.typesense.api.Collections;
 import org.typesense.api.Documents;
-import org.typesense.model.*;
+import org.typesense.model.CollectionResponse;
+import org.typesense.model.CollectionSchema;
+import org.typesense.model.SearchHighlight;
+import org.typesense.model.SearchParameters;
+import org.typesense.model.SearchResult;
+import org.typesense.model.SearchResultHit;
 
 /**
  * Tests for typsense operations such as intitilization, queries/imports.
@@ -44,6 +53,9 @@ class TypesenseServiceTest {
 
   @Mock
   private CollectionResponse collectionResponse;
+
+  private static final String FULL_HTML_OUTPUT = "<html><head></head><body><p>test</p></body></html>",
+      FRAGMENT_HTML_OUTPUT = "<p>test</p>";
 
   @Test
   void alreadyInitialized() {
@@ -78,8 +90,24 @@ class TypesenseServiceTest {
   }
 
   @Test
-  @Disabled("Implement test to save storeScrapedText")
-  void storeScrapedText() throws Exception {}
+  void storeScrapedText() throws Exception {
+
+    BookmarkJDBC bkmk = new BookmarkJDBC(1l, 1, new Date(), "Test user", "Test user", new Date(),
+        "Dancing with wolves", "https://example.com", "", true, null);
+
+    Document doc = mock(Document.class);
+    HashMap<String, Object> document = new HashMap<>();
+    document.put("id", bkmk.getId().toString());
+    document.put("title", bkmk.getTitle());
+    // lazy dump the document.
+    document.put("text", doc.text());
+    var collection = mock(Collection.class);
+    var documents = mock(Documents.class);
+    when(client.collections("bookmark")).thenReturn(collection);
+    when(collection.documents()).thenReturn(documents);
+    when(client.collections("bookmark").documents().create(document)).thenReturn(new HashMap<>());
+    typesense.addText(bkmk, doc);
+  }
 
   @Test
   void returnSearchHighlighted() throws Exception {
@@ -101,7 +129,6 @@ class TypesenseServiceTest {
     // Mock search result
     SearchResult searchResult = new SearchResult();
     searchResult.setHits(List.of(hit));
-
 
     // Mock client behavior
     var documents = mock(Documents.class);
