@@ -1,5 +1,6 @@
 package dev.findfirst.core.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
@@ -13,8 +14,6 @@ import dev.findfirst.core.model.jdbc.TypesenseInitRecord;
 import dev.findfirst.core.repository.jdbc.TypsenseInitializationRepository;
 
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -53,9 +52,6 @@ class TypesenseServiceTest {
 
   @Mock
   private CollectionResponse collectionResponse;
-
-  private static final String FULL_HTML_OUTPUT = "<html><head></head><body><p>test</p></body></html>",
-      FRAGMENT_HTML_OUTPUT = "<p>test</p>";
 
   @Test
   void alreadyInitialized() {
@@ -106,7 +102,7 @@ class TypesenseServiceTest {
     when(client.collections("bookmark")).thenReturn(collection);
     when(collection.documents()).thenReturn(documents);
     when(client.collections("bookmark").documents().create(document)).thenReturn(new HashMap<>());
-    typesense.addText(bkmk, doc);
+    assertDoesNotThrow(() -> typesense.addText(bkmk, doc));
   }
 
   @Test
