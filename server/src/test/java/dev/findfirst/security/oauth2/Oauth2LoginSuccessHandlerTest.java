@@ -40,7 +40,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 class Oauth2LoginSuccessHandlerTest {
 
   private final int ID = 1111111111;
-  private final String USERNAME = "johndoe";
+  private final String username = "johndoe";
 
   @Mock
   private UserRepo userRepo;
@@ -65,8 +65,7 @@ class Oauth2LoginSuccessHandlerTest {
   }
 
   private void authenticateUserByProvider(String provider) throws Exception {
-    OAuth2AuthenticationToken oAuthToken =
-        mockAuthentication(provider.toString().toLowerCase(), ID).getFirst();
+    OAuth2AuthenticationToken oAuthToken = mockAuthentication(provider.toString().toLowerCase(), ID).getFirst();
 
     MockHttpServletResponse response = new MockHttpServletResponse();
     oAuthHandler.onAuthenticationSuccess(new MockHttpServletRequest(), response, oAuthToken);
@@ -79,7 +78,7 @@ class Oauth2LoginSuccessHandlerTest {
     OAuth2AuthenticationToken oauthToken = mock(OAuth2AuthenticationToken.class);
     OAuth2User principal = mock(OAuth2User.class);
     Map<String, Object> attributes = new HashMap<>();
-    attributes.put("name", USERNAME);
+    attributes.put("name", username);
     attributes.put("userID", ID);
     Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
     OAuth2User user = new DefaultOAuth2User(authorities, attributes, "name");
