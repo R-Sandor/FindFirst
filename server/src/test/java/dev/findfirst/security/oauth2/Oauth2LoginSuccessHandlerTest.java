@@ -65,7 +65,7 @@ class Oauth2LoginSuccessHandlerTest {
   }
 
   private void authenticateUserByProvider(String provider) throws Exception {
-    OAuth2AuthenticationToken oAuthToken = mockAuthentication(provider.toString().toLowerCase(), ID).getFirst();
+    OAuth2AuthenticationToken oAuthToken = mockAuthentication(provider.toLowerCase(), ID).getFirst();
 
     MockHttpServletResponse response = new MockHttpServletResponse();
     oAuthHandler.onAuthenticationSuccess(new MockHttpServletRequest(), response, oAuthToken);
