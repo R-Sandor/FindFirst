@@ -1,7 +1,7 @@
 package dev.findfirst.security.oauth2;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,7 +39,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 @ExtendWith(MockitoExtension.class)
 class Oauth2LoginSuccessHandlerTest {
 
-  private final int ID = 1111111111;
+  private final int id = 1111111111;
   private final String username = "johndoe";
 
   @Mock
@@ -65,21 +65,21 @@ class Oauth2LoginSuccessHandlerTest {
   }
 
   private void authenticateUserByProvider(String provider) throws Exception {
-    OAuth2AuthenticationToken oAuthToken = mockAuthentication(provider.toLowerCase(), ID).getFirst();
+    OAuth2AuthenticationToken oAuthToken = mockAuthentication(provider.toLowerCase()).getFirst();
 
     MockHttpServletResponse response = new MockHttpServletResponse();
     oAuthHandler.onAuthenticationSuccess(new MockHttpServletRequest(), response, oAuthToken);
 
-    assertTrue(response.getHeader("Set-Cookie") != null);
+    assertNotNull(response.getHeader("Set-Cookie"));
     assertEquals("localhost/account/login/oauth2", response.getRedirectedUrl());
   }
 
-  private Entry<OAuth2AuthenticationToken, OAuth2User> mockAuthentication(String provider, int id) {
+  private Entry<OAuth2AuthenticationToken, OAuth2User> mockAuthentication(String provider) {
     OAuth2AuthenticationToken oauthToken = mock(OAuth2AuthenticationToken.class);
     OAuth2User principal = mock(OAuth2User.class);
     Map<String, Object> attributes = new HashMap<>();
     attributes.put("name", username);
-    attributes.put("userID", ID);
+    attributes.put("userID", id);
     Collection<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
     OAuth2User user = new DefaultOAuth2User(authorities, attributes, "name");
     when(oauthToken.getPrincipal()).thenReturn(user);
