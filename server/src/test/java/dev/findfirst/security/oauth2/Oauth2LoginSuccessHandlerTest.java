@@ -61,11 +61,11 @@ class Oauth2LoginSuccessHandlerTest {
   @DisplayName("Authenticate active Github user")
   void authenticateGithubUser() throws Exception {
     oAuthHandler.setRedirectURL("localhost");
-    authenticateUserByProvider("github");
+    authenticateUserByProvider();
   }
 
-  private void authenticateUserByProvider(String provider) throws Exception {
-    OAuth2AuthenticationToken oAuthToken = mockAuthentication(provider.toLowerCase()).getFirst();
+  private void authenticateUserByProvider() throws Exception {
+    OAuth2AuthenticationToken oAuthToken = mockAuthentication().getFirst();
 
     MockHttpServletResponse response = new MockHttpServletResponse();
     oAuthHandler.onAuthenticationSuccess(new MockHttpServletRequest(), response, oAuthToken);
@@ -74,7 +74,7 @@ class Oauth2LoginSuccessHandlerTest {
     assertEquals("localhost/account/login/oauth2", response.getRedirectedUrl());
   }
 
-  private Entry<OAuth2AuthenticationToken, OAuth2User> mockAuthentication(String provider) {
+  private Entry<OAuth2AuthenticationToken, OAuth2User> mockAuthentication() {
     OAuth2AuthenticationToken oauthToken = mock(OAuth2AuthenticationToken.class);
     OAuth2User principal = mock(OAuth2User.class);
     Map<String, Object> attributes = new HashMap<>();
