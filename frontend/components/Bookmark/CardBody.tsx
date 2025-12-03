@@ -6,7 +6,7 @@ import { ScrapableBookmarkToggle } from "./ScrapableToggle";
 
 interface CardBodyProp {
   bookmark: Readonly<Bookmark>;
-  highlight: String | null;
+  highlight: string | null;
   inEditMode: Readonly<boolean>;
   edit: Readonly<RefObject<Bookmark>>;
   changeEditMode: Readonly<Function>;
