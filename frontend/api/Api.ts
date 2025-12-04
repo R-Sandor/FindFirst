@@ -100,7 +100,7 @@ const api = {
     document.body.appendChild(link);
     link.click();
     // clean up "a" element & remove ObjectURL
-    document.body.removeChild(link);
+    link.remove();
     URL.revokeObjectURL(href);
   },
   // Adds a bookmark containing a list of tag Ids if any.
