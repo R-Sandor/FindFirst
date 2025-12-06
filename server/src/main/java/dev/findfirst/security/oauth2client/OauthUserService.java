@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
+import dev.findfirst.core.exceptions.SignupFailure;
 import dev.findfirst.security.conditions.OAuthClientsCondition;
 import dev.findfirst.security.userauth.models.payload.request.SignupRequest;
 import dev.findfirst.users.exceptions.EmailAlreadyRegisteredException;
@@ -78,7 +79,8 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
         }
       } catch (UnexpectedException | UserNameTakenException | EmailAlreadyRegisteredException e) {
         log.error("User that doesn't exist tried to signup but the signup failed", e);
-        throw new RuntimeException("signup failed", e);
+        throw new SignupFailure(e);
+
       }
     };
 
@@ -94,7 +96,7 @@ public class OauthUserService implements OAuth2UserService<OAuth2UserRequest, OA
     }
 
     if (user == null) {
-      throw new RuntimeException("Error with user signup/signin");
+      throw new SignupFailure("Error with user signup/signin");
     }
 
     int userRole =

@@ -65,8 +65,12 @@ public class UserController {
 
   private final RefreshTokenService refreshTokenService;
 
-  @Autowired(required = false)
   private InMemoryClientRegistrationRepository oauth2Providers;
+
+  @Autowired(required = false)
+  public void setOauth2(InMemoryClientRegistrationRepository clients) {
+    this.oauth2Providers = clients;
+  }
 
   @Value("${findfirst.app.frontend-url}")
   private String frontendUrl;

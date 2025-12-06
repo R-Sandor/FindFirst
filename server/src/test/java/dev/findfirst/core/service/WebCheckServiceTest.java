@@ -1,6 +1,5 @@
 package dev.findfirst.core.service;
 
-
 import static org.mockito.ArgumentMatchers.anyString;
 
 import dev.findfirst.core.annotations.IntegrationTest;
@@ -32,7 +31,7 @@ class WebCheckServiceTest {
 
   @Container
   @ServiceConnection
-  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16.2-alpine3.19");
+  static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:16");
 
   @Test
   void isScrapable() {
@@ -53,7 +52,6 @@ class WebCheckServiceTest {
         Disallow: /verify
         Disallow: /verify/
         """;
-
 
     Mockito.when(robotsFetcher.getRobotsTxt(anyString())).thenReturn(
         new RobotsFetcher.RobotsTxtResponse(200, robotsString.getBytes(), "text/plain"));

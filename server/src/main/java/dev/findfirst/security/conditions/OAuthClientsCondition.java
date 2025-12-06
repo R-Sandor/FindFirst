@@ -62,6 +62,6 @@ public class OAuthClientsCondition implements Condition {
     }
   }
 
-  record ClientPair(String clientId, String clientSecret) {};
+  record ClientPair(String clientId, String clientSecret) {}
 
 }

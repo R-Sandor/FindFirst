@@ -6,7 +6,6 @@ import dev.findfirst.security.jwt.service.TokenService;
 import dev.findfirst.security.oauth2client.handlers.Oauth2LoginSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Conditional;
 import org.springframework.context.annotation.Configuration;
@@ -29,8 +28,8 @@ public class Oauth2BeanConfig {
     return new Oauth2LoginSuccessHandler(ts, rt);
   }
 
-  @Bean
-  @Qualifier("defaultOauthService") public OAuth2UserService<OAuth2UserRequest, OAuth2User> defaultOAuth2UserService() {
+  @Bean(name = {"defaultOauthService", "defaultOAuth2UserService"})
+  public OAuth2UserService<OAuth2UserRequest, OAuth2User> defaultOAuth2UserService() {
     return new DefaultOAuth2UserService();
   }
 }

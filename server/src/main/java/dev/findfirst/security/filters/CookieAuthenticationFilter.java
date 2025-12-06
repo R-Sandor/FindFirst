@@ -41,7 +41,7 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
   }
 
   private List<SimpleGrantedAuthority> getSimpleGrantedAuthorities(Jws<Claims> jwsClaims) {
-    String role = jwsClaims.getBody().get(Constants.ROLE_NAME_CLAIM, String.class);
+    String role = jwsClaims.getPayload().get(Constants.ROLE_NAME_CLAIM, String.class);
     SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(role);
     return Collections.singletonList(simpleGrantedAuthority);
   }
@@ -52,11 +52,12 @@ public class CookieAuthenticationFilter extends OncePerRequestFilter {
     try {
       /* AUTHENTICATION */
       Jws<Claims> jwsClaims = jwtUtils.parseJwt(jwt);
-      String email = jwsClaims.getBody().getSubject();
+      var payload = jwsClaims.getPayload();
+      String email = payload.getSubject();
       /* AUTHORIZATION */
-      int roleId = jwsClaims.getBody().get(Constants.ROLE_ID_CLAIM, Integer.class);
+      int roleId = payload.get(Constants.ROLE_ID_CLAIM, Integer.class);
       List<SimpleGrantedAuthority> authorities = getSimpleGrantedAuthorities(jwsClaims);
-      int userId = jwsClaims.getBody().get(Constants.USER_ID_CLAIM, Integer.class);
+      int userId = payload.get(Constants.USER_ID_CLAIM, Integer.class);
       userAuthenticationToken = new UserAuthenticationToken(email, roleId, authorities, userId);
     } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException
         | SignatureException | IllegalArgumentException e) {

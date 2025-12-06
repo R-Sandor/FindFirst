@@ -33,7 +33,7 @@ public class TypesenseService {
 
   private final Client client;
 
-  private final static String schemaName = "bookmark";
+  private static final String SCHEMA_NAME = "bookmark";
 
   @PostConstruct
   public String createSchema() {
@@ -49,7 +49,7 @@ public class TypesenseService {
 
   private CollectionSchema createCollectionSchemaSchema() {
     CollectionSchema collectionSchema = new CollectionSchema();
-    collectionSchema.name(schemaName)
+    collectionSchema.name(SCHEMA_NAME)
         .addFieldsItem(new Field().name("title").type(FieldTypes.STRING))
         .addFieldsItem(new Field().name("text").type(FieldTypes.STRING));
     return collectionSchema;
@@ -82,7 +82,7 @@ public class TypesenseService {
     document.put("text", retDoc.text());
 
     try {
-      client.collections(schemaName).documents().create(document);
+      client.collections(SCHEMA_NAME).documents().create(document);
     } catch (Exception e) {
       log.error(e.toString());
     }
@@ -94,7 +94,7 @@ public class TypesenseService {
     try {
       log.debug("searching");
       SearchResult searchResult =
-          client.collections(schemaName).documents().search(searchParameters);
+          client.collections(SCHEMA_NAME).documents().search(searchParameters);
       log.debug(searchResult.toString());
 
       return searchResult.getHits().stream().map(hit -> {
