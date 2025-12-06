@@ -38,7 +38,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
  * 
  */
 @ExtendWith(MockitoExtension.class)
-public class OauthUserServiceTest {
+class OauthUserServiceTest {
 
   @Mock
   UserRepo userRepo;
@@ -194,7 +194,6 @@ public class OauthUserServiceTest {
 
     when(defaultOAuth2UserService.loadUser(request)).thenReturn(oAuth2User);
     when(oAuth2User.getAttributes()).thenReturn(attributes);
-    // when(userRepo.findByEmail(email)).thenReturn(Optional.ofNullable(null));
     when(ums.createNewUserAccount(any())).thenThrow(new UserNameTakenException());
 
     assertThrows(RuntimeException.class, () -> {
