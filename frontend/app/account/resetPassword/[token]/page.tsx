@@ -70,8 +70,8 @@ export default function PasswordReset() {
         setSubmitSuccess(true);
         actions.resetForm();
       },
-      (reject) => {
-        setSubmitMessage(reject.response.data.text);
+      (error_) => {
+        setSubmitMessage(error_.response.data.text);
         setSubmitSuccess(false);
       },
     );
