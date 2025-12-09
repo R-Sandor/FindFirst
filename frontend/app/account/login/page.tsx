@@ -31,12 +31,12 @@ function submitFailureDisplay(submissionMessage: string) {
 export default function Page() {
   const [signinFailure, setSigninFailure] = useState<boolean>(false);
   const attemptCount = useRef<number>(0);
-  const [oauth2Providers, setOauth2Provider] = useState<Oauth2Sources[]>([]);
+  const [oauth2Providers, setOauth2Providers] = useState<Oauth2Sources[]>([]);
   const router = useRouter();
 
   useEffect(() => {
     userApi.oauth2Providers().then((resp) => {
-      setOauth2Provider(resp.data as Oauth2Sources[]);
+      setOauth2Providers(resp.data as Oauth2Sources[]);
     });
   }, []);
 
@@ -119,11 +119,11 @@ export default function Page() {
               <i>or login with:</i>
             </h4>
             <ul className={`list-group list-group-flush `}>
-              {oauth2Providers.map((oauth, index) => (
+              {oauth2Providers.map((oauth) => (
                 <a
                   href={AUTH_ENDPOINT + oauth.authEndpoint}
                   target="_self"
-                  key={index}
+                  key={oauth.provider}
                   className="list-group-item rounded"
                 >
                   {oauth.provider}
