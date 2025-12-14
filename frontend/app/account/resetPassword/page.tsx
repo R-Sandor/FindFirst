@@ -67,8 +67,8 @@ export default function Page() {
       .then((response) => {
         if (response.status == 200) setSubmitSuccess(true);
       })
-      .catch((rejected) => {
-        setSubmitMessage(rejected.response.data.error);
+      .catch((error_) => {
+        setSubmitMessage(error_.response.data.error);
         setSubmitSuccess(false);
       });
   };
