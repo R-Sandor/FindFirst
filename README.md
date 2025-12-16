@@ -20,15 +20,11 @@ searched not only by keyword but semantic meaning.
 Create organization to the copious amount of knowledge available, for students,
 devs, teachers, and the common person.
 
-## FindFirst Survey
-[Google Form](<https://forms.gle/FLUAwj8sUCWp96pt7>)
 ## Key Features
 
 ### Easy Searching
 
-For example when the user arrives to the page they will have a search bar
-that is right at the top ready for user to immediately begin doing
-full context page searches.
+User's can full text search any page that is scrapable on the web.
 
 ### Quick Reference
 
