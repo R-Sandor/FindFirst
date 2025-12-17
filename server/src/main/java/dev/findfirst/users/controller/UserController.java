@@ -6,7 +6,6 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.rmi.UnexpectedException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,12 +31,12 @@ import dev.findfirst.users.model.user.SigninTokens;
 import dev.findfirst.users.model.user.TokenPassword;
 import dev.findfirst.users.model.user.User;
 import dev.findfirst.users.service.ForgotPasswordService;
+import dev.findfirst.users.service.Oauth2SourceService;
 import dev.findfirst.users.service.RegistrationService;
 import dev.findfirst.users.service.UserManagementService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -46,7 +45,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -65,12 +63,8 @@ public class UserController {
 
   private final RefreshTokenService refreshTokenService;
 
-  private InMemoryClientRegistrationRepository oauth2Providers;
+  private final Oauth2SourceService oauth2SourceService;
 
-  @Autowired(required = false)
-  public void setOauth2(InMemoryClientRegistrationRepository clients) {
-    this.oauth2Providers = clients;
-  }
 
   @Value("${findfirst.app.frontend-url}")
   private String frontendUrl;
@@ -93,30 +87,7 @@ public class UserController {
 
   @GetMapping("/oauth2Providers")
   public ResponseEntity<List<Oauth2Source>> oauth2Providers() {
-    List<Oauth2Source> listOfAuth2Providers = new ArrayList<>();
-    if (oauth2Providers == null) {
-      return ResponseEntity.ofNullable(listOfAuth2Providers);
-    }
-    oauth2Providers.iterator().forEachRemaining(provider -> {
-      var tknUri = provider.getProviderDetails().getTokenUri();
-      log.debug("Token URI {}", tknUri);
-      // skip http(s)://
-      var noProto = "";
-      if (tknUri.contains("https://")) {
-        noProto = tknUri.substring(8);
-      } else {
-        log.debug("provider without https {}", tknUri);
-        // do we really want to trust anything that isn't https?
-        return;
-      }
-      var favDomain = noProto.indexOf("/");
-      var faviconURI = "https://" + noProto.substring(0, favDomain) + "/favicon.ico";
-      var registrationId = provider.getRegistrationId();
-      log.debug("Favicon URI {}", faviconURI);
-      listOfAuth2Providers.add(new Oauth2Source(provider.getClientName(), faviconURI,
-          "oauth2/authorization/" + registrationId));
-    });
-    return ResponseEntity.ofNullable(listOfAuth2Providers);
+    return ResponseEntity.ok(oauth2SourceService.oauth2Sources());
   }
 
   @PostMapping("/signup")
