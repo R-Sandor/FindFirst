@@ -37,6 +37,7 @@ import dev.findfirst.users.service.UserManagementService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
@@ -63,8 +64,12 @@ public class UserController {
 
   private final RefreshTokenService refreshTokenService;
 
-  private final Oauth2SourceService oauth2SourceService;
+  private Oauth2SourceService oauth2SourceService;
 
+  @Autowired(required = false)
+  public void setOauth2SourceService(Oauth2SourceService oauth2SourceService) {
+    this.oauth2SourceService = oauth2SourceService;
+  }
 
   @Value("${findfirst.app.frontend-url}")
   private String frontendUrl;
@@ -87,6 +92,10 @@ public class UserController {
 
   @GetMapping("/oauth2Providers")
   public ResponseEntity<List<Oauth2Source>> oauth2Providers() {
+    if (oauth2SourceService == null) {
+      // return a blank list.
+      return ResponseEntity.ok(List.of());
+    }
     return ResponseEntity.ok(oauth2SourceService.oauth2Sources());
   }
 

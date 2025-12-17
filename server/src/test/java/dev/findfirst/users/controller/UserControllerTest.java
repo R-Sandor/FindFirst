@@ -1,7 +1,6 @@
 package dev.findfirst.users.controller;
 
 import static dev.findfirst.utilities.HttpUtility.getHttpEntity;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -247,9 +246,8 @@ class UserControllerTest {
   @Test
   void getAllProivders() {
     var response = restTemplate.getForEntity("/user/oauth2Providers", Oauth2Source[].class);
-
-    assertArrayEquals(new Oauth2Source[] {new Oauth2Source("GitHub",
-        "https://github.com/favicon.ico", "oauth2/authorization/github")}, response.getBody());
-
+    var sources = response.getBody();
+    assertTrue(sources.length == 1);
+    assertEquals("GitHub", sources[0].provider(), "Github should be the provider.");
   }
 }

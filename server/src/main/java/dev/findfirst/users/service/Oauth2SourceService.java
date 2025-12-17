@@ -28,18 +28,20 @@ public class Oauth2SourceService {
 
   @PostConstruct
   void init() {
-    oauth2Providers.iterator().forEachRemaining(provider -> {
-      var tknUri = provider.getProviderDetails().getTokenUri();
-      log.debug("Token URI {}", tknUri);
-      // skip http(s)://
-      if (!tknUri.contains("https://")) {
-        log.debug("provider without https {}", tknUri);
-        // do we really want to trust anything that isn't https?
-        return;
-      }
-      oauth2Sources.add(new Oauth2Source(provider.getClientName(), getFaviconURI(provider),
-          "oauth2/authorization/" + provider.getRegistrationId()));
-    });
+    if (oauth2Providers != null) {
+      oauth2Providers.iterator().forEachRemaining(provider -> {
+        var tknUri = provider.getProviderDetails().getTokenUri();
+        log.debug("Token URI {}", tknUri);
+        // skip http(s)://
+        if (!tknUri.contains("https://")) {
+          log.debug("provider without https {}", tknUri);
+          // do we really want to trust anything that isn't https?
+          return;
+        }
+        oauth2Sources.add(new Oauth2Source(provider.getClientName(), getFaviconURI(provider),
+            "oauth2/authorization/" + provider.getRegistrationId()));
+      });
+    }
   }
 
   public List<Oauth2Source> oauth2Sources() {
