@@ -10,6 +10,9 @@ import BookmarkAction from "@/types/Bookmarks/BookmarkAction";
 import Tag from "@/types/Bookmarks/Tag";
 import api from "@/api/Api";
 import CardBody from "./CardBody";
+import { SERVER_URL } from "@type/global";
+
+const imgApi = SERVER_URL + "/api/screenshots/";
 
 interface BookmarkProp {
   bookmark: Readonly<Bookmark>;
@@ -201,7 +204,7 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
       <Card className={style.bookmarkCard}>
         <img
           className="card-img-top"
-          src={"api/next/screenshot/" + bookmark.screenshotUrl}
+          src={imgApi + bookmark.screenshotUrl}
           alt="screenshot preview"
         />
         {plainCard()}
