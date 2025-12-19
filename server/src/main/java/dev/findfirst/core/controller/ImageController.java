@@ -1,5 +1,6 @@
 package dev.findfirst.core.controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -22,7 +23,8 @@ public class ImageController {
 
   @GetMapping("{fileName}")
   public byte[] getImage(@PathVariable String fileName) throws IOException {
-    Path filePath = Path.of(screenshotSaveLoc, fileName);
+    File f = new File(fileName);
+    Path filePath = Path.of(screenshotSaveLoc, f.getName());
     if (Files.exists(filePath)) {
       try (var imageStream = Files.newInputStream(filePath, StandardOpenOption.READ)) {
         return imageStream.readAllBytes();
