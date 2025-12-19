@@ -18,17 +18,16 @@ export default function App() {
   return userAuth ? (
     <div className={`${navStyles.containerFluid} container-fluid`}>
       <div className="row">
-      <ScreenSizeProvider>
-        <div className={`col-md-4 col-lg-3 ${tagStyles.tagList}`}>
-          <TagList></TagList>
-        </div>
+        <ScreenSizeProvider>
+          <div className={`col-md-4 col-lg-3 ${tagStyles.tagList}`}>
+            <TagList />
+          </div>
         </ScreenSizeProvider>
         <div className="col-md-8 col-lg-9">
           <BookmarkCardsView />
         </div>
       </div>
     </div>
-  
   ) : (
     <div></div>
   );
