@@ -5,6 +5,7 @@ import tagStyles from "@/styles/tag.module.scss";
 import navStyles from "@/styles/navbar.module.scss";
 import BookmarkCardsView from "@components/CardView/BookmarkCardsView";
 import { ScreenSizeProvider } from "@/contexts/ScreenSizeContext";
+import NewBookmarkCard from "@components/Bookmark/NewBookmarkCard";
 
 export default function App() {
   const userAuth = UseAuth();
@@ -17,18 +18,19 @@ export default function App() {
    */
   return userAuth ? (
     <div className={`${navStyles.containerFluid} container-fluid`}>
-      <div className="row">
+      <div className={`row ${navStyles.fullHeightRow}`}>
         <ScreenSizeProvider>
-          <div className={`col-md-4 col-lg-3 ${tagStyles.tagList}`}>
+          <div className={`col-md-4 col-lg-2 col-xl-2  ${tagStyles.tagList}`}>
+            <NewBookmarkCard />
             <TagList />
           </div>
         </ScreenSizeProvider>
-        <div className="col-md-8 col-lg-9">
+        <div
+          className={`col-md-8 col-lg-10 col-xl-10 ${navStyles.scrollableColumn}`}
+        >
           <BookmarkCardsView />
         </div>
       </div>
     </div>
-  ) : (
-    <div></div>
-  );
+  ) : null;
 }

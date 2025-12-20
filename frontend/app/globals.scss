@@ -27,27 +27,15 @@ body {
 a {
   text-decoration: none;
 }
-header {
-  position: sticky;
-  z-index: 30;
-  top: 0;
-}
-nav {
-  display: flex;
-  padding: 16px;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #f1f1f1;
-}
 
 .btn:disabled {
   background-color: grey;
 }
 
 [data-bs-theme="light"] {
-  background-color: #f7fbfc;
-  --tag-list-bg: #d6e6f2;
-  --card-bg: #d9e9e6;
+  background-color: #d9e9e6;
+  --tag-list-bg: #d9e9e6;
+  --card-bg: #f6faf9;
 }
 
 [data-bs-theme="dark"] {

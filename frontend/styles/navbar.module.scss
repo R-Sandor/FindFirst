@@ -10,9 +10,7 @@
   align-items: center;
   height: 100%;
   flex-grow: 1;
-
-  margin-left: 0.75rem; /* 12px */
-  margin-right: 0.75rem; /* 12px */
+  border-radius: 5px;
 }
 
 .searchBarInput {
@@ -82,10 +80,16 @@
     }
 
     .searchBar {
+      position: absolute;
+      top: calc(100vh - 90px);
+      right: 10%;
+      width: 80vw;
+      z-index: 1;
       order: 3;
-      flex-basis: 100%;
-      margin-top: 15px;
       background-color: var(--bs-body-bg);
+      box-shadow:
+        3px 3px teal,
+        -0.5em 0 0.4em grey;
     }
 
     .navBtns {
@@ -94,13 +98,29 @@
       margin-right: 0 !important;
     }
   }
+}
 
-  .containerFluid {
-    margin-top: 40px;
-  }
+.scrollableColumn {
+  height: 100%;
+  overflow-y: auto;
+  flex: 1;
+  min-width: 0; /* prevents flex item overflow issues */
 }
 
 .searchButtonsContainer {
   padding: 0.325rem 0.25rem;
   // margin-top: 0.25rem; /* 4px */
+}
+
+/* navStyles or a shared CSS file */
+.fullHeightRow {
+  height: calc(100vh - 60px);
+  flex-wrap: nowrap;
+}
+
+/* navStyles */
+.gridContainer {
+  display: grid;
+  grid-template-columns: minmax(250px, 300px) 1fr; /* taglist min 250px, max 300px, rest fills */
+  height: calc(100vh - 60px);
 }

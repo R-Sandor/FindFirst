@@ -83,7 +83,6 @@ const GlobalNavbar: React.FC = () => {
             <Export data-testid="export-component" />
           ) : null}
           <LightDarkToggle />
-          {authButton()}
           {userAuth === AuthStatus.Authorized && (
             <Image
               src={
@@ -92,11 +91,12 @@ const GlobalNavbar: React.FC = () => {
                   : "/img_avatar.png"
               }
               alt="Profile"
-              width={36}
-              height={36}
-              className="rounded-circle ms-6"
+              width={39}
+              height={39}
+              className=""
             />
           )}
+          {authButton()}
         </div>
       </Container>
     </Navbar>
