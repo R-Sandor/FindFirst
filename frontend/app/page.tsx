@@ -17,10 +17,10 @@ export default function App() {
    * the regular landing.
    */
   return userAuth ? (
-    <div className={`${navStyles.containerFluid} container-fluid`}>
+    <div className={`container-fluid`}>
       <div className={`row ${navStyles.fullHeightRow}`}>
         <ScreenSizeProvider>
-          <div className={`col-md-4 col-lg-2 col-xl-2  ${tagStyles.tagList}`}>
+          <div className={`col-md-4 col-lg-2 col-xl-2  ${tagStyles.sideMenu}`}>
             <NewBookmarkCard />
             <TagList />
           </div>

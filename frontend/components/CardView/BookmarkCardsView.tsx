@@ -54,7 +54,7 @@ export default function BookmarkCardsView() {
         <div className={`${cardView.content} row`}>
           {filterBookmarks(bookmarks.fetchedBookmarks).map((b) => {
             return (
-              <div key={b.id} className="col-sm-6 col-md-6 col-lg-4 col-xl-2">
+              <div key={b.id} className="col-sm-6 col-md-6 col-lg-4 col-xl-3">
                 <BookmarkCard bookmark={b} />
               </div>
             );

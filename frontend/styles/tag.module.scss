@@ -1,11 +1,12 @@
-.tagList {
-  margin-top: 5px;
+.sideMenu {
   padding-bottom: 5px;
   padding-top: 10px;
-  border-radius: 10px;
-  background-color: var(--tag-list-bg);
-  overflow: auto;
   max-width: 300px;
+  min-width: 250px;
+  background-color: var(--tag-list-bg);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 
   @media screen and (max-width: 800px) {
     .title {
@@ -22,7 +23,7 @@
   }
 
   @media screen and (min-width: 760px) {
-    max-height: calc(100vh - 70px);
+    max-height: calc(100vh - 60px);
   }
 }
 
@@ -48,5 +49,11 @@
 
 .scrollableColumn {
   height: 100%;
+  overflow-y: auto;
+}
+
+.tagList {
+  flex: 1;
+  min-height: 0; /* crucial - allows it to shrink and scroll */
   overflow-y: auto;
 }

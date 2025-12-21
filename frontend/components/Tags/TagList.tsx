@@ -93,12 +93,8 @@ const TagList = () => {
 
   return (
     isPC && (
-      <div>
-        {!loading ? (
-          <ListGroup variant="flush" className={menuStyle.tagList}>
-            {groupItems || []} {/* Make sure groupItems is defined */}
-          </ListGroup>
-        ) : null}
+      <div className={menuStyle.tagList}>
+        {!loading ? <ListGroup>{groupItems || []}</ListGroup> : null}
       </div>
     )
   );
