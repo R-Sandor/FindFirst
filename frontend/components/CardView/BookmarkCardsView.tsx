@@ -1,6 +1,5 @@
 import { useSelectedTags } from "@/contexts/SelectedContext";
 import BookmarkCard from "@components/Bookmark/BookmarkCard";
-import NewBookmarkCard from "@components/Bookmark/NewBookmarkCard";
 import { useBookmarks } from "@/contexts/BookmarkContext";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import { useTags } from "@/contexts/TagContext";
@@ -54,7 +53,10 @@ export default function BookmarkCardsView() {
         <div className={`${cardView.content} row`}>
           {filterBookmarks(bookmarks.fetchedBookmarks).map((b) => {
             return (
-              <div key={b.id} className="col-sm-6 col-md-6 col-lg-4 col-xl-3">
+              <div
+                key={b.id}
+                className="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 col-xxl-2"
+              >
                 <BookmarkCard bookmark={b} />
               </div>
             );

@@ -1,8 +1,32 @@
 @tailwind components;
 @tailwind utilities;
-
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
-@import "bootstrap/dist/css/bootstrap.min.css";
+
+$grid-breakpoints: (
+  // Extra small screen / phone
+  xs: 0,
+  // Small screen / phone
+  sm: 576px,
+  // Medium screen / tablet
+  md: 768px,
+  // Large screen / desktop
+  lg: 992px,
+  // Extra large screen / wide desktop
+  xl: 1600px,
+  xxl: 2000px,
+  xxxl: 2900px
+);
+
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1540px,
+  xxl: 1960px,
+  xxxl: 2860px,
+);
+
+@import "bootstrap/scss/bootstrap";
 
 body {
   width: 100%;
