@@ -5,8 +5,12 @@ services:
       - "3000:3000"
     environment:
       - NEXT_PUBLIC_IMAGE_DIR=/public/screenshots/
+      - NEXT_PUBLIC_IMAGE_SERVER_URL=http://image-service:18080/
     volumes:
       - ./data/screenshots:/app/public/screenshots
+    profiles:
+      - dev
+      - backend
   server:
     image: ghcr.io/r-sandor/findfirst-server:latest
     ports:
@@ -26,6 +30,9 @@ services:
     depends_on:
       - db
       - typesense
+    profiles:
+      - dev
+      - frontend
   screenshot:
     image: ghcr.io/r-sandor/findfirst-screenshot:latest
     ports:
@@ -35,6 +42,11 @@ services:
       - FINDFIRST_SCREENSHOT_LOCATION=/app/screenshots
     volumes:
       - ./data/screenshots:/app/screenshots
+    profiles:
+      - dev
+      - local
+      - frontend
+      - backend
   typesense:
     image: typesense/typesense:27.1
     restart: on-failure
@@ -45,6 +57,11 @@ services:
     volumes:
       - ./data/typesense-data:/data
     command: "--data-dir /data --enable-cors"
+    profiles:
+      - dev
+      - local
+      - frontend
+      - backend
   db:
     image: postgres:16.2-alpine
     environment:
@@ -55,11 +72,30 @@ services:
       - pgdata:/var/lib/postgresql/data
     ports:
       - 5432:5432
-    restart: always
+    restart: unless-stopped
+    profiles:
+      - dev
+      - local
+      - frontend
+      - backend
   mail:
     image: mailhog/mailhog:latest
     ports:
       - 1025:1025
       - 8025:8025
+    profiles:
+      - dev
+      - local
+      - frontend
+      - backend
+  # New service - In progress.
+  # image-service:
+  #   image: hello_crow
+  #   ports:
+  #     - 18080:18080
+  #   volumes:
+  #     - ./data/screenshots:/app/public/screenshots
+  #   environment:
+  #     - IMAGE_DIR=/app/public/screenshots/
 volumes:
   pgdata:
