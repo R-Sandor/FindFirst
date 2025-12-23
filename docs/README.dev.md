@@ -31,14 +31,16 @@ host and docker without any problems.
 
 ### Running Most the stack on Host
 
-- `docker compose up db mail screenshot`
+- `docker compose --profile local up`
+  - This starts all the services but the backend an frontend.
+  - The assumption is this is where majority of the feature are added.
+  - If you're working in one of the other services either docker compose down
+    that service or spin up all the services you need with `docker compose <sv1> <sv2> <...> up`
 - `cd frontend; pnpm run dev`
   - All changes to the frontend code are hot reloaded.
   - Now user your favorite IDE!
 - Open a new terminal tab/window.
 - `cd server`
-- `./scripts/createServerKeys.sh`
-  - Requires OpenSSL installed on machine.
 - `./gradlew build bootRun`
   - Use any IDE that you like, VSCode
   - Neovim
@@ -61,6 +63,10 @@ host and docker without any problems.
 
 ```bash
 docker compose db frontend mail screenshot
+# or the use of profiles.
+docker compose --profiles frontend
+# The profile hints to the type of work your doing.
+# frontend spins everything up but the frontend in docker.
 ```
 
 Then executing: `cd server && ./gradlew bootRun`
