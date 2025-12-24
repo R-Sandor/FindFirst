@@ -18,6 +18,7 @@ import {
 import { ToastContainer, toast } from "react-toastify";
 import { AxiosError, AxiosResponse } from "axios";
 import { ScrapableNewBookmarkToggle } from "./ScrapableToggle";
+import TagInput from "./TagInput";
 
 async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
   let newBkmkRequest: NewBookmarkRequest = {
@@ -100,7 +101,7 @@ export default function NewBookmarkCard() {
 
   const handleOnSubmit = async (
     submittedBmk: NewBookmarkForm,
-    actions: any,
+    actions: any
   ) => {
     // Get the last inputted string and all the tags already entered.
     let tags: Tag[] = strTags.map((t) => ({ title: t, id: -1 }));
@@ -250,28 +251,16 @@ export default function NewBookmarkCard() {
                 ) : null}
               </div>
               <div className={`card-footer ${style.cardFooter} `}>
-                <div className={style.container}>
-                  {strTags.map((tag, index) => (
-                    <button
-                      key={tag}
-                      onClick={() => deleteTag(index, setFieldValue, values)}
-                      type="button"
-                      data-testid={tag}
-                      className={style.pillButton}
-                    >
-                      {tag}
-                      <i className={`${style.xtag} bi bi-journal-x`}></i>
-                    </button>
-                  ))}
-                  <input
-                    value={tagInput}
-                    className={style.input}
-                    placeholder="Enter a tag"
-                    onKeyDown={(e) => onKeyDown(e, setValues, values)}
-                    onChange={onTagInputChange}
-                    data-testid="new-bk-tag-input"
-                  />
-                </div>
+                <TagInput
+                  tags={strTags}
+                  deleteTag={(_, index) =>
+                    deleteTag(index, setFieldValue, values)
+                  }
+                  onKeyDown={(e) => onKeyDown(e, setValues, values)}
+                  inputValue={tagInput}
+                  onChange={onTagInputChange}
+                  testIdPrefix="new-bk-"
+                ></TagInput>
                 <button
                   disabled={!isValid || !dirty}
                   className={`${style.formButton}  ${style.submit}`}

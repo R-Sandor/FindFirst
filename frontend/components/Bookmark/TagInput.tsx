@@ -20,7 +20,7 @@ const TagInput = (props: {
         }}
         type="button"
         className={style.pillButton}
-        data-testid={`${props.testIdPrefix}-tag-${tag}`}
+        data-testid={`${props.testIdPrefix}tag-${tag}`}
       >
         {tag}
         <i className="xtag bi bi-journal-x"></i>
@@ -31,7 +31,7 @@ const TagInput = (props: {
       className={style.input}
       value={props.inputValue}
       placeholder="Enter a tag"
-      data-testid={`${props.testIdPrefix}-input`}
+      data-testid={`${props.testIdPrefix}tag-input`}
       onKeyDown={props.onKeyDown}
       onChange={props.onChange}
     />
