@@ -17,7 +17,7 @@ describe("New Bookmark Card Renders", () => {
         <div className="col-6 col-sm-12 col-md-12 col-lg-4">
           <NewBookmarkCard />
         </div>
-      </div>,
+      </div>
     );
   });
 
@@ -37,7 +37,7 @@ describe("Fields logic", () => {
         <div className="col-6 col-sm-12 col-md-12 col-lg-4">
           <NewBookmarkCard />
         </div>
-      </div>,
+      </div>
     );
   });
 
@@ -107,13 +107,26 @@ describe("Fields logic", () => {
     expect(url).toHaveValue("");
     expect(tags).toHaveValue("");
     expect(submit).toBeDisabled();
+    expect(axiosMock.history).toHaveLength(2);
+    // Verify the data sent in the requests
+    expect(axiosMock.history[0].url).toEqual("tags");
+    expect(axiosMock.history[0].method).toEqual("post");
+    expect(JSON.parse(axiosMock.history[0].data)).toEqual(["cooking"]);
+    expect(axiosMock.history[1].url).toEqual("bookmark");
+    expect(axiosMock.history[1].method).toEqual("post");
+    expect(JSON.parse(axiosMock.history[1].data)).toEqual({
+      title: "https://foodnetwork.com",
+      url: "https://foodnetwork.com",
+      tagIds: [1],
+      scrapable: false,
+    });
   });
 
   it("Valid Domains", async () => {
     async function checkDomain(
       url: string,
       submit: HTMLElement,
-      isValid: boolean,
+      isValid: boolean
     ) {
       await user.type(screen.getByPlaceholderText(/discover/i), url);
       isValid ? expect(submit).toBeEnabled() : expect(submit).toBeDisabled();
@@ -150,7 +163,7 @@ describe("Fields logic", () => {
         "favs2",
         "misc",
       ],
-      user,
+      user
     );
     await user.type(url, "foodnetwork.com");
     await user.click(reset);
@@ -240,7 +253,7 @@ describe("Tags Operations", () => {
         <div className="col-6 col-sm-12 col-md-12 col-lg-4">
           <NewBookmarkCard />
         </div>
-      </div>,
+      </div>
     );
   });
 
@@ -257,7 +270,7 @@ describe("Tags Operations", () => {
         "favs",
         "misc",
       ],
-      user,
+      user
     );
     expect(screen.getByText(/Too many tags/i)).toBeVisible();
   });
@@ -284,7 +297,7 @@ describe("Success Toast", () => {
         <div className="col-6 col-sm-12 col-md-12 col-lg-4">
           <NewBookmarkCard />
         </div>
-      </div>,
+      </div>
     );
 
     const submit = screen.getByText("Submit");
@@ -346,7 +359,7 @@ describe("Success Toast", () => {
 
     // Wait for the success toast to appear
     expect(
-      await screen.findByText("Bookmark added successfully!"),
+      await screen.findByText("Bookmark added successfully!")
     ).toBeInTheDocument();
   });
 });
