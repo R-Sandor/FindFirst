@@ -1,4 +1,12 @@
-import { ReactNode, RefObject, useEffect, useRef, useState } from "react";
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  ReactNode,
+  RefObject,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Card, CloseButton } from "react-bootstrap";
 import { useTagsDispatch } from "@/contexts/TagContext";
 import Bookmark from "@/types/Bookmarks/Bookmark";
@@ -11,6 +19,7 @@ import Tag from "@/types/Bookmarks/Tag";
 import api from "@/api/Api";
 import CardBody from "./CardBody";
 import { SERVER_URL } from "@type/global";
+import TagInput from "./TagInput";
 
 const imgApi = SERVER_URL + "/api/screenshots/";
 
@@ -253,33 +262,14 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
         />
         {resolveCardType()}
         <Card.Footer className={style.cardFooter}>
-          <div className={style.container}>
-            {strTags.map((tag) => (
-              <button
-                key={tag}
-                onClick={() => deleteTag(tag)}
-                onContextMenu={(e) => {
-                  e.preventDefault();
-                  deleteTag(tag);
-                }}
-                type="button"
-                className={style.pillButton}
-                data-testid={`${tag}-tag-${bookmark.id}-bk`}
-              >
-                {tag}
-                <i className="xtag bi bi-journal-x"></i>
-              </button>
-            ))}
-
-            <input
-              className={style.input}
-              value={input}
-              placeholder="Enter a tag"
-              data-testid={`${bookmark.title}-input`}
-              onKeyDown={onKeyDown}
-              onChange={onChange}
-            />
-          </div>
+          <TagInput
+            tags={strTags}
+            deleteTag={deleteTag}
+            onKeyDown={onKeyDown}
+            inputValue={input}
+            onChange={onChange}
+            testIdPrefix={`bk-${bookmark.id}-`}
+          ></TagInput>
         </Card.Footer>
       </div>
     </div>
