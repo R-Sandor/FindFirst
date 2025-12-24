@@ -6,20 +6,11 @@
 
 .searchBar {
   border: 1px solid grey;
-  display: flex;
   align-items: center;
   height: 100%;
-  flex-grow: 1;
   border-radius: 5px;
-}
-
-.searchBarInput {
-  border: none !important;
-  outline: none !important;
-  height: 100%;
-  padding: 0.375rem 0.75rem;
-  background: unset;
-  align-items: center;
+  width: 100%;
+  flex-wrap: wrap;
 }
 
 .searchBar > .searchBarBtn {
@@ -29,6 +20,19 @@
   &:hover {
     color: #29b5bf;
   }
+}
+
+.searchBarInput {
+  border: none !important;
+  outline: none !important;
+  padding: 0.375rem 0.75rem;
+  background: unset;
+  align-items: center;
+  text-align: center;
+  min-width: 90px;
+  width: 100%;
+  height: auto;
+  flex: 1 1 0;
 }
 
 .pillButton {
@@ -109,7 +113,9 @@
 
 .searchButtonsContainer {
   padding: 0.325rem 0.25rem;
-  // margin-top: 0.25rem; /* 4px */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 
 /* navStyles or a shared CSS file */

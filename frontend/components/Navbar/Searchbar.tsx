@@ -189,7 +189,7 @@ export default function Searchbar() {
 
   return (
     <div className={`d-flex flex-grow-1 ${navbarView.searchBar}`}>
-      <div className={`flex-grow d-flex`}>
+      <div className={`flex-grow-1 d-flex`}>
         <div className={navbarView.searchButtonsContainer}>
           <button
             key={"searchType"}
