@@ -84,7 +84,7 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
       ];
     });
     const inputForCheeseCakeCard = await screen.findByTestId(
-      "Best Cheesecake Recipe-input",
+      "bk-1-tag-input",
       undefined,
       { timeout: 1000 },
     );
@@ -134,16 +134,16 @@ describe("User is authenticated and bookmark/tag data is present.", () => {
     });
 
     const inputForCheeseCakeCard = await screen.findByTestId(
-      "Best Cheesecake Recipe-input",
+      "bk-1-tag-input",
       undefined,
       { timeout: 1000 },
     );
     await userEvnt.type(inputForCheeseCakeCard, "Cooking");
     hitEnter(inputForCheeseCakeCard);
 
-    await userEvnt.click(screen.getByTestId("web_dev-tag-2-bk"));
+    await userEvnt.click(screen.getByTestId("bk-2-tag-web_dev"));
 
-    await userEvnt.click(screen.getByTestId("Cooking-tag-1-bk"));
+    await userEvnt.click(screen.getByTestId("bk-1-tag-Cooking"));
     expect(screen.getByTestId("Cooking-list-item-cnt")).toContainHTML(
       "<div data-testid='Cooking-list-item-cnt'>1</div>",
     );
