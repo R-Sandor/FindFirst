@@ -88,6 +88,7 @@ describe("Fields logic", () => {
         ],
         screenshotUrl: "",
         scrapable: false,
+        textHighlight: null,
       };
 
       axiosMock.onPost(tagsAPI, ["cooking"]).reply(() => {
@@ -174,6 +175,7 @@ describe("Fields logic", () => {
         ],
         screenshotUrl: "",
         scrapable: false,
+        textHighlight: null,
       };
 
       axiosMock.onPost(tagsAPI, ["cooking", "food"]).reply(() => {
@@ -342,6 +344,7 @@ describe("Success Toast", () => {
       ],
       screenshotUrl: "",
       scrapable: true,
+      textHighlight: null,
     };
 
     axiosMock.onPost(tagsAPI).reply(() => {
