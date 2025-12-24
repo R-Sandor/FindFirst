@@ -140,6 +140,7 @@ describe("Fields logic", () => {
       const submit = screen.getByText("Submit");
       const tags = screen.getByPlaceholderText("Enter a tag");
       const url = screen.getByPlaceholderText(/discover/i);
+      const title = screen.getByPlaceholderText(/title:/i);
       await user.type(url, "foodnetwork.com");
       await user.type(tags, "cooking");
       await user.type(tags, "{enter}");
@@ -206,8 +207,22 @@ describe("Fields logic", () => {
 
       // If submitted correctly, the fields should be reset.
       expect(url).toHaveValue("");
+      expect(title).toHaveValue("");
       expect(tags).toHaveValue("");
       expect(submit).toBeDisabled();
+
+      // Verify the data sent in the requests
+      expect(axiosMock.history[0].url).toEqual("tags");
+      expect(axiosMock.history[0].method).toEqual("post");
+      expect(JSON.parse(axiosMock.history[0].data)).toEqual(["cooking", "food"]);
+      expect(axiosMock.history[1].url).toEqual("bookmark");
+      expect(axiosMock.history[1].method).toEqual("post");
+      expect(JSON.parse(axiosMock.history[1].data)).toEqual({
+        title: "https://foodnetwork.com",
+        url: "https://foodnetwork.com",
+        tagIds: [1, 2],
+        scrapable: true,
+      });
     });
   });
 
