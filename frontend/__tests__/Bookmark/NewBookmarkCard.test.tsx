@@ -47,11 +47,13 @@ describe("Fields logic", () => {
   });
 
   describe("Submit", () => {
-    it("All required fields are given data and submitted", async () => {
+    async function testSimpleSubmit(explicitTitle: string | false) {
       const submit = screen.getByText("Submit");
       const tags = screen.getByPlaceholderText("Enter a tag");
       const url = screen.getByPlaceholderText(/discover/i);
+      const title = screen.getByPlaceholderText(/title:/);
       await user.type(url, "foodnetwork.com");
+      if (explicitTitle) await user.type(title, explicitTitle);
       await user.type(tags, "cooking");
       const toggle = screen.getByTestId(
         "https://foodnetwork.com-scrapable-edit"
@@ -78,7 +80,7 @@ describe("Fields logic", () => {
 
       const expectedBookmark: Bookmark = {
         id: 1,
-        title: "foodnetwork.com",
+        title: explicitTitle || "foodnetwork.com",
         url: "foodnetwork.com",
         tags: [
           {
@@ -97,7 +99,7 @@ describe("Fields logic", () => {
 
       axiosMock
         .onPost(bookmarkAPI, {
-          title: "https://foodnetwork.com",
+          title: explicitTitle || "https://foodnetwork.com",
           url: "https://foodnetwork.com",
           tagIds: [1],
         })
@@ -119,11 +121,19 @@ describe("Fields logic", () => {
       expect(axiosMock.history[1].url).toEqual("bookmark");
       expect(axiosMock.history[1].method).toEqual("post");
       expect(JSON.parse(axiosMock.history[1].data)).toEqual({
-        title: "https://foodnetwork.com",
+        title: explicitTitle || "https://foodnetwork.com",
         url: "https://foodnetwork.com",
         tagIds: [1],
         scrapable: false,
       });
+    }
+
+    it("All required fields are given data and submitted", async () => {
+      await testSimpleSubmit(false);
+    });
+
+    it("Title from input is submitted", async () => {
+      await testSimpleSubmit("Custom Title");
     });
 
     it("Field with unsubmitted tag", async () => {
