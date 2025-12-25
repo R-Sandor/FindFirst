@@ -53,10 +53,10 @@ const GlobalNavbar: React.FC = () => {
   return (
     <Navbar
       expand="md"
-      style={{ borderBottom: "1px solid", height: "60px" }}
+      style={{ borderBottom: "1px solid", height: "auto", minHeight: "60px" }}
       className="bg-body-tertiary"
     >
-      <Container className={`${navbarView.navContainer}`}>
+      <Container className={navbarView.navContainer}>
         <Navbar.Brand
           onClick={() => router.push("/")}
           className={`cursor-pointer ${navbarView.navBrand}`}
@@ -70,34 +70,42 @@ const GlobalNavbar: React.FC = () => {
           />
           FindFirst
         </Navbar.Brand>
+
+        {/* Search bar stays visible always */}
         {userAuth === AuthStatus.Authorized ? <Searchbar /> : null}
-        <div className={`btn-group  ${navbarView.navBtns}`}>
-          {userAuth === AuthStatus.Authorized ? (
-            <ImportModal
-              file={undefined}
-              show={false}
-              data-testid="import-modal"
-            />
-          ) : null}
-          {userAuth === AuthStatus.Authorized ? (
-            <Export data-testid="export-component" />
-          ) : null}
-          <LightDarkToggle />
-          {userAuth === AuthStatus.Authorized && (
-            <Image
-              src={
-                user?.profileImage && user?.profileImage.trim() !== ""
-                  ? `/api/user/avatar?userId=${user.id}`
-                  : "/img_avatar.png"
-              }
-              alt="Profile"
-              width={39}
-              height={39}
-              className=""
-            />
-          )}
-          {authButton()}
-        </div>
+
+        {/* Toggle button for collapsed menu */}
+        <Navbar.Toggle aria-controls="navbar-collapse" className="ms-auto" />
+
+        {/* Collapsible content */}
+        <Navbar.Collapse id="navbar-collapse">
+          <div className={`btn-group ms-auto ${navbarView.navBtns}`}>
+            {userAuth === AuthStatus.Authorized ? (
+              <ImportModal
+                file={undefined}
+                show={false}
+                data-testid="import-modal"
+              />
+            ) : null}
+            {userAuth === AuthStatus.Authorized ? (
+              <Export data-testid="export-component" />
+            ) : null}
+            <LightDarkToggle />
+            {userAuth === AuthStatus.Authorized && (
+              <Image
+                src={
+                  user?.profileImage && user?.profileImage.trim() !== ""
+                    ? `/api/user/avatar?userId=${user.id}`
+                    : "/img_avatar.png"
+                }
+                alt="Profile"
+                width={39}
+                height={39}
+              />
+            )}
+            {authButton()}
+          </div>
+        </Navbar.Collapse>
       </Container>
     </Navbar>
   );

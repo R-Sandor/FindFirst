@@ -7,7 +7,7 @@
 .searchBar {
   border: 1px solid grey;
   align-items: center;
-  height: 100%;
+  min-height: 0;
   border-radius: 5px;
   width: 100%;
   flex-wrap: wrap;
@@ -78,7 +78,7 @@
   .navContainer {
     .navBrand {
       flex-grow: 1;
-      order: 1;
+      order: 0;
       margin-left: 0 !important;
       margin-right: 0 !important;
     }
@@ -89,7 +89,7 @@
       right: 10%;
       width: 80vw;
       z-index: 1;
-      order: 3;
+      order: 2;
       background-color: var(--bs-body-bg);
       box-shadow:
         3px 3px #29b5bf,
@@ -97,9 +97,11 @@
     }
 
     .navBtns {
-      order: 2;
+      order: 3;
       margin-left: 0 !important;
       margin-right: 0 !important;
+      padding-top: 10px;
+      float: right;
     }
   }
 }
