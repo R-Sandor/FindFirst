@@ -101,7 +101,7 @@ export default function NewBookmarkCard() {
 
   const handleOnSubmit = async (
     submittedBmk: NewBookmarkForm,
-    actions: any
+    actions: any,
   ) => {
     // Get the last inputted string and all the tags already entered.
     let tags: Tag[] = strTags.map((t) => ({ title: t, id: -1 }));
