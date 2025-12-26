@@ -221,6 +221,7 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
     addTagToBookmark(bookmark, tag).then((action) => {
       dispatch(action);
       setStrTags([...strTags, tag]);
+      currentBookmark.current.tags.push({ id: action.id, title: action.title });
     });
 
   function getIdxFromTitle(title: string): number {
