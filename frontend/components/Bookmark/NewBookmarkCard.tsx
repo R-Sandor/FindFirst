@@ -227,7 +227,7 @@ export default function NewBookmarkCard() {
                   tags={strTags}
                   inputValue={tagInput}
                   setInputValue={setTagInput}
-                  onDeleteTag={(_, index) => deleteTag(index, setFieldValue)}
+                  onDeleteTag={(index) => deleteTag(index, setFieldValue)}
                   onPushTag={(tag) => onPushTag(tag, setFieldValue)}
                   testIdPrefix="new-bk-"
                 ></TagInput>

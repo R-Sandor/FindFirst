@@ -196,8 +196,7 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
     });
   }
 
-  const onDeleteTag = (title: string) => {
-    const idx = getIdxFromTitle(title);
+  const onDeleteTag = (idx: number) => {
     const tagId = bookmark.tags[idx].id;
     if (currentBookmark.current) {
       currentBookmark.current.tags = currentBookmark.current.tags.filter(
