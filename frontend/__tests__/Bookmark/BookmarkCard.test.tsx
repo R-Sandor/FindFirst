@@ -16,7 +16,7 @@ describe("Bookmark functions", () => {
         <div className="col-6 col-sm-12 col-md-12 col-lg-4">
           <BookmarkCard bookmark={defaultBookmark} />
         </div>
-      </div>,
+      </div>
     );
   });
 
@@ -57,7 +57,7 @@ describe("Adding and deleting Tags", () => {
             }}
           />
         </div>
-      </div>,
+      </div>
     );
   });
 
@@ -101,7 +101,7 @@ describe("Adding and deleting Tags", () => {
       ];
     });
     const tags = screen.getByPlaceholderText("Enter a tag");
-    hitKey(tags, "backspace", "backspace", 8, 8);
+    hitKey(tags, "Backspace", "Backspace", 8, 8);
     expect(screen.queryByText(/social/i)).toBeNull();
   });
 

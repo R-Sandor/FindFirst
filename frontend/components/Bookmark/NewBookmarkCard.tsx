@@ -86,10 +86,6 @@ export default function NewBookmarkCard() {
   const bkmkDispatch = useBookmarkDispatch();
   const tagDispatch = useTagsDispatch();
 
-  const onTagInputChange = (e: any) => {
-    setTagInput(e.target.value);
-  };
-
   const urlInputChange = (e: any, setFieldValue: any) => {
     let url: string = e.target.value;
     if (url.length > 4 && !url.startsWith("http")) {
@@ -101,11 +97,12 @@ export default function NewBookmarkCard() {
 
   const handleOnSubmit = async (
     submittedBmk: NewBookmarkForm,
-    actions: any,
+    actions: any
   ) => {
     // Get the last inputted string and all the tags already entered.
     let tags: Tag[] = strTags.map((t) => ({ title: t, id: -1 }));
     if (tagInput) {
+      // FIXME
       tags.push({ title: tagInput, id: -1 });
     }
     submittedBmk.title = submittedBmk.url;
@@ -151,40 +148,15 @@ export default function NewBookmarkCard() {
     }
   };
 
-  function onKeyDown(e: any, sv: any, values: NewBookmarkForm) {
-    const { key } = e;
-    const trimmedInput = tagInput.trim();
-    if (
-      // Add tag via space bar or enter
-      (key === "Enter" || key === "Space" || key === " ") &&
-      trimmedInput.length &&
-      !strTags.includes(trimmedInput)
-    ) {
-      e.preventDefault();
-      setStrTags((prevState) => [...prevState, trimmedInput]);
-      values.tagTitles = strTags.concat(trimmedInput);
-      setTagInput("");
-    }
-    // If backspace is pressed on an empty input field, remove the last tag.
-    if (key === "Backspace" && !tagInput.length && strTags.length) {
-      e.preventDefault();
-      const tagsCopy = [...strTags];
-      let poppedTag = tagsCopy.pop();
-
-      values.tagTitles = tagsCopy;
-      setStrTags(tagsCopy);
-      if (poppedTag) {
-        setTagInput(poppedTag);
-      }
-    }
-    sv(values);
-  }
-
-  const deleteTag = (index: number, setField: any, values: NewBookmarkForm) => {
+  const deleteTag = (index: number, setField: any) => {
     const tags = strTags.filter((t, i) => i !== index);
-    values.tagTitles = tags;
+    setField("tagTitles", tags, false);
     setStrTags(tags);
-    setField("tags", tags, true);
+  };
+
+  const onPushTag = (tag: string, setFieldValue: any) => {
+    setFieldValue("tagTitles", [...strTags, tag], true);
+    setStrTags([...strTags, tag]);
   };
 
   function stripHttp(fullUrl: string) {
@@ -253,12 +225,10 @@ export default function NewBookmarkCard() {
               <div className={`card-footer ${style.cardFooter} `}>
                 <TagInput
                   tags={strTags}
-                  deleteTag={(_, index) =>
-                    deleteTag(index, setFieldValue, values)
-                  }
-                  onKeyDown={(e) => onKeyDown(e, setValues, values)}
                   inputValue={tagInput}
-                  onChange={onTagInputChange}
+                  setInputValue={setTagInput}
+                  onDeleteTag={(_, index) => deleteTag(index, setFieldValue)}
+                  onPushTag={(tag) => onPushTag(tag, setFieldValue)}
                   testIdPrefix="new-bk-"
                 ></TagInput>
                 <button
