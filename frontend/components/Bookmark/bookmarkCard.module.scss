@@ -1,20 +1,11 @@
-.main {
+.cardRoot {
   margin-left: 0.5rem; /* 8px */
   margin-right: 0.5rem; /* 8px */
+}
 
+.cTitle {
   @media screen and (max-width: 700px) {
-    .title {
-      font-size: 12px;
-    }
-    p {
-      font-size: 20px;
-    }
-    .card-title {
-      font-size: 15px;
-    }
-    .card-footer {
-      font-size: 12px;
-    }
+    font-size: 19px;
   }
 }
 
@@ -27,6 +18,10 @@
   border: none;
   border-top: 1px solid;
   background-color: unset;
+
+  @media screen and (max-width: 700px) {
+    min-height: 50px;
+  }
 }
 
 .pillButton {
@@ -50,6 +45,11 @@
 
   &:disabled {
     background-color: grey !important;
+  }
+
+  @media screen and (max-width: 700px) {
+    margin: 5px;
+    height: 35px;
   }
 }
 
@@ -139,10 +139,16 @@
   float: right;
 }
 
+.cImg {
+  border-top-left-radius: 0px;
+  border-top-right-radius: 0px;
+}
+
 .bookmarkCard {
-  min-height: 250px;
+  // min-height: 250px;
   margin-bottom: 20px;
   background-color: var(--card-bg);
+  border: 0px;
 }
 
 .newBookmarkCard {

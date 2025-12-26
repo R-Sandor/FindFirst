@@ -3,6 +3,7 @@ import { RefObject, useState } from "react";
 import Bookmark from "@type/Bookmarks/Bookmark";
 import EditableField from "./EditableField";
 import { ScrapableBookmarkToggle } from "./ScrapableToggle";
+import style from "./bookmarkCard.module.scss";
 
 interface CardBodyProp {
   bookmark: Readonly<Bookmark>;
@@ -22,8 +23,8 @@ export default function CardBody({
   const [isScrapable, setIsScrapable] = useState(bookmark.scrapable);
 
   return (
-    <Card.Body>
-      <Card.Title>
+    <Card.Body className={``}>
+      <Card.Title className={`${style.cTitle}`}>
         {inEditMode ? (
           <EditableField
             fieldValue={bookmark.title}

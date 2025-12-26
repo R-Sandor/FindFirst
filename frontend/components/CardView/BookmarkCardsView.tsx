@@ -55,7 +55,7 @@ export default function BookmarkCardsView() {
             return (
               <div
                 key={b.id}
-                className="col-xs-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 col-xxl-2"
+                className="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3 col-xxl-2"
               >
                 <BookmarkCard bookmark={b} />
               </div>
