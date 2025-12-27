@@ -85,7 +85,7 @@
 
     .searchBar {
       position: absolute;
-      top: calc(100vh - 90px);
+      bottom: -90vh;
       right: 10%;
       width: 80vw;
       z-index: 1;

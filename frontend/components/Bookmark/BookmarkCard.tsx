@@ -64,14 +64,14 @@ function OverlayCard({
   return (
     <Card className={style.bookmarkCard}>
       <div className="row g-0">
-        <div className="col-12">
+        <div className="col-6 col-sm-12">
           <Card.Img
             className={`${style.cImg}`}
             src={url + bookmark.screenshotUrl}
             alt="screenshot preview"
           ></Card.Img>
         </div>
-        <div className="col-12">
+        <div className="col-6 col-sm-12">
           <PlainCard
             changeEditMode={changeEditMode}
             bookmark={bookmark}
