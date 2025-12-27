@@ -264,8 +264,8 @@ describe("Tags Operations", () => {
 
   it("Click delete a Tag", async () => {
     await populateTags(["Tag1", "Tag2"], user);
-    await user.click(screen.getByTestId("Tag2"));
-    expect(screen.queryByTestId("Tag2")).toEqual(null);
+    await user.click(screen.getByTestId("new-bk-tag-Tag2"));
+    expect(screen.queryByTestId("new-bk-tag-Tag2")).toEqual(null);
   });
 
   it("Back Space delete a Tag", async () => {
