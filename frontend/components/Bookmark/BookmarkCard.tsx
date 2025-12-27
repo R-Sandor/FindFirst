@@ -1,5 +1,5 @@
 import { ReactNode, RefObject, useEffect, useRef, useState } from "react";
-import { Card, CloseButton } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { useTagsDispatch } from "@/contexts/TagContext";
 import Bookmark from "@/types/Bookmarks/Bookmark";
 import TagAction from "@/types/Bookmarks/TagAction";
@@ -45,6 +45,69 @@ async function addTagToBookmark(
   });
 
   return action;
+}
+
+function OverlayCard({
+  url,
+  currentBookmark,
+  bookmark,
+  inEditMode,
+  edit,
+  changeEditMode,
+}: {
+  url: string;
+  currentBookmark: RefObject<Bookmark>;
+  bookmark: Bookmark;
+  inEditMode: boolean;
+  edit: RefObject<Bookmark>;
+  changeEditMode: () => void;
+}): ReactNode {
+  return (
+    <Card className={style.bookmarkCard}>
+      <div className="row g-0">
+        <div className="col-12">
+          <Card.Img
+            className={`${style.cImg}`}
+            src={url + bookmark.screenshotUrl}
+            alt="screenshot preview"
+          ></Card.Img>
+        </div>
+        <div className="col-12">
+          <PlainCard
+            changeEditMode={changeEditMode}
+            bookmark={bookmark}
+            currentBookmark={currentBookmark}
+            inEditMode={inEditMode}
+            edit={edit}
+          ></PlainCard>
+        </div>
+      </div>
+    </Card>
+  );
+}
+
+function PlainCard({
+  currentBookmark,
+  bookmark,
+  inEditMode,
+  edit,
+  changeEditMode,
+}: {
+  currentBookmark: RefObject<Bookmark>;
+  bookmark: Bookmark;
+  inEditMode: boolean;
+  edit: RefObject<Bookmark>;
+  changeEditMode: () => void;
+}): ReactNode {
+  return (
+    <CardBody
+      bookmark={currentBookmark.current}
+      highlight={bookmark.textHighlight}
+      inEditMode={inEditMode}
+      edit={edit}
+      changeEditMode={changeEditMode}
+    />
+  );
 }
 
 export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
@@ -165,20 +228,29 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
     return bookmark.tags.findIndex((t) => t.title == title);
   }
 
-  function resolveCardType(): ReactNode {
-    return bookmark.screenshotUrl ? overlayCard() : plainCard();
-  }
+  const onChange = (e: any) => {
+    const { value } = e.target;
+    setInput(value);
+  };
 
-  function overlayCard(): ReactNode {
-    return (
-      <Card className={style.bookmarkCard}>
-        <img
-          className="card-img-top"
-          src={imgApi + bookmark.screenshotUrl}
-          alt="screenshot preview"
-        />
-        {plainCard()}
-      </Card>
+  function Content(): ReactNode {
+    return bookmark.screenshotUrl ? (
+      <OverlayCard
+        url={imgApi}
+        changeEditMode={changeEditMode}
+        bookmark={bookmark}
+        currentBookmark={currentBookmark}
+        inEditMode={inEditMode}
+        edit={edit}
+      />
+    ) : (
+      <PlainCard
+        changeEditMode={changeEditMode}
+        bookmark={bookmark}
+        currentBookmark={currentBookmark}
+        inEditMode={inEditMode}
+        edit={edit}
+      ></PlainCard>
     );
   }
 
@@ -187,24 +259,17 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
     handleEdits(!inEditMode);
   }
 
-  function plainCard(): ReactNode {
-    return (
-      <CardBody
-        bookmark={currentBookmark.current}
-        highlight={bookmark.textHighlight}
-        inEditMode={inEditMode}
-        edit={edit}
-        changeEditMode={changeEditMode}
-      />
-    );
-  }
-
   return (
-    <div data-testid={`bookmark-${bookmark.title}`} className={style.main}>
+    <div
+      data-testid={`bookmark-${bookmark.title}`}
+      className={`${style.cardRoot}`}
+    >
       <div className={`card ${style.bookmarkCard}`}>
         <div className={style.cardHeader}>
-          <CloseButton
-            className={style.deleteBookmarkIcon}
+          <button
+            type="button"
+            aria-label="Close"
+            className={`${style.deleteBookmarkIcon} btn-close`}
             onClick={handleShow}
             data-testid={`bk-id-${bookmark.id}-deleteBtn`}
           />
@@ -221,8 +286,8 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
           handleClose={handleClose}
           deleteBkmk={deleteBkmk}
         />
-        {resolveCardType()}
-        <Card.Footer className={style.cardFooter}>
+        <Content />
+        <div className={`card-footer ${style.cardFooter}`}>
           <TagInput
             tags={strTags}
             inputValue={input}
@@ -231,7 +296,7 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
             onPushTag={onPushTag}
             testIdPrefix={`bk-${bookmark.id}-`}
           ></TagInput>
-        </Card.Footer>
+        </div>
       </div>
     </div>
   );
