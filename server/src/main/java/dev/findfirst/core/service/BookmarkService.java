@@ -171,7 +171,7 @@ public class BookmarkService {
     }
 
     Document retDoc = null;
-    String title = "";
+    String title = reqBkmk.title();
     var screenshotUrlOpt = Optional.of("");
     boolean shouldScrape = reqBkmk.scrapable();
 
@@ -194,7 +194,7 @@ public class BookmarkService {
 
       title = !title.isEmpty() ? title : reqBkmk.title();
       screenshotUrlOpt = sManager.getScreenshot(reqBkmk.url());
-    } else {
+    } else if (title == null || title.isEmpty()) {
       title = new URI(reqBkmk.url()).getHost();
     }
 

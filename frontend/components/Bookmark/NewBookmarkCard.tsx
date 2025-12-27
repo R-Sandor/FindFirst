@@ -79,6 +79,7 @@ async function makeNewBookmark(createBmk: Bookmark): Promise<Bookmark> {
 
 export default function NewBookmarkCard() {
   const [urlInput, setUrlInput] = useState("");
+  const [titleInput, setTitleInput] = useState("");
   const [tagInput, setTagInput] = useState("");
   const [isScrapable, setIsScrapable] = useState(true);
   const [strTags, setStrTags] = useState<string[]>([]);
@@ -98,6 +99,12 @@ export default function NewBookmarkCard() {
     setUrlInput(url);
   };
 
+  const titleInputChange = (e: any, setFieldValue: any) => {
+    const title: string = e.target.value;
+    setFieldValue("title", title, true);
+    setTitleInput(title);
+  };
+
   const handleOnSubmit = async (
     submittedBmk: NewBookmarkForm,
     actions: any,
@@ -107,10 +114,9 @@ export default function NewBookmarkCard() {
     if (tagInput) {
       tags.push({ title: tagInput, id: -1 });
     }
-    submittedBmk.title = submittedBmk.url;
     let newBkmk: Bookmark = {
       id: -1,
-      title: submittedBmk.title,
+      title: submittedBmk.title || submittedBmk.url,
       url: submittedBmk.url,
       screenshotUrl: "",
       tags: tags,
@@ -119,8 +125,7 @@ export default function NewBookmarkCard() {
     };
 
     actions.resetForm({ newcard });
-    setStrTags([]);
-    setTagInput("");
+    clearFormState();
     let retBkmk = await makeNewBookmark(newBkmk);
     // If adding the bookmark was successful, dispatch actions.
     if (retBkmk.id !== -1) {
@@ -143,11 +148,11 @@ export default function NewBookmarkCard() {
     }
   };
 
-  const handleOnReset = async () => {
+  const clearFormState = () => {
     setStrTags([]);
-    if (urlInput) {
-      setUrlInput("");
-    }
+    setTagInput("");
+    setUrlInput("");
+    setTitleInput("");
   };
 
   function onKeyDown(e: any, sv: any, values: NewBookmarkForm) {
@@ -209,6 +214,7 @@ export default function NewBookmarkCard() {
         const tld = dots[dots.length - 1];
         return tlds.includes(tld.toUpperCase());
       }),
+    title: Yup.string().optional().min(1),
     tagTitles: Yup.array().max(8, "Too many tags. Max 8.").optional(),
   });
 
@@ -217,7 +223,7 @@ export default function NewBookmarkCard() {
       <Formik
         initialValues={newcard}
         onSubmit={handleOnSubmit}
-        onReset={handleOnReset}
+        onReset={clearFormState}
         validateOnChange={true}
         validateOnBlur={true}
         validationSchema={bookmarkSchema}
@@ -240,14 +246,23 @@ export default function NewBookmarkCard() {
                     type="text"
                   />
                 </div>
-                {dirty ? (
+                <div style={{ visibility: urlInput ? "visible" : "hidden" }}>
+                  <Field
+                    className="form-control"
+                    id="title"
+                    name="title"
+                    value={titleInput}
+                    onChange={(e: any) => titleInputChange(e, setFieldValue)}
+                    placeholder={`title: ${urlInput}`}
+                    type="text"
+                  />
                   <ScrapableNewBookmarkToggle
                     isScrapable={isScrapable}
                     setScrapable={setIsScrapable}
                     values={values}
                     setValues={setValues}
                   />
-                ) : null}
+                </div>
               </div>
               <div className={`card-footer ${style.cardFooter} `}>
                 <div className={style.container}>
