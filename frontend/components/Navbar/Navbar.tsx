@@ -71,7 +71,7 @@ const GlobalNavbar: React.FC = () => {
             width="38"
             height="30"
             className="d-inline-block align-top"
-            alt="Find First logo"
+            alt="findFirst logo"
           />
           FindFirst
         </Navbar.Brand>

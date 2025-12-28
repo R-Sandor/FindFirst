@@ -23,15 +23,9 @@ export default function CardBody({
 }: Readonly<CardBodyProp>) {
   const [isScrapable, setIsScrapable] = useState(bookmark.scrapable);
 
-  const handleClick = () => {
-    const isMobile = window.innerWidth < 768;
-    if (isMobile) {
-      window.open(bookmark.url);
-    }
-  };
   return (
     <Card.Body className={``}>
-      <Card.Title className={`${style.cTitle}`} onClick={handleClick}>
+      <Card.Title className={`${style.cTitle}`}>
         {inEditMode ? (
           <EditableField
             fieldValue={bookmark.title}
@@ -68,13 +62,11 @@ export default function CardBody({
             />
           </div>
         </div>
-      ) : (
-        <ScreenSizeProvider>
-          <Card.Link target="_blank" href={bookmark.url}>
-            {bookmark.url}
-          </Card.Link>
-        </ScreenSizeProvider>
-      )}
+      ) : bookmark.screenshotUrl == null ? (
+        <Card.Link target="_blank" href={bookmark.url}>
+          {bookmark.url}
+        </Card.Link>
+      ) : null}
       {highlight ? (
         <div>
           <hr />
