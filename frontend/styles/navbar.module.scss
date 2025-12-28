@@ -96,6 +96,12 @@
         -0.2em 0em 0.2em #29b5bf;
     }
 
+    .searchBar:active {
+      position: fixed;
+      background: red !important;
+      bottom: 50%;
+    }
+
     .navBtns {
       order: 3;
       margin-left: 0 !important;
