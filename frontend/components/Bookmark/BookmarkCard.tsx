@@ -82,6 +82,13 @@ function OverlayCard({
           ></PlainCard>
         </div>
       </div>
+      <Card.Link
+        style={{ marginLeft: "15px" }}
+        target="_blank"
+        href={bookmark.url}
+      >
+        {bookmark.url}
+      </Card.Link>
     </Card>
   );
 }
@@ -235,30 +242,14 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
 
   function Content(): ReactNode {
     return bookmark.screenshotUrl ? (
-      <div>
-        <OverlayCard
-          url={imgApi}
-          changeEditMode={changeEditMode}
-          bookmark={bookmark}
-          currentBookmark={currentBookmark}
-          inEditMode={inEditMode}
-          edit={edit}
-        />
-        <div
-          style={{
-            marginBottom: "2px",
-            marginLeft: "15px",
-            marginTop: "0px",
-            textAlign: "justify",
-          }}
-        >
-          {window.innerWidth < 768 ? (
-            <a target="_blank" href={bookmark.url}>
-              {bookmark.url}
-            </a>
-          ) : null}
-        </div>
-      </div>
+      <OverlayCard
+        url={imgApi}
+        changeEditMode={changeEditMode}
+        bookmark={bookmark}
+        currentBookmark={currentBookmark}
+        inEditMode={inEditMode}
+        edit={edit}
+      />
     ) : (
       <div>
         <PlainCard

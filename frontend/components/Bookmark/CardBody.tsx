@@ -62,7 +62,7 @@ export default function CardBody({
             />
           </div>
         </div>
-      ) : bookmark.screenshotUrl == null ? (
+      ) : !bookmark.screenshotUrl ? (
         <Card.Link target="_blank" href={bookmark.url}>
           {bookmark.url}
         </Card.Link>
