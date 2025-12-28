@@ -11,6 +11,7 @@ import Tag from "@/types/Bookmarks/Tag";
 import api from "@/api/Api";
 import CardBody from "./CardBody";
 import { SERVER_URL } from "@type/global";
+import TagInput from "./TagInput";
 
 const imgApi = SERVER_URL + "/api/screenshots/";
 
@@ -21,12 +22,12 @@ interface BookmarkProp {
 /**
  *  function to add a Tag to a Bookmark
  * @param bookmark bookmark
- * @param trimmedInput string title of tag
+ * @param tag string title of tag
  * @returns Promise<TagAction> populates bookmark with the tags.
  */
 async function addTagToBookmark(
   bookmark: Bookmark,
-  trimmedInput: string,
+  tag: string
 ): Promise<TagAction> {
   let action: TagAction = {
     type: "add",
@@ -35,7 +36,7 @@ async function addTagToBookmark(
     bookmark: bookmark,
   };
 
-  await api.addBookmarkTag(bookmark?.id, trimmedInput).then((response) => {
+  await api.addBookmarkTag(bookmark?.id, tag).then((response) => {
     // It will always be the last index since it was the last added.
     // let index = response.data.length - 1;
     action.id = response.data.id;
@@ -84,6 +85,7 @@ function OverlayCard({
     </Card>
   );
 }
+
 function PlainCard({
   currentBookmark,
   bookmark,
@@ -107,6 +109,7 @@ function PlainCard({
     />
   );
 }
+
 export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
   const dispatch = useTagsDispatch();
   const bkmkDispatch = useBookmarkDispatch();
@@ -156,7 +159,7 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
 
   const isChanges = (
     beforeEdit: RefObject<Bookmark>,
-    edit: RefObject<Bookmark>,
+    edit: RefObject<Bookmark>
   ) => {
     return JSON.stringify(beforeEdit.current) != JSON.stringify(edit.current);
   };
@@ -193,12 +196,12 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
     });
   }
 
-  const deleteTag = (title: string) => {
+  const onDeleteTag = (title: string) => {
     const idx = getIdxFromTitle(title);
     const tagId = bookmark.tags[idx].id;
     if (currentBookmark.current) {
       currentBookmark.current.tags = currentBookmark.current.tags.filter(
-        (t, i) => i !== idx,
+        (t, i) => i !== idx
       );
     }
     api.deleteTagById(bookmark.id, tagId);
@@ -215,6 +218,12 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
     dispatch(action);
   };
 
+  const onPushTag = (tag: string) =>
+    addTagToBookmark(bookmark, tag).then((action) => {
+      dispatch(action);
+      setStrTags([...strTags, tag]);
+    });
+
   function getIdxFromTitle(title: string): number {
     return bookmark.tags.findIndex((t) => t.title == title);
   }
@@ -223,38 +232,6 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
     const { value } = e.target;
     setInput(value);
   };
-
-  function onKeyDown(e: any) {
-    const { keyCode } = e;
-    const trimmedInput = input.trim();
-    if (
-      // Enter or space
-      (keyCode === 32 || keyCode == 13) &&
-      trimmedInput.length &&
-      !strTags.includes(trimmedInput)
-    ) {
-      e.preventDefault();
-      setStrTags((prevState) => [...prevState, trimmedInput]);
-
-      strTags.push(trimmedInput);
-      setStrTags([...strTags]);
-      addTagToBookmark(bookmark, trimmedInput).then((action) => {
-        dispatch(action);
-      });
-
-      setInput("");
-    }
-    // backspace delete
-    if (keyCode === 8 && !input.length && bookmark?.tags.length) {
-      e.preventDefault();
-      const tagsCopy = [...strTags];
-      const poppedTag = tagsCopy.pop();
-      if (poppedTag) {
-        deleteTag(poppedTag);
-        setInput(poppedTag);
-      }
-    }
-  }
 
   function Content(): ReactNode {
     return bookmark.screenshotUrl ? (
@@ -311,33 +288,14 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
         />
         <Content />
         <div className={`card-footer ${style.cardFooter}`}>
-          <div className={style.container}>
-            {strTags.map((tag) => (
-              <button
-                key={tag}
-                onClick={() => deleteTag(tag)}
-                onContextMenu={(e) => {
-                  e.preventDefault();
-                  deleteTag(tag);
-                }}
-                type="button"
-                className={style.pillButton}
-                data-testid={`${tag}-tag-${bookmark.id}-bk`}
-              >
-                {tag}
-                <i className="xtag bi bi-journal-x"></i>
-              </button>
-            ))}
-
-            <input
-              className={style.input}
-              value={input}
-              placeholder="Enter a tag"
-              data-testid={`${bookmark.title}-input`}
-              onKeyDown={onKeyDown}
-              onChange={onChange}
-            />
-          </div>
+          <TagInput
+            tags={strTags}
+            inputValue={input}
+            setInputValue={setInput}
+            onDeleteTag={onDeleteTag}
+            onPushTag={onPushTag}
+            testIdPrefix={`bk-${bookmark.id}-`}
+          ></TagInput>
         </div>
       </div>
     </div>
