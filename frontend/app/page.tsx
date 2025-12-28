@@ -20,14 +20,14 @@ export default function App() {
     <div className={`container-fluid`}>
       <div className={`row ${navStyles.fullHeightRow}`}>
         <ScreenSizeProvider>
-          <div className={`col-md-4 col-lg-2 col-xl-2  ${tagStyles.sideMenu}`}>
+          <div
+            className={`col-md-4 col-lg-2 col-xl-1 fixed-top ${tagStyles.sideMenu}`}
+          >
             <NewBookmarkCard />
             <TagList />
           </div>
         </ScreenSizeProvider>
-        <div
-          className={`col-md-8 col-lg-10 col-xl-10 ${navStyles.scrollableColumn}`}
-        >
+        <div className={` col-md-8 col-lg-10  ${navStyles.scrollableColumn}`}>
           <BookmarkCardsView />
         </div>
       </div>

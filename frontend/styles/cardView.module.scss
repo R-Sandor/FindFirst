@@ -1,7 +1,9 @@
 .content {
   padding-top: 3px;
 
-  @media (max-width: 768px) {
-    padding-bottom: 100px;
+  margin-left: 250px;
+
+  @media (max-width: 760px) {
+    margin-left: 0px;
   }
 }

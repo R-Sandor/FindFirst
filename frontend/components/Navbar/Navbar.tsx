@@ -53,7 +53,12 @@ const GlobalNavbar: React.FC = () => {
   return (
     <Navbar
       expand="md"
-      style={{ borderBottom: "1px solid", height: "auto", minHeight: "60px" }}
+      fixed="top"
+      style={{
+        borderBottom: "1px solid",
+        height: "auto",
+        minHeight: "60px",
+      }}
       className="bg-body-tertiary"
     >
       <Container className={navbarView.navContainer}>
