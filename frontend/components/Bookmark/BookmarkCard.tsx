@@ -27,7 +27,7 @@ interface BookmarkProp {
  */
 async function addTagToBookmark(
   bookmark: Bookmark,
-  tag: string
+  tag: string,
 ): Promise<TagAction> {
   let action: TagAction = {
     type: "add",
@@ -159,7 +159,7 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
 
   const isChanges = (
     beforeEdit: RefObject<Bookmark>,
-    edit: RefObject<Bookmark>
+    edit: RefObject<Bookmark>,
   ) => {
     return JSON.stringify(beforeEdit.current) != JSON.stringify(edit.current);
   };
@@ -201,7 +201,7 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
     const tagId = bookmark.tags[idx].id;
     if (currentBookmark.current) {
       currentBookmark.current.tags = currentBookmark.current.tags.filter(
-        (t, i) => i !== idx
+        (_t, i) => i !== idx,
       );
     }
     api.deleteTagById(bookmark.id, tagId);

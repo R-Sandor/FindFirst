@@ -4,6 +4,7 @@ import Bookmark from "@type/Bookmarks/Bookmark";
 import EditableField from "./EditableField";
 import { ScrapableBookmarkToggle } from "./ScrapableToggle";
 import style from "./bookmarkCard.module.scss";
+import { ScreenSizeProvider } from "@/contexts/ScreenSizeContext";
 
 interface CardBodyProp {
   bookmark: Readonly<Bookmark>;
@@ -22,9 +23,15 @@ export default function CardBody({
 }: Readonly<CardBodyProp>) {
   const [isScrapable, setIsScrapable] = useState(bookmark.scrapable);
 
+  const handleClick = () => {
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      window.open(bookmark.url);
+    }
+  };
   return (
     <Card.Body className={``}>
-      <Card.Title className={`${style.cTitle}`}>
+      <Card.Title className={`${style.cTitle}`} onClick={handleClick}>
         {inEditMode ? (
           <EditableField
             fieldValue={bookmark.title}
@@ -62,9 +69,11 @@ export default function CardBody({
           </div>
         </div>
       ) : (
-        <Card.Link target="_blank" href={bookmark.url}>
-          {bookmark.url}
-        </Card.Link>
+        <ScreenSizeProvider>
+          <Card.Link target="_blank" href={bookmark.url}>
+            {bookmark.url}
+          </Card.Link>
+        </ScreenSizeProvider>
       )}
       {highlight ? (
         <div>
