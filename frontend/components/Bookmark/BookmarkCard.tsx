@@ -203,8 +203,7 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
     });
   }
 
-  const onDeleteTag = (title: string) => {
-    const idx = getIdxFromTitle(title);
+  const onDeleteTag = (idx: number) => {
     const tagId = bookmark.tags[idx].id;
     if (currentBookmark.current) {
       currentBookmark.current.tags = currentBookmark.current.tags.filter(
@@ -229,6 +228,7 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
     addTagToBookmark(bookmark, tag).then((action) => {
       dispatch(action);
       setStrTags([...strTags, tag]);
+      currentBookmark.current.tags.push({ id: action.id, title: action.title });
     });
 
   function getIdxFromTitle(title: string): number {

@@ -5,7 +5,7 @@ const TagInput = (props: {
   tags: readonly string[];
   inputValue: string;
   setInputValue: (val: string) => void;
-  onDeleteTag: (tag: string, index: number) => void;
+  onDeleteTag: (index: number) => void;
   onPushTag: (tag: string) => void;
   testIdPrefix: `bk-${string}-` | `new-bk-`;
 }) => {
@@ -28,7 +28,7 @@ const TagInput = (props: {
       const tagsCopy = [...props.tags];
       const poppedTag = tagsCopy.pop();
       if (poppedTag) {
-        props.onDeleteTag(poppedTag, props.tags.length - 1);
+        props.onDeleteTag(props.tags.length - 1);
         props.setInputValue(poppedTag);
       }
     }
@@ -39,10 +39,10 @@ const TagInput = (props: {
       {props.tags.map((tag, index) => (
         <button
           key={tag}
-          onClick={() => props.onDeleteTag(tag, index)}
+          onClick={() => props.onDeleteTag(index)}
           onContextMenu={(e) => {
             e.preventDefault();
-            props.onDeleteTag(tag, index);
+            props.onDeleteTag(index);
           }}
           type="button"
           className={style.pillButton}
