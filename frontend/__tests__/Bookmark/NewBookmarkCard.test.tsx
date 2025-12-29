@@ -17,7 +17,7 @@ describe("New Bookmark Card Renders", () => {
         <div className="col-6 col-sm-12 col-md-12 col-lg-4">
           <NewBookmarkCard />
         </div>
-      </div>,
+      </div>
     );
   });
 
@@ -37,7 +37,7 @@ describe("Fields logic", () => {
         <div className="col-6 col-sm-12 col-md-12 col-lg-4">
           <NewBookmarkCard />
         </div>
-      </div>,
+      </div>
     );
   });
 
@@ -46,74 +46,191 @@ describe("Fields logic", () => {
     expect(submit).toBeDisabled();
   });
 
-  it("All required fields are given data and submitted", async () => {
-    const submit = screen.getByText("Submit");
-    const tags = screen.getByPlaceholderText("Enter a tag");
-    const url = screen.getByPlaceholderText(/discover/i);
-    await user.type(url, "foodnetwork.com");
-    await user.type(tags, "cooking");
-    const toggle = screen.getByTestId("https://foodnetwork.com-scrapable-edit");
-    await user.type(tags, "{enter}");
-    await user.click(toggle);
-    expect(submit).not.toBeDisabled();
+  describe("Submit", () => {
+    async function testSimpleSubmit(explicitTitle: string | false) {
+      const submit = screen.getByText("Submit");
+      const tags = screen.getByPlaceholderText("Enter a tag");
+      const url = screen.getByPlaceholderText(/discover/i);
+      const title = screen.getByPlaceholderText(/title:/);
+      await user.type(url, "foodnetwork.com");
+      if (explicitTitle) await user.type(title, explicitTitle);
+      await user.type(tags, "cooking");
+      const toggle = screen.getByTestId(
+        "https://foodnetwork.com-scrapable-edit"
+      );
+      await user.type(tags, "{enter}");
+      await user.click(toggle);
+      expect(submit).not.toBeDisabled();
 
-    // Fields should be populated
-    expect(url).toHaveValue("https://foodnetwork.com");
+      // Fields should be populated
+      expect(url).toHaveValue("https://foodnetwork.com");
 
-    const axiosMock = new MockAdapter(instance);
-    const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
-    const tagsAPI = SERVER_URL + "/api/tags";
-    const bookmarkAPI = SERVER_URL + "/api/bookmark";
+      const axiosMock = new MockAdapter(instance);
+      const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+      const tagsAPI = SERVER_URL + "/api/tags";
+      const bookmarkAPI = SERVER_URL + "/api/bookmark";
 
-    const expectedResult: TagReqPayload[] = [
-      {
-        id: 1,
-        title: "cooking",
-        bookmarks: [],
-      },
-    ];
-
-    const expectedBookmark: Bookmark = {
-      id: 1,
-      title: "foodnetwork.com",
-      url: "foodnetwork.com",
-      tags: [
+      const expectedResult: TagReqPayload[] = [
         {
           id: 1,
           title: "cooking",
+          bookmarks: [],
         },
-      ],
-      screenshotUrl: "",
-      scrapable: false,
-    };
+      ];
 
-    axiosMock.onPost(tagsAPI, ["cooking"]).reply(() => {
-      return [200, JSON.stringify(expectedResult)];
-    });
+      const expectedBookmark: Bookmark = {
+        id: 1,
+        title: explicitTitle || "foodnetwork.com",
+        url: "foodnetwork.com",
+        tags: [
+          {
+            id: 1,
+            title: "cooking",
+          },
+        ],
+        screenshotUrl: "",
+        scrapable: false,
+        textHighlight: null,
+      };
 
-    axiosMock
-      .onPost(bookmarkAPI, {
-        title: "https://foodnetwork.com",
-        url: "https://foodnetwork.com",
-        tagIds: [1],
-      })
-      .reply(() => {
-        return [200, JSON.stringify(expectedBookmark)];
+      axiosMock.onPost(tagsAPI, ["cooking"]).reply(() => {
+        return [200, JSON.stringify(expectedResult)];
       });
 
-    await user.click(submit);
+      axiosMock
+        .onPost(bookmarkAPI, {
+          title: explicitTitle || "https://foodnetwork.com",
+          url: "https://foodnetwork.com",
+          tagIds: [1],
+        })
+        .reply(() => {
+          return [200, JSON.stringify(expectedBookmark)];
+        });
 
-    // If submitted correctly, the fields should be reset.
-    expect(url).toHaveValue("");
-    expect(tags).toHaveValue("");
-    expect(submit).toBeDisabled();
+      await user.click(submit);
+
+      // If submitted correctly, the fields should be reset.
+      expect(url).toHaveValue("");
+      expect(tags).toHaveValue("");
+      expect(submit).toBeDisabled();
+      expect(axiosMock.history).toHaveLength(2);
+      // Verify the data sent in the requests
+      expect(axiosMock.history[0].url).toEqual("tags");
+      expect(axiosMock.history[0].method).toEqual("post");
+      expect(JSON.parse(axiosMock.history[0].data)).toEqual(["cooking"]);
+      expect(axiosMock.history[1].url).toEqual("bookmark");
+      expect(axiosMock.history[1].method).toEqual("post");
+      expect(JSON.parse(axiosMock.history[1].data)).toEqual({
+        title: explicitTitle || "https://foodnetwork.com",
+        url: "https://foodnetwork.com",
+        tagIds: [1],
+        scrapable: false,
+      });
+    }
+
+    it("All required fields are given data and submitted", async () => {
+      await testSimpleSubmit(false);
+    });
+
+    it("Title from input is submitted", async () => {
+      await testSimpleSubmit("Custom Title");
+    });
+
+    it("Field with unsubmitted tag", async () => {
+      const submit = screen.getByText("Submit");
+      const tags = screen.getByPlaceholderText("Enter a tag");
+      const url = screen.getByPlaceholderText(/discover/i);
+      const title = screen.getByPlaceholderText(/title:/i);
+      await user.type(url, "foodnetwork.com");
+      await user.type(tags, "cooking");
+      await user.type(tags, "{enter}");
+      hitEnter(tags);
+      await user.clear(tags);
+      await user.type(tags, "food");
+      expect(submit).not.toBeDisabled();
+
+      // Fields should be populated
+      expect(url).toHaveValue("https://foodnetwork.com");
+
+      const axiosMock = new MockAdapter(instance);
+      const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
+      const tagsAPI = SERVER_URL + "/api/tags";
+      const bookmarkAPI = SERVER_URL + "/api/bookmark";
+
+      const expectedResult: TagReqPayload[] = [
+        {
+          id: 1,
+          title: "cooking",
+          bookmarks: [],
+        },
+        {
+          id: 2,
+          title: "food",
+          bookmarks: [],
+        },
+      ];
+
+      const expectedBookmark: Bookmark = {
+        id: 1,
+        title: "https://foodnetwork.com",
+        url: "https://foodnetwork.com",
+        tags: [
+          {
+            id: 1,
+            title: "cooking",
+          },
+          {
+            id: 2,
+            title: "food",
+          },
+        ],
+        screenshotUrl: "",
+        scrapable: false,
+        textHighlight: null,
+      };
+
+      axiosMock.onPost(tagsAPI, ["cooking", "food"]).reply(() => {
+        return [200, JSON.stringify(expectedResult)];
+      });
+
+      axiosMock
+        .onPost(bookmarkAPI, {
+          title: "https://foodnetwork.com",
+          url: "https://foodnetwork.com",
+          tagIds: [1, 2],
+        })
+        .reply(() => {
+          return [200, JSON.stringify(expectedBookmark)];
+        });
+
+      await user.click(submit);
+
+      // If submitted correctly, the fields should be reset.
+      expect(url).toHaveValue("");
+      expect(title).toHaveValue("");
+      expect(tags).toHaveValue("");
+      expect(submit).toBeDisabled();
+
+      // Verify the data sent in the requests
+      expect(axiosMock.history[0].url).toEqual("tags");
+      expect(axiosMock.history[0].method).toEqual("post");
+      expect(JSON.parse(axiosMock.history[0].data)).toEqual(["cooking", "food"]);
+      expect(axiosMock.history[1].url).toEqual("bookmark");
+      expect(axiosMock.history[1].method).toEqual("post");
+      expect(JSON.parse(axiosMock.history[1].data)).toEqual({
+        title: "https://foodnetwork.com",
+        url: "https://foodnetwork.com",
+        tagIds: [1, 2],
+        scrapable: true,
+      });
+    });
   });
 
   it("Valid Domains", async () => {
     async function checkDomain(
       url: string,
       submit: HTMLElement,
-      isValid: boolean,
+      isValid: boolean
     ) {
       await user.type(screen.getByPlaceholderText(/discover/i), url);
       isValid ? expect(submit).toBeEnabled() : expect(submit).toBeDisabled();
@@ -150,83 +267,10 @@ describe("Fields logic", () => {
         "favs2",
         "misc",
       ],
-      user,
+      user
     );
     await user.type(url, "foodnetwork.com");
     await user.click(reset);
-    expect(url).toHaveValue("");
-    expect(tags).toHaveValue("");
-    expect(submit).toBeDisabled();
-  });
-
-  it("Field with unsubmitted tag", async () => {
-    const submit = screen.getByText("Submit");
-    const tags = screen.getByPlaceholderText("Enter a tag");
-    const url = screen.getByPlaceholderText(/discover/i);
-    await user.type(url, "foodnetwork.com");
-    await user.type(tags, "cooking");
-    await user.type(tags, "{enter}");
-    hitEnter(tags);
-    await user.clear(tags);
-    await user.type(tags, "food");
-    expect(submit).not.toBeDisabled();
-
-    // Fields should be populated
-    expect(url).toHaveValue("https://foodnetwork.com");
-
-    const axiosMock = new MockAdapter(instance);
-    const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
-    const tagsAPI = SERVER_URL + "/api/tags";
-    const bookmarkAPI = SERVER_URL + "/api/bookmark";
-
-    const expectedResult: TagReqPayload[] = [
-      {
-        id: 1,
-        title: "cooking",
-        bookmarks: [],
-      },
-      {
-        id: 2,
-        title: "food",
-        bookmarks: [],
-      },
-    ];
-
-    const expectedBookmark: Bookmark = {
-      id: 1,
-      title: "https://foodnetwork.com",
-      url: "https://foodnetwork.com",
-      tags: [
-        {
-          id: 1,
-          title: "cooking",
-        },
-        {
-          id: 2,
-          title: "food",
-        },
-      ],
-      screenshotUrl: "",
-      scrapable: false,
-    };
-
-    axiosMock.onPost(tagsAPI, ["cooking", "food"]).reply(() => {
-      return [200, JSON.stringify(expectedResult)];
-    });
-
-    axiosMock
-      .onPost(bookmarkAPI, {
-        title: "https://foodnetwork.com",
-        url: "https://foodnetwork.com",
-        tagIds: [1, 2],
-      })
-      .reply(() => {
-        return [200, JSON.stringify(expectedBookmark)];
-      });
-
-    await user.click(submit);
-
-    // If submitted correctly, the fields should be reset.
     expect(url).toHaveValue("");
     expect(tags).toHaveValue("");
     expect(submit).toBeDisabled();
@@ -240,7 +284,7 @@ describe("Tags Operations", () => {
         <div className="col-6 col-sm-12 col-md-12 col-lg-4">
           <NewBookmarkCard />
         </div>
-      </div>,
+      </div>
     );
   });
 
@@ -257,7 +301,7 @@ describe("Tags Operations", () => {
         "favs",
         "misc",
       ],
-      user,
+      user
     );
     expect(screen.getByText(/Too many tags/i)).toBeVisible();
   });
@@ -284,7 +328,7 @@ describe("Success Toast", () => {
         <div className="col-6 col-sm-12 col-md-12 col-lg-4">
           <NewBookmarkCard />
         </div>
-      </div>,
+      </div>
     );
 
     const submit = screen.getByText("Submit");
@@ -325,6 +369,7 @@ describe("Success Toast", () => {
       ],
       screenshotUrl: "",
       scrapable: true,
+      textHighlight: null,
     };
 
     axiosMock.onPost(tagsAPI).reply(() => {
@@ -346,7 +391,7 @@ describe("Success Toast", () => {
 
     // Wait for the success toast to appear
     expect(
-      await screen.findByText("Bookmark added successfully!"),
+      await screen.findByText("Bookmark added successfully!")
     ).toBeInTheDocument();
   });
 });
