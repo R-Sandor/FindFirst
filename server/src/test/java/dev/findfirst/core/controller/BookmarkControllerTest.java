@@ -189,7 +189,7 @@ class BookmarkControllerTest {
     var response = restTemplate.exchange(bookmarkURI, HttpMethod.POST, ent, BookmarkDTO.class);
     assertEquals(HttpStatus.OK, response.getStatusCode());
     var bkmk = Optional.ofNullable(response.getBody());
-    assertEquals("stackoverflow.com", bkmk.orElseThrow().title());
+    assertEquals("Stack Overflow", bkmk.orElseThrow().title());
 
     // Test with scraping (but not allowed as per robot.txt)
     var entFailScrape = getHttpEntity(restTemplate,
