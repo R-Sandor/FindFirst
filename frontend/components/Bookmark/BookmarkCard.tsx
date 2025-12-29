@@ -27,7 +27,7 @@ interface BookmarkProp {
  */
 async function addTagToBookmark(
   bookmark: Bookmark,
-  tag: string
+  tag: string,
 ): Promise<TagAction> {
   let action: TagAction = {
     type: "add",
@@ -65,14 +65,14 @@ function OverlayCard({
   return (
     <Card className={style.bookmarkCard}>
       <div className="row g-0">
-        <div className="col-6 col-sm-12">
+        <div className="col-4 col-sm-12">
           <Card.Img
             className={`${style.cImg}`}
             src={url + bookmark.screenshotUrl}
             alt="screenshot preview"
           ></Card.Img>
         </div>
-        <div className="col-6 col-sm-12">
+        <div className="col-8 col-sm-12">
           <PlainCard
             changeEditMode={changeEditMode}
             bookmark={bookmark}
@@ -166,7 +166,7 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
 
   const isChanges = (
     beforeEdit: RefObject<Bookmark>,
-    edit: RefObject<Bookmark>
+    edit: RefObject<Bookmark>,
   ) => {
     return JSON.stringify(beforeEdit.current) != JSON.stringify(edit.current);
   };
@@ -207,7 +207,7 @@ export default function BookmarkCard({ bookmark }: Readonly<BookmarkProp>) {
     const tagId = bookmark.tags[idx].id;
     if (currentBookmark.current) {
       currentBookmark.current.tags = currentBookmark.current.tags.filter(
-        (_t, i) => i !== idx
+        (_t, i) => i !== idx,
       );
     }
     api.deleteTagById(bookmark.id, tagId);
