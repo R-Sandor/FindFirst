@@ -80,7 +80,7 @@ describe("GlobalNavbar", () => {
       AuthStatus.Unauthorized,
     );
     render(<GlobalNavbar />);
-    const brandLogo = screen.getByAltText("Find First logo");
+    const brandLogo = screen.getByAltText("FindFirst Logo");
     expect(brandLogo).toBeInTheDocument();
   });
 
@@ -162,7 +162,7 @@ describe("GlobalNavbar", () => {
       AuthStatus.Unauthorized,
     );
     render(<GlobalNavbar />);
-    const brandLogo = screen.getByAltText("Find First logo");
+    const brandLogo = screen.getByAltText("FindFirst Logo");
     await user.click(brandLogo);
     expect(mockPush).toHaveBeenCalledWith("/");
   });

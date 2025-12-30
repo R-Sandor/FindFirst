@@ -2,7 +2,6 @@ import { SearchTypeChar } from "@components/Navbar/Searchbar";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MockedFunction, beforeEach, describe, expect, it, vi } from "vitest";
-import GlobalNavbar from "@components/Navbar/Navbar";
 import {
   backSpaceOnField,
   click,
@@ -12,13 +11,18 @@ import useAuth from "@components/UseAuth";
 import { AuthStatus, User } from "@services/auth.service";
 import { instance } from "@api/Api";
 import { bkmkResp } from "../../data/SampleData";
+import GlobalNavbar from "@components/Navbar/Navbar";
 
 const user = userEvent.setup();
 let mock: any;
 const data = JSON.stringify(bkmkResp);
 const urlB = "search/title";
 
-const userAcc: User = { username: "jsmith", refreshToken: "blahblajhdfh34234" };
+const userAcc: User = {
+  username: "jsmith",
+  refreshToken: "blahblajhdfh34234",
+  id: 0,
+};
 
 vi.mock("next/navigation", () => ({
   useRouter: vi.fn(),
