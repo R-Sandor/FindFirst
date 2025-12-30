@@ -150,10 +150,15 @@
 }
 
 .bookmarkCard {
-  // min-height: 250px;
+  // min-height: 250px
+  margin-top: 0px;
   margin-bottom: 20px;
   background-color: var(--card-bg);
   border: 0px;
+
+  padding: 0px !important;
+  .card-body {
+  }
 }
 
 .newBookmarkCard {

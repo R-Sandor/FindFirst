@@ -52,7 +52,7 @@ export default function BookmarkCardsView() {
       {!bookmarks.loading ? (
         <div
           className={`${cardView.content} row`}
-          style={{ marginTop: "60px" }}
+          style={{ marginBottom: "60px" }}
         >
           {filterBookmarks(bookmarks.fetchedBookmarks).map((b) => {
             return (

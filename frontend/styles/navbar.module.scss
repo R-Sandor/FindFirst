@@ -85,7 +85,7 @@
 
     .searchBar {
       position: fixed;
-      bottom: 35px;
+      bottom: 105px;
       right: 10%;
       width: 80vw;
       z-index: 1;
@@ -129,5 +129,4 @@
 .gridContainer {
   display: grid;
   grid-template-columns: minmax(250px, 300px) 1fr; /* taglist min 250px, max 300px, rest fills */
-  height: calc(100vh - 60px);
 }

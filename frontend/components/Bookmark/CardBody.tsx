@@ -4,7 +4,6 @@ import Bookmark from "@type/Bookmarks/Bookmark";
 import EditableField from "./EditableField";
 import { ScrapableBookmarkToggle } from "./ScrapableToggle";
 import style from "./bookmarkCard.module.scss";
-import { ScreenSizeProvider } from "@/contexts/ScreenSizeContext";
 
 interface CardBodyProp {
   bookmark: Readonly<Bookmark>;

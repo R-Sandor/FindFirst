@@ -56,7 +56,7 @@ a {
 
 [data-bs-theme="light"] {
   background-color: #8cabae;
-  --tag-list-bg: #8cabae;
+  --tag-list-bg: var(--bs-body-bg);
   --card-bg: #f6faf9;
 }
 

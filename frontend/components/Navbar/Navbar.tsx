@@ -9,10 +9,22 @@ import Export from "./Export";
 import Image from "next/image";
 import Searchbar from "./Searchbar";
 import navbarView from "styles/navbar.module.scss";
+import { useEffect, useState } from "react";
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
   const user = authService.getUser();
+  let [isMobile, setIsMobile] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth <= 767.98);
+
+    const checkWindowWidth = () => {
+      setIsMobile(window.innerWidth <= 767.98);
+    };
+
+    window.addEventListener("resize", checkWindowWidth);
+  }, []);
 
   const router = useRouter();
   function authButton() {
@@ -53,7 +65,7 @@ const GlobalNavbar: React.FC = () => {
   return (
     <Navbar
       expand="md"
-      fixed="top"
+      fixed="bottom"
       style={{
         borderBottom: "1px solid",
         height: "auto",
@@ -62,19 +74,20 @@ const GlobalNavbar: React.FC = () => {
       className="bg-body-tertiary"
     >
       <Container className={navbarView.navContainer}>
-        <Navbar.Brand
-          onClick={() => router.push("/")}
-          className={`cursor-pointer ${navbarView.navBrand}`}
-        >
-          <Image
-            src="/basic-f-v2-dark-mode-v2-fav.png"
-            width="38"
-            height="30"
-            className="d-inline-block align-top"
-            alt="findFirst logo"
-          />
-          FindFirst
-        </Navbar.Brand>
+        {isMobile ? (
+          <Navbar.Brand
+            onClick={() => router.push("/")}
+            className={` ${navbarView.navBrand}`}
+          >
+            <Image
+              src="/basic-f-v2-dark-mode-v2-fav.png"
+              width="38"
+              height="30"
+              className="d-inline-block align-top"
+              alt="FindFirst Logo"
+            />
+          </Navbar.Brand>
+        ) : null}
 
         {/* Search bar stays visible always */}
         {userAuth === AuthStatus.Authorized ? <Searchbar /> : null}
