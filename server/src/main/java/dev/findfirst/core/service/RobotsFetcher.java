@@ -26,14 +26,16 @@ public class RobotsFetcher {
           uri.getFragment());
 
       ResponseEntity<String> robots = rest.getForEntity(robotsUri, String.class);
+      String text = !robots.getBody().isBlank() ? robots.getBody() : "";
 
-      return new RobotsTxtResponse(robots.getStatusCode().value(), robots.getBody().getBytes(),
+      return new RobotsTxtResponse(robots.getStatusCode().value(),
+          text.getBytes(),
           robots.getHeaders().getContentType() == null ? ""
               : robots.getHeaders().getContentType().toString());
 
     } catch (URISyntaxException | HttpClientErrorException ex) {
       log.error(ex.toString());
-      return new RobotsTxtResponse(500, "".getBytes(), "");
+      return new RobotsTxtResponse(500, ex.toString().getBytes(), "");
     }
   }
 
