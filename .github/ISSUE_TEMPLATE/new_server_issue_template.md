@@ -1,5 +1,5 @@
 ---
-name: New Issue
+name: Server Issue
 about: Template for mainters to create new issues.
 title: "[Server] "
 assignees: ""
