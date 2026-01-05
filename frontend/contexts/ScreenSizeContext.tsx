@@ -2,8 +2,17 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const ScreenSizeContext = createContext<boolean | null>(null);
 
-export const ScreenSizeProvider = ({ children }: { children: React.ReactNode }) => {
+export const ScreenSizeProvider = ({
+  useMobile = false,
+  children,
+}: {
+  useMobile?: boolean;
+  children: React.ReactNode;
+}) => {
   const [isPC, setIsPC] = useState<boolean>(() => {
+    if (useMobile) {
+      return window.innerWidth < 768;
+    }
     if (typeof window !== "undefined") {
       return window.innerWidth > 768;
     }
@@ -22,7 +31,7 @@ export const ScreenSizeProvider = ({ children }: { children: React.ReactNode }) 
     let timeoutId: ReturnType<typeof setTimeout>;
     const debouncedHandleResize = () => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(handleResize, 100); 
+      timeoutId = setTimeout(handleResize, 100);
     };
 
     window.addEventListener("resize", debouncedHandleResize);
@@ -48,3 +57,4 @@ export const useScreenSize = () => {
   }
   return context;
 };
+
