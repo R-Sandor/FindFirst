@@ -8,6 +8,22 @@ import BookmarkCardsView from "@components/CardView/BookmarkCardsView";
 import { ScreenSizeProvider } from "@/contexts/ScreenSizeContext";
 import NewBookmarkCard from "@components/Bookmark/NewBookmarkCard";
 import Image from "next/image";
+import { Libre_Baskerville } from "next/font/google";
+
+const baskervilleItalics = Libre_Baskerville({
+  weight: "400",
+  style: "italic",
+});
+
+const baskervilleItalicsBold = Libre_Baskerville({
+  weight: "700",
+  style: "italic",
+});
+
+const baskerville = Libre_Baskerville({
+  weight: "400",
+});
+
 export default function App() {
   const userAuth = UseAuth();
 
@@ -33,8 +49,21 @@ export default function App() {
                   className={sideStyles.logoPicture}
                   alt="FindFirst Logo"
                 />
-                <h4 className={`d-inline-block ${sideStyles.logo}`}>
-                  findFirst
+                <h4
+                  className={`d-inline-block ${baskervilleItalics.className} ${sideStyles.f}`}
+                >
+                  f
+                </h4>
+                <h4 className={`d-inline-block ${baskerville.className}`}>
+                  ind
+                </h4>
+                <h4
+                  className={`d-inline-block ${baskervilleItalics.className} ${sideStyles.f}`}
+                >
+                  F
+                </h4>
+                <h4 className={`d-inline-block ${baskerville.className} `}>
+                  irst
                 </h4>
               </div>
             </div>
