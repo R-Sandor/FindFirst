@@ -50,7 +50,7 @@ export default function App() {
                   alt="FindFirst Logo"
                 />
                 <h4
-                  className={`d-inline-block ${baskervilleItalics.className} ${sideStyles.f}`}
+                  className={`d-inline-block ${baskervilleItalicsBold.className} ${sideStyles.f}`}
                 >
                   f
                 </h4>
@@ -58,11 +58,13 @@ export default function App() {
                   ind
                 </h4>
                 <h4
-                  className={`d-inline-block ${baskervilleItalics.className} ${sideStyles.f}`}
+                  className={`d-inline-block ${baskervilleItalics.className} ${sideStyles.first}`}
                 >
                   F
                 </h4>
-                <h4 className={`d-inline-block ${baskerville.className} `}>
+                <h4
+                  className={`d-inline-block ${baskervilleItalics.className} `}
+                >
                   irst
                 </h4>
               </div>
