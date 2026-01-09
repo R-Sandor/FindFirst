@@ -40,7 +40,7 @@ export default function App() {
           <div
             className={`col-md-4 col-lg-2 col-xl-1 fixed-top ${tagStyles.sideMenu}`}
           >
-            <div className={``}>
+            <div className={`${sideStyles.top}`}>
               <div>
                 <Image
                   src="/basic-f-v2-dark-mode-v2-fav.png"

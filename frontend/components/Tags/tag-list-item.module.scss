@@ -2,7 +2,7 @@
   &:hover {
     background-color: #5cb85c !important;
     [data-bs-theme="light"] & {
-      border-radius: 20px;
+      border-radius: 5px;
     }
   }
   margin: 0px;
@@ -17,6 +17,6 @@
 .item {
   padding: 0px !important;
   [data-bs-theme="light"] & {
-    border-radius: 20px;
+    border-radius: 5px;
   }
 }
