@@ -13,15 +13,18 @@ import { Libre_Baskerville } from "next/font/google";
 const baskervilleItalics = Libre_Baskerville({
   weight: "400",
   style: "italic",
+  subsets: ["latin"],
 });
 
 const baskervilleItalicsBold = Libre_Baskerville({
   weight: "700",
   style: "italic",
+  subsets: ["latin"],
 });
 
 const baskerville = Libre_Baskerville({
   weight: "400",
+  subsets: ["latin"],
 });
 
 export default function App() {
