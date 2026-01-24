@@ -67,7 +67,7 @@ const GlobalNavbar: React.FC = () => {
       expand="md"
       fixed="bottom"
       style={{
-        borderBottom: "1px solid",
+        borderTop: "3px solid",
         height: "auto",
         minHeight: "60px",
       }}

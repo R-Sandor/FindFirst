@@ -1,9 +1,10 @@
 .content {
-  padding-top: 3px;
+  padding-top: 40px;
 
   margin-left: 250px;
 
   @media (max-width: 760px) {
+    padding-top: 10px;
     margin-left: 0px;
     padding-bottom: 85px;
   }

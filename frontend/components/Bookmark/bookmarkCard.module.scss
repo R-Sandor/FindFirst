@@ -157,15 +157,11 @@
   border: 0px;
 
   padding: 0px !important;
-  .card-body {
-  }
 }
 
 .newBookmarkCard {
   @extend .bookmarkCard;
   text-align: center;
-  padding-left: 0.25em;
-  padding-right: 0.25em;
 }
 
 .newBookmarkCard .cardFooter {

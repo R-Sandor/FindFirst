@@ -192,7 +192,7 @@ export default function NewBookmarkCard() {
   });
 
   return (
-    <div className={`${style.main},`}>
+    <div>
       <Formik
         initialValues={newcard}
         onSubmit={handleOnSubmit}

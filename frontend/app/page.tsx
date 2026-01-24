@@ -24,16 +24,18 @@ export default function App() {
           <div
             className={`col-md-4 col-lg-2 col-xl-1 fixed-top ${tagStyles.sideMenu}`}
           >
-            <div className={`${sideStyles.logo}`}>
-              <div className="">
+            <div className={``}>
+              <div>
                 <Image
                   src="/basic-f-v2-dark-mode-v2-fav.png"
-                  width="38"
-                  height="30"
-                  className="d-inline-block align-top"
+                  width="65"
+                  height="48"
+                  className={sideStyles.logoPicture}
                   alt="FindFirst Logo"
                 />
-                <h4 className="d-inline-block">FindFirst</h4>
+                <h4 className={`d-inline-block ${sideStyles.logo}`}>
+                  findFirst
+                </h4>
               </div>
             </div>
             <NewBookmarkCard />

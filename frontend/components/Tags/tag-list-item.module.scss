@@ -1,6 +1,9 @@
 .btn {
   &:hover {
     background-color: #5cb85c !important;
+    [data-bs-theme="light"] & {
+      border-radius: 20px;
+    }
   }
   margin: 0px;
   width: 100%;
@@ -13,4 +16,7 @@
 
 .item {
   padding: 0px !important;
+  [data-bs-theme="light"] & {
+    border-radius: 20px;
+  }
 }
