@@ -198,7 +198,7 @@ class BookmarkControllerTest {
         restTemplate.exchange(bookmarkURI, HttpMethod.POST, entFailScrape, BookmarkDTO.class);
     assertEquals(HttpStatus.OK, responseFailScrape.getStatusCode());
     var bkmkFailScrape = Optional.ofNullable(responseFailScrape.getBody());
-    assertEquals("facebook.com", bkmkFailScrape.orElseThrow().title());
+    assertEquals("Facebook", bkmkFailScrape.orElseThrow().title());
 
     // Test without scrapping
     var entNoScrape = getHttpEntity(restTemplate,

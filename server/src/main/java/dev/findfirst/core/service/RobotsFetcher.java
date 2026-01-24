@@ -28,8 +28,7 @@ public class RobotsFetcher {
       ResponseEntity<String> robots = rest.getForEntity(robotsUri, String.class);
       String text = !robots.getBody().isBlank() ? robots.getBody() : "";
 
-      return new RobotsTxtResponse(robots.getStatusCode().value(),
-          text.getBytes(),
+      return new RobotsTxtResponse(robots.getStatusCode().value(), text.getBytes(),
           robots.getHeaders().getContentType() == null ? ""
               : robots.getHeaders().getContentType().toString());
 
