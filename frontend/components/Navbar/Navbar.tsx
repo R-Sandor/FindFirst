@@ -10,6 +10,7 @@ import Image from "next/image";
 import Searchbar from "./Searchbar";
 import navbarView from "styles/navbar.module.scss";
 import { useEffect, useState } from "react";
+import AccountModal from "./AccountModal";
 
 const GlobalNavbar: React.FC = () => {
   const userAuth = useAuth();
@@ -130,6 +131,7 @@ const GlobalNavbar: React.FC = () => {
                 </svg>
               ))}
             {authButton()}
+            <AccountModal />
           </div>
         </Navbar.Collapse>
       </Container>
