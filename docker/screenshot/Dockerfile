@@ -10,7 +10,7 @@ RUN gradle assemble
 FROM playwright 
 WORKDIR /app
 COPY --from=builder /appHome/app/build/libs/app.jar screenshot.jar
-COPY scripts/ scripts/
+COPY screenshots/scripts/ scripts/
 RUN chmod u+x scripts/*
 
 ENTRYPOINT ["scripts/entrypoint.sh"]
